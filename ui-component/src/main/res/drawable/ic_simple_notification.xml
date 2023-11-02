@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  Better Android - Create more useful tool extensions for Android.
+  Copyright (C) 2019-2023 HighCapable
+  https://github.com/BetterAndroid/BetterAndroid
+
+  Apache License Version 2.0
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  This file is created by fankes on 2023/10/28. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="32dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M43.901,36H4.099C5.102,25.893 13.629,18 24,18C34.371,18 42.898,25.893 43.901,36Z"
+        android:strokeWidth="4"
+        android:strokeColor="@android:color/white"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M14,20L10,13"
+        android:strokeWidth="4"
+        android:strokeColor="@android:color/white"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M33,20L37,13"
+        android:strokeWidth="4"
+        android:strokeColor="@android:color/white"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>

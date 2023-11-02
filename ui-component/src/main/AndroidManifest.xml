@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  Better Android - Create more useful tool extensions for Android.
+  Copyright (C) 2019-2023 HighCapable
+  https://github.com/BetterAndroid/BetterAndroid
+
+  Apache License Version 2.0
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  This file is created by fankes on 2023/10/21. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- In order to obtain a better user experience,
+         the configuration below will be automatically packaged into the main module.
+         If you don't need a certain configuration,
+         you can copy this configuration to the main module and add tools:node="remove". -->
+
+    <application>
+
+        <!-- Declared to expand the layout to the maximum width (full screen). -->
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.4" />
+
+        <!-- Declared to be compatible with Huawei devices (EMUI, HarmonyOS) notch screen. -->
+        <meta-data
+            android:name="android.notch_support"
+            android:value="true" />
+
+        <!-- Declared to be compatible with Xiaomi devices (MIUI, HyperOS) notch screen. -->
+        <meta-data
+            android:name="notch.config"
+            android:value="portrait|landscape" />
+    </application>
+</manifest>
