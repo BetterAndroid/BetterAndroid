@@ -17,10 +17,10 @@ plugins:
     version: 8.1.2
   org.jetbrains.kotlin.android:
     alias: kotlin-android
-    version: 1.9.10
+    version: 1.9.20
   org.jetbrains.dokka:
     alias: kotlin-dokka
-    version-ref: kotlin-android
+    version: 1.9.10
   com.vanniktech.maven.publish:
     alias: maven-publish
     version: 0.25.3
