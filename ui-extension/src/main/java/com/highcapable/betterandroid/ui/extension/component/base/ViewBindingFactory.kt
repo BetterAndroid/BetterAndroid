@@ -58,7 +58,7 @@ private fun <VB : ViewBinding> baseInflateViewBinding(
     param(LayoutInflaterClass, ViewGroupClass, BooleanType)
 }?.ignored()?.get()?.invoke<VB>(inflater, parent, attachToRoot)
     ?: error(instance?.let {
-        "Failed to binding views on $it, cannot found the generic class," +
+        "Failed to binding views on $it, cannot found the generic class, " +
             "if you are using R8, please configure obfuscation rules."
     } ?: "Binding views instance must not be null.")
 
