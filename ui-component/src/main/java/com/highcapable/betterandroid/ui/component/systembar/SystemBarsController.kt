@@ -29,6 +29,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
@@ -46,6 +47,7 @@ import com.highcapable.betterandroid.ui.component.activity.AppBindingActivity
 import com.highcapable.betterandroid.ui.component.activity.AppViewsActivity
 import com.highcapable.betterandroid.ui.component.fragment.AppBindingFragment
 import com.highcapable.betterandroid.ui.component.fragment.AppViewsFragment
+import com.highcapable.betterandroid.ui.component.generated.BetterAndroidProperties
 import com.highcapable.betterandroid.ui.component.systembar.compat.SystemBarsCompat
 import com.highcapable.betterandroid.ui.component.systembar.type.SystemBars
 import com.highcapable.betterandroid.ui.component.systembar.type.SystemBarsBehavior
@@ -103,9 +105,14 @@ class SystemBarsController private constructor(private val activity: Activity, p
          */
         @JvmStatic
         fun from(activity: Activity, rootView: View ? = null): SystemBarsController {
-            val absRootView = rootView ?: runCatching { activity.findViewById<ViewGroup>(Android_R.id.content) }.getOrNull() ?: error(
+            var throwable: Throwable? = null
+            val absRootView = rootView ?: runCatching { activity.findViewById<ViewGroup>(Android_R.id.content) }.onFailure {
+                throwable = it
+                Log.e(BetterAndroidProperties.PROJECT_NAME, "Failed to get the rootView from android.R.id.content.", it)
+            }.getOrNull() ?: error(
                 "The root view is not available at this stage, " +
-                    "please set the rootView parameter manually or create the SystemBarsController in Activity's onCreate event."
+                    "please set the rootView parameter manually or create the SystemBarsController in Activity's onCreate event." +
+                    (throwable?.message?.let { "\nCaused by: $it" } ?: "")
             )
             require(absRootView is ViewGroup) { "The rootView $absRootView must inherit from a ViewGroup." }
             requireNotNull(absRootView.parent) { "The rootView $absRootView must have a parent." }
