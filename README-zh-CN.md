@@ -49,9 +49,9 @@ com.highcapable.betterandroid:ui-component
 
 - [x] Activity 组件
     - AppBindingActivity
-        - 带有视图绑定的 Activity
+        - 带有视图绑定的 Activity (继承于 AppCompatActivtiy)
     - AppViewsActivity
-        - 基础视图组件 Activity
+        - 基础视图组件 Activity (继承于 AppCompatActivtiy)
 - [x] Fragment 组件
     - AppBindingFragment
         - 带有视图绑定的 Fragment
@@ -242,6 +242,18 @@ dependencies {
 ```
 
 请将 `<version>` 修改为**功能一览**中对应依赖的最新版本。
+
+## 混淆规则
+
+如果你使用了 `ui-component` 或 `ui-extension`，并使用了 `ViewBinding` 相关功能，请添加以下混淆规则。
+
+```proguard
+-keep class * extends android.app.Activity
+-keep class * implements androidx.viewbinding.ViewBinding {
+    <init>();
+    *** inflate(android.view.LayoutInflater);
+}
+```
 
 ## Demo
 

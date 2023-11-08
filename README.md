@@ -56,9 +56,9 @@ You can view the KDoc [click here](https://betterandroid.github.io/BetterAndroid
 
 - [x] Activity Components
     - AppBindingActivity
-        - Activity with view binding
+        - Activity with view binding (Inherited from AppCompatActivtiy)
     - AppViewsActivity
-        - Basic view component Activity
+        - Basic view component Activity (Inherited from AppCompatActivtiy)
 - [x] Fragment Components
     - AppBindingFragment
         - Fragment with view binding
@@ -251,6 +251,18 @@ dependencies {
 ```
 
 Please change `<version>` to the latest version of the corresponding dependency in the **Functional Overview**.
+
+## Obfuscate Rules
+
+If you use `ui-component` or `ui-extension` and use `ViewBinding` related functions, please add the following obfuscation rules.
+
+```proguard
+-keep class * extends android.app.Activity
+-keep class * implements androidx.viewbinding.ViewBinding {
+    <init>();
+    *** inflate(android.view.LayoutInflater);
+}
+```
 
 ## Demo
 
