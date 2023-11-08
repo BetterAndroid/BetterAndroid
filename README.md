@@ -215,7 +215,7 @@ libraries:
 
 After adding it, run Gradle Sync and all dependencies will be autowired.
 
-Next, deploy dependencies in your project build.gradle.kts.
+Next, deploy dependencies in your project `build.gradle.kts`.
 
 ```kotlin
 dependencies {
