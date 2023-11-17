@@ -187,7 +187,7 @@ inline fun <reified T : Drawable> Context.getDrawableCompat(@DrawableRes id: Int
  * @return [ColorStateList]
  * @throws [Resources.NotFoundException] if the resource is not found.
  */
-fun Context.getColorStateListCompat(@ColorRes id: Int) = resources.getColorCompat(id, theme)
+fun Context.getColorStateListCompat(@ColorRes id: Int) = resources.getColorStateListCompat(id, theme)
 
 /**
  * Get color from [Context.getResources] (compat).
@@ -196,7 +196,7 @@ fun Context.getColorStateListCompat(@ColorRes id: Int) = resources.getColorCompa
  * @return [Int]
  * @throws [Resources.NotFoundException] if the resource is not found.
  */
-fun Context.getColorCompat(@ColorRes id: Int) = resources.getColorStateListCompat(id, theme)
+fun Context.getColorCompat(@ColorRes id: Int) = resources.getColorCompat(id, theme)
 
 /**
  * Get the resource ID of the attribute resource list
