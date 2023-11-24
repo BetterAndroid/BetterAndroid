@@ -22,6 +22,7 @@
 package com.highcapable.betterandroid.demo.ui
 
 import android.os.Bundle
+import com.highcapable.betterandroid.demo.R
 import com.highcapable.betterandroid.demo.databinding.ActivityMainBinding
 import com.highcapable.betterandroid.ui.component.activity.AppBindingActivity
 
@@ -29,5 +30,6 @@ class MainActivity : AppBindingActivity<ActivityMainBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        systemBars.setBaseBackgroundResource(R.color.background)
     }
 }

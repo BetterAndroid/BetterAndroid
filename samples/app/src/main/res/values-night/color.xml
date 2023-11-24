@@ -19,13 +19,5 @@
 
   This file is created by fankes on 2023/10/21. -->
 <resources>
-    <!-- Base application theme. -->
-    <style name="Base.Theme.BetterAndroid.Demo" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <item name="colorPrimary">@color/theme</item>
-        <item name="colorAccent">@color/theme</item>
-    </style>
-
-    <style name="Theme.BetterAndroid.Demo" parent="Base.Theme.BetterAndroid.Demo" />
+    <color name="background">@color/background_night</color>
 </resources>
