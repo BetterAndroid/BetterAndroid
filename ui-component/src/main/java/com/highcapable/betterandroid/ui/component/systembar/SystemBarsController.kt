@@ -27,14 +27,15 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
-import android.widget.LinearLayout
+import android.widget.FrameLayout
+import android.widget.RelativeLayout
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
 import androidx.core.graphics.Insets
@@ -42,6 +43,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 import com.highcapable.betterandroid.ui.component.activity.AppBindingActivity
 import com.highcapable.betterandroid.ui.component.activity.AppViewsActivity
@@ -49,9 +52,12 @@ import com.highcapable.betterandroid.ui.component.fragment.AppBindingFragment
 import com.highcapable.betterandroid.ui.component.fragment.AppViewsFragment
 import com.highcapable.betterandroid.ui.component.generated.BetterAndroidProperties
 import com.highcapable.betterandroid.ui.component.systembar.compat.SystemBarsCompat
+import com.highcapable.betterandroid.ui.component.systembar.factory.appendSystemInsets
+import com.highcapable.betterandroid.ui.component.systembar.factory.applySystemInsets
+import com.highcapable.betterandroid.ui.component.systembar.factory.removeSystemInsets
 import com.highcapable.betterandroid.ui.component.systembar.type.SystemBars
 import com.highcapable.betterandroid.ui.component.systembar.type.SystemBarsBehavior
-import com.highcapable.betterandroid.ui.component.systembar.widget.SystemBarsView
+import com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType
 import com.highcapable.betterandroid.ui.component.systembar.wrapper.DisplayCutoutCompatWrapper
 import com.highcapable.betterandroid.ui.extension.component.base.isBrightColor
 import com.highcapable.betterandroid.ui.extension.component.base.isUiInNightMode
@@ -64,17 +70,10 @@ import android.R as Android_R
  *
  * This is a controller with the ability to globally manage system bars.
  * @param activity the current activity.
- * @param systemBarsViews the current stub views.
  */
-class SystemBarsController private constructor(private val activity: Activity, private val systemBarsViews: List<SystemBarsView>) {
+class SystemBarsController private constructor(private val activity: Activity) {
 
     companion object {
-
-        /** A translucent color. */
-        private const val TRANSLUCENT_COLOR = 0x80000000
-
-        /** The [SystemBarsController]'s container view tag. */
-        private const val CONTAINER_VIEW_TAG = "system_bars_controller_container_view"
 
         /**
          * Create a new [SystemBarsController] from [activity].
@@ -116,17 +115,7 @@ class SystemBarsController private constructor(private val activity: Activity, p
             )
             require(absRootView is ViewGroup) { "The rootView $absRootView must inherit from a ViewGroup." }
             requireNotNull(absRootView.parent) { "The rootView $absRootView must have a parent." }
-            val systemBars = mutableListOf<SystemBarsView>()
-            for (i in 0..3)
-                systemBars.add(SystemBarsView(activity).apply {
-                    insetsType = when (i) {
-                        0 -> SystemBarsView.InsetsType.TOP
-                        1 -> SystemBarsView.InsetsType.LEFT
-                        2 -> SystemBarsView.InsetsType.RIGHT
-                        else -> SystemBarsView.InsetsType.BOTTOM
-                    }
-                })
-            return SystemBarsController(activity, systemBars).apply { this.rootView = absRootView }
+            return SystemBarsController(activity).apply { this.rootView = absRootView }
         }
 
         /**
@@ -137,19 +126,6 @@ class SystemBarsController private constructor(private val activity: Activity, p
          */
         @JvmStatic
         fun createAbsolute(context: Context) = AbsoluteController(context)
-
-        /**
-         * Determine whether the current [View] has a transparent,
-         * semi-transparent background color or no background.
-         * @return [Boolean]
-         */
-        private fun View.isNullOrTranslucentColor() =
-            background == null || (background as? ColorDrawable?)?.color == TRANSLUCENT_COLOR.toInt() ||
-                (background as? ColorDrawable?)?.color == Color.TRANSPARENT
-    }
-
-    init {
-        require(systemBarsViews.size == 4) { "Failed to initialize SystemBarsController, systemBarsViews size must be equal to 4." }
     }
 
     /**
@@ -193,16 +169,117 @@ class SystemBarsController private constructor(private val activity: Activity, p
                     error("Your system not support system insets or have an error, SystemBarsController initialization failed.")
                 else SystemInsets(stable, cutout)
         }
+
+        /**
+         * Insets paddings.
+         * @param left the left padding (px).
+         * @param top the top padding (px).
+         * @param right the right padding (px).
+         * @param bottom the bottom padding (px).
+         */
+        class Paddings private constructor(@Px val left: Int, @Px val top: Int, @Px val right: Int, @Px val bottom: Int) {
+
+            companion object {
+
+                /**
+                 * Create a new [Paddings] from [SystemInsets].
+                 * @param systemInsets the system insets instance.
+                 * @param ignoredCutout whether to ignore the notch size,
+                 * if not ignored, it will stop handing on the notch size,
+                 * default false.
+                 * @param isOnlyCutout whether to only return the notch size, default false.
+                 * @return [Paddings]
+                 */
+                @JvmStatic
+                @JvmOverloads
+                fun from(systemInsets: SystemInsets, ignoredCutout: Boolean = false, isOnlyCutout: Boolean = false): Paddings {
+                    val paddingTop = compatSize(systemInsets.cutout.safeInsetTop, systemInsets.stable.top, ignoredCutout, isOnlyCutout)
+                    val paddingLeft = compatSize(systemInsets.cutout.safeInsetLeft, systemInsets.stable.left, ignoredCutout, isOnlyCutout)
+                    val paddingRight = compatSize(systemInsets.cutout.safeInsetRight, systemInsets.stable.right, ignoredCutout, isOnlyCutout)
+                    val paddingBottom = compatSize(systemInsets.cutout.safeInsetBottom, systemInsets.stable.bottom, ignoredCutout, isOnlyCutout)
+                    return Paddings(paddingLeft, paddingTop, paddingRight, paddingBottom)
+                }
+
+                /**
+                 * Compatible, use the one with the largest size first and return.
+                 * @param safeSize the safe size (px).
+                 * @param stableSize the stable size (px).
+                 * @param ignoredCutout if true, only return the [stableSize].
+                 * @param isOnlyCutout if true, only return the [safeSize], if [ignoredCutout] is true, return 0.
+                 * @return [Int]
+                 */
+                private fun compatSize(@Px safeSize: Int, @Px stableSize: Int, ignoredCutout: Boolean, isOnlyCutout: Boolean) =
+                    when {
+                        isOnlyCutout -> if (ignoredCutout) 0 else safeSize
+                        ignoredCutout -> stableSize
+                        safeSize > stableSize || stableSize <= 0 -> safeSize
+                        else -> stableSize
+                    }
+            }
+        }
+    }
+
+    /**
+     * System bars params.
+     * @param statusBarColor the status bars color.
+     * @param navigationBarColor the navigation bars color.
+     * @param isDarkColorStatusBars whether the status bars color is dark color.
+     * @param isDarkColorNavigationBars whether the navigation bars color is dark color.
+     */
+    private data class SystemBarsParams(
+        val statusBarColor: Int,
+        val navigationBarColor: Int,
+        val isDarkColorStatusBars: Boolean,
+        val isDarkColorNavigationBars: Boolean
+    )
+
+    /**
+     * System bars stub view (a placeholder layout).
+     * @param context the current context.
+     */
+    private class SystemBarsView(context: Context) : FrameLayout(context) {
+
+        private companion object {
+
+            /** A translucent color. */
+            private const val TRANSLUCENT_COLOR = 0x80000000
+        }
+
+        /** The translucent mask view. */
+        private var translucentView: View
+
+        init {
+            translucentView = View(context).apply {
+                isVisible = false
+                layoutParams = ViewLayoutParams.create(matchParent = true)
+                setBackgroundColor(TRANSLUCENT_COLOR.toInt())
+            }
+            addView(translucentView)
+        }
+
+        /** Show the translucent mask. */
+        fun showMask() {
+            translucentView.isVisible = true
+        }
     }
 
     /** Indicates init only once times. */
     private var isInitOnce = false
 
-    /** The root view for initialize [systemBarsViews]. */
+    /** The original system bars params. */
+    private var originalSystemBarsParams: SystemBarsParams? = null
+
+    /** The root view. */
     private lateinit var rootView: ViewGroup
+
+    /** The parent layout included [containerLayout]. */
+    private var parentLayout: ViewGroup? = null
 
     /** The container layout included [rootView]. */
     private var containerLayout: ViewGroup? = null
+
+    /** The callback of container paddings function. */
+    private var containerPaddingsCallback: (() -> Unit)? = null
 
     /**
      * The [Window.getDecorView] in this [activity].
@@ -216,6 +293,15 @@ class SystemBarsController private constructor(private val activity: Activity, p
      * @return [WindowInsetsControllerCompat]
      */
     private val insetsController get() = WindowCompat.getInsetsController(activity.window, decorView)
+
+    /** The current window insets. */
+    private var windowInsets = ViewCompat.getRootWindowInsets(decorView)
+
+    /**
+     * Get the system bars views. (included status bars, navigation bars)
+     * @return [Array]<[SystemBarsView]>
+     */
+    private val systemBarsViews by lazy { arrayOf(SystemBarsView(activity), SystemBarsView(activity)) }
 
     /**
      * Get the current system bars compat instance.
@@ -249,36 +335,59 @@ class SystemBarsController private constructor(private val activity: Activity, p
     }
 
     /**
-     * This is the core working function of [SystemBarsController].
+     * Create the [SystemBarsController]'s container layout.
      *
-     * Which uses magic to inject the current root view to obtain control permissions for system bars.
+     * ```
+     * Parent Layout (FrameLayout)
+     * └─ Base Container Layout (FrameLayout)
+     *    ├─ Status Bars (SystemBarsView)
+     *    ├─ Navigation Bars (SystemBarsView)
+     *    └─ Container Layout (RelativeLayout)
+     *       └─ Root View ← The content view
+     * ```
      * @throws IllegalStateException if there is no parent container layout.
      */
     private fun createSystemBarsLayout() {
         require(this::rootView.isInitialized) { "SystemBarsController has destroyed." }
-        val widthMatchParentParams = ViewLayoutParams.create<LinearLayout.LayoutParams>(widthMatchParent = true)
-        val heightMatchParentParams = ViewLayoutParams.create<LinearLayout.LayoutParams>(heightMatchParent = true)
-        val widthMatchResizeParams = ViewLayoutParams.create<LinearLayout.LayoutParams>(widthMatchParent = true, height = 0).apply { weight = 1f }
-        val heightMatchResizeParams = ViewLayoutParams.create<LinearLayout.LayoutParams>(heightMatchParent = true, width = 0).apply { weight = 1f }
-        val parentLayout = rootView.parent as? ViewGroup? ?: error("Could not found parent container layout to bind SystemBarsController.")
-        parentLayout.removeViewInLayout(rootView)
-        val mainContainer = LinearLayout(activity).apply {
-            tag = CONTAINER_VIEW_TAG
+        parentLayout = rootView.parent as? ViewGroup? ?: error("Could not found parent container layout to bind SystemBarsController.")
+        parentLayout?.removeView(rootView)
+        val baseContainerLayout = FrameLayout(activity).apply {
             layoutParams = ViewLayoutParams.create(matchParent = true)
-            orientation = LinearLayout.VERTICAL
-            addView(systemBarsViews[0].apply { layoutParams = widthMatchParentParams })
-            addView(systemBarsViews[3].apply { layoutParams = widthMatchParentParams })
+            containerLayout = RelativeLayout(activity).apply { layoutParams = ViewLayoutParams.create(matchParent = true) }
+            addView(containerLayout)
+            addView(systemBarsViews[0].apply {
+                layoutParams = ViewLayoutParams.create<FrameLayout.LayoutParams>(widthMatchParent = true)
+                    .apply { gravity = Gravity.TOP }
+            })
+            addView(systemBarsViews[1].apply {
+                layoutParams = ViewLayoutParams.create<FrameLayout.LayoutParams>(widthMatchParent = true)
+                    .apply { gravity = Gravity.BOTTOM }
+            })
         }
-        val innerContainer = LinearLayout(activity).apply {
-            layoutParams = widthMatchResizeParams
-            orientation = LinearLayout.HORIZONTAL
-            addView(systemBarsViews[1].apply { layoutParams = heightMatchParentParams })
-            addView(systemBarsViews[2].apply { layoutParams = heightMatchParentParams })
-        }
-        innerContainer.addView(rootView.apply { layoutParams = heightMatchResizeParams }, 1)
-        mainContainer.addView(innerContainer, 1)
-        parentLayout.addView(mainContainer)
-        containerLayout = parentLayout
+        containerLayout?.addView(rootView)
+        parentLayout?.addView(baseContainerLayout)
+    }
+
+    /** Update the container layout paddings. */
+    private fun updateContainerPaddings() {
+        if (containerPaddingsCallback == null)
+            containerPaddingsCallback = {
+                val paddings = systemInsets?.let { containerLayout?.applySystemInsets(it) }
+                updateSystemBarsViewsHeight(paddings)
+            }
+        containerPaddingsCallback?.invoke()
+    }
+
+    /**
+     * Update the system bars views height.
+     * @param paddings the system insets paddings.
+     */
+    private fun updateSystemBarsViewsHeight(paddings: SystemInsets.Paddings?) {
+        paddings ?: return
+        val isStatusBarsVisible = isVisible(SystemBars.STATUS_BARS)
+        val isNavigationBarsVisible = isVisible(SystemBars.NAVIGATION_BARS)
+        systemBarsViews[0].updateLayoutParams { height = if (isStatusBarsVisible) paddings.top else 0 }
+        systemBarsViews[1].updateLayoutParams { height = if (isNavigationBarsVisible) paddings.bottom else 0 }
     }
 
     /**
@@ -335,21 +444,24 @@ class SystemBarsController private constructor(private val activity: Activity, p
     fun init() {
         if (isInitOnce) return
         isInitOnce = true
+        originalSystemBarsParams = SystemBarsParams(
+            statusBarColor = activity.window?.statusBarColor ?: Color.TRANSPARENT,
+            navigationBarColor = activity.window?.navigationBarColor ?: Color.TRANSPARENT,
+            isDarkColorStatusBars = isDarkColorStatusBars,
+            isDarkColorNavigationBars = isDarkColorNavigationBars
+        )
         behavior = SystemBarsBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE
         createSystemBarsLayout()
         ViewCompat.setOnApplyWindowInsetsListener(decorView) { _, windowInsets ->
-            systemBarsViews.forEach {
-                windowInsets.getInsetsIgnoringVisibility(WindowInsetsCompat.Type.systemBars()).also { insets ->
-                    it.applyInsetsAndCutout(
-                        SystemInsets.from(insets, SystemVersion.require(
-                            SystemVersion.P,
-                            systemBarsCompat.createLegacyDisplayCutoutCompat(insets.top)
-                        ) { DisplayCutoutCompatWrapper(activity, systemBarsCompat, wrapper = windowInsets.displayCutout) }).also {
-                            systemInsets = it
-                            onInsetsChangedCallbacks.takeIf { e -> e.isNotEmpty() }?.forEach { e -> e(it) }
-                        }
-                    )
-                }
+            this.windowInsets = windowInsets
+            windowInsets.getInsetsIgnoringVisibility(WindowInsetsCompat.Type.systemBars()).also { insets ->
+                val systemInsets = SystemInsets.from(insets, SystemVersion.require(
+                    SystemVersion.P,
+                    systemBarsCompat.createLegacyDisplayCutoutCompat(insets.top)
+                ) { DisplayCutoutCompatWrapper(activity, systemBarsCompat, wrapper = windowInsets.displayCutout) })
+                this.systemInsets = systemInsets
+                onInsetsChangedCallbacks.takeIf { e -> e.isNotEmpty() }?.forEach { e -> e(systemInsets) }
+                updateContainerPaddings()
             }; windowInsets
         }
         val isUiInNightMode = activity.resources.configuration.isUiInNightMode
@@ -397,12 +509,20 @@ class SystemBarsController private constructor(private val activity: Activity, p
      *
      * You can change the system bars behavior by using [behavior].
      * @param type the system bars type.
-     * @param isShowStub Also show the system bars stub views, default true.
+     * @param appendExtraPaddings also append the system bars extra paddings, default true.
+     * @param ignoredCutout whether to ignore the notch size,
+     * if not ignored, it will stop handing on the notch size, default false.
+     * @throws IllegalStateException if [type] is invalid.
      */
     @JvmOverloads
-    fun show(type: SystemBars, isShowStub: Boolean = true) {
+    fun show(type: SystemBars, appendExtraPaddings: Boolean = true, ignoredCutout: Boolean = false) {
         insetsController.show(type.toInsetsType())
-        if (isShowStub) showStub(type)
+        if (appendExtraPaddings) when (type) {
+            SystemBars.ALL -> appendExtraPaddings(types = arrayOf(SystemInsetsType.TOP, SystemInsetsType.BOTTOM), ignoredCutout = ignoredCutout)
+            SystemBars.STATUS_BARS -> appendExtraPaddings(types = arrayOf(SystemInsetsType.TOP), ignoredCutout = ignoredCutout)
+            SystemBars.NAVIGATION_BARS -> appendExtraPaddings(types = arrayOf(SystemInsetsType.BOTTOM), ignoredCutout = ignoredCutout)
+            else -> error("Invalid SystemBars type.")
+        }
     }
 
     /**
@@ -410,46 +530,121 @@ class SystemBarsController private constructor(private val activity: Activity, p
      *
      * You can change the system bars behavior by using [behavior].
      * @param type the system bars type.
-     * @param isHideStub Also hide the system bars stub views, default true.
+     * @param removeExtraPaddings also remove the system bars extra paddings, default true.
+     * @param ignoredCutout whether to ignore the notch size,
+     * if not ignored, it will stop handing on the notch size, default false.
+     * @throws IllegalStateException if [type] is invalid.
      */
     @JvmOverloads
-    fun hide(type: SystemBars, isHideStub: Boolean = true) {
+    fun hide(type: SystemBars, removeExtraPaddings: Boolean = true, ignoredCutout: Boolean = false) {
         insetsController.hide(type.toInsetsType())
-        if (isHideStub) hideStub(type)
+        if (removeExtraPaddings) when (type) {
+            SystemBars.ALL -> removeExtraPaddings(types = arrayOf(SystemInsetsType.TOP, SystemInsetsType.BOTTOM), ignoredCutout = ignoredCutout)
+            SystemBars.STATUS_BARS -> removeExtraPaddings(types = arrayOf(SystemInsetsType.TOP), ignoredCutout = ignoredCutout)
+            SystemBars.NAVIGATION_BARS -> removeExtraPaddings(types = arrayOf(SystemInsetsType.BOTTOM), ignoredCutout = ignoredCutout)
+            else -> error("Invalid SystemBars type.")
+        }
     }
 
     /**
-     * Show the system bars stub views.
-     * @param type the system bars type.
-     * @throws IllegalStateException if [type] is invalid.
+     * Apply the system bars extra paddings.
+     *
+     * See also [View.applySystemInsets].
+     *
+     * This function's inner callback [containerPaddingsCallback] will be re-called when the system insets changes.
+     * @param types the system insets types, default are [SystemInsetsType.LEFT], [SystemInsetsType.TOP],
+     * [SystemInsetsType.RIGHT], [SystemInsetsType.BOTTOM].
+     * @param ignoredCutout whether to ignore the notch size,
+     * if not ignored, it will stop handing on the notch size, default false.
      */
-    fun showStub(type: SystemBars) {
-        when (type) {
-            SystemBars.ALL -> systemBarsViews.forEach { it.show() }
-            SystemBars.STATUS_BARS -> systemBarsViews[0].show()
-            SystemBars.NAVIGATION_BARS -> systemBarsViews[3].show()
-            else -> error("Invalid SystemBars type.")
+    @JvmOverloads
+    fun applyExtraPaddings(
+        vararg types: SystemInsetsType = arrayOf(
+            SystemInsetsType.LEFT,
+            SystemInsetsType.TOP,
+            SystemInsetsType.RIGHT,
+            SystemInsetsType.BOTTOM
+        ),
+        ignoredCutout: Boolean = false
+    ) {
+        containerPaddingsCallback = {
+            val paddings = systemInsets?.let { containerLayout?.applySystemInsets(it, *types, ignoredCutout = ignoredCutout) }
+            updateSystemBarsViewsHeight(paddings)
         }
+        updateContainerPaddings()
+    }
+
+    /**
+     * Append the system bars extra paddings.
+     *
+     * See also [View.appendSystemInsets].
+     *
+     * This function's inner callback [containerPaddingsCallback] will be re-called when the system insets changes.
+     * @param types the system insets types.
+     * @param ignoredCutout whether to ignore the notch size,
+     * if not ignored, it will stop handing on the notch size, default false.
+     */
+    @JvmOverloads
+    fun appendExtraPaddings(vararg types: SystemInsetsType, ignoredCutout: Boolean = false) {
+        containerPaddingsCallback = {
+            val paddings = systemInsets?.let { containerLayout?.appendSystemInsets(it, *types, ignoredCutout = ignoredCutout) }
+            updateSystemBarsViewsHeight(paddings)
+        }
+        updateContainerPaddings()
+    }
+
+    /**
+     * Remove the system bars extra paddings.
+     *
+     * See also [View.removeSystemInsets].
+     *
+     * This function's inner callback [containerPaddingsCallback] will be re-called when the system insets changes.
+     * @param types the system insets types, default are [SystemInsetsType.LEFT], [SystemInsetsType.TOP],
+     * [SystemInsetsType.RIGHT], [SystemInsetsType.BOTTOM].
+     * @param ignoredCutout whether to ignore the notch size,
+     * if not ignored, it will stop handing on the notch size, default false.
+     */
+    @JvmOverloads
+    fun removeExtraPaddings(
+        vararg types: SystemInsetsType = arrayOf(
+            SystemInsetsType.LEFT,
+            SystemInsetsType.TOP,
+            SystemInsetsType.RIGHT,
+            SystemInsetsType.BOTTOM
+        ),
+        ignoredCutout: Boolean = false
+    ) {
+        containerPaddingsCallback = {
+            val paddings = systemInsets?.let { containerLayout?.removeSystemInsets(it, *types, ignoredCutout = ignoredCutout) }
+            updateSystemBarsViewsHeight(paddings)
+        }
+        updateContainerPaddings()
+    }
+
+    /**
+     * Determine whether the system bars is visible.
+     * @param type the system bars type.
+     * @return [Boolean]
+     */
+    fun isVisible(type: SystemBars) = windowInsets?.isVisible(type.toInsetsType()) ?: false
+
+    /**
+     * Show the system bars stub views.
+     *
+     * - This function is deprecated and no effect, use [applyExtraPaddings], [appendExtraPaddings] instead.
+     */
+    @Deprecated(message = "Use applyExtraPaddings, appendExtraPaddings instead.")
+    fun showStub(type: SystemBars) {
     }
 
     /**
      * Hide the system bars stub views.
      *
-     * - Note: The [ignoredCutout] parameter may be delayed based on the loading time of [Activity].
-     * @param type the system bars type.
-     * @param ignoredCutout Whether to ignore the notch size,
-     * if not ignored, it will stop hiding on the notch size,
-     * default is false.
-     * @throws IllegalStateException if [type] is invalid.
+     * - This function is deprecated and no effect, use [removeExtraPaddings] instead.
      */
+    @Deprecated(message = "Use removeExtraPaddings instead.")
     @JvmOverloads
     fun hideStub(type: SystemBars, ignoredCutout: Boolean = false) {
-        when (type) {
-            SystemBars.ALL -> systemBarsViews.forEach { it.hide(ignoredCutout) }
-            SystemBars.STATUS_BARS -> systemBarsViews[0].hide(ignoredCutout)
-            SystemBars.NAVIGATION_BARS -> systemBarsViews[3].hide(ignoredCutout)
-            else -> error("Invalid SystemBars type.")
-        }
     }
 
     /**
@@ -462,10 +657,10 @@ class SystemBarsController private constructor(private val activity: Activity, p
         when (type) {
             SystemBars.ALL -> {
                 systemBarsViews[0].setBackgroundColor(color)
-                systemBarsViews[3].setBackgroundColor(color)
+                systemBarsViews[1].setBackgroundColor(color)
             }
             SystemBars.STATUS_BARS -> systemBarsViews[0].setBackgroundColor(color)
-            SystemBars.NAVIGATION_BARS -> systemBarsViews[3].setBackgroundColor(color)
+            SystemBars.NAVIGATION_BARS -> systemBarsViews[1].setBackgroundColor(color)
             else -> error("Invalid SystemBars type.")
         }
     }
@@ -488,10 +683,7 @@ class SystemBarsController private constructor(private val activity: Activity, p
     var isDarkColorStatusBars
         get() = insetsController.isAppearanceLightStatusBars
         set(value) {
-            if (SystemVersion.isLowTo(SystemVersion.M) && !systemBarsCompat.isLegacyMiui)
-                if (value && systemBarsViews[0].isNullOrTranslucentColor())
-                    setColor(SystemBars.STATUS_BARS, TRANSLUCENT_COLOR.toInt())
-                else setColor(SystemBars.STATUS_BARS, Color.TRANSPARENT)
+            if (SystemVersion.isLowTo(SystemVersion.M) && !systemBarsCompat.isLegacyMiui) systemBarsViews[0].showMask()
             if (systemBarsCompat.isLegacyMiui) systemBarsCompat.setStatusBarDarkModeForLegacyMiui(value)
             insetsController.isAppearanceLightStatusBars = value
         }
@@ -511,10 +703,7 @@ class SystemBarsController private constructor(private val activity: Activity, p
     var isDarkColorNavigationBars
         get() = insetsController.isAppearanceLightNavigationBars
         set(value) {
-            if (SystemVersion.isLowTo(SystemVersion.O))
-                if (value && systemBarsViews[3].isNullOrTranslucentColor())
-                    setColor(SystemBars.NAVIGATION_BARS, TRANSLUCENT_COLOR.toInt())
-                else setColor(SystemBars.NAVIGATION_BARS, Color.TRANSPARENT)
+            if (SystemVersion.isLowTo(SystemVersion.O)) systemBarsViews[1].showMask()
             insetsController.isAppearanceLightNavigationBars = value
         }
 
@@ -538,13 +727,22 @@ class SystemBarsController private constructor(private val activity: Activity, p
      */
     fun destroy() {
         if (!isInitOnce || containerLayout == null) return
-        val mainContainer = containerLayout?.findViewWithTag<ViewGroup>(CONTAINER_VIEW_TAG)
-        if (mainContainer != null) {
-            systemBarsViews.forEach { it.removeSelfInLayout() }
-            rootView.removeSelfInLayout()
-            rootView.layoutParams = ViewLayoutParams.create(matchParent = true)
-            containerLayout?.removeViewInLayout(mainContainer)
-            containerLayout?.addView(rootView)
-        }; isInitOnce = false
+        rootView.removeSelfInLayout()
+        systemBarsViews.forEach { it.removeSelfInLayout() }
+        containerLayout?.removeSelfInLayout()
+        parentLayout?.removeAllViewsInLayout()
+        parentLayout?.addView(rootView)
+        parentLayout = null
+        containerLayout = null
+        containerPaddingsCallback = null
+        /** Restore to default sets. */
+        originalSystemBarsParams?.also {
+            WindowCompat.setDecorFitsSystemWindows(activity.window, true)
+            activity.window?.statusBarColor = it.statusBarColor
+            activity.window?.navigationBarColor = it.navigationBarColor
+            isDarkColorStatusBars = it.isDarkColorStatusBars
+            isDarkColorNavigationBars = it.isDarkColorNavigationBars
+        }
+        isInitOnce = false
     }
 }
