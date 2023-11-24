@@ -37,6 +37,7 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
 import androidx.annotation.Px
 import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
@@ -481,6 +482,14 @@ class SystemBarsController private constructor(private val activity: Activity) {
     }
 
     /**
+     * Set the [baseLayout]'s background drawable.
+     * @param background the background drawable.
+     */
+    fun setBaseBackground(background: Drawable?) {
+        containerLayout?.background = background
+    }
+
+    /**
      * Set the [baseLayout]'s background color.
      * @param color the background color.
      */
@@ -489,11 +498,11 @@ class SystemBarsController private constructor(private val activity: Activity) {
     }
 
     /**
-     * Set the [baseLayout]'s background drawable.
-     * @param background the background drawable.
+     * Set the [baseLayout]'s background resource.
+     * @param resId the background resource ID.
      */
-    fun setBaseBackground(background: Drawable?) {
-        containerLayout?.background = background
+    fun setBaseBackgroundResource(@DrawableRes resId: Int) {
+        containerLayout?.setBackgroundResource(resId)
     }
 
     /**
