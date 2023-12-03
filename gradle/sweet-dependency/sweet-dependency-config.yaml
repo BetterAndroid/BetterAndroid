@@ -11,13 +11,13 @@ repositories:
 plugins:
   com.android.application:
     alias: android-application
-    version: 8.1.4
+    version: 8.2.0
   com.android.library:
     alias: android-library
-    version: 8.1.4
+    version: 8.2.0
   org.jetbrains.kotlin.android:
     alias: kotlin-android
-    version: 1.9.20
+    version: 1.9.21
   org.jetbrains.dokka:
     alias: kotlin-dokka
     version: 1.9.10
