@@ -17,24 +17,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file is created by fankes on 2023/10/25.
+ * This file is created by fankes on 2023/12/3.
  */
 @file:Suppress("MemberVisibilityCanBePrivate")
 
 package com.highcapable.betterandroid.ui.component.activity.base
 
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.drawable.ColorDrawable
+import android.view.View
+import android.view.ViewGroup
+import androidx.activity.ComponentActivity
 import com.highcapable.betterandroid.ui.component.backpress.BackPressedController
 import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
 import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
 import com.highcapable.betterandroid.ui.component.systembar.SystemBarsController
+import com.highcapable.betterandroid.ui.extension.widget.inflate
 
 /**
- * App base activity with [ISystemBarsController], [IBackPressedController].
+ * Base component activity with [ISystemBarsController], [IBackPressedController].
  *
- * Inherited from [AppCompatActivity].
+ * Inherited from [ComponentActivity].
  */
-abstract class AppBaseActivity internal constructor() : AppCompatActivity(), ISystemBarsController, IBackPressedController {
+abstract class BaseComponentActivity internal constructor() : ComponentActivity(), ISystemBarsController, IBackPressedController {
 
     override val systemBars by lazy { SystemBarsController.from(activity = this) }
 
@@ -50,4 +54,26 @@ abstract class AppBaseActivity internal constructor() : AppCompatActivity(), ISy
     override fun onBackPressed() {
         super.onBackPressed()
     }
+
+    override fun setContentView(layoutResID: Int) {
+        super.setContentView(layoutResID)
+        inflate(layoutResID).getBackgroundColor()?.also { systemBars.setBaseBackgroundColor(it) }
+    }
+
+    override fun setContentView(view: View?) {
+        super.setContentView(view)
+        view?.getBackgroundColor()?.also { systemBars.setBaseBackgroundColor(it) }
+    }
+
+    override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
+        super.setContentView(view, params)
+        view?.getBackgroundColor()?.also { systemBars.setBaseBackgroundColor(it) }
+    }
+
+    /**
+     * Get the background color of the view.
+     * @receiver [View]
+     * @return [Int] or null.
+     */
+    internal fun View.getBackgroundColor() = (background as? ColorDrawable)?.color
 }

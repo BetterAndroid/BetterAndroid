@@ -21,15 +21,16 @@
  */
 package com.highcapable.betterandroid.ui.component.fragment
 
-import com.highcapable.betterandroid.ui.component.activity.base.AppBaseActivity
-import com.highcapable.betterandroid.ui.component.fragment.base.AppBaseFragment
+import com.highcapable.betterandroid.ui.component.activity.base.BaseCompatActivity
+import com.highcapable.betterandroid.ui.component.activity.base.BaseComponentActivity
+import com.highcapable.betterandroid.ui.component.fragment.base.BaseFragment
 import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
 import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
 
 /**
  * App binding fragment.
  *
- * Inherited from [AppBaseFragment].
+ * Inherited from [BaseFragment].
  *
  * Usage:
  *
@@ -51,8 +52,8 @@ import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
  * }
  * ```
  *
- * - You must use an inherited from [AppBaseActivity]'s activity or implements
+ * - You must use an inherited from [BaseCompatActivity] or [BaseComponentActivity]'s activity or implements
  *   [ISystemBarsController], [IBackPressedController] to use this fragment,
  *   otherwise some functions such as [systemBars], [backPressed] will not work.
  */
-open class AppViewsFragment : AppBaseFragment()
+open class AppViewsFragment : BaseFragment()

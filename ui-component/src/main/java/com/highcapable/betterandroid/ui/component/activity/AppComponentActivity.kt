@@ -17,40 +17,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file is created by fankes on 2023/10/25.
+ * This file is created by fankes on 2023/12/3.
  */
 package com.highcapable.betterandroid.ui.component.activity
 
 import android.os.Bundle
 import androidx.annotation.CallSuper
-import com.highcapable.betterandroid.ui.component.activity.base.BaseCompatActivity
+import com.highcapable.betterandroid.ui.component.activity.base.BaseComponentActivity
 
 /**
- * App views activity.
+ * App component activity.
  *
- * Inherited from [BaseCompatActivity].
+ * Inherited from [BaseComponentActivity].
  *
- * Usage:
- *
- * ```kotlin
- * class YourActivity : AppViewsActivity() {
- *
- *     override fun onCreate(savedInstanceState: Bundle?) {
- *         super.onCreate(savedInstanceState)
- *         setContentView(R.layout.activity_main)
- *         findViewById<TextView>(R.id.main_text).text = "Hello World!"
- *         findViewById<Button>(R.id.enter_full_screen).setOnClickListener {
- *             systemBars.hide(SystemBars.ALL)
- *         }
- *     }
- * }
- * ```
+ * - Note: This activity does not add any possible system bar padding to the root layout,
+ *         and all layout content is tiled and expanded to full screen.
  */
-open class AppViewsActivity : BaseCompatActivity() {
+open class AppComponentActivity : BaseComponentActivity() {
 
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        systemBars.init()
+        systemBars.init(defaultPaddings = false)
     }
 }

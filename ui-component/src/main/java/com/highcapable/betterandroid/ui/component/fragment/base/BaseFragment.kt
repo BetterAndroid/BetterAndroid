@@ -27,11 +27,11 @@ import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
 import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
 
 /**
- * App base fragment with [ISystemBarsController], [IBackPressedController].
+ * Base fragment with [ISystemBarsController], [IBackPressedController].
  *
  * Inherited from [Fragment].
  */
-abstract class AppBaseFragment internal constructor() : Fragment(), ISystemBarsController, IBackPressedController {
+abstract class BaseFragment internal constructor() : Fragment(), ISystemBarsController, IBackPressedController {
 
     override val systemBars
         get() = (requireActivity() as? ISystemBarsController?)?.systemBars

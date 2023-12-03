@@ -26,10 +26,11 @@ package com.highcapable.betterandroid.ui.component.backpress
 import androidx.activity.ComponentActivity
 import com.highcapable.betterandroid.ui.component.activity.AppBindingActivity
 import com.highcapable.betterandroid.ui.component.activity.AppViewsActivity
-import com.highcapable.betterandroid.ui.component.activity.base.AppBaseActivity
+import com.highcapable.betterandroid.ui.component.activity.base.BaseCompatActivity
+import com.highcapable.betterandroid.ui.component.activity.base.BaseComponentActivity
 import com.highcapable.betterandroid.ui.component.fragment.AppBindingFragment
 import com.highcapable.betterandroid.ui.component.fragment.AppViewsFragment
-import com.highcapable.betterandroid.ui.component.fragment.base.AppBaseFragment
+import com.highcapable.betterandroid.ui.component.fragment.base.BaseFragment
 import androidx.activity.OnBackPressedCallback as BaseOnBackPressedCallback
 
 /**
@@ -67,7 +68,7 @@ class BackPressedController private constructor(private val activity: ComponentA
          *
          * Or you can use [AppBindingActivity], [AppViewsActivity], [AppBindingFragment], [AppViewsFragment].
          *
-         * Usage in [AppBaseFragment] based on [AppBaseActivity]:
+         * Usage in [BaseFragment] based on [BaseCompatActivity] or [BaseComponentActivity]:
          *
          * ```kotlin
          * class YourFragment : AppViewsFragment() {

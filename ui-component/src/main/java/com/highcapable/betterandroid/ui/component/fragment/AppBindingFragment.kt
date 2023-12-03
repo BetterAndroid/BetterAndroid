@@ -27,8 +27,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.viewbinding.ViewBinding
-import com.highcapable.betterandroid.ui.component.activity.base.AppBaseActivity
-import com.highcapable.betterandroid.ui.component.fragment.base.AppBaseFragment
+import com.highcapable.betterandroid.ui.component.activity.base.BaseCompatActivity
+import com.highcapable.betterandroid.ui.component.activity.base.BaseComponentActivity
+import com.highcapable.betterandroid.ui.component.fragment.base.BaseFragment
 import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
 import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
 import com.highcapable.betterandroid.ui.component.proxy.IViewBinding
@@ -37,7 +38,7 @@ import com.highcapable.betterandroid.ui.extension.component.base.inflateViewBind
 /**
  * App binding fragment with [IViewBinding].
  *
- * Inherited from [AppBaseFragment].
+ * Inherited from [BaseFragment].
  *
  * Usage:
  *
@@ -54,11 +55,11 @@ import com.highcapable.betterandroid.ui.extension.component.base.inflateViewBind
  * }
  * ```
  *
- * - You must use an inherited from [AppBaseActivity]'s activity or implements
+ * - You must use an inherited from [BaseCompatActivity] or [BaseComponentActivity]'s activity or implements
  *   [ISystemBarsController], [IBackPressedController] to use this fragment,
  *   otherwise some functions such as [systemBars], [backPressed] will not work.
  */
-open class AppBindingFragment<VB : ViewBinding> : AppBaseFragment(), IViewBinding<VB> {
+open class AppBindingFragment<VB : ViewBinding> : BaseFragment(), IViewBinding<VB> {
 
     override val binding get() = baseBinding ?: error("The binding is not available for this time.")
 

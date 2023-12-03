@@ -28,14 +28,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.viewbinding.ViewBinding
-import com.highcapable.betterandroid.ui.component.activity.base.AppBaseActivity
+import com.highcapable.betterandroid.ui.component.activity.base.BaseCompatActivity
 import com.highcapable.betterandroid.ui.component.proxy.IViewBinding
 import com.highcapable.betterandroid.ui.extension.component.base.inflateViewBinding
 
 /**
  * App binding activity with [IViewBinding].
  *
- * Inherited from [AppBaseActivity].
+ * Inherited from [BaseCompatActivity].
  *
  * Usage:
  *
@@ -52,7 +52,7 @@ import com.highcapable.betterandroid.ui.extension.component.base.inflateViewBind
  * }
  * ```
  */
-open class AppBindingActivity<VB : ViewBinding> : AppBaseActivity(), IViewBinding<VB> {
+open class AppBindingActivity<VB : ViewBinding> : BaseCompatActivity(), IViewBinding<VB> {
 
     override val binding get() = baseBinding ?: error("The binding is not available for this time.")
 
