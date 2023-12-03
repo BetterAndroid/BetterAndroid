@@ -59,6 +59,8 @@ You can view the KDoc [click here](https://betterandroid.github.io/BetterAndroid
         - Activity with view binding (Inherited from AppCompatActivtiy)
     - AppViewsActivity
         - Basic view component Activity (Inherited from AppCompatActivtiy)
+    - AppComponentActivity
+        - Basic component Activity (Inherited from ComponentActivtiy)
 - [x] Fragment Components
     - AppBindingFragment
         - Fragment with view binding

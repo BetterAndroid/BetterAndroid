@@ -52,6 +52,8 @@ com.highcapable.betterandroid:ui-component
         - 带有视图绑定的 Activity (继承于 AppCompatActivtiy)
     - AppViewsActivity
         - 基础视图组件 Activity (继承于 AppCompatActivtiy)
+    - AppComponentActivity
+        - 基础组件 Activity (继承于 ComponentActivtiy)
 - [x] Fragment 组件
     - AppBindingFragment
         - 带有视图绑定的 Fragment
