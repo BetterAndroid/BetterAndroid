@@ -369,13 +369,17 @@ class SystemBarsController private constructor(private val activity: Activity) {
         parentLayout?.addView(baseContainerLayout)
     }
 
-    /** Update the container layout paddings. */
-    private fun updateContainerPaddings() {
+    /** Create the default container paddings callback if not exists. */
+    private fun createDefaultContainerPaddingsCallback() {
         if (containerPaddingsCallback == null)
             containerPaddingsCallback = {
                 val paddings = systemInsets?.let { containerLayout?.applySystemInsets(it) }
                 updateSystemBarsViewsHeight(paddings)
             }
+    }
+
+    /** Update the container layout paddings. */
+    private fun updateContainerPaddings() {
         containerPaddingsCallback?.invoke()
     }
 
@@ -441,8 +445,9 @@ class SystemBarsController private constructor(private val activity: Activity) {
      *
      * - The initialization operation will not be called repeatedly,
      *   repeated calls will only be performed once.
+     * @param defaultPaddings whether to initialize the default system insets paddings, default true.
      */
-    fun init() {
+    fun init(defaultPaddings: Boolean = true) {
         if (isInitOnce) return
         isInitOnce = true
         originalSystemBarsParams = SystemBarsParams(
@@ -453,6 +458,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
         )
         behavior = SystemBarsBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE
         createSystemBarsLayout()
+        if (defaultPaddings) createDefaultContainerPaddingsCallback()
         ViewCompat.setOnApplyWindowInsetsListener(decorView) { _, windowInsets ->
             this.windowInsets = windowInsets
             windowInsets.getInsetsIgnoringVisibility(WindowInsetsCompat.Type.systemBars()).also { insets ->
@@ -518,13 +524,14 @@ class SystemBarsController private constructor(private val activity: Activity) {
      *
      * You can change the system bars behavior by using [behavior].
      * @param type the system bars type.
-     * @param appendExtraPaddings also append the system bars extra paddings, default true.
+     * @param appendExtraPaddings also append the system bars extra paddings,
+     * when [containerPaddingsCallback] exists, default true.
      * @param ignoredCutout whether to ignore the notch size,
      * if not ignored, it will stop handing on the notch size, default false.
      * @throws IllegalStateException if [type] is invalid.
      */
     @JvmOverloads
-    fun show(type: SystemBars, appendExtraPaddings: Boolean = true, ignoredCutout: Boolean = false) {
+    fun show(type: SystemBars, appendExtraPaddings: Boolean = containerPaddingsCallback != null, ignoredCutout: Boolean = false) {
         insetsController.show(type.toInsetsType())
         if (appendExtraPaddings) when (type) {
             SystemBars.ALL -> appendExtraPaddings(types = arrayOf(SystemInsetsType.TOP, SystemInsetsType.BOTTOM), ignoredCutout = ignoredCutout)
@@ -539,13 +546,14 @@ class SystemBarsController private constructor(private val activity: Activity) {
      *
      * You can change the system bars behavior by using [behavior].
      * @param type the system bars type.
-     * @param removeExtraPaddings also remove the system bars extra paddings, default true.
+     * @param removeExtraPaddings also remove the system bars extra paddings,
+     * when [containerPaddingsCallback] exists, default true.
      * @param ignoredCutout whether to ignore the notch size,
      * if not ignored, it will stop handing on the notch size, default false.
      * @throws IllegalStateException if [type] is invalid.
      */
     @JvmOverloads
-    fun hide(type: SystemBars, removeExtraPaddings: Boolean = true, ignoredCutout: Boolean = false) {
+    fun hide(type: SystemBars, removeExtraPaddings: Boolean = containerPaddingsCallback != null, ignoredCutout: Boolean = false) {
         insetsController.hide(type.toInsetsType())
         if (removeExtraPaddings) when (type) {
             SystemBars.ALL -> removeExtraPaddings(types = arrayOf(SystemInsetsType.TOP, SystemInsetsType.BOTTOM), ignoredCutout = ignoredCutout)
