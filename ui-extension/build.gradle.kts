@@ -46,32 +46,6 @@ dependencies {
     androidTestImplementation(androidx.test.espresso.espresso.core)
 }
 
-tasks.register("publishKDoc") {
-    group = "documentation"
-    dependsOn("dokkaHtml")
-    doLast {
-        val docsDir = rootProject.projectDir.resolve("docs").resolve(property.project.ui.extension.moduleName)
-        if (docsDir.exists()) docsDir.deleteRecursively() else docsDir.mkdirs()
-        layout.buildDirectory.dir("dokka/html").get().asFile.copyRecursively(docsDir)
-    }
-}
-
-publishing {
-    repositories {
-        val repositoryDir = gradle.gradleUserHomeDir
-            .resolve("highcapable-maven-repository")
-            .resolve("repository")
-        maven {
-            name = "HighCapableMavenReleases"
-            url = repositoryDir.resolve("releases").toURI()
-        }
-        maven {
-            name = "HighCapableMavenSnapShots"
-            url = repositoryDir.resolve("snapshots").toURI()
-        }
-    }
-}
-
 mavenPublishing {
     coordinates(property.project.groupName, property.project.ui.extension.moduleName, property.project.ui.extension.version)
     pom {
