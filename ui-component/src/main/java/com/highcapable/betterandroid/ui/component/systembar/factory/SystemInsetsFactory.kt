@@ -26,95 +26,123 @@ package com.highcapable.betterandroid.ui.component.systembar.factory
 import android.view.View
 import androidx.core.view.updatePadding
 import com.highcapable.betterandroid.ui.component.systembar.SystemBarsController
-import com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType
+import com.highcapable.betterandroid.ui.component.systembar.insets.InsetsPadding
+import com.highcapable.betterandroid.ui.component.systembar.insets.SystemInsets
+import com.highcapable.betterandroid.ui.component.systembar.type.InsetsType
 
 /**
- * Apply the system insets and cutout paddings in layout.
+ * Apply the system insets and cutout padding in layout.
  *
- * See also [View.appendSystemInsets], [View.removeSystemInsets].
- * @param systemInsets the system insets instance, you can use [SystemBarsController.systemInsets]
+ * See also [View.appendSystemInsets].
+ * @param systemInsets the system insets, you can use [SystemBarsController.systemInsets]
  * or use [SystemBarsController.addOnInsetsChangeListener].
- * @param types the system insets types, default are [SystemInsetsType.LEFT], [SystemInsetsType.TOP],
- * [SystemInsetsType.RIGHT], [SystemInsetsType.BOTTOM],
- * when you set this, the [SystemInsetsType] decided this layout's paddings (top, left, right, bottom).
- * @param ignoredCutout whether to ignore the notch size,
- * if not ignored, it will stop handing on the notch size, default false.
- * @return [SystemBarsController.SystemInsets.Paddings]
+ * @param left whether to apply the left insets.
+ * @param top whether to apply the top insets.
+ * @param right whether to apply the right insets.
+ * @param bottom whether to apply the bottom insets.
+ * @param type the insets type, default is [InsetsType.ADAPTIVE].
+ * @return [InsetsPadding]
  */
 @JvmOverloads
 fun View.applySystemInsets(
-    systemInsets: SystemBarsController.SystemInsets,
-    vararg types: SystemInsetsType = arrayOf(
-        SystemInsetsType.LEFT,
-        SystemInsetsType.TOP,
-        SystemInsetsType.RIGHT,
-        SystemInsetsType.BOTTOM
-    ),
-    ignoredCutout: Boolean = false
-): SystemBarsController.SystemInsets.Paddings {
-    val paddings = SystemBarsController.SystemInsets.Paddings.from(systemInsets, ignoredCutout)
+    systemInsets: SystemInsets,
+    left: Boolean = true,
+    top: Boolean = true,
+    right: Boolean = true,
+    bottom: Boolean = true,
+    type: InsetsType = InsetsType.ADAPTIVE
+) = InsetsPadding.from(systemInsets, type).also {
     setPadding(
-        if (types.contains(SystemInsetsType.LEFT)) paddings.left else 0,
-        if (types.contains(SystemInsetsType.TOP)) paddings.top else 0,
-        if (types.contains(SystemInsetsType.RIGHT)) paddings.right else 0,
-        if (types.contains(SystemInsetsType.BOTTOM)) paddings.bottom else 0
-    ); return paddings
+        if (left) it.left else 0,
+        if (top) it.top else 0,
+        if (right) it.right else 0,
+        if (bottom) it.bottom else 0
+    )
 }
 
 /**
- * Append the system insets and cutout paddings in layout.
+ * Append the system insets and cutout padding in layout.
  *
- * See also [View.applySystemInsets], [View.removeSystemInsets].
- * @param systemInsets the system insets instance, you can use [SystemBarsController.systemInsets]
+ * See also [View.applySystemInsets].
+ * @param systemInsets the system insets, you can use [SystemBarsController.systemInsets]
  * or use [SystemBarsController.addOnInsetsChangeListener].
- * @param types the system insets types,
- * when you set this, the [SystemInsetsType] decided this layout's paddings (top, left, right, bottom).
- * @param ignoredCutout whether to ignore the notch size,
- * if not ignored, it will stop handing on the notch size, default false.
- * @return [SystemBarsController.SystemInsets.Paddings]
+ * @param left whether to apply the left insets.
+ * @param top whether to apply the top insets.
+ * @param right whether to apply the right insets.
+ * @param bottom whether to apply the bottom insets.
+ * @param type the insets type, default is [InsetsType.ADAPTIVE].
+ * @return [InsetsPadding]
  */
 @JvmOverloads
 fun View.appendSystemInsets(
-    systemInsets: SystemBarsController.SystemInsets,
-    vararg types: SystemInsetsType,
-    ignoredCutout: Boolean = false
-): SystemBarsController.SystemInsets.Paddings {
-    val paddings = SystemBarsController.SystemInsets.Paddings.from(systemInsets, ignoredCutout)
-    if (types.contains(SystemInsetsType.LEFT)) updatePadding(left = paddings.left)
-    if (types.contains(SystemInsetsType.TOP)) updatePadding(top = paddings.top)
-    if (types.contains(SystemInsetsType.RIGHT)) updatePadding(right = paddings.right)
-    if (types.contains(SystemInsetsType.BOTTOM)) updatePadding(bottom = paddings.bottom)
-    return paddings
+    systemInsets: SystemInsets,
+    left: Boolean = true,
+    top: Boolean = true,
+    right: Boolean = true,
+    bottom: Boolean = true,
+    type: InsetsType = InsetsType.ADAPTIVE
+) = InsetsPadding.from(systemInsets, type).also {
+    if (left) updatePadding(left = it.left)
+    if (top) updatePadding(top = it.top)
+    if (right) updatePadding(right = it.right)
+    if (bottom) updatePadding(bottom = it.bottom)
 }
 
 /**
- * Remove the system insets and cutout paddings in layout.
+ * Apply the system insets and cutout padding in layout.
  *
- * See also [View.applySystemInsets], [View.appendSystemInsets].
- * @param systemInsets the system insets instance, you can use [SystemBarsController.systemInsets]
- * or use [SystemBarsController.addOnInsetsChangeListener].
- * @param types the system insets types, default are [SystemInsetsType.LEFT], [SystemInsetsType.TOP],
- * [SystemInsetsType.RIGHT], [SystemInsetsType.BOTTOM],
- * when you set this, the [SystemInsetsType] decided this layout's paddings (top, left, right, bottom).
- * @param ignoredCutout whether to ignore the notch size,
- * if not ignored, it will stop handing on the notch size, default false.
- * @return [SystemBarsController.SystemInsets.Paddings]
+ * - This function is deprecated, use [View.applySystemInsets] instead.
+ * @return [InsetsPadding]
  */
+@Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
+@Deprecated(message = "Use View.applySystemInsets instead.")
+@JvmOverloads
+fun View.applySystemInsets(
+    systemInsets: SystemInsets,
+    vararg types: com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType,
+    ignoredCutout: Boolean = false
+) = applySystemInsets(
+    systemInsets = systemInsets,
+    left = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.LEFT),
+    top = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.TOP),
+    right = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.RIGHT),
+    bottom = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.BOTTOM),
+    type = if (ignoredCutout) InsetsType.STABLE else InsetsType.ADAPTIVE
+)
+
+/**
+ * Append the system insets and cutout padding in layout.
+ *
+ * - This function is deprecated, use [View.appendSystemInsets] instead.
+ * @return [InsetsPadding]
+ */
+@Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
+@Deprecated(message = "Use View.appendSystemInsets instead.")
+@JvmOverloads
+fun View.appendSystemInsets(
+    systemInsets: SystemInsets,
+    vararg types: com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType,
+    ignoredCutout: Boolean = false
+) = appendSystemInsets(
+    systemInsets = systemInsets,
+    left = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.LEFT),
+    top = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.TOP),
+    right = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.RIGHT),
+    bottom = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.BOTTOM),
+    type = if (ignoredCutout) InsetsType.STABLE else InsetsType.ADAPTIVE
+)
+
+/**
+ * Remove the system insets and cutout padding in layout.
+ *
+ * - This function is deprecated and no effect, use [View.applySystemInsets] or [View.appendSystemInsets] instead.
+ * @return [InsetsPadding]
+ */
+@Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith", "UnusedReceiverParameter")
+@Deprecated(message = "Use View.applySystemInsets or View.appendSystemInsets instead.")
 @JvmOverloads
 fun View.removeSystemInsets(
-    systemInsets: SystemBarsController.SystemInsets,
-    vararg types: SystemInsetsType = arrayOf(
-        SystemInsetsType.LEFT,
-        SystemInsetsType.TOP,
-        SystemInsetsType.RIGHT,
-        SystemInsetsType.BOTTOM
-    ),
+    systemInsets: SystemInsets,
+    vararg types: com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType,
     ignoredCutout: Boolean = false
-): SystemBarsController.SystemInsets.Paddings {
-    val paddings = SystemBarsController.SystemInsets.Paddings.from(systemInsets, ignoredCutout, isOnlyCutout = true)
-    if (types.contains(SystemInsetsType.LEFT)) updatePadding(left = paddings.left)
-    if (types.contains(SystemInsetsType.TOP)) updatePadding(top = paddings.top)
-    if (types.contains(SystemInsetsType.RIGHT)) updatePadding(right = paddings.right)
-    if (types.contains(SystemInsetsType.BOTTOM)) updatePadding(bottom = paddings.bottom)
-    return paddings
-}
+) = InsetsPadding(left = 0, top = 0, right = 0, bottom = 0)

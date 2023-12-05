@@ -17,26 +17,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file is created by fankes on 2023/11/24.
+ * This file is created by fankes on 2023/12/5.
  */
-package com.highcapable.betterandroid.ui.component.systembar.type
+@file:Suppress("unused")
+
+package com.highcapable.betterandroid.ui.component.systembar.insets
+
+import androidx.core.graphics.Insets
+import androidx.core.view.WindowInsetsCompat
+import com.highcapable.betterandroid.ui.component.systembar.wrapper.DisplayCutoutCompatWrapper
 
 /**
- * Custom system insets type definition.
- *
- * - This enum class is deprecated and no effect.
+ * System insets of system bars.
+ * @param stable the stable insets, usually the listener result for [WindowInsetsCompat].
+ * @param cutout the notch size (cutout size).
  */
-@Deprecated(message = "No effect and will be removed in the future.")
-enum class SystemInsetsType {
-    /** The top, usually the status bar. */
-    TOP,
-
-    /** The left. */
-    LEFT,
-
-    /** The right. */
-    RIGHT,
-
-    /** The bottom, usually the navigation bar. */
-    BOTTOM
-}
+data class SystemInsets(val stable: Insets, val cutout: DisplayCutoutCompatWrapper)

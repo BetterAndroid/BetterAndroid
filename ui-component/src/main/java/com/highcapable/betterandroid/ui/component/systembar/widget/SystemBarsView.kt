@@ -50,6 +50,7 @@ class SystemBarsView(context: Context, attrs: AttributeSet? = null) : View(conte
     fun show() {
     }
 
+    @Suppress("UNUSED_PARAMETER")
     @JvmOverloads
     @Deprecated(message = "Use View.applySystemInsets, View.appendSystemInsets, View.removeSystemInsets instead.")
     fun hide(ignoredCutout: Boolean = false) {

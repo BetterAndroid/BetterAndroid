@@ -30,7 +30,7 @@ import com.highcapable.betterandroid.ui.component.activity.base.BaseComponentAct
  *
  * Inherited from [BaseComponentActivity].
  *
- * - Note: This activity does not add any possible system bar padding to the root layout,
+ * - Note: This activity does not add any possible system bars insets to the root layout,
  *         and all layout content is tiled and expanded to full screen.
  */
 open class AppComponentActivity : BaseComponentActivity() {
@@ -38,6 +38,6 @@ open class AppComponentActivity : BaseComponentActivity() {
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        systemBars.init(defaultPaddings = false)
+        systemBars.init(defaultPadding = false)
     }
 }

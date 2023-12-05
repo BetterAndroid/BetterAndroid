@@ -17,26 +17,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file is created by fankes on 2023/11/24.
+ * This file is created by fankes on 2023/12/6.
  */
+@file:Suppress("unused")
+
 package com.highcapable.betterandroid.ui.component.systembar.type
 
+import com.highcapable.betterandroid.ui.component.systembar.insets.SystemInsets
+
 /**
- * Custom system insets type definition.
- *
- * - This enum class is deprecated and no effect.
+ * Insets type of insets padding.
  */
-@Deprecated(message = "No effect and will be removed in the future.")
-enum class SystemInsetsType {
-    /** The top, usually the status bar. */
-    TOP,
+enum class InsetsType {
+    /** Adaptive, use the one with the largest size first. */
+    ADAPTIVE,
 
-    /** The left. */
-    LEFT,
+    /** Stable, only use the [SystemInsets.stable]. */
+    STABLE,
 
-    /** The right. */
-    RIGHT,
-
-    /** The bottom, usually the navigation bar. */
-    BOTTOM
+    /** Cutout, only use the [SystemInsets.cutout]. */
+    CUTOUT
 }
