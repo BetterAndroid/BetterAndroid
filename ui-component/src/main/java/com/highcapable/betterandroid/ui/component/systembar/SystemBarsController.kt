@@ -445,7 +445,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
      * @param onChange callback [SystemInsets].
      */
     fun addOnInsetsChangeListener(tag: Any? = null, onChange: (SystemInsets) -> Unit) {
-        val currentTag = tag?.toString() ?: onChange.toString()
+        val currentTag = tag?.toString() ?: onChange.hashCode().toString()
         onInsetsChangedCallbacks[currentTag] = onChange
     }
 
