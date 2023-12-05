@@ -20,8 +20,8 @@ sweetProperty {
     rootProject { all { isEnable = false } }
     project(":samples") { all { isEnable = false } }
     project(":samples:app") { sourcesCode { isEnable = false } }
-    project(":ui-component", ":ui-extension", ":system-extension") { sourcesCode { className = rootProject.name } }
+    project(":ui-component", ":ui-extension", ":system-extension", ":compose-extension") { sourcesCode { className = rootProject.name } }
 }
 rootProject.name = "BetterAndroid"
 include(":samples:app")
-include(":ui-component", ":ui-extension", ":system-extension")
+include(":ui-component", ":ui-extension", ":system-extension", ":compose-extension")

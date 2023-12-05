@@ -1,7 +1,10 @@
 plugins {
+    autowire(libs.plugins.kotlin.multiplatform) apply false
+    autowire(libs.plugins.kotlin.android) apply false
     autowire(libs.plugins.android.application) apply false
     autowire(libs.plugins.android.library) apply false
-    autowire(libs.plugins.kotlin.android) apply false
+    autowire(libs.plugins.jetbrains.compose) apply false
+    autowire(libs.plugins.maven.publish) apply false
 }
 
 libraryProjects {
@@ -34,6 +37,6 @@ libraryProjects {
 }
 
 fun libraryProjects(action: Action<in Project>) {
-    val libraries = listOf("ui-component", "ui-extension", "system-extension")
+    val libraries = listOf("ui-component", "ui-extension", "system-extension", "compose-extension")
     allprojects { if (libraries.contains(name)) action.execute(this) }
 }
