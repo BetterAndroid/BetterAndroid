@@ -73,6 +73,13 @@ class DisplayCutoutCompatWrapper internal constructor(
     val safeInsetRight
         @Px get() = withCondition { SystemVersion.requireOrNull(SystemVersion.P, insets?.right) { wrapper?.safeInsetRight } ?: 0 }
 
+    override fun toString() = "DisplayCutoutCompatWrapper(" +
+        "safeInsetTop=$safeInsetTop, " +
+        "safeInsetBottom=$safeInsetBottom, " +
+        "safeInsetLeft=$safeInsetLeft, " +
+        "safeInsetRight=$safeInsetRight" +
+        ")"
+
     /**
      * Call based on specified conditions.
      * @param result callback the result.
