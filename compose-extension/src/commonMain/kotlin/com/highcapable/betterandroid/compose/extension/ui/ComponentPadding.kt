@@ -25,9 +25,12 @@ package com.highcapable.betterandroid.compose.extension.ui
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -99,6 +102,16 @@ interface ComponentPadding : PaddingValues {
     /** The amount of dp to apply to the top and bottom edges. */
     val vertical: Dp
 
+    /** Calculate the left padding. */
+    @get:Composable
+    @get:ReadOnlyComposable
+    val left: Dp
+
+    /** Calculate the right padding. */
+    @get:Composable
+    @get:ReadOnlyComposable
+    val right: Dp
+
     /**
      * Duplicate this [ComponentPadding] with new values.
      * @param start the amount of dp to apply to the start edge.
@@ -134,6 +147,16 @@ private class ComponentPaddingImpl(
 
     override val horizontal get() = start + end
     override val vertical get() = top + bottom
+
+    override val left: Dp
+        @Composable
+        @ReadOnlyComposable
+        get() = calculateLeftPadding(LocalLayoutDirection.current)
+
+    override val right: Dp
+        @Composable
+        @ReadOnlyComposable
+        get() = calculateRightPadding(LocalLayoutDirection.current)
 
     override fun toPaddingValues() = PaddingValues(start, top, end, bottom)
 
