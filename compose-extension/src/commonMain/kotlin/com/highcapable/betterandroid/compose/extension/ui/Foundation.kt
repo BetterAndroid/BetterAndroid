@@ -25,7 +25,6 @@ package com.highcapable.betterandroid.compose.extension.ui
 
 import androidx.compose.foundation.Indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -97,7 +96,6 @@ fun Modifier.clickable(
  * See also [foundationCombinedClickable].
  * @return [Modifier]
  */
-@Composable
 fun Modifier.combinedClickable(
     interactionSource: MutableInteractionSource? = null,
     indication: Indication? = null,
@@ -142,7 +140,6 @@ fun Modifier.combinedClickable(
  * See also [foundationToggleable].
  * @return [Modifier]
  */
-@Composable
 fun Modifier.toggleable(
     value: Boolean,
     interactionSource: MutableInteractionSource? = null,
@@ -178,7 +175,6 @@ fun Modifier.toggleable(
  * See also [foundationSelectable].
  * @return [Modifier]
  */
-@Composable
 fun Modifier.selectable(
     selected: Boolean,
     interactionSource: MutableInteractionSource? = null,
