@@ -54,14 +54,14 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
     /** The current system bars insets. */
     actual val systemInsets: PlatformSystemInsets
         @Composable
-        get() = actual?.resolvePlatformSystemInsets() ?: PlatformSystemInsets.Default
+        get() = currentActual?.resolvePlatformSystemInsets() ?: PlatformSystemInsets.Default
 
     /**
      * Show system bars.
      * @param type the system bars type.
      */
     actual fun show(type: PlatformSystemBars) {
-        actual?.show(type.toPlatformActual())
+        currentActual?.show(type.toPlatformActual())
     }
 
     /**
@@ -69,7 +69,7 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @param type the system bars type.
      */
     actual fun hide(type: PlatformSystemBars) {
-        actual?.hide(type.toPlatformActual())
+        currentActual?.hide(type.toPlatformActual())
     }
 
     /**
@@ -78,7 +78,7 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @return [Boolean]
      */
     actual fun isVisible(type: PlatformSystemBars): Boolean {
-        return actual?.isVisible(type.toPlatformActual()) == true
+        return currentActual?.isVisible(type.toPlatformActual()) == true
     }
 
     /**
@@ -87,7 +87,7 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @param color the color to set.
      */
     actual fun setColor(type: PlatformSystemBars, color: Color) {
-        actual?.setColor(type.toPlatformActual(), color.toArgb())
+        currentActual?.setColor(type.toPlatformActual(), color.toArgb())
     }
 
     /**
@@ -100,9 +100,9 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @return [Boolean]
      */
     actual var isDarkColorStatusBars: Boolean
-        get() = actual?.isDarkColorStatusBars == true
+        get() = currentActual?.isDarkColorStatusBars == true
         set(value) {
-            actual?.isDarkColorStatusBars = value
+            currentActual?.isDarkColorStatusBars = value
         }
 
     /**
@@ -115,9 +115,9 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @return [Boolean]
      */
     actual var isDarkColorNavigationBars: Boolean
-        get() = actual?.isDarkColorNavigationBars == true
+        get() = currentActual?.isDarkColorNavigationBars == true
         set(value) {
-            actual?.isDarkColorNavigationBars = value
+            currentActual?.isDarkColorNavigationBars = value
         }
 
     /**
@@ -125,9 +125,16 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @param color the current color.
      */
     actual fun adaptiveAppearance(color: Color) {
-        actual?.adaptiveAppearance(color.toArgb())
+        currentActual?.adaptiveAppearance(color.toArgb())
     }
 }
+
+/**
+ * Resolve the [SystemBarsController]'s undestroyed instance.
+ * @receiver [PlatformSystemBarsController]
+ * @return [PlatformSystemBarsController] or null.
+ */
+private val PlatformSystemBarsController.currentActual get() = if (actual?.isDestroyed == false) actual else null
 
 /**
  * Resolve the [PlatformSystemBarsController].
