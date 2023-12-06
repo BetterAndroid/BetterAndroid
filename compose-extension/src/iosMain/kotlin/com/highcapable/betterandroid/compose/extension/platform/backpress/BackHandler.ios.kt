@@ -29,7 +29,7 @@ import androidx.compose.runtime.Composable
  * An effect for handling presses of the system back button.
  *
  * Supports Android and iOS.
- * @param enabled if this BackHandler should be enabled, default true.
+ * @param enabled if this BackHandler should be enabled.
  * @param onBack the action invoked by pressing the system back.
  */
 @Composable

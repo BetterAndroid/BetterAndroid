@@ -34,12 +34,10 @@ import androidx.compose.runtime.Composable
  *
  * > Android
  *
- * You need to use [com.highcapable.betterandroid.ui.component.activity.AppComponentActivity]
- * or implement [com.highcapable.betterandroid.ui.component.proxy.IBackPressedController] of your Activity.
+ * You can use **AppComponentActivity** or implement **IBackPressedController** of your Activity for better,
+ * but you must use an **ComponentActivity** for basic.
  *
- * Requires dependency: `com.highcapable.betterandroid:ui-component`, visit [here](https://github.com/BetterAndroid/BetterAndroid).
- *
- * For an Android only platform, you can directly use activity-compose's original BackHandler to handle back press.
+ * Requires library: `ui-component`, visit [here](https://github.com/BetterAndroid/BetterAndroid).
  *
  * > iOS
  *
@@ -60,8 +58,8 @@ fun BackHandler(enabled: Boolean = true, onBack: () -> Unit) {
  * An effect for handling presses of the system back button.
  *
  * Supports Android and iOS.
- * @param enabled if this BackHandler should be enabled, default true.
+ * @param enabled if this BackHandler should be enabled.
  * @param onBack the action invoked by pressing the system back.
  */
 @Composable
-internal expect fun _BackHandler(enabled: Boolean = true, onBack: () -> Unit)
+internal expect fun _BackHandler(enabled: Boolean, onBack: () -> Unit)
