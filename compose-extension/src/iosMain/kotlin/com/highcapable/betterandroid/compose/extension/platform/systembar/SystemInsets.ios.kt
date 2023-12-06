@@ -17,22 +17,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file is created by fankes on 2023/12/6.
+ * This file is created by fankes on 2023/12/4.
  */
-@file:Suppress("unused", "ComposableNaming")
+@file:Suppress("unused")
 
-package com.highcapable.betterandroid.compose.extension.backpress
+package com.highcapable.betterandroid.compose.extension.platform.systembar
 
 import androidx.compose.runtime.Composable
 
 /**
- * An effect for handling presses of the system back button.
- *
- * Supports Android and iOS.
- * @param enabled if this BackHandler should be enabled, default true.
- * @param onBack the action invoked by pressing the system back.
+ * Resolve the system insets from IOSSystemBarsController.
+ * @receiver the iOS system bars controller.
+ * @return [PlatformSystemInsets]
  */
 @Composable
-internal actual fun _BackHandler(enabled: Boolean, onBack: () -> Unit) {
-    // TODO: Android platform back handler.
+internal fun /*IOSSystemBarsController.*/resolvePlatformSystemInsets(): PlatformSystemInsets {
+    // TODO: iOS platform system bars.
+    return PlatformSystemInsets.Default
 }

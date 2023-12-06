@@ -21,7 +21,7 @@
  */
 @file:Suppress("unused")
 
-package com.highcapable.betterandroid.compose.extension.systembar
+package com.highcapable.betterandroid.compose.extension.platform.systembar
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding

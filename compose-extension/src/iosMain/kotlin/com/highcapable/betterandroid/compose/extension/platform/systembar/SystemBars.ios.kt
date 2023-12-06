@@ -21,7 +21,7 @@
  */
 @file:Suppress("unused")
 
-package com.highcapable.betterandroid.compose.extension.systembar
+package com.highcapable.betterandroid.compose.extension.platform.systembar
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
@@ -31,7 +31,7 @@ import androidx.compose.ui.graphics.Color
 /**
  * Native system bars controller for each platform.
  */
-actual class NativeSystemBarsController
+actual typealias NativeSystemBarsController = Any // TODO: iOS platform system bars.
 
 /**
  * Platform system bars controller.
@@ -48,7 +48,7 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
     actual val systemInsets: PlatformSystemInsets
         @Composable
         get() {
-            // Platform desktop: No-op.
+            // TODO: iOS platform system bars.
             return PlatformSystemInsets.Default
         }
 
@@ -57,7 +57,7 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @param type the system bars type.
      */
     actual fun show(type: PlatformSystemBars) {
-        // Platform desktop: No-op.
+        // TODO: iOS platform system bars.
     }
 
     /**
@@ -65,7 +65,7 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @param type the system bars type.
      */
     actual fun hide(type: PlatformSystemBars) {
-        // Platform desktop: No-op.
+        // TODO: iOS platform system bars.
     }
 
     /**
@@ -74,7 +74,7 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @return [Boolean]
      */
     actual fun isVisible(type: PlatformSystemBars): Boolean {
-        // Platform desktop: No-op.
+        // TODO: iOS platform system bars.
         return false
     }
 
@@ -84,7 +84,7 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @param color the color to set.
      */
     actual fun setColor(type: PlatformSystemBars, color: Color) {
-        // Platform desktop: No-op.
+        // TODO: iOS platform system bars.
     }
 
     /**
@@ -96,11 +96,10 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * | false | Background dark, font and icons bright. |
      * @return [Boolean]
      */
-    @Suppress("UNUSED_PARAMETER")
     actual var isDarkColorStatusBars: Boolean
         get() = false
         set(value) {
-            // Platform desktop: No-op.
+            // TODO: iOS platform system bars.
         }
 
     /**
@@ -112,11 +111,10 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * | false | Background dark, font and icons bright. |
      * @return [Boolean]
      */
-    @Suppress("UNUSED_PARAMETER")
     actual var isDarkColorNavigationBars: Boolean
         get() = false
         set(value) {
-            // Platform desktop: No-op.
+            // TODO: iOS platform system bars.
         }
 
     /**
@@ -124,7 +122,7 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @param color the current color.
      */
     actual fun adaptiveAppearance(color: Color) {
-        // Platform desktop: No-op.
+        // TODO: iOS platform system bars.
     }
 }
 
@@ -135,6 +133,6 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
 @Composable
 @ReadOnlyComposable
 internal actual fun resolvePlatformSystemBarsController(): PlatformSystemBarsController {
-    // Platform desktop: No-op.
-    return DefaultPlatformSystemBarsController
+    // TODO: iOS platform system bars.
+    return com.highcapable.betterandroid.compose.extension.platform.systembar.PlatformSystemBarsController(Any())
 }

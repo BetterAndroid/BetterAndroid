@@ -21,7 +21,7 @@
  */
 @file:Suppress("unused")
 
-package com.highcapable.betterandroid.compose.extension.systembar
+package com.highcapable.betterandroid.compose.extension.platform.systembar
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable

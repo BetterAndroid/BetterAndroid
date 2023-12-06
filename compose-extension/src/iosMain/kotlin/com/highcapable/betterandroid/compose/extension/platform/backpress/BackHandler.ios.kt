@@ -21,7 +21,7 @@
  */
 @file:Suppress("unused", "ComposableNaming")
 
-package com.highcapable.betterandroid.compose.extension.backpress
+package com.highcapable.betterandroid.compose.extension.platform.backpress
 
 import androidx.compose.runtime.Composable
 
