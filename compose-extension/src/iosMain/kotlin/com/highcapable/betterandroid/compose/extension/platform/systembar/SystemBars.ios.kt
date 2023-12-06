@@ -134,5 +134,5 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
 @ReadOnlyComposable
 internal actual fun resolvePlatformSystemBarsController(): PlatformSystemBarsController {
     // TODO: iOS platform system bars.
-    return com.highcapable.betterandroid.compose.extension.platform.systembar.PlatformSystemBarsController(Any())
+    return PlatformSystemBarsController(Any())
 }

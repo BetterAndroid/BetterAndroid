@@ -23,7 +23,6 @@
 
 package com.highcapable.betterandroid.compose.extension.platform.backpress
 
-import android.app.Activity
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -71,7 +70,7 @@ private fun rememberBackPressedController(activity: ComponentActivity): BackPres
 }
 
 /**
- * Resolve the [BackPressedController] from [Activity].
+ * Resolve the [BackPressedController] from [ComponentActivity].
  * @receiver the current activity.
  * @return [BackPressedController]
  */
