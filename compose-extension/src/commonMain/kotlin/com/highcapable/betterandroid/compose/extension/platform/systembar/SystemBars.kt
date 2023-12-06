@@ -136,10 +136,10 @@ enum class PlatformSystemBars {
  *
  * > Android
  *
- * You need to use [com.highcapable.betterandroid.ui.component.activity.AppComponentActivity]
- * or implement [com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController] of your Activity.
+ * You need to use **AppComponentActivity** or implement **ISystemBarsController** of your Activity,
+ * and you must use an **ComponentActivity** for basic.
  *
- * Requires dependency: `com.highcapable.betterandroid:ui-component`, visit [here](https://github.com/BetterAndroid/BetterAndroid).
+ * Requires library: `ui-component`, visit [here](https://github.com/BetterAndroid/BetterAndroid).
  *
  * > iOS
  *

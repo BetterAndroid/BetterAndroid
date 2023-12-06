@@ -23,8 +23,8 @@
 
 package com.highcapable.betterandroid.compose.extension.platform.systembar
 
-import android.app.Activity
 import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
@@ -143,21 +143,21 @@ private val PlatformSystemBarsController.currentActual get() = if (actual?.isDes
 @Composable
 @ReadOnlyComposable
 internal actual fun resolvePlatformSystemBarsController(): PlatformSystemBarsController {
-    val activity = LocalContext.current as? Activity? ?: error("No Activity provided of composables.")
+    val activity = LocalContext.current as? ComponentActivity? ?: error("No ComponentActivity provided of composables.")
     return PlatformSystemBarsController(activity.resolveSystemBarsController())
 }
 
 /**
- * Resolve the [SystemBarsController] from [Activity].
+ * Resolve the [SystemBarsController] from [ComponentActivity].
  * @receiver the current activity.
  * @return [SystemBarsController] or null.
  */
-private fun Activity.resolveSystemBarsController() = (this as? ISystemBarsController?)?.systemBars ?: run {
-    Log.w(
-        "BetterAndroid",
-        "You need to use an AppComponentActivity or implement ISystemBarsController of your Activity " +
-            "to use the system bars related functions of composables."
-    ); null
+private fun ComponentActivity.resolveSystemBarsController() = (this as? ISystemBarsController?)?.systemBars ?: run {
+    val invalidMessage = "You need to use AppComponentActivity or implement ISystemBarsController of your Activity " +
+        "to use the system bars related functions of composables.\n" +
+        "Please visit https://github.com/BetterAndroid/BetterAndroid for more help."
+    Log.w("BetterAndroid", invalidMessage)
+    null
 }
 
 /**
