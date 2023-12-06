@@ -25,6 +25,7 @@ package com.highcapable.betterandroid.compose.extension.ui.window
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.Dialog as ComposeDialog
@@ -62,9 +63,19 @@ data class DialogPropertiesWrapper(
 /**
  * A wrapper to resolve SecureFlagPolicy.
  *
- * See also Android platform's SecureFlagPolicy.
+ * See also [androidx.compose.ui.window.SecureFlagPolicy].
  */
-enum class SecureFlagPolicyWrapper { Inherit, SecureOn, SecureOff }
+@Stable
+enum class SecureFlagPolicyWrapper {
+    /** See [androidx.compose.ui.window.SecureFlagPolicy.Inherit]. */
+    Inherit,
+
+    /** See [androidx.compose.ui.window.SecureFlagPolicy.SecureOn]. */
+    SecureOn,
+
+    /** See [androidx.compose.ui.window.SecureFlagPolicy.SecureOff]. */
+    SecureOff
+}
 
 /**
  * Extension for [ComposeDialog] to support different parameters of Android.
