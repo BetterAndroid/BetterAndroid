@@ -39,7 +39,7 @@ import androidx.compose.runtime.Composable
  *
  * Requires dependency: `com.highcapable.betterandroid:ui-component`, visit [here](https://github.com/BetterAndroid/BetterAndroid).
  *
- * For an Android only platform, you can directly use [androidx.activity.compose.BackHandler] to handle back press.
+ * For an Android only platform, you can directly use activity-compose's original BackHandler to handle back press.
  *
  * > iOS
  *
