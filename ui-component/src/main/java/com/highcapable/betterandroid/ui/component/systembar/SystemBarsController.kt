@@ -44,6 +44,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
+import androidx.core.view.setPadding
 import androidx.core.view.updateLayoutParams
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 import com.highcapable.betterandroid.ui.component.activity.AppBindingActivity
@@ -525,6 +526,13 @@ class SystemBarsController private constructor(private val activity: Activity) {
         }; updateContainerPadding()
     }
 
+    /** Remove all system insets and cutout padding in [containerLayout]. */
+    fun removeSystemInsets() {
+        containerPaddingCallback = null
+        containerLayout?.setPadding(0)
+        containerLayout?.requestLayout()
+    }
+
     /**
      * Determine whether the system bars is visible.
      * @param type the system bars type.
@@ -591,16 +599,15 @@ class SystemBarsController private constructor(private val activity: Activity) {
     /**
      * Remove the system bars extra paddings.
      *
-     * - This function is deprecated and no effect, use [appendSystemInsets] or [appendSystemInsets] instead.
+     * - This function is deprecated, use [removeSystemInsets] instead.
      */
     @Suppress("DEPRECATION", "UNUSED_PARAMETER")
-    @Deprecated(message = "Use appendSystemInsets or appendSystemInsets instead.")
+    @Deprecated(message = "Use removeSystemInsets instead.", ReplaceWith("removeSystemInsets()"))
     @JvmOverloads
     fun removeExtraPaddings(
         vararg types: com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType,
         ignoredCutout: Boolean = false
-    ) {
-    }
+    ) = removeSystemInsets()
 
     /**
      * Show the system bars stub views.
