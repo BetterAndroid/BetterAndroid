@@ -34,7 +34,8 @@ import androidx.compose.runtime.Composable
  *
  * > Android
  *
- * You need to use an AppComponentActivity or implement IBackPressedController of your Activity.
+ * You need to use [com.highcapable.betterandroid.ui.component.activity.AppComponentActivity]
+ * or implement [com.highcapable.betterandroid.ui.component.proxy.IBackPressedController] of your Activity.
  *
  * Requires dependency: `com.highcapable.betterandroid:ui-component`, visit [here](https://github.com/BetterAndroid/BetterAndroid).
  *
