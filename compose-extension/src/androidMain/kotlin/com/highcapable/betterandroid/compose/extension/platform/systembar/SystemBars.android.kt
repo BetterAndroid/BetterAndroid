@@ -150,7 +150,7 @@ internal actual fun resolvePlatformSystemBarsController(): PlatformSystemBarsCon
 /**
  * Resolve the [SystemBarsController] from [Activity].
  * @receiver the current activity.
- * @return [PlatformSystemBarsController] or null.
+ * @return [SystemBarsController] or null.
  */
 private fun Activity.resolveSystemBarsController() = (this as? ISystemBarsController?)?.systemBars ?: run {
     Log.w(
