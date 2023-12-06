@@ -45,8 +45,7 @@ import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
  */
 @Composable
 internal actual fun _BackHandler(enabled: Boolean, onBack: () -> Unit) {
-    val activity = LocalContext.current as? ComponentActivity? ?: error("No ComponentActivity provided of composables.")
-    val backPressed = rememberBackPressedController(activity)
+    val backPressed = rememberBackPressedController()
     val currentOnBack by rememberUpdatedState(onBack)
     val backCallback = remember { backPressed.addCallback { currentOnBack() } }
     // On every successful composition, update the callback with the `enabled` value.
@@ -59,11 +58,11 @@ internal actual fun _BackHandler(enabled: Boolean, onBack: () -> Unit) {
 
 /**
  * Creates and remember a [BackPressedController].
- * @param activity the current activity.
  * @return [BackPressedController]
  */
 @Composable
-private fun rememberBackPressedController(activity: ComponentActivity): BackPressedController {
+private fun rememberBackPressedController(): BackPressedController {
+    val activity = LocalContext.current as? ComponentActivity? ?: error("No ComponentActivity provided of composables.")
     var backPressed by remember { mutableStateOf<BackPressedController?>(null) }
     if (backPressed == null) backPressed = activity.resolveBackPressedController()
     return backPressed ?: error("No BackPressedController provided of composables.")
