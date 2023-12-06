@@ -85,7 +85,7 @@ class BackPressedController private constructor(private val activity: ComponentA
          *             // If you want to back pressed and hide this.
          *             hide()
          *             // When calling show later, remember to re-enable this callback.
-         *             isEnable = false
+         *             isEnabled = false
          *         }
          *     }
          * }
@@ -109,10 +109,10 @@ class BackPressedController private constructor(private val activity: ComponentA
     @JvmOverloads
     fun call(ignored: Boolean = false) {
         if (activity.isDestroyed) return
-        val states = mutableMapOf<String, Boolean>().apply { onBackPressedCallbacks.forEach { (key, value) -> this[key] = value.isEnable } }
-        if (ignored) onBackPressedCallbacks.forEach { (_, value) -> value.isEnable = false }
+        val states = mutableMapOf<String, Boolean>().apply { onBackPressedCallbacks.forEach { (key, value) -> this[key] = value.isEnabled } }
+        if (ignored) onBackPressedCallbacks.forEach { (_, value) -> value.isEnabled = false }
         activity.onBackPressedDispatcher.onBackPressed()
-        if (ignored) onBackPressedCallbacks.forEach { (key, value) -> states[key]?.also { state -> value.isEnable = state } }
+        if (ignored) onBackPressedCallbacks.forEach { (key, value) -> states[key]?.also { state -> value.isEnabled = state } }
         states.clear()
     }
 
@@ -148,9 +148,21 @@ class BackPressedController private constructor(private val activity: ComponentA
 
         /**
          * Get or set whether the callback is enabled.
+         *
+         * - This property is deprecated, use [isEnabled] instead.
          * @return [Boolean]
          */
-        var isEnable
+        @Deprecated(message = "Use isEnabled instead.", ReplaceWith("isEnabled"))
+        var isEnable get() = isEnabled
+            set(value) {
+                isEnabled = value
+            }
+
+        /**
+         * Get or set whether the callback is enabled.
+         * @return [Boolean]
+         */
+        var isEnabled
             get() = wrapper?.isEnabled ?: false
             set(value) {
                 wrapper?.isEnabled = value
@@ -168,9 +180,9 @@ class BackPressedController private constructor(private val activity: ComponentA
          */
         @JvmOverloads
         fun releaseAndBack(isRemove: Boolean = false) {
-            isEnable = false
+            isEnabled = false
             activity.onBackPressedDispatcher.onBackPressed()
-            isEnable = true
+            isEnabled = true
             if (isRemove) remove()
         }
     }
