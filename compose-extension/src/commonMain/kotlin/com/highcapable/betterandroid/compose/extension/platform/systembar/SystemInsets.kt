@@ -302,7 +302,7 @@ fun Modifier.systemInsets(
         properties["type"] = type
     }
 ) {
-    val systemBars = rememberPlatformSystemBarsController()
+    val systemBars = rememberSystemBarsController()
     val systemInsets = systemBars.systemInsets
     systemInsets.toComponentPadding(type).let {
         val start = if (fitsStart) Modifier.padding(start = it.start) else Modifier

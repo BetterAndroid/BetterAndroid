@@ -151,10 +151,10 @@ enum class PlatformSystemBars {
  * @return [PlatformSystemBarsController]
  */
 @Composable
-fun rememberPlatformSystemBarsController(): PlatformSystemBarsController {
-    var platformSystemBars by remember { mutableStateOf<PlatformSystemBarsController?>(null) }
-    if (platformSystemBars == null) platformSystemBars = resolvePlatformSystemBarsController()
-    return platformSystemBars ?: error("No PlatformSystemBarsController provided of composables.")
+fun rememberSystemBarsController(): PlatformSystemBarsController {
+    var systemBars by remember { mutableStateOf<PlatformSystemBarsController?>(null) }
+    if (systemBars == null) systemBars = resolvePlatformSystemBarsController()
+    return systemBars ?: error("No PlatformSystemBarsController provided of composables.")
 }
 
 /**
