@@ -128,7 +128,7 @@ class BackPressedController private constructor(private val activity: ComponentA
      */
     @JvmOverloads
     fun addCallback(isEnable: Boolean = true, initiate: OnBackPressedCallback.() -> Unit): OnBackPressedCallback {
-        val callbackId = "back_pressed_callback_${(999..99999).random()}"
+        val callbackId = initiate.hashCode().toString()
         val callback = OnBackPressedCallback(callbackId).also {
             it.wrapper = object : BaseOnBackPressedCallback(isEnable) {
                 override fun handleOnBackPressed() {
