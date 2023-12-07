@@ -132,7 +132,7 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
 /**
  * Resolve the [SystemBarsController]'s undestroyed instance.
  * @receiver [PlatformSystemBarsController]
- * @return [PlatformSystemBarsController] or null.
+ * @return [SystemBarsController] or null.
  */
 private val PlatformSystemBarsController.currentActual get() = if (actual?.isDestroyed == false) actual else null
 
