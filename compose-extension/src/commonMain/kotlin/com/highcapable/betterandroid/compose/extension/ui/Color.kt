@@ -29,6 +29,14 @@ import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.graphics.isUnspecified
 
 /**
+ * Create a translucent color.
+ * @receiver [Color.Companion]
+ * @return [Color]
+ */
+@Stable
+val Color.Companion.Translucent get() = Color(0x80000000)
+
+/**
  * Determine whether the current color is a bright tone.
  * @receiver the current color.
  * @return [Boolean]
