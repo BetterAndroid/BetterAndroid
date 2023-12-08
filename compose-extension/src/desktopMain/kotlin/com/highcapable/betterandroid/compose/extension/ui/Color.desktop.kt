@@ -55,5 +55,32 @@ fun AwtColor.toComposeColor() = Color(
     alpha = alpha / 255f
 )
 
+/**
+ * Determine whether the current color is a bright tone.
+ * @receiver the current color.
+ * @return [Boolean]
+ */
+@Stable
+val AwtColor.isBrightColor get() = toComposeColor().isBrightColor
+
+/**
+ * Convert integer color to hex string.
+ * @receiver the current color.
+ * @return [String]
+ */
+@Stable
+fun AwtColor.toHexColor() = toComposeColor().toHexColor()
+
+/**
+ * Converts to mix color.
+ * @receiver the current color.
+ * @param color the color to mix with.
+ * @param ratio the mixing ratio, default 0.5f.
+ * @return [AwtColor] mixed color.
+ */
+@Stable
+fun AwtColor.toMixColor(color: AwtColor, ratio: Float = 0.5f) =
+    toComposeColor().toMixColor(color.toComposeColor(), ratio).toPlatformColor()
+
 /** Default platform color. */
 private val DefaultPlatformColor = AwtColor(0)

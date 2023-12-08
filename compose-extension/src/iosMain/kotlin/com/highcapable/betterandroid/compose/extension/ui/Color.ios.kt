@@ -70,5 +70,32 @@ fun UIColor.toComposeColor(): Color {
     ) else Color.Unspecified
 }
 
+/**
+ * Determine whether the current color is a bright tone.
+ * @receiver the current color.
+ * @return [Boolean]
+ */
+@Stable
+val UIColor.isBrightColor get() = toComposeColor().isBrightColor
+
+/**
+ * Convert integer color to hex string.
+ * @receiver the current color.
+ * @return [String]
+ */
+@Stable
+fun UIColor.toHexColor() = toComposeColor().toHexColor()
+
+/**
+ * Converts to mix color.
+ * @receiver the current color.
+ * @param color the color to mix with.
+ * @param ratio the mixing ratio, default 0.5f.
+ * @return [UIColor] mixed color.
+ */
+@Stable
+fun UIColor.toMixColor(color: UIColor, ratio: Float = 0.5f) =
+    toComposeColor().toMixColor(color.toComposeColor(), ratio).toPlatformColor()
+
 /** Default platform color. */
 private val DefaultPlatformColor = UIColor(red = 0.0, green = 0.0, blue = 0.0, alpha = 0.0)
