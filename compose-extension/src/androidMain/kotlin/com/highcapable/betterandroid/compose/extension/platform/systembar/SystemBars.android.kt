@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
 import com.highcapable.betterandroid.ui.component.systembar.SystemBarsController
 import com.highcapable.betterandroid.ui.component.systembar.type.SystemBars
+import com.highcapable.betterandroid.ui.component.systembar.type.SystemBarsBehavior
 
 /**
  * Native system bars controller for each platform.
@@ -55,6 +56,18 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
     actual val systemBarsInsets: PlatformSystemBarsInsets
         @Composable
         get() = currentActual?.resolvePlatformSystemBarsInsets() ?: PlatformSystemBarsInsets.Default
+
+    /**
+     * Get or set the behavior of system bars.
+     *
+     * The default behavior type is [PlatformSystemBarsBehavior.Immersive].
+     * @return [PlatformSystemBarsBehavior]
+     */
+    actual var behavior: PlatformSystemBarsBehavior
+        get() = currentActual?.behavior?.toPlatformExpect() ?: DefaultPlatformSystemBarsBehavior
+        set(value) {
+            currentActual?.behavior = value.toPlatformActual()
+        }
 
     /**
      * Show system bars.
@@ -83,6 +96,8 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
 
     /**
      * Set the system bars background color.
+     *
+     * - Note: This will no-op of [PlatformSystemBars.NavigationBars] for iOS.
      * @param type the system bars type.
      * @param color the color to set.
      */
@@ -112,6 +127,8 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * | ----- | --------------------------------------- |
      * | true  | Background bright, font and icons dark. |
      * | false | Background dark, font and icons bright. |
+     *
+     * - Note: This will no-op for iOS.
      * @return [Boolean]
      */
     actual var isDarkColorNavigationBars: Boolean
@@ -162,10 +179,31 @@ private fun ComponentActivity.resolveSystemBarsController() = (this as? ISystemB
 
 /**
  * Convert [PlatformSystemBars] to [SystemBars].
+ * @receiver [PlatformSystemBars]
  * @return [SystemBars]
  */
 private fun PlatformSystemBars.toPlatformActual() = when (this) {
     PlatformSystemBars.All -> SystemBars.ALL
     PlatformSystemBars.StatusBars -> SystemBars.STATUS_BARS
     PlatformSystemBars.NavigationBars -> SystemBars.NAVIGATION_BARS
+}
+
+/**
+ * Convert [PlatformSystemBarsBehavior] to [SystemBarsBehavior].
+ * @receiver [PlatformSystemBarsBehavior]
+ * @return [SystemBarsBehavior]
+ */
+private fun PlatformSystemBarsBehavior.toPlatformActual() = when (this) {
+    PlatformSystemBarsBehavior.Default -> SystemBarsBehavior.DEFAULT
+    PlatformSystemBarsBehavior.Immersive -> SystemBarsBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE
+}
+
+/**
+ * Convert [SystemBarsBehavior] to [PlatformSystemBarsBehavior].
+ * @receiver [SystemBarsBehavior]
+ * @return [PlatformSystemBarsBehavior]
+ */
+private fun SystemBarsBehavior.toPlatformExpect() = when (this) {
+    SystemBarsBehavior.DEFAULT -> PlatformSystemBarsBehavior.Default
+    SystemBarsBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE -> PlatformSystemBarsBehavior.Immersive
 }

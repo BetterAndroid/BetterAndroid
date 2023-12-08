@@ -53,6 +53,19 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
         }
 
     /**
+     * Get or set the behavior of system bars.
+     *
+     * The default behavior type is [PlatformSystemBarsBehavior.Immersive].
+     * @return [PlatformSystemBarsBehavior]
+     */
+    @Suppress("UNUSED_PARAMETER")
+    actual var behavior: PlatformSystemBarsBehavior
+        get() = DefaultPlatformSystemBarsBehavior
+        set(value) {
+            // Platform desktop: No-op.
+        }
+
+    /**
      * Show system bars.
      * @param type the system bars type.
      */
@@ -80,6 +93,8 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
 
     /**
      * Set the system bars background color.
+     *
+     * - Note: This will no-op of [PlatformSystemBars.NavigationBars] for iOS.
      * @param type the system bars type.
      * @param color the color to set.
      */
@@ -110,6 +125,8 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * | ----- | --------------------------------------- |
      * | true  | Background bright, font and icons dark. |
      * | false | Background dark, font and icons bright. |
+     *
+     * - Note: This will no-op for iOS.
      * @return [Boolean]
      */
     @Suppress("UNUSED_PARAMETER")

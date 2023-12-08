@@ -56,6 +56,14 @@ expect class PlatformSystemBarsController internal constructor(actual: NativeSys
     val systemBarsInsets: PlatformSystemBarsInsets
 
     /**
+     * Get or set the behavior of system bars.
+     *
+     * The default behavior type is [PlatformSystemBarsBehavior.Immersive].
+     * @return [PlatformSystemBarsBehavior]
+     */
+    var behavior: PlatformSystemBarsBehavior
+
+    /**
      * Show system bars.
      * @param type the system bars type.
      */
@@ -76,6 +84,8 @@ expect class PlatformSystemBarsController internal constructor(actual: NativeSys
 
     /**
      * Set the system bars background color.
+     *
+     * - Note: This will no-op of [PlatformSystemBars.NavigationBars] for iOS.
      * @param type the system bars type.
      * @param color the color to set.
      */
@@ -99,6 +109,8 @@ expect class PlatformSystemBarsController internal constructor(actual: NativeSys
      * | ----- | --------------------------------------- |
      * | true  | Background bright, font and icons dark. |
      * | false | Background dark, font and icons bright. |
+     *
+     * - Note: This will no-op for iOS.
      * @return [Boolean]
      */
     var isDarkColorNavigationBars: Boolean
@@ -111,7 +123,7 @@ expect class PlatformSystemBarsController internal constructor(actual: NativeSys
 }
 
 /**
- * System bars type definition.
+ * Platform system bars type definition.
  */
 @Stable
 enum class PlatformSystemBars {
@@ -127,6 +139,28 @@ enum class PlatformSystemBars {
      * In iOS, this will called home indicator.
      */
     NavigationBars
+}
+
+/**
+ * Platform system bars behavior type definition.
+ */
+@Stable
+enum class PlatformSystemBarsBehavior {
+    /** The default mode selected by the system. */
+    Default,
+
+    /**
+     * - Android:
+     *
+     * Appears as a semi-transparent system bars that slides out of the full screen
+     * and continues to hide after a period of time.
+     *
+     * - iOS:
+     *
+     * The system bars can be revealed temporarily with system gestures,
+     * but disappears after a period of time.
+     */
+    Immersive
 }
 
 /**
@@ -167,3 +201,6 @@ internal expect fun resolvePlatformSystemBarsController(): PlatformSystemBarsCon
 
 /** Default platform system bars controller. */
 internal val DefaultPlatformSystemBarsController = PlatformSystemBarsController(actual = null)
+
+/** Default platform system bars behavior. */
+internal val DefaultPlatformSystemBarsBehavior = PlatformSystemBarsBehavior.Immersive
