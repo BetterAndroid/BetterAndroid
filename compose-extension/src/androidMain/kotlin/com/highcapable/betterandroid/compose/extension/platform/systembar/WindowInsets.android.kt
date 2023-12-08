@@ -48,11 +48,10 @@ internal fun SystemBarsController.resolvePlatformSystemBarsInsets(): PlatformSys
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
     val activity = LocalContext.current as? Activity? ?: return PlatformSystemBarsInsets.Default
-    var systemInsets by remember { mutableStateOf<SystemBarsInsets?>(null) }
-    addOnInsetsChangeListener { systemInsets = it }
+    var systemBarsInsets by remember { mutableStateOf(systemBarsInsets) }
+    addOnInsetsChangeListener { systemBarsInsets = it }
     // We need recompostion to get the latest insets.
-    return systemInsets?.toPlatformExpect(density, layoutDirection)
-        ?: this.systemBarsInsets?.toPlatformExpect(density, layoutDirection)
+    return systemBarsInsets?.toPlatformExpect(density, layoutDirection)
         ?: activity.createAbsolutePlatformSystemBarsInsets(density)
 }
 
