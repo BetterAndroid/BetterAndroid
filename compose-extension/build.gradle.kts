@@ -33,6 +33,8 @@ kotlin {
     sourceSets {
         all {
             languageSettings {
+                optIn("kotlinx.cinterop.ExperimentalForeignApi")
+                optIn("kotlinx.cinterop.BetaInteropApi")
                 optIn("androidx.compose.ui.ExperimentalComposeUiApi")
                 optIn("androidx.compose.foundation.ExperimentalFoundationApi")
             }
