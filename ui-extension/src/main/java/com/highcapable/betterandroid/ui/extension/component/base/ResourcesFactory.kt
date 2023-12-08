@@ -78,7 +78,7 @@ import com.highcapable.yukireflection.factory.current
  * - WINDOWING_MODE_MULTI_WINDOW (6)
  *
  * This function is used to fix some non-standard ROMs that still provide
- * some system paddings in floating window mode, causing the UI to display abnormally.
+ * some insets padding in floating window mode, causing the UI to display abnormally.
  * @receiver the current resources configuration.
  * @return [Boolean]
  */
