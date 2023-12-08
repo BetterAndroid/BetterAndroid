@@ -53,7 +53,7 @@ expect class PlatformSystemBarsController internal constructor(actual: NativeSys
 
     /** The current system bars insets. */
     @get:Composable
-    val systemInsets: PlatformSystemInsets
+    val systemBarsInsets: PlatformSystemBarsInsets
 
     /**
      * Show system bars.

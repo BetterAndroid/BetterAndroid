@@ -73,7 +73,7 @@ fun PlatformInsets(
 }
 
 /**
- * Create a new [PlatformSystemInsets].
+ * Create a new [PlatformSystemBarsInsets].
  * @param stableStart the stable start insets.
  * @param stableTop the stable top insets.
  * @param stableEnd the stable end insets.
@@ -82,10 +82,10 @@ fun PlatformInsets(
  * @param cutoutTop the cutout top insets.
  * @param cutoutEnd the cutout end insets.
  * @param cutoutBottom the cutout bottom insets.
- * @return [PlatformSystemInsets]
+ * @return [PlatformSystemBarsInsets]
  */
 @Stable
-fun PlatformSystemInsets(
+fun PlatformSystemBarsInsets(
     stableStart: Dp = 0.dp,
     stableTop: Dp = 0.dp,
     stableEnd: Dp = 0.dp,
@@ -94,13 +94,13 @@ fun PlatformSystemInsets(
     cutoutTop: Dp = 0.dp,
     cutoutEnd: Dp = 0.dp,
     cutoutBottom: Dp = 0.dp
-): PlatformSystemInsets = PlatformSystemInsetsImpl(
+): PlatformSystemBarsInsets = PlatformSystemBarsInsetsImpl(
     stable = PlatformInsets(stableStart, stableTop, stableEnd, stableBottom),
     cutout = PlatformInsets(cutoutStart, cutoutTop, cutoutEnd, cutoutBottom)
 )
 
 /**
- * Create a new [PlatformSystemInsets] from [LayoutDirection].
+ * Create a new [PlatformSystemBarsInsets] from [LayoutDirection].
  * @param layoutDirection the layout direction, default is [LayoutDirection.Ltr].
  * @param stableLeft the stable left insets.
  * @param stableTop the stable top insets.
@@ -110,10 +110,10 @@ fun PlatformSystemInsets(
  * @param cutoutTop the cutout top insets.
  * @param cutoutRight the cutout right insets.
  * @param cutoutBottom the cutout bottom insets.
- * @return [PlatformSystemInsets]
+ * @return [PlatformSystemBarsInsets]
  */
 @Stable
-fun PlatformSystemInsets(
+fun PlatformSystemBarsInsets(
     layoutDirection: LayoutDirection = LayoutDirection.Ltr,
     stableLeft: Dp = 0.dp,
     stableTop: Dp = 0.dp,
@@ -123,7 +123,7 @@ fun PlatformSystemInsets(
     cutoutTop: Dp = 0.dp,
     cutoutRight: Dp = 0.dp,
     cutoutBottom: Dp = 0.dp
-): PlatformSystemInsets = PlatformSystemInsetsImpl(
+): PlatformSystemBarsInsets = PlatformSystemBarsInsetsImpl(
     stable = PlatformInsets(layoutDirection, stableLeft, stableTop, stableRight, stableBottom),
     cutout = PlatformInsets(layoutDirection, cutoutLeft, cutoutTop, cutoutRight, cutoutBottom)
 )
@@ -170,19 +170,19 @@ interface PlatformInsets {
 }
 
 /**
- * Platform system insets of system bars.
+ * Platform window insets of system bars.
  */
 @Stable
-interface PlatformSystemInsets {
+interface PlatformSystemBarsInsets {
 
     companion object {
 
         /**
-         * Return a default [PlatformSystemInsets].
-         * @return [PlatformSystemInsets]
+         * Return a default [PlatformSystemBarsInsets].
+         * @return [PlatformSystemBarsInsets]
          */
         @Stable
-        val Default: PlatformSystemInsets = PlatformSystemInsetsImpl(
+        val Default: PlatformSystemBarsInsets = PlatformSystemBarsInsetsImpl(
             stable = PlatformInsets.Default,
             cutout = PlatformInsets.Default
         )
@@ -217,10 +217,10 @@ enum class PlatformInsetsType {
     /** Adaptive, use the one with the largest size first. */
     Adaptive,
 
-    /** Stable, only use the [PlatformSystemInsets.stable]. */
+    /** Stable, only use the [PlatformSystemBarsInsets.stable]. */
     Stable,
 
-    /** Cutout, only use the [PlatformSystemInsets.cutout]. */
+    /** Cutout, only use the [PlatformSystemBarsInsets.cutout]. */
     Cutout
 }
 
@@ -240,13 +240,13 @@ private data class PlatformInsetsImpl(
 }
 
 /**
- * The [PlatformSystemInsets] implementation.
+ * The [PlatformSystemBarsInsets] implementation.
  */
 @Immutable
-private data class PlatformSystemInsetsImpl(
+private data class PlatformSystemBarsInsetsImpl(
     override val stable: PlatformInsets,
     override val cutout: PlatformInsets
-) : PlatformSystemInsets {
+) : PlatformSystemBarsInsets {
 
     /**
      * Compatible, use the one with the largest size first and return.
@@ -272,43 +272,43 @@ private data class PlatformSystemInsetsImpl(
 
     override fun toPaddingValues(type: PlatformInsetsType) = toComponentPadding(type).toPaddingValues()
 
-    override fun toString() = "PlatformSystemInsets(stable=$stable, cutout=$cutout)"
+    override fun toString() = "PlatformSystemBarsInsets(stable=$stable, cutout=$cutout)"
 }
 
 /**
- * Apply the system insets and cutout padding in layout.
+ * Apply the system bars insets and cutout padding in layout.
  *
- * See also [PlatformSystemBarsController.systemInsets].
- * @param fitsStart whether to apply the start insets.
- * @param fitsTop whether to apply the top insets.
- * @param fitsEnd whether to apply the end insets.
- * @param fitsBottom whether to apply the bottom insets.
+ * See also [PlatformSystemBarsController.systemBarsInsets].
+ * @param start whether to apply the start insets.
+ * @param top whether to apply the top insets.
+ * @param end whether to apply the end insets.
+ * @param bottom whether to apply the bottom insets.
  * @param type the insets type, default is [PlatformInsetsType.Adaptive].
  * @return [Modifier]
  */
-fun Modifier.systemInsets(
-    fitsStart: Boolean = true,
-    fitsTop: Boolean = true,
-    fitsEnd: Boolean = true,
-    fitsBottom: Boolean = true,
+fun Modifier.systemBarsInsets(
+    start: Boolean = true,
+    top: Boolean = true,
+    end: Boolean = true,
+    bottom: Boolean = true,
     type: PlatformInsetsType = PlatformInsetsType.Adaptive
 ) = composed(
     inspectorInfo = debugInspectorInfo {
-        name = "systemInsets"
-        properties["fitsStart"] = fitsStart
-        properties["fitsTop"] = fitsTop
-        properties["fitsEnd"] = fitsEnd
-        properties["fitsBottom"] = fitsBottom
+        name = "systemBarsInsets"
+        properties["start"] = start
+        properties["top"] = top
+        properties["end"] = end
+        properties["bottom"] = bottom
         properties["type"] = type
     }
 ) {
     val systemBars = rememberSystemBarsController()
-    val systemInsets = systemBars.systemInsets
-    systemInsets.toComponentPadding(type).let {
-        val start = if (fitsStart) Modifier.padding(start = it.start) else Modifier
-        val top = if (fitsTop) Modifier.padding(top = it.top) else Modifier
-        val end = if (fitsEnd) Modifier.padding(end = it.end) else Modifier
-        val bottom = if (fitsBottom) Modifier.padding(bottom = it.bottom) else Modifier
-        then(start).then(top).then(end).then(bottom)
+    val systemBarsInsets = systemBars.systemBarsInsets
+    systemBarsInsets.toComponentPadding(type).let {
+        val fitsStart = if (start) Modifier.padding(start = it.start) else Modifier
+        val fitsTop = if (top) Modifier.padding(top = it.top) else Modifier
+        val fitsEnd = if (end) Modifier.padding(end = it.end) else Modifier
+        val fitsBottom = if (bottom) Modifier.padding(bottom = it.bottom) else Modifier
+        then(fitsStart).then(fitsTop).then(fitsEnd).then(fitsBottom)
     }
 }

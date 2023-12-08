@@ -45,11 +45,11 @@ actual class NativeSystemBarsController
 actual class PlatformSystemBarsController internal actual constructor(internal actual val actual: NativeSystemBarsController?) {
 
     /** The current system bars insets. */
-    actual val systemInsets: PlatformSystemInsets
+    actual val systemBarsInsets: PlatformSystemBarsInsets
         @Composable
         get() {
             // Platform desktop: No-op.
-            return PlatformSystemInsets.Default
+            return PlatformSystemBarsInsets.Default
         }
 
     /**

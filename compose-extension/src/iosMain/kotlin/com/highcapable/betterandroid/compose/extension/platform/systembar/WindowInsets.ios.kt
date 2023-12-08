@@ -26,12 +26,12 @@ package com.highcapable.betterandroid.compose.extension.platform.systembar
 import androidx.compose.runtime.Composable
 
 /**
- * Resolve the system insets from IOSSystemBarsController.
+ * Resolve the system bars insets from IOSSystemBarsController.
  * @receiver the iOS system bars controller.
- * @return [PlatformSystemInsets]
+ * @return [PlatformSystemBarsInsets]
  */
 @Composable
-internal fun /*IOSSystemBarsController.*/resolvePlatformSystemInsets(): PlatformSystemInsets {
+internal fun /*IOSSystemBarsController.*/resolvePlatformSystemBarsInsets(): PlatformSystemBarsInsets {
     // TODO: iOS platform system bars.
-    return PlatformSystemInsets.Default
+    return PlatformSystemBarsInsets.Default
 }

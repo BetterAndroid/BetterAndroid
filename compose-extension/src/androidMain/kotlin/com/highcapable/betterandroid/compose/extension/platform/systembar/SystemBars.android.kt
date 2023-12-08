@@ -52,9 +52,9 @@ actual typealias NativeSystemBarsController = SystemBarsController
 actual class PlatformSystemBarsController internal actual constructor(internal actual val actual: NativeSystemBarsController?) {
 
     /** The current system bars insets. */
-    actual val systemInsets: PlatformSystemInsets
+    actual val systemBarsInsets: PlatformSystemBarsInsets
         @Composable
-        get() = currentActual?.resolvePlatformSystemInsets() ?: PlatformSystemInsets.Default
+        get() = currentActual?.resolvePlatformSystemBarsInsets() ?: PlatformSystemBarsInsets.Default
 
     /**
      * Show system bars.

@@ -36,57 +36,57 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import com.highcapable.betterandroid.ui.component.systembar.SystemBarsController
-import com.highcapable.betterandroid.ui.component.systembar.insets.SystemInsets
+import com.highcapable.betterandroid.ui.component.systembar.insets.SystemBarsInsets
 
 /**
- * Resolve the system insets from [SystemBarsController].
+ * Resolve the system bars insets from [SystemBarsController].
  * @receiver the system bars controller.
- * @return [PlatformSystemInsets]
+ * @return [PlatformSystemBarsInsets]
  */
 @Composable
-internal fun SystemBarsController.resolvePlatformSystemInsets(): PlatformSystemInsets {
+internal fun SystemBarsController.resolvePlatformSystemBarsInsets(): PlatformSystemBarsInsets {
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
-    val activity = LocalContext.current as? Activity? ?: return PlatformSystemInsets.Default
-    var systemInsets by remember { mutableStateOf<SystemInsets?>(null) }
+    val activity = LocalContext.current as? Activity? ?: return PlatformSystemBarsInsets.Default
+    var systemInsets by remember { mutableStateOf<SystemBarsInsets?>(null) }
     addOnInsetsChangeListener { systemInsets = it }
     // We need recompostion to get the latest insets.
     return systemInsets?.toPlatformExpect(density, layoutDirection)
-        ?: this.systemInsets?.toPlatformExpect(density, layoutDirection)
-        ?: activity.createAbsolutePlatformSystemInsets(density)
+        ?: this.systemBarsInsets?.toPlatformExpect(density, layoutDirection)
+        ?: activity.createAbsolutePlatformSystemBarsInsets(density)
 }
 
 /**
- * Convert [SystemInsets] to [PlatformSystemInsets].
+ * Convert [SystemBarsInsets] to [PlatformSystemBarsInsets].
  * @param density the density.
  * @param layoutDirection the layout direction.
- * @return [PlatformSystemInsets]
+ * @return [PlatformSystemBarsInsets]
  */
-private fun SystemInsets.toPlatformExpect(density: Density, layoutDirection: LayoutDirection) =
+private fun SystemBarsInsets.toPlatformExpect(density: Density, layoutDirection: LayoutDirection) =
     with(density) {
-        PlatformSystemInsets(
+        PlatformSystemBarsInsets(
             layoutDirection = layoutDirection,
             stableLeft = stable.left.toDp(),
             stableTop = stable.top.toDp(),
             stableRight = stable.right.toDp(),
             stableBottom = stable.bottom.toDp(),
-            cutoutLeft = cutout.safeInsetLeft.toDp(),
-            cutoutTop = cutout.safeInsetTop.toDp(),
-            cutoutRight = cutout.safeInsetRight.toDp(),
-            cutoutBottom = cutout.safeInsetBottom.toDp()
+            cutoutLeft = cutout.left.toDp(),
+            cutoutTop = cutout.top.toDp(),
+            cutoutRight = cutout.right.toDp(),
+            cutoutBottom = cutout.bottom.toDp()
         )
     }
 
 /**
- * Create a [PlatformSystemInsets] from [SystemBarsController.AbsoluteController].
+ * Create a [PlatformSystemBarsInsets] from [SystemBarsController.AbsoluteController].
  * @receiver the current context.
  * @param density the density.
- * @return [PlatformSystemInsets]
+ * @return [PlatformSystemBarsInsets]
  */
-private fun Context.createAbsolutePlatformSystemInsets(density: Density) =
+private fun Context.createAbsolutePlatformSystemBarsInsets(density: Density) =
     with(SystemBarsController.createAbsolute(context = this)) {
         with(density) {
-            PlatformSystemInsets(
+            PlatformSystemBarsInsets(
                 stableTop = statusBarHeight.toDp(),
                 stableBottom = navigationBarHeight.toDp()
             )
