@@ -18,8 +18,14 @@ kotlin {
         iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = projects.composeExtension.name
+            baseName = property.project.compose.extension.iosModuleName
             isStatic = true
+        }
+        iosTarget.compilations.getByName("main") {
+            cinterops {
+                //  Workaround to override uikit classes
+                val uikit by cinterops.creating
+            }
         }
     }
     jvmToolchain(17)
@@ -53,6 +59,11 @@ kotlin {
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
         }
+    }
+    @Suppress("OPT_IN_USAGE")
+    compilerOptions {
+        // Workaround for https://youtrack.jetbrains.com/issue/KT-61573
+        freeCompilerArgs = listOf("-Xexpect-actual-classes")
     }
 }
 
