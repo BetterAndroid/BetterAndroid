@@ -39,6 +39,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(androidx.core.core.ktx)
+                implementation(androidx.activity.activity)
                 implementation(projects.uiComponent)
             }
         }

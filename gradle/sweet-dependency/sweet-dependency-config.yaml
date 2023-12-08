@@ -38,6 +38,9 @@ libraries:
   androidx.core:
     core-ktx:
       version: 1.12.0
+  androidx.activity:
+    activity:
+      version: 1.8.1
   androidx.appcompat:
     appcompat:
       version: 1.6.1
