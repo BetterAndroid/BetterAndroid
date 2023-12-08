@@ -26,7 +26,6 @@ package com.highcapable.betterandroid.compose.extension.ui
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.isSpecified
-import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.nativeHeap
 import kotlinx.cinterop.ptr
@@ -55,7 +54,6 @@ fun Color.toPlatformColor() =
  * @receiver the current color.
  * @return [Color]
  */
-@OptIn(ExperimentalForeignApi::class)
 @Stable
 fun UIColor.toComposeColor(): Color {
     val red = nativeHeap.alloc<CGFloatVar>()
