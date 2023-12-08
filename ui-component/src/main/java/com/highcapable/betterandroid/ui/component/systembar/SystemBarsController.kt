@@ -26,6 +26,7 @@ package com.highcapable.betterandroid.ui.component.systembar
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.Log
@@ -39,6 +40,7 @@ import android.widget.RelativeLayout
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.Px
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -53,15 +55,14 @@ import com.highcapable.betterandroid.ui.component.fragment.AppBindingFragment
 import com.highcapable.betterandroid.ui.component.fragment.AppViewsFragment
 import com.highcapable.betterandroid.ui.component.generated.BetterAndroidProperties
 import com.highcapable.betterandroid.ui.component.systembar.compat.SystemBarsCompat
-import com.highcapable.betterandroid.ui.component.systembar.factory.appendSystemInsets
-import com.highcapable.betterandroid.ui.component.systembar.factory.applySystemInsets
-import com.highcapable.betterandroid.ui.component.systembar.insets.InsetsPadding
-import com.highcapable.betterandroid.ui.component.systembar.insets.SystemInsets
+import com.highcapable.betterandroid.ui.component.systembar.factory.appendSystemBarsInsets
+import com.highcapable.betterandroid.ui.component.systembar.factory.applySystemBarsInsets
+import com.highcapable.betterandroid.ui.component.systembar.insets.SystemBarsInsets
 import com.highcapable.betterandroid.ui.component.systembar.type.InsetsType
 import com.highcapable.betterandroid.ui.component.systembar.type.SystemBars
 import com.highcapable.betterandroid.ui.component.systembar.type.SystemBarsBehavior
-import com.highcapable.betterandroid.ui.component.systembar.wrapper.DisplayCutoutCompatWrapper
 import com.highcapable.betterandroid.ui.extension.component.base.isBrightColor
+import com.highcapable.betterandroid.ui.extension.component.base.isSpecialWindowingMode
 import com.highcapable.betterandroid.ui.extension.component.base.isUiInNightMode
 import com.highcapable.betterandroid.ui.extension.widget.ViewLayoutParams
 import com.highcapable.betterandroid.ui.extension.widget.removeSelfInLayout
@@ -242,7 +243,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
     private val systemBarsCompat by lazy { SystemBarsCompat(activity) }
 
     /** The system bars insets changes callback map. */
-    private var onInsetsChangedCallbacks = mutableMapOf<String, (SystemInsets) -> Unit>()
+    private var onInsetsChangedCallbacks = mutableMapOf<String, (SystemBarsInsets) -> Unit>()
 
     /**
      * Convert to [WindowInsetsCompat.Type] types.
@@ -304,7 +305,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
     private fun createDefaultContainerPaddingCallback() {
         if (containerPaddingCallback == null)
             containerPaddingCallback = {
-                val padding = systemInsets?.let { containerLayout?.applySystemInsets(it) }
+                val padding = systemBarsInsets?.let { containerLayout?.applySystemBarsInsets(it) }
                 updateSystemBarsViewsHeight(padding)
             }
     }
@@ -316,13 +317,63 @@ class SystemBarsController private constructor(private val activity: Activity) {
 
     /**
      * Update the system bars views height.
-     * @param padding the system insets padding.
+     * @param insets the insets padding.
      */
-    private fun updateSystemBarsViewsHeight(padding: InsetsPadding?) {
-        padding ?: return
-        systemBarsViews[0].updateLayoutParams { height = padding.top }
-        systemBarsViews[1].updateLayoutParams { height = padding.bottom }
+    private fun updateSystemBarsViewsHeight(insets: Insets?) {
+        insets ?: return
+        systemBarsViews[0].updateLayoutParams { height = insets.top }
+        systemBarsViews[1].updateLayoutParams { height = insets.bottom }
     }
+
+    /**
+     * Create system bars insets from [WindowInsetsCompat].
+     * @receiver [WindowInsetsCompat].
+     * @return [SystemBarsInsets]
+     */
+    private fun WindowInsetsCompat.createSystemBarsInsets(): SystemBarsInsets {
+        /**
+         * Workaround for the current window is in a special windowing mode.
+         *
+         * See also [Configuration.isSpecialWindowingMode].
+         * @return [Int]
+         */
+        fun Int.orElse() = if (!activity.resources.configuration.isSpecialWindowingMode) this else 0
+
+        /**
+         * Get a non-null cutout size.
+         * @receiver [WindowInsetsCompat].
+         * @param direction the cutout direction.
+         * @return [Int]
+         */
+        fun WindowInsetsCompat.getCutout(direction: Direction) = when (direction) {
+            Direction.LEFT -> displayCutout?.safeInsetLeft?.orElse() ?: 0
+            Direction.TOP -> displayCutout?.safeInsetTop?.orElse() ?: 0
+            Direction.RIGHT -> displayCutout?.safeInsetRight?.orElse() ?: 0
+            Direction.BOTTOM -> displayCutout?.safeInsetBottom?.orElse() ?: 0
+        }
+        val stable = getInsets(WindowInsetsCompat.Type.systemBars())
+        return SystemBarsInsets(stable, SystemVersion.require(
+            SystemVersion.P,
+            systemBarsCompat.createLegacyDisplayCutoutInsets(stable.top)
+        ) { Insets.of(getCutout(Direction.LEFT), getCutout(Direction.TOP), getCutout(Direction.RIGHT), getCutout(Direction.BOTTOM)) })
+    }
+
+    /**
+     * Direction of the window insets.
+     */
+    private enum class Direction { LEFT, TOP, RIGHT, BOTTOM }
+
+    /**
+     * The current system bars insets.
+     *
+     * - This property is deprecated, use [systemBarsInsets] instead.
+     */
+    @Deprecated(message = "Use systemBarsInsets instead.", ReplaceWith("systemBarsInsets"))
+    var systemInsets: SystemBarsInsets?
+        get() = systemBarsInsets
+        set(value) {
+            systemBarsInsets = value
+        }
 
     /**
      * The current system bars insets.
@@ -330,7 +381,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
      * The first initialization may be null, it is recommended to
      * use [addOnInsetsChangeListener] to add the system bars insets changes listener.
      */
-    var systemInsets: SystemInsets? = null
+    var systemBarsInsets: SystemBarsInsets? = null
 
     /**
      * Get the current [SystemBarsController]'s status.
@@ -374,7 +425,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
      *
      * - The initialization operation will not be called repeatedly,
      *   repeated calls will only be performed once.
-     * @param defaultPadding whether to initialize the default system insets padding, default true.
+     * @param defaultPadding whether to initialize the default system bars insets padding, default true.
      */
     fun init(defaultPadding: Boolean = true) {
         if (isInitOnce) return
@@ -390,13 +441,9 @@ class SystemBarsController private constructor(private val activity: Activity) {
         if (defaultPadding) createDefaultContainerPaddingCallback()
         ViewCompat.setOnApplyWindowInsetsListener(decorView) { _, windowInsets ->
             this.windowInsets = windowInsets
-            windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).also { insets ->
-                val systemInsets = SystemInsets(insets, SystemVersion.require(
-                    SystemVersion.P,
-                    systemBarsCompat.createLegacyDisplayCutoutCompat(insets.top)
-                ) { DisplayCutoutCompatWrapper(activity, systemBarsCompat, wrapper = windowInsets.displayCutout) })
-                this.systemInsets = systemInsets
-                onInsetsChangedCallbacks.forEach { (_, e) -> e(systemInsets) }
+            windowInsets.createSystemBarsInsets().also { systemBarsInsets ->
+                this.systemBarsInsets = systemBarsInsets
+                onInsetsChangedCallbacks.forEach { (_, e) -> e(systemBarsInsets) }
                 updateContainerPadding()
             }; windowInsets
         }
@@ -443,9 +490,9 @@ class SystemBarsController private constructor(private val activity: Activity) {
     /**
      * Add the system bars insets changes listener.
      * @param tag the callback TAG, default null.
-     * @param onChange callback [SystemInsets].
+     * @param onChange callback [SystemBarsInsets].
      */
-    fun addOnInsetsChangeListener(tag: Any? = null, onChange: (SystemInsets) -> Unit) {
+    fun addOnInsetsChangeListener(tag: Any? = null, onChange: (SystemBarsInsets) -> Unit) {
         val currentTag = tag?.toString() ?: onChange.hashCode().toString()
         onInsetsChangedCallbacks[currentTag] = onChange
     }
@@ -475,11 +522,11 @@ class SystemBarsController private constructor(private val activity: Activity) {
     fun hide(type: SystemBars) = insetsController.hide(type.toInsetsType())
 
     /**
-     * Apply the system insets and cutout padding in [containerLayout].
+     * Apply the system bars insets and cutout padding in [containerLayout].
      *
-     * See also [View.applySystemInsets].
+     * See also [View.applySystemBarsInsets].
      *
-     * This function's inner callback [containerPaddingCallback] will be re-called when the system insets changes.
+     * This function's inner callback [containerPaddingCallback] will be re-called when the system bars insets changes.
      * @param left whether to apply the left insets.
      * @param top whether to apply the top insets.
      * @param right whether to apply the right insets.
@@ -487,7 +534,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
      * @param type the insets type, default is [InsetsType.ADAPTIVE].
      */
     @JvmOverloads
-    fun applySystemInsets(
+    fun applySystemBarsInsets(
         left: Boolean = true,
         top: Boolean = true,
         right: Boolean = true,
@@ -495,17 +542,17 @@ class SystemBarsController private constructor(private val activity: Activity) {
         type: InsetsType = InsetsType.ADAPTIVE
     ) {
         containerPaddingCallback = {
-            val padding = systemInsets?.let { containerLayout?.applySystemInsets(it, left, top, right, bottom, type) }
+            val padding = systemBarsInsets?.let { containerLayout?.applySystemBarsInsets(it, left, top, right, bottom, type) }
             updateSystemBarsViewsHeight(padding)
         }; updateContainerPadding()
     }
 
     /**
-     * Append the system insets and cutout padding in [containerLayout].
+     * Append the system bars insets and cutout padding in [containerLayout].
      *
-     * See also [View.appendSystemInsets].
+     * See also [View.appendSystemBarsInsets].
      *
-     * This function's inner callback [containerPaddingCallback] will be re-called when the system insets changes.
+     * This function's inner callback [containerPaddingCallback] will be re-called when the system bars insets changes.
      * @param left whether to apply the left insets.
      * @param top whether to apply the top insets.
      * @param right whether to apply the right insets.
@@ -513,7 +560,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
      * @param type the insets type, default is [InsetsType.ADAPTIVE].
      */
     @JvmOverloads
-    fun appendSystemInsets(
+    fun appendSystemBarsInsets(
         left: Boolean = true,
         top: Boolean = true,
         right: Boolean = true,
@@ -521,13 +568,13 @@ class SystemBarsController private constructor(private val activity: Activity) {
         type: InsetsType = InsetsType.ADAPTIVE
     ) {
         containerPaddingCallback = {
-            val padding = systemInsets?.let { containerLayout?.appendSystemInsets(it, left, top, right, bottom, type) }
+            val padding = systemBarsInsets?.let { containerLayout?.appendSystemBarsInsets(it, left, top, right, bottom, type) }
             updateSystemBarsViewsHeight(padding)
         }; updateContainerPadding()
     }
 
-    /** Remove all system insets and cutout padding in [containerLayout]. */
-    fun removeSystemInsets() {
+    /** Remove all system bars insets and cutout padding in [containerLayout]. */
+    fun removeSystemBarsInsets() {
         containerPaddingCallback = null
         containerLayout?.setPadding(0)
         containerLayout?.requestLayout()
@@ -561,15 +608,15 @@ class SystemBarsController private constructor(private val activity: Activity) {
     /**
      * Apply the system bars extra paddings.
      *
-     * - This function is deprecated, use [applySystemInsets] instead.
+     * - This function is deprecated, use [applySystemBarsInsets] instead.
      */
     @Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
-    @Deprecated(message = "Use applySystemInsets instead.")
+    @Deprecated(message = "Use applySystemBarsInsets instead.")
     @JvmOverloads
     fun applyExtraPaddings(
         vararg types: com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType,
         ignoredCutout: Boolean = false
-    ) = appendSystemInsets(
+    ) = appendSystemBarsInsets(
         left = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.LEFT),
         top = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.TOP),
         right = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.RIGHT),
@@ -580,15 +627,15 @@ class SystemBarsController private constructor(private val activity: Activity) {
     /**
      * Append the system bars extra paddings.
      *
-     * - This function is deprecated, use [appendSystemInsets] instead.
+     * - This function is deprecated, use [appendSystemBarsInsets] instead.
      */
     @Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
-    @Deprecated(message = "Use appendSystemInsets instead.")
+    @Deprecated(message = "Use appendSystemBarsInsets instead.")
     @JvmOverloads
     fun appendExtraPaddings(
         vararg types: com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType,
         ignoredCutout: Boolean = false
-    ) = appendSystemInsets(
+    ) = appendSystemBarsInsets(
         left = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.LEFT),
         top = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.TOP),
         right = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.RIGHT),
@@ -599,15 +646,15 @@ class SystemBarsController private constructor(private val activity: Activity) {
     /**
      * Remove the system bars extra paddings.
      *
-     * - This function is deprecated, use [removeSystemInsets] instead.
+     * - This function is deprecated, use [removeSystemBarsInsets] instead.
      */
     @Suppress("DEPRECATION", "UNUSED_PARAMETER")
-    @Deprecated(message = "Use removeSystemInsets instead.", ReplaceWith("removeSystemInsets()"))
+    @Deprecated(message = "Use removeSystemBarsInsets instead.", ReplaceWith("removeSystemBarsInsets()"))
     @JvmOverloads
     fun removeExtraPaddings(
         vararg types: com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType,
         ignoredCutout: Boolean = false
-    ) = removeSystemInsets()
+    ) = removeSystemBarsInsets()
 
     /**
      * Show the system bars stub views.

@@ -24,34 +24,34 @@
 package com.highcapable.betterandroid.ui.component.systembar.factory
 
 import android.view.View
+import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import com.highcapable.betterandroid.ui.component.systembar.SystemBarsController
-import com.highcapable.betterandroid.ui.component.systembar.insets.InsetsPadding
-import com.highcapable.betterandroid.ui.component.systembar.insets.SystemInsets
+import com.highcapable.betterandroid.ui.component.systembar.insets.SystemBarsInsets
 import com.highcapable.betterandroid.ui.component.systembar.type.InsetsType
 
 /**
- * Apply the system insets and cutout padding in layout.
+ * Apply the system bars insets and cutout padding in layout.
  *
- * See also [View.appendSystemInsets].
- * @param systemInsets the system insets, you can use [SystemBarsController.systemInsets]
+ * See also [View.appendSystemBarsInsets].
+ * @param systemBarsInsets the system bars insets, you can use [SystemBarsController.systemBarsInsets]
  * or use [SystemBarsController.addOnInsetsChangeListener].
  * @param left whether to apply the left insets.
  * @param top whether to apply the top insets.
  * @param right whether to apply the right insets.
  * @param bottom whether to apply the bottom insets.
  * @param type the insets type, default is [InsetsType.ADAPTIVE].
- * @return [InsetsPadding]
+ * @return [Insets]
  */
 @JvmOverloads
-fun View.applySystemInsets(
-    systemInsets: SystemInsets,
+fun View.applySystemBarsInsets(
+    systemBarsInsets: SystemBarsInsets,
     left: Boolean = true,
     top: Boolean = true,
     right: Boolean = true,
     bottom: Boolean = true,
     type: InsetsType = InsetsType.ADAPTIVE
-) = InsetsPadding.from(systemInsets, type).also {
+) = systemBarsInsets.toInsetsPadding(type).also {
     setPadding(
         if (left) it.left else 0,
         if (top) it.top else 0,
@@ -61,27 +61,27 @@ fun View.applySystemInsets(
 }
 
 /**
- * Append the system insets and cutout padding in layout.
+ * Append the system bars insets and cutout padding in layout.
  *
- * See also [View.applySystemInsets].
- * @param systemInsets the system insets, you can use [SystemBarsController.systemInsets]
+ * See also [View.applySystemBarsInsets].
+ * @param systemBarsInsets the system bars insets, you can use [SystemBarsController.systemBarsInsets]
  * or use [SystemBarsController.addOnInsetsChangeListener].
  * @param left whether to apply the left insets.
  * @param top whether to apply the top insets.
  * @param right whether to apply the right insets.
  * @param bottom whether to apply the bottom insets.
  * @param type the insets type, default is [InsetsType.ADAPTIVE].
- * @return [InsetsPadding]
+ * @return [Insets]
  */
 @JvmOverloads
-fun View.appendSystemInsets(
-    systemInsets: SystemInsets,
+fun View.appendSystemBarsInsets(
+    systemBarsInsets: SystemBarsInsets,
     left: Boolean = true,
     top: Boolean = true,
     right: Boolean = true,
     bottom: Boolean = true,
     type: InsetsType = InsetsType.ADAPTIVE
-) = InsetsPadding.from(systemInsets, type).also {
+) = systemBarsInsets.toInsetsPadding(type).also {
     if (left) updatePadding(left = it.left)
     if (top) updatePadding(top = it.top)
     if (right) updatePadding(right = it.right)
@@ -91,18 +91,18 @@ fun View.appendSystemInsets(
 /**
  * Apply the system insets and cutout padding in layout.
  *
- * - This function is deprecated, use [View.applySystemInsets] instead.
- * @return [InsetsPadding]
+ * - This function is deprecated, use [View.applySystemBarsInsets] instead.
+ * @return [Insets]
  */
 @Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
-@Deprecated(message = "Use View.applySystemInsets instead.")
+@Deprecated(message = "Use View.applySystemBarsInsets instead.")
 @JvmOverloads
 fun View.applySystemInsets(
-    systemInsets: SystemInsets,
+    systemInsets: SystemBarsInsets,
     vararg types: com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType,
     ignoredCutout: Boolean = false
-) = applySystemInsets(
-    systemInsets = systemInsets,
+) = applySystemBarsInsets(
+    systemBarsInsets = systemInsets,
     left = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.LEFT),
     top = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.TOP),
     right = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.RIGHT),
@@ -113,18 +113,18 @@ fun View.applySystemInsets(
 /**
  * Append the system insets and cutout padding in layout.
  *
- * - This function is deprecated, use [View.appendSystemInsets] instead.
- * @return [InsetsPadding]
+ * - This function is deprecated, use [View.appendSystemBarsInsets] instead.
+ * @return [Insets]
  */
 @Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
-@Deprecated(message = "Use View.appendSystemInsets instead.")
+@Deprecated(message = "Use View.appendSystemBarsInsets instead.")
 @JvmOverloads
 fun View.appendSystemInsets(
-    systemInsets: SystemInsets,
+    systemInsets: SystemBarsInsets,
     vararg types: com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType,
     ignoredCutout: Boolean = false
-) = appendSystemInsets(
-    systemInsets = systemInsets,
+) = appendSystemBarsInsets(
+    systemBarsInsets = systemInsets,
     left = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.LEFT),
     top = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.TOP),
     right = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.RIGHT),
@@ -135,14 +135,14 @@ fun View.appendSystemInsets(
 /**
  * Remove the system insets and cutout padding in layout.
  *
- * - This function is deprecated and no effect, use [View.applySystemInsets] or [View.appendSystemInsets] instead.
- * @return [InsetsPadding]
+ * - This function is deprecated and no effect, use [View.applySystemBarsInsets] or [View.appendSystemBarsInsets] instead.
+ * @return [Insets]
  */
-@Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith", "UnusedReceiverParameter")
-@Deprecated(message = "Use View.applySystemInsets or View.appendSystemInsets instead.")
+@Suppress("DEPRECATION", "UNUSED_PARAMETER", "DeprecatedCallableAddReplaceWith", "UnusedReceiverParameter")
+@Deprecated(message = "Use View.applySystemBarsInsets or View.appendSystemBarsInsets instead.")
 @JvmOverloads
 fun View.removeSystemInsets(
-    systemInsets: SystemInsets,
+    systemInsets: SystemBarsInsets,
     vararg types: com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType,
     ignoredCutout: Boolean = false
-) = InsetsPadding(left = 0, top = 0, right = 0, bottom = 0)
+) = Insets.NONE

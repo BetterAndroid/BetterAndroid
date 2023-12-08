@@ -25,34 +25,33 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import com.highcapable.betterandroid.ui.component.systembar.SystemBarsController
-import com.highcapable.betterandroid.ui.component.systembar.factory.appendSystemInsets
-import com.highcapable.betterandroid.ui.component.systembar.factory.applySystemInsets
-import com.highcapable.betterandroid.ui.component.systembar.factory.removeSystemInsets
+import com.highcapable.betterandroid.ui.component.systembar.factory.appendSystemBarsInsets
+import com.highcapable.betterandroid.ui.component.systembar.factory.applySystemBarsInsets
 
 /**
  * System bars stub view (a placeholder layout).
  *
  * - This view is deprecated and no effect, see [SystemBarsController.SystemBarsView],
- *   please use [View.applySystemInsets], [View.appendSystemInsets], [View.removeSystemInsets] instead.
+ *   please use [View.applySystemBarsInsets], [View.appendSystemBarsInsets] instead.
  */
 @Deprecated(message = "Use View.applySystemInsets, View.appendSystemInsets, View.removeSystemInsets instead.")
 class SystemBarsView(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
 
-    @Deprecated(message = "Use View.applySystemInsets, View.appendSystemInsets, View.removeSystemInsets instead.")
+    @Deprecated(message = "Use View.applySystemBarsInsets, View.appendSystemBarsInsets instead.")
     enum class InsetsType
 
     @Suppress("unused", "DEPRECATION", "DeprecatedCallableAddReplaceWith")
-    @Deprecated(message = "Use View.applySystemInsets, View.appendSystemInsets, View.removeSystemInsets instead.")
+    @Deprecated(message = "Use View.applySystemBarsInsets, View.appendSystemBarsInsets instead.")
     val insetsType: InsetsType
-        get() = error("SystemBarsView is deprecated, use View.applySystemInsets, View.appendSystemInsets, View.removeSystemInsets instead.")
+        get() = error("SystemBarsView is deprecated, use View.applySystemBarsInsets, View.appendSystemBarsInsets instead.")
 
-    @Deprecated(message = "Use View.applySystemInsets, View.appendSystemInsets, View.removeSystemInsets instead.")
+    @Deprecated(message = "Use View.applySystemBarsInsets, View.appendSystemBarsInsets instead.")
     fun show() {
     }
 
     @Suppress("UNUSED_PARAMETER")
     @JvmOverloads
-    @Deprecated(message = "Use View.applySystemInsets, View.appendSystemInsets, View.removeSystemInsets instead.")
+    @Deprecated(message = "Use View.applySystemBarsInsets, View.appendSystemBarsInsets instead.")
     fun hide(ignoredCutout: Boolean = false) {
     }
 }

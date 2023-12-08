@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2022/10/28.
  */
-@file:Suppress("MemberVisibilityCanBePrivate")
+@file:Suppress("unused", "DeprecatedCallableAddReplaceWith")
 
 package com.highcapable.betterandroid.ui.component.systembar.wrapper
 
@@ -27,17 +27,14 @@ import android.content.Context
 import androidx.annotation.Px
 import androidx.core.graphics.Insets
 import androidx.core.view.DisplayCutoutCompat
-import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 import com.highcapable.betterandroid.ui.component.systembar.compat.SystemBarsCompat
-import com.highcapable.betterandroid.ui.extension.component.base.isSpecialWindowingMode
 
 /**
  * This is a wrapper of [DisplayCutoutCompat] instance.
- * @param context the current context.
- * @param compat the [SystemBarsCompat] instance.
- * @param insets the current [Insets].
- * @param wrapper the original instance.
+ *
+ * - This class is deprecated and will be removed in the future.
  */
+@Deprecated(message = "No effect and will be removed in the future.")
 class DisplayCutoutCompatWrapper internal constructor(
     private val context: Context,
     private val compat: SystemBarsCompat,
@@ -47,43 +44,37 @@ class DisplayCutoutCompatWrapper internal constructor(
 
     /**
      * Get the notch safe inset top (px).
+     *
+     * - This class is deprecated and will be removed in the future.
      * @return [Int]
      */
-    val safeInsetTop
-        @Px get() = withCondition { SystemVersion.requireOrNull(SystemVersion.P, insets?.top) { wrapper?.safeInsetTop } ?: 0 }
+    @Deprecated(message = "No effect and will be removed in the future.")
+    val safeInsetTop @Px get() = 0
 
     /**
      * Get the notch safe inset bottom (px).
+     *
+     * - This class is deprecated and will be removed in the future.
      * @return [Int]
      */
-    val safeInsetBottom
-        @Px get() = withCondition { SystemVersion.requireOrNull(SystemVersion.P, insets?.bottom) { wrapper?.safeInsetBottom } ?: 0 }
+    @Deprecated(message = "No effect and will be removed in the future.")
+    val safeInsetBottom @Px get() = 0
 
     /**
      * Get the notch safe inset left (px).
+     *
+     * - This class is deprecated and will be removed in the future.
      * @return [Int]
      */
-    val safeInsetLeft
-        @Px get() = withCondition { SystemVersion.requireOrNull(SystemVersion.P, insets?.left) { wrapper?.safeInsetLeft } ?: 0 }
+    @Deprecated(message = "No effect and will be removed in the future.")
+    val safeInsetLeft @Px get() = 0
 
     /**
      * Get the notch safe inset right (px).
+     *
+     * - This class is deprecated and will be removed in the future.
      * @return [Int]
      */
-    val safeInsetRight
-        @Px get() = withCondition { SystemVersion.requireOrNull(SystemVersion.P, insets?.right) { wrapper?.safeInsetRight } ?: 0 }
-
-    override fun toString() = "DisplayCutoutCompatWrapper(" +
-        "safeInsetTop=$safeInsetTop, " +
-        "safeInsetBottom=$safeInsetBottom, " +
-        "safeInsetLeft=$safeInsetLeft, " +
-        "safeInsetRight=$safeInsetRight" +
-        ")"
-
-    /**
-     * Call based on specified conditions.
-     * @param result callback the result.
-     * @return [Int]
-     */
-    private inline fun withCondition(result: () -> Int) = if (context.resources.configuration.isSpecialWindowingMode) 0 else result()
+    @Deprecated(message = "No effect and will be removed in the future.")
+    val safeInsetRight @Px get() = 0
 }

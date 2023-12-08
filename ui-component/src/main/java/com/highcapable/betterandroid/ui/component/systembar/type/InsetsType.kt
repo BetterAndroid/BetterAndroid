@@ -23,7 +23,7 @@
 
 package com.highcapable.betterandroid.ui.component.systembar.type
 
-import com.highcapable.betterandroid.ui.component.systembar.insets.SystemInsets
+import com.highcapable.betterandroid.ui.component.systembar.insets.SystemBarsInsets
 
 /**
  * Insets type of insets padding.
@@ -32,9 +32,9 @@ enum class InsetsType {
     /** Adaptive, use the one with the largest size first. */
     ADAPTIVE,
 
-    /** Stable, only use the [SystemInsets.stable]. */
+    /** Stable, only use the [SystemBarsInsets.stable]. */
     STABLE,
 
-    /** Cutout, only use the [SystemInsets.cutout]. */
+    /** Cutout, only use the [SystemBarsInsets.cutout]. */
     CUTOUT
 }
