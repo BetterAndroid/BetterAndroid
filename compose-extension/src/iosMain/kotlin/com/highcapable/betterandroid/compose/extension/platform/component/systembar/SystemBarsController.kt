@@ -66,7 +66,7 @@ class SystemBarsController private constructor(private val controller: AppCompon
 
     /**
      * Get the system bars views. (included status bars, home indicator)
-     * @return [Array]<[UIView]>
+     * @return [Array]<[SystemBarsView]>
      */
     private val systemBarsViews by lazy { arrayOf(SystemBarsView(), SystemBarsView()) }
 

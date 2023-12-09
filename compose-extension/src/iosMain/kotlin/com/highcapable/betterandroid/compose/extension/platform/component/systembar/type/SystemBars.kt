@@ -33,6 +33,6 @@ enum class SystemBars {
     /** Status bars. */
     STATUS_BARS,
 
-    /** Home Indicator. */
+    /** Home indicator. */
     HOME_INDICATOR
 }
