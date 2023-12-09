@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2023/11/24.
  */
-@file:JvmName("SystemInsetsUtils")
+@file:JvmName("WindowInsetsUtils")
 
 package com.highcapable.betterandroid.ui.component.systembar.factory
 
@@ -87,62 +87,3 @@ fun View.appendSystemBarsInsets(
     if (right) updatePadding(right = it.right)
     if (bottom) updatePadding(bottom = it.bottom)
 }
-
-/**
- * Apply the system insets and cutout padding in layout.
- *
- * - This function is deprecated, use [View.applySystemBarsInsets] instead.
- * @return [Insets]
- */
-@Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
-@Deprecated(message = "Use View.applySystemBarsInsets instead.")
-@JvmOverloads
-fun View.applySystemInsets(
-    systemInsets: SystemBarsInsets,
-    vararg types: com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType,
-    ignoredCutout: Boolean = false
-) = applySystemBarsInsets(
-    systemBarsInsets = systemInsets,
-    left = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.LEFT),
-    top = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.TOP),
-    right = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.RIGHT),
-    bottom = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.BOTTOM),
-    type = if (ignoredCutout) InsetsType.STABLE else InsetsType.ADAPTIVE
-)
-
-/**
- * Append the system insets and cutout padding in layout.
- *
- * - This function is deprecated, use [View.appendSystemBarsInsets] instead.
- * @return [Insets]
- */
-@Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
-@Deprecated(message = "Use View.appendSystemBarsInsets instead.")
-@JvmOverloads
-fun View.appendSystemInsets(
-    systemInsets: SystemBarsInsets,
-    vararg types: com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType,
-    ignoredCutout: Boolean = false
-) = appendSystemBarsInsets(
-    systemBarsInsets = systemInsets,
-    left = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.LEFT),
-    top = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.TOP),
-    right = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.RIGHT),
-    bottom = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.BOTTOM),
-    type = if (ignoredCutout) InsetsType.STABLE else InsetsType.ADAPTIVE
-)
-
-/**
- * Remove the system insets and cutout padding in layout.
- *
- * - This function is deprecated and no effect, use [View.applySystemBarsInsets] or [View.appendSystemBarsInsets] instead.
- * @return [Insets]
- */
-@Suppress("DEPRECATION", "UNUSED_PARAMETER", "DeprecatedCallableAddReplaceWith", "UnusedReceiverParameter")
-@Deprecated(message = "Use View.applySystemBarsInsets or View.appendSystemBarsInsets instead.")
-@JvmOverloads
-fun View.removeSystemInsets(
-    systemInsets: SystemBarsInsets,
-    vararg types: com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType,
-    ignoredCutout: Boolean = false
-) = Insets.NONE
