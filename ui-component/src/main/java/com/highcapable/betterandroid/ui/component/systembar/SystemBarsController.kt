@@ -246,6 +246,17 @@ class SystemBarsController private constructor(private val activity: Activity) {
     private var onInsetsChangedCallbacks = mutableMapOf<String, (SystemBarsInsets) -> Unit>()
 
     /**
+     * Get the system bars behavior type.
+     * @receiver [WindowInsetsControllerCompat]
+     * @return [SystemBarsBehavior]
+     */
+    private val WindowInsetsControllerCompat.systemBarBehaviorType get() = when (systemBarsBehavior) {
+        WindowInsetsControllerCompat.BEHAVIOR_DEFAULT -> SystemBarsBehavior.DEFAULT
+        WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE -> SystemBarsBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE
+        else -> SystemBarsBehavior.DEFAULT
+    }
+
+    /**
      * Convert to [WindowInsetsCompat.Type] types.
      * @receiver the [SystemBars] type.
      * @return [Int]
@@ -406,11 +417,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
      * @throws IllegalStateException if [init] never been called.
      */
     var behavior
-        get() = when (insetsController.systemBarsBehavior) {
-            WindowInsetsControllerCompat.BEHAVIOR_DEFAULT -> SystemBarsBehavior.DEFAULT
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE -> SystemBarsBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE
-            else -> SystemBarsBehavior.DEFAULT
-        }
+        get() = insetsController.systemBarBehaviorType
         set(value) {
             require(isInitOnce) { "You must call init function first before using behavior function." }
             insetsController.systemBarsBehavior = value.toBehaviorType()
