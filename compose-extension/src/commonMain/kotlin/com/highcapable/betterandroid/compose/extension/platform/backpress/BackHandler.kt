@@ -28,7 +28,18 @@ import androidx.compose.runtime.Composable
 /**
  * An effect for handling presses of the system back button.
  *
- * Supports Android and iOS.
+ * Only support Android platform.
+ *
+ * There is a system global back press event in Android,
+ * by listening to this event, we can know that the user has performed a back operation,
+ * but there is no such event in other systems. For example, in iOS,
+ * "back" is passed through the navigation controller (UINavigationController)
+ * stack operation or the dismiss operation of the modal view controller.
+ *
+ * These operations are managed by specific view controllers or navigation controllers,
+ * rather than by the system globally.
+ *
+ * It is even more impossible to have a "back press" on a desktop platform.
  *
  * Platform requirements:
  *
@@ -38,10 +49,6 @@ import androidx.compose.runtime.Composable
  * but you must use an **ComponentActivity** for basic.
  *
  * Requires library: `ui-component`, visit [here](https://github.com/BetterAndroid/BetterAndroid).
- *
- * > iOS
- *
- * TODO: iOS platform back handler.
  *
  * > Others
  *
@@ -57,7 +64,7 @@ fun BackHandler(enabled: Boolean = true, onBack: () -> Unit) {
 /**
  * An effect for handling presses of the system back button.
  *
- * Supports Android and iOS.
+ * Only support Android platform.
  * @param enabled if this BackHandler should be enabled.
  * @param onBack the action invoked by pressing the system back.
  */
