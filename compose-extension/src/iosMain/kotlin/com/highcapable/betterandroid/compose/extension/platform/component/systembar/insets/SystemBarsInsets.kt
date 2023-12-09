@@ -23,7 +23,7 @@
 
 package com.highcapable.betterandroid.compose.extension.platform.component.systembar.insets
 
-import com.highcapable.betterandroid.compose.extension.platform.component.uiviewcontroller.wrapper.UIEdgeInsetsWrapper
+import com.highcapable.betterandroid.compose.extension.platform.component.systembar.insets.wrapper.UIEdgeInsetsWrapper
 
 /**
  * Window insets of system bars.

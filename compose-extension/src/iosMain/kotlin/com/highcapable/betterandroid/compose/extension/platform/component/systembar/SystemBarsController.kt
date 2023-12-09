@@ -24,11 +24,12 @@
 package com.highcapable.betterandroid.compose.extension.platform.component.systembar
 
 import com.highcapable.betterandroid.compose.extension.platform.component.systembar.insets.SystemBarsInsets
+import com.highcapable.betterandroid.compose.extension.platform.component.systembar.insets.wrapper.UIEdgeInsetsWrapper
 import com.highcapable.betterandroid.compose.extension.platform.component.systembar.type.SystemBars
 import com.highcapable.betterandroid.compose.extension.platform.component.systembar.type.SystemBarsBehavior
 import com.highcapable.betterandroid.compose.extension.platform.component.uiviewcontroller.AppComponentUIViewController
-import com.highcapable.betterandroid.compose.extension.platform.component.uiviewcontroller.wrapper.UIEdgeInsetsWrapper
 import com.highcapable.betterandroid.compose.extension.ui.isBrightColor
+import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGFloat
 import platform.UIKit.NSLayoutConstraint
 import platform.UIKit.UIColor
@@ -153,6 +154,24 @@ class SystemBarsController private constructor(private val controller: AppCompon
     private fun UIEdgeInsetsWrapper.createSystemBarsInsets() = SystemBarsInsets(safeArea = this)
 
     /**
+     * Create the [SystemBarsController]'s container layout.
+     *
+     * ```
+     * Parent Layout (UIWindow)
+     * └─ Base Container Layout (UIView)
+     *    ├─ Root View (UIView) ← The content view
+     *    ├─ Status Bars (SystemBarsView (UIView + Constraints))
+     *    └─ Home Indicator (SystemBarsView (UIView + Constraints))
+     * ```
+     */
+    private fun createSystemBarsLayout() {
+        controller.view.addSubview(systemBarsViews[0].current)
+        controller.view.addSubview(systemBarsViews[1].current)
+        NSLayoutConstraint.activateConstraints(systemBarsViews[0].createConstraints(controller.view, Direction.TOP))
+        NSLayoutConstraint.activateConstraints(systemBarsViews[1].createConstraints(controller.view, Direction.BOTTOM))
+    }
+
+    /**
      * The current system bars insets.
      *
      * The first initialization may be null, it is recommended to
@@ -188,14 +207,12 @@ class SystemBarsController private constructor(private val controller: AppCompon
     fun init() {
         if (isInitOnce) return
         isInitOnce = true
-        controller.view.addSubview(systemBarsViews[0].current)
-        controller.view.addSubview(systemBarsViews[1].current)
-        NSLayoutConstraint.activateConstraints(systemBarsViews[0].createConstraints(controller.view, Direction.TOP))
-        NSLayoutConstraint.activateConstraints(systemBarsViews[1].createConstraints(controller.view, Direction.BOTTOM))
-        controller.onSafeAreaInsetsChangedCallback = {
-            val systemBarsInsets = it.createSystemBarsInsets()
+        createSystemBarsLayout()
+        controller.onViewDidLayoutSubviewsCallback = {
+            val safeAreaInsets = controller.view.safeAreaInsets.useContents { UIEdgeInsetsWrapper.from(insets = this) }
+            val systemBarsInsets = safeAreaInsets.createSystemBarsInsets()
             this.systemBarsInsets = systemBarsInsets
-            updateSystemBarsViewsHeight(it)
+            updateSystemBarsViewsHeight(safeAreaInsets)
             onInsetsChangedCallbacks.forEach { callback -> callback(systemBarsInsets) }
         }
     }

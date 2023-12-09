@@ -21,7 +21,7 @@
  */
 @file:Suppress("unused")
 
-package com.highcapable.betterandroid.compose.extension.platform.component.uiviewcontroller.wrapper
+package com.highcapable.betterandroid.compose.extension.platform.component.systembar.insets.wrapper
 
 import platform.CoreGraphics.CGFloat
 import platform.UIKit.UIEdgeInsets

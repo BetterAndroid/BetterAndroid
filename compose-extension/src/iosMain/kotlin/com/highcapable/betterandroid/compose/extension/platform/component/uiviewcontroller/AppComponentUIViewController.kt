@@ -25,8 +25,6 @@ package com.highcapable.betterandroid.compose.extension.platform.component.uivie
 
 import com.highcapable.betterandroid.compose.extension.cinterop.UIViewControllerWithOverridesProtocol
 import com.highcapable.betterandroid.compose.extension.platform.component.systembar.SystemBarsController
-import com.highcapable.betterandroid.compose.extension.platform.component.uiviewcontroller.wrapper.UIEdgeInsetsWrapper
-import kotlinx.cinterop.useContents
 import platform.Foundation.NSCoder
 import platform.UIKit.UIRectEdgeNone
 import platform.UIKit.UIStatusBarStyleDefault
@@ -81,8 +79,8 @@ class AppComponentUIViewController : UIViewController, UIViewControllerWithOverr
      */
     internal val systemBars by lazy { SystemBarsController.from(controller = this) }
 
-    /** The safe area insets of [view] changed callback. */
-    internal var onSafeAreaInsetsChangedCallback: ((UIEdgeInsetsWrapper) -> Unit)? = null
+    /** The callback of [viewDidLayoutSubviews]. */
+    internal var onViewDidLayoutSubviewsCallback: (() -> Unit)? = null
 
     /** Whether the status bar is hidden. */
     internal var isStatusBarHidden = false
@@ -163,7 +161,6 @@ class AppComponentUIViewController : UIViewController, UIViewControllerWithOverr
 
     override fun viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        val safeAreaInsets = view.safeAreaInsets.useContents { UIEdgeInsetsWrapper.from(insets = this) }
-        onSafeAreaInsetsChangedCallback?.invoke(safeAreaInsets)
+        onViewDidLayoutSubviewsCallback?.invoke()
     }
 }
