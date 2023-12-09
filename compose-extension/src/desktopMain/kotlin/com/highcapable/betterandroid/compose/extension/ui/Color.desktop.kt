@@ -64,7 +64,7 @@ fun AwtColor.toComposeColor() = Color(
 val AwtColor.isBrightColor get() = toComposeColor().isBrightColor
 
 /**
- * Convert integer color to hex string.
+ * Convert [AwtColor] to hex string.
  * @receiver the current color.
  * @return [String]
  */

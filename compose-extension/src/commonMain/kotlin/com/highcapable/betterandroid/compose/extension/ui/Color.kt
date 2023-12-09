@@ -48,7 +48,7 @@ val Color.isBrightColor get() = runCatching {
 }.getOrNull() ?: false
 
 /**
- * Convert integer color to hex string.
+ * Convert [Color] to hex string.
  * @receiver the current color.
  * @return [String]
  */

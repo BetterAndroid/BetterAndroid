@@ -77,7 +77,7 @@ fun UIColor.toComposeColor(): Color {
 val UIColor.isBrightColor get() = toComposeColor().isBrightColor
 
 /**
- * Convert integer color to hex string.
+ * Convert [UIColor] to hex string.
  * @receiver the current color.
  * @return [String]
  */
