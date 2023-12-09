@@ -208,7 +208,7 @@ object ViewLayoutParams {
     private const val UNSPEC_DIMEN = -3
 
     /**
-     * Create an new [ViewGroup.LayoutParams].
+     * Create a new [ViewGroup.LayoutParams].
      *
      * Usage:
      *

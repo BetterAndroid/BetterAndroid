@@ -44,7 +44,7 @@ class BackPressedController private constructor(private val activity: ComponentA
     companion object {
 
         /**
-         * Create an new [BackPressedController] from [activity].
+         * Create a new [BackPressedController] from [activity].
          *
          * Usage:
          *
