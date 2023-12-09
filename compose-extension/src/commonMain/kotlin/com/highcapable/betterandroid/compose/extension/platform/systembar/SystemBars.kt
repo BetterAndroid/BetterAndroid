@@ -43,12 +43,12 @@ expect class NativeSystemBarsController
  * Supports Android and iOS.
  *
  * This is a controller with the ability to globally manage system bars of each platform.
- * @param actual the actual controller.
+ * @param actual the native controller.
  */
 @Stable
 expect class PlatformSystemBarsController internal constructor(actual: NativeSystemBarsController?) {
 
-    /** The actual controller. */
+    /** The native controller. */
     internal val actual: NativeSystemBarsController?
 
     /** The current system bars insets. */
@@ -189,6 +189,15 @@ fun rememberSystemBarsController(): PlatformSystemBarsController {
     if (systemBars == null) systemBars = resolvePlatformSystemBarsController()
     return systemBars ?: error("No PlatformSystemBarsController provided of composables.")
 }
+
+/**
+ * Resolve the [NativeSystemBarsController].
+ *
+ * If the [NativeSystemBarsController] is destroyed or null, this will return null.
+ * @receiver [PlatformSystemBarsController]
+ * @return [NativeSystemBarsController] or null.
+ */
+expect val PlatformSystemBarsController.nativeController: NativeSystemBarsController?
 
 /**
  * Resolve the [PlatformSystemBarsController].

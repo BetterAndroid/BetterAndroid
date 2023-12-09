@@ -39,7 +39,7 @@ actual class NativeSystemBarsController
  * Supports Android and iOS.
  *
  * This is a controller with the ability to globally manage system bars of each platform.
- * @param actual the actual controller.
+ * @param actual the native controller.
  */
 @Stable
 actual class PlatformSystemBarsController internal actual constructor(internal actual val actual: NativeSystemBarsController?) {
@@ -142,6 +142,15 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
         // Platform desktop: No-op.
     }
 }
+
+/**
+ * Resolve the [NativeSystemBarsController].
+ *
+ * If the [NativeSystemBarsController] is destroyed or null, this will return null.
+ * @receiver [PlatformSystemBarsController]
+ * @return [NativeSystemBarsController] or null.
+ */
+actual val PlatformSystemBarsController.nativeController get(): NativeSystemBarsController? = null
 
 /**
  * Resolve the [PlatformSystemBarsController].

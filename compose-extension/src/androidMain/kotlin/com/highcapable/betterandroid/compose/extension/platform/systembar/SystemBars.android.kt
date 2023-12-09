@@ -55,7 +55,7 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
     /** The current system bars insets. */
     actual val systemBarsInsets: PlatformSystemBarsInsets
         @Composable
-        get() = currentActual?.resolvePlatformSystemBarsInsets() ?: PlatformSystemBarsInsets.Default
+        get() = nativeController?.resolvePlatformSystemBarsInsets() ?: PlatformSystemBarsInsets.Default
 
     /**
      * Get or set the behavior of system bars.
@@ -64,9 +64,9 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @return [PlatformSystemBarsBehavior]
      */
     actual var behavior: PlatformSystemBarsBehavior
-        get() = currentActual?.behavior?.toPlatformExpect() ?: DefaultPlatformSystemBarsBehavior
+        get() = nativeController?.behavior?.toPlatformExpect() ?: DefaultPlatformSystemBarsBehavior
         set(value) {
-            currentActual?.behavior = value.toPlatformActual()
+            nativeController?.behavior = value.toPlatformActual()
         }
 
     /**
@@ -74,7 +74,7 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @param type the system bars type.
      */
     actual fun show(type: PlatformSystemBars) {
-        currentActual?.show(type.toPlatformActual())
+        nativeController?.show(type.toPlatformActual())
     }
 
     /**
@@ -82,7 +82,7 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @param type the system bars type.
      */
     actual fun hide(type: PlatformSystemBars) {
-        currentActual?.hide(type.toPlatformActual())
+        nativeController?.hide(type.toPlatformActual())
     }
 
     /**
@@ -91,7 +91,7 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @return [Boolean]
      */
     actual fun isVisible(type: PlatformSystemBars): Boolean {
-        return currentActual?.isVisible(type.toPlatformActual()) == true
+        return nativeController?.isVisible(type.toPlatformActual()) == true
     }
 
     /**
@@ -100,7 +100,7 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @param color the color to set.
      */
     actual fun setColor(type: PlatformSystemBars, color: Color) {
-        currentActual?.setColor(type.toPlatformActual(), color.toArgb())
+        nativeController?.setColor(type.toPlatformActual(), color.toArgb())
     }
 
     /**
@@ -113,9 +113,9 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @return [Boolean]
      */
     actual var isDarkContentStatusBars: Boolean
-        get() = currentActual?.isDarkContentStatusBars == true
+        get() = nativeController?.isDarkContentStatusBars == true
         set(value) {
-            currentActual?.isDarkContentStatusBars = value
+            nativeController?.isDarkContentStatusBars = value
         }
 
     /**
@@ -130,9 +130,9 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @return [Boolean]
      */
     actual var isDarkContentNavigationBars: Boolean
-        get() = currentActual?.isDarkContentNavigationBars == true
+        get() = nativeController?.isDarkContentNavigationBars == true
         set(value) {
-            currentActual?.isDarkContentNavigationBars = value
+            nativeController?.isDarkContentNavigationBars = value
         }
 
     /**
@@ -140,16 +140,18 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @param color the current color.
      */
     actual fun adaptiveAppearance(color: Color) {
-        currentActual?.adaptiveAppearance(color.toArgb())
+        nativeController?.adaptiveAppearance(color.toArgb())
     }
 }
 
 /**
- * Resolve the [SystemBarsController]'s undestroyed instance.
+ * Resolve the [NativeSystemBarsController].
+ *
+ * If the [NativeSystemBarsController] is destroyed or null, this will return null.
  * @receiver [PlatformSystemBarsController]
- * @return [SystemBarsController] or null.
+ * @return [NativeSystemBarsController] or null.
  */
-private val PlatformSystemBarsController.currentActual get() = if (actual?.isDestroyed == false) actual else null
+actual val PlatformSystemBarsController.nativeController get() = if (actual?.isDestroyed == false) actual else null
 
 /**
  * Resolve the [PlatformSystemBarsController].
