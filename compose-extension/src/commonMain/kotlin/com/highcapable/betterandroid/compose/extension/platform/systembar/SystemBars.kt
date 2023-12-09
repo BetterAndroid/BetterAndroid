@@ -84,8 +84,6 @@ expect class PlatformSystemBarsController internal constructor(actual: NativeSys
 
     /**
      * Set the system bars background color.
-     *
-     * - Note: This will no-op of [PlatformSystemBars.NavigationBars] for iOS.
      * @param type the system bars type.
      * @param color the color to set.
      */
@@ -157,8 +155,8 @@ enum class PlatformSystemBarsBehavior {
      *
      * - iOS:
      *
-     * The system bars can be revealed temporarily with system gestures,
-     * but disappears after a period of time.
+     * The system bars can be revealed temporarily with system gestures
+     * when the status bars hide, but disappears after a period of time.
      */
     Immersive
 }
@@ -177,7 +175,8 @@ enum class PlatformSystemBarsBehavior {
  *
  * > iOS
  *
- * TODO: iOS platform system bars.
+ * You need to use **AppComponentUIViewController**, see the **AppComponentUIViewController**
+ * function for more help.
  *
  * > Others
  *

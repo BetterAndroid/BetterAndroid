@@ -27,11 +27,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.interop.LocalUIViewController
+import com.highcapable.betterandroid.compose.extension.platform.component.systembar.SystemBarsController
+import com.highcapable.betterandroid.compose.extension.platform.component.systembar.type.SystemBars
+import com.highcapable.betterandroid.compose.extension.platform.component.systembar.type.SystemBarsBehavior
+import com.highcapable.betterandroid.compose.extension.platform.component.uiviewcontroller.AppComponentUIViewController
+import com.highcapable.betterandroid.compose.extension.ui.toPlatformColor
+import platform.UIKit.UIStatusBarStyleDarkContent
+import platform.UIKit.UIStatusBarStyleLightContent
+import platform.UIKit.UIViewController
+import platform.UIKit.childViewControllers
 
 /**
  * Native system bars controller for each platform.
  */
-actual typealias NativeSystemBarsController = Any // TODO: iOS platform system bars.
+actual typealias NativeSystemBarsController = SystemBarsController
 
 /**
  * Platform system bars controller.
@@ -47,10 +57,7 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
     /** The current system bars insets. */
     actual val systemBarsInsets: PlatformSystemBarsInsets
         @Composable
-        get() {
-            // TODO: iOS platform system bars.
-            return PlatformSystemBarsInsets.Default
-        }
+        get() = currentActual?.resolvePlatformSystemBarsInsets() ?: PlatformSystemBarsInsets.Default
 
     /**
      * Get or set the behavior of system bars.
@@ -59,9 +66,9 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @return [PlatformSystemBarsBehavior]
      */
     actual var behavior: PlatformSystemBarsBehavior
-        get() = DefaultPlatformSystemBarsBehavior
+        get() = currentActual?.behavior?.toPlatformExpect() ?: DefaultPlatformSystemBarsBehavior
         set(value) {
-            // TODO: iOS platform system bars.
+            currentActual?.behavior = value.toPlatformActual()
         }
 
     /**
@@ -69,7 +76,7 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @param type the system bars type.
      */
     actual fun show(type: PlatformSystemBars) {
-        // TODO: iOS platform system bars.
+        currentActual?.show(type.toPlatformActual())
     }
 
     /**
@@ -77,7 +84,7 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @param type the system bars type.
      */
     actual fun hide(type: PlatformSystemBars) {
-        // TODO: iOS platform system bars.
+        currentActual?.hide(type.toPlatformActual())
     }
 
     /**
@@ -86,19 +93,16 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @return [Boolean]
      */
     actual fun isVisible(type: PlatformSystemBars): Boolean {
-        // TODO: iOS platform system bars.
-        return false
+        return currentActual?.isVisible(type.toPlatformActual()) == true
     }
 
     /**
      * Set the system bars background color.
-     *
-     * - Note: This will no-op of [PlatformSystemBars.NavigationBars] for iOS.
      * @param type the system bars type.
      * @param color the color to set.
      */
     actual fun setColor(type: PlatformSystemBars, color: Color) {
-        // TODO: iOS platform system bars.
+        currentActual?.setColor(type.toPlatformActual(), color.toPlatformColor())
     }
 
     /**
@@ -111,9 +115,9 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @return [Boolean]
      */
     actual var isDarkColorStatusBars: Boolean
-        get() = false
+        get() = currentActual?.statusBarStyle == UIStatusBarStyleDarkContent
         set(value) {
-            // TODO: iOS platform system bars.
+            currentActual?.statusBarStyle = if (value) UIStatusBarStyleDarkContent else UIStatusBarStyleLightContent
         }
 
     /**
@@ -139,9 +143,16 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * @param color the current color.
      */
     actual fun adaptiveAppearance(color: Color) {
-        // TODO: iOS platform system bars.
+        currentActual?.adaptiveAppearance(color.toPlatformColor())
     }
 }
+
+/**
+ * Resolve the [SystemBarsController]'s undestroyed instance.
+ * @receiver [PlatformSystemBarsController]
+ * @return [SystemBarsController] or null.
+ */
+private val PlatformSystemBarsController.currentActual get() = if (actual?.isDestroyed == false) actual else null
 
 /**
  * Resolve the [PlatformSystemBarsController].
@@ -150,6 +161,59 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
 @Composable
 @ReadOnlyComposable
 internal actual fun resolvePlatformSystemBarsController(): PlatformSystemBarsController {
-    // TODO: iOS platform system bars.
-    return PlatformSystemBarsController(Any())
+    val controller = LocalUIViewController.current
+    return PlatformSystemBarsController(controller.resolveSystemBarsController())
+}
+
+/**
+ * Resolve the [SystemBarsController] from [UIViewController].
+ * @receiver the current UI view controller.
+ * @return [SystemBarsController] or null.
+ */
+private fun UIViewController.resolveSystemBarsController() = resolveAppComponentUIViewController()?.systemBars ?: run {
+    val invalidMessage = "You need to use AppComponentUIViewController to use the system bars related functions of composables.\n" +
+        "Please visit https://github.com/BetterAndroid/BetterAndroid for more help."
+    println("BetterAndroid: $invalidMessage")
+    null
+}
+
+/**
+ * Resolve the [AppComponentUIViewController].
+ * @receiver the current UI view controller.
+ * @return [AppComponentUIViewController] or null.
+ */
+private fun UIViewController.resolveAppComponentUIViewController() =
+    this as? AppComponentUIViewController?
+        ?: this.parentViewController as? AppComponentUIViewController?
+        ?: this.childViewControllers.firstOrNull() as? AppComponentUIViewController?
+
+/**
+ * Convert [PlatformSystemBars] to [SystemBars].
+ * @receiver [PlatformSystemBars]
+ * @return [SystemBars]
+ */
+private fun PlatformSystemBars.toPlatformActual() = when (this) {
+    PlatformSystemBars.All -> SystemBars.ALL
+    PlatformSystemBars.StatusBars -> SystemBars.STATUS_BARS
+    PlatformSystemBars.NavigationBars -> SystemBars.HOME_INDICATOR
+}
+
+/**
+ * Convert [PlatformSystemBars] to [SystemBarsBehavior].
+ * @receiver [PlatformSystemBarsBehavior]
+ * @return [SystemBarsBehavior]
+ */
+private fun PlatformSystemBarsBehavior.toPlatformActual() = when (this) {
+    PlatformSystemBarsBehavior.Default -> SystemBarsBehavior.DEFAULT
+    PlatformSystemBarsBehavior.Immersive -> SystemBarsBehavior.SCREEN_EDGES_DEFERRING_SYSTEM_GESTURES
+}
+
+/**
+ * Convert [SystemBarsBehavior] to [PlatformSystemBarsBehavior].
+ * @receiver [SystemBarsBehavior]
+ * @return [PlatformSystemBarsBehavior]
+ */
+private fun SystemBarsBehavior.toPlatformExpect() = when (this) {
+    SystemBarsBehavior.DEFAULT -> PlatformSystemBarsBehavior.Default
+    SystemBarsBehavior.SCREEN_EDGES_DEFERRING_SYSTEM_GESTURES -> PlatformSystemBarsBehavior.Immersive
 }

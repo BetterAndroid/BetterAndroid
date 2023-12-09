@@ -96,8 +96,6 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
 
     /**
      * Set the system bars background color.
-     *
-     * - Note: This will no-op of [PlatformSystemBars.NavigationBars] for iOS.
      * @param type the system bars type.
      * @param color the color to set.
      */

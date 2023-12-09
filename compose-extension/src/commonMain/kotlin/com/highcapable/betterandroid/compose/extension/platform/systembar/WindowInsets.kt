@@ -37,6 +37,8 @@ import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
 
 /**
  * Create a new [PlatformInsets].
+ *
+ * See also [PlatformInsets].
  * @param start the start insets.
  * @param top the top insets.
  * @param end the end insets.
@@ -53,6 +55,8 @@ fun PlatformInsets(
 
 /**
  * Create a new [PlatformInsets] from [LayoutDirection].
+ *
+ * See also [PlatformInsets].
  * @param layoutDirection the layout direction, default is [LayoutDirection.Ltr].
  * @param left the left insets.
  * @param top the top insets.
@@ -74,6 +78,8 @@ fun PlatformInsets(
 
 /**
  * Create a new [PlatformSystemBarsInsets].
+ *
+ * See also [PlatformSystemBarsInsets].
  * @param stableStart the stable start insets.
  * @param stableTop the stable top insets.
  * @param stableEnd the stable end insets.
@@ -101,6 +107,8 @@ fun PlatformSystemBarsInsets(
 
 /**
  * Create a new [PlatformSystemBarsInsets] from [LayoutDirection].
+ *
+ * See also [PlatformSystemBarsInsets].
  * @param layoutDirection the layout direction, default is [LayoutDirection.Ltr].
  * @param stableLeft the stable left insets.
  * @param stableTop the stable top insets.
@@ -171,6 +179,18 @@ interface PlatformInsets {
 
 /**
  * Platform window insets of system bars.
+ *
+ * - In Android:
+ *
+ * There is a set of insets here, one is [stable] and the other is [cutout],
+ * [stable] represents the necessary padding of the system, such as the status bars and navigation bars,
+ * and [cutout] represents the padding of the notch size part.
+ *
+ * - In iOS:
+ *
+ * Since iOS only provides one safe area insets, we cannot know whether the padding
+ * given by the system is notch size or stable size, at this time,
+ * [stable] and [cutout] will be set to the same value, no matter which one you get.
  */
 @Stable
 interface PlatformSystemBarsInsets {
