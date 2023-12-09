@@ -278,6 +278,11 @@ class SystemBarsController private constructor(private val activity: Activity) {
         SystemBarsBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE -> WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     }
 
+    /** Initialize the system bars default behavior. */
+    private fun initializeDefaultBehavior() {
+        behavior = SystemBarsBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE
+    }
+
     /**
      * Create the [SystemBarsController]'s container layout.
      *
@@ -412,14 +417,13 @@ class SystemBarsController private constructor(private val activity: Activity) {
      *
      * The default behavior type is [SystemBarsBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE].
      *
-     * - Before using this function, you must call [init] first.
+     * - Before using this function, you need to call [init] first, otherwise it will no effect.
      * @return [SystemBarsBehavior]
-     * @throws IllegalStateException if [init] never been called.
      */
     var behavior
         get() = insetsController.systemBarBehaviorType
         set(value) {
-            require(isInitOnce) { "You must call init function first before using behavior function." }
+            if (!isInitOnce) return
             insetsController.systemBarsBehavior = value.toBehaviorType()
         }
 
@@ -443,7 +447,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
             isDarkColorStatusBars = isDarkColorStatusBars,
             isDarkColorNavigationBars = isDarkColorNavigationBars
         )
-        behavior = SystemBarsBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE
+        initializeDefaultBehavior()
         createSystemBarsLayout()
         if (defaultPadding) createDefaultContainerPaddingCallback()
         ViewCompat.setOnApplyWindowInsetsListener(decorView) { _, windowInsets ->
