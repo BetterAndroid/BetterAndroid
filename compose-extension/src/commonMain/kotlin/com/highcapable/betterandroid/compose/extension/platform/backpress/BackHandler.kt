@@ -45,7 +45,7 @@ import androidx.compose.runtime.Composable
  *
  * > Others
  *
- * No effect.
+ * No-op.
  * @param enabled if this BackHandler should be enabled, default true.
  * @param onBack the action invoked by pressing the system back.
  */

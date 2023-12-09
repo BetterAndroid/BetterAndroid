@@ -180,7 +180,7 @@ enum class PlatformSystemBarsBehavior {
  *
  * > Others
  *
- * No effect.
+ * No-op.
  * @return [PlatformSystemBarsController]
  */
 @Composable
