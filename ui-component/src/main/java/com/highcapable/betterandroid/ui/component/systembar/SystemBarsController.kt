@@ -546,7 +546,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
      * @param type the insets type, default is [InsetsType.ADAPTIVE].
      */
     @JvmOverloads
-    fun applySystemBarsInsets(
+    fun applyInsets(
         left: Boolean = true,
         top: Boolean = true,
         right: Boolean = true,
@@ -572,7 +572,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
      * @param type the insets type, default is [InsetsType.ADAPTIVE].
      */
     @JvmOverloads
-    fun appendSystemBarsInsets(
+    fun appendInsets(
         left: Boolean = true,
         top: Boolean = true,
         right: Boolean = true,
@@ -586,7 +586,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
     }
 
     /** Remove all system bars insets and cutout padding in [containerLayout]. */
-    fun removeSystemBarsInsets() {
+    fun removeAllInsets() {
         containerPaddingCallback = null
         containerLayout?.setPadding(0)
         containerLayout?.requestLayout()
@@ -721,15 +721,15 @@ class SystemBarsController private constructor(private val activity: Activity) {
     /**
      * Apply the system bars extra paddings.
      *
-     * - This function is deprecated, use [applySystemBarsInsets] instead.
+     * - This function is deprecated, use [applyInsets] instead.
      */
     @Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
-    @Deprecated(message = "Use applySystemBarsInsets instead.")
+    @Deprecated(message = "Use applyInsets instead.")
     @JvmOverloads
     fun applyExtraPaddings(
         vararg types: com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType,
         ignoredCutout: Boolean = false
-    ) = appendSystemBarsInsets(
+    ) = appendInsets(
         left = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.LEFT),
         top = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.TOP),
         right = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.RIGHT),
@@ -740,15 +740,15 @@ class SystemBarsController private constructor(private val activity: Activity) {
     /**
      * Append the system bars extra paddings.
      *
-     * - This function is deprecated, use [appendSystemBarsInsets] instead.
+     * - This function is deprecated, use [appendInsets] instead.
      */
     @Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
-    @Deprecated(message = "Use appendSystemBarsInsets instead.")
+    @Deprecated(message = "Use appendInsets instead.")
     @JvmOverloads
     fun appendExtraPaddings(
         vararg types: com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType,
         ignoredCutout: Boolean = false
-    ) = appendSystemBarsInsets(
+    ) = appendInsets(
         left = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.LEFT),
         top = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.TOP),
         right = types.contains(com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType.RIGHT),
@@ -759,33 +759,33 @@ class SystemBarsController private constructor(private val activity: Activity) {
     /**
      * Remove the system bars extra paddings.
      *
-     * - This function is deprecated, use [removeSystemBarsInsets] instead.
+     * - This function is deprecated, use [removeAllInsets] instead.
      */
     @Suppress("DEPRECATION", "UNUSED_PARAMETER")
-    @Deprecated(message = "Use removeSystemBarsInsets instead.", ReplaceWith("removeSystemBarsInsets()"))
+    @Deprecated(message = "Use removeAllInsets instead.", ReplaceWith("removeAllInsets()"))
     @JvmOverloads
     fun removeExtraPaddings(
         vararg types: com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType,
         ignoredCutout: Boolean = false
-    ) = removeSystemBarsInsets()
+    ) = removeAllInsets()
 
     /**
      * Show the system bars stub views.
      *
-     * - This function is deprecated and no effect, use [applyExtraPaddings], [appendExtraPaddings] instead.
+     * - This function is deprecated and no effect, use [applyInsets], [appendInsets] instead.
      */
     @Suppress("UNUSED_PARAMETER")
-    @Deprecated(message = "Use applyExtraPaddings, appendExtraPaddings instead.")
+    @Deprecated(message = "Use applyInsets, appendInsets instead.")
     fun showStub(type: SystemBars) {
     }
 
     /**
      * Hide the system bars stub views.
      *
-     * - This function is deprecated and no effect, use [removeExtraPaddings] instead.
+     * - This function is deprecated and no effect, use [removeAllInsets] instead.
      */
     @Suppress("UNUSED_PARAMETER")
-    @Deprecated(message = "Use removeExtraPaddings instead.")
+    @Deprecated(message = "Use removeAllInsets instead.")
     @JvmOverloads
     fun hideStub(type: SystemBars, ignoredCutout: Boolean = false) {
     }
