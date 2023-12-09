@@ -156,14 +156,14 @@ class SystemBarsController private constructor(private val activity: Activity) {
      * System bars params.
      * @param statusBarColor the status bars color.
      * @param navigationBarColor the navigation bars color.
-     * @param isDarkColorStatusBars whether the status bars color is dark color.
-     * @param isDarkColorNavigationBars whether the navigation bars color is dark color.
+     * @param isDarkContentStatusBars whether the status bars content is dark.
+     * @param isDarkContentNavigationBars whether the navigation bars content is dark.
      */
     private data class SystemBarsParams(
         val statusBarColor: Int,
         val navigationBarColor: Int,
-        val isDarkColorStatusBars: Boolean,
-        val isDarkColorNavigationBars: Boolean
+        val isDarkContentStatusBars: Boolean,
+        val isDarkContentNavigationBars: Boolean
     )
 
     /**
@@ -444,8 +444,8 @@ class SystemBarsController private constructor(private val activity: Activity) {
         originalSystemBarsParams = SystemBarsParams(
             statusBarColor = activity.window?.statusBarColor ?: Color.TRANSPARENT,
             navigationBarColor = activity.window?.navigationBarColor ?: Color.TRANSPARENT,
-            isDarkColorStatusBars = isDarkColorStatusBars,
-            isDarkColorNavigationBars = isDarkColorNavigationBars
+            isDarkContentStatusBars = isDarkContentStatusBars,
+            isDarkContentNavigationBars = isDarkContentNavigationBars
         )
         initializeDefaultBehavior()
         createSystemBarsLayout()
@@ -459,8 +459,9 @@ class SystemBarsController private constructor(private val activity: Activity) {
             }; windowInsets
         }
         val isUiInNightMode = activity.resources.configuration.isUiInNightMode
-        isDarkColorStatusBars = !isUiInNightMode
-        isDarkColorNavigationBars = !isUiInNightMode
+        /** The default content appearance is following the system. */
+        isDarkContentStatusBars = !isUiInNightMode
+        isDarkContentNavigationBars = !isUiInNightMode
         /** Set the layout overlay to status bars and navigation bars. */
         WindowCompat.setDecorFitsSystemWindows(activity.window, false)
         /** We no longer need the system status bars and navigation bars background color. */
@@ -599,6 +600,107 @@ class SystemBarsController private constructor(private val activity: Activity) {
     fun isVisible(type: SystemBars) = windowInsets?.isVisible(type.toInsetsType()) ?: false
 
     /**
+     * Set the system bars background color.
+     * @param type the system bars type.
+     * @param color the color to set.
+     * @throws IllegalStateException if [type] is invalid.
+     */
+    fun setColor(type: SystemBars, @ColorInt color: Int) {
+        when (type) {
+            SystemBars.ALL -> {
+                systemBarsViews[0].setBackgroundColor(color)
+                systemBarsViews[1].setBackgroundColor(color)
+            }
+            SystemBars.STATUS_BARS -> systemBarsViews[0].setBackgroundColor(color)
+            SystemBars.NAVIGATION_BARS -> systemBarsViews[1].setBackgroundColor(color)
+            else -> error("Invalid SystemBars type.")
+        }
+    }
+
+    /**
+     * Get or set the dark content (light appearance) of status bars.
+     *
+     * | Value | Behavior                                |
+     * | ----- | --------------------------------------- |
+     * | true  | Background bright, font and icons dark. |
+     * | false | Background dark, font and icons bright. |
+     *
+     * - Set to true below Android 6.0 will add a translucent mask,
+     *   as the system does not support inverting colors.
+     *
+     * - Some systems, such as MIUI based on Android 5,
+     *   will automatically adapt to their own set of inverse color schemes.
+     * @return [Boolean]
+     */
+    var isDarkContentStatusBars
+        get() = insetsController.isAppearanceLightStatusBars
+        set(value) {
+            if (SystemVersion.isLowTo(SystemVersion.M) && !systemBarsCompat.isLegacyMiui) systemBarsViews[0].showMask()
+            if (systemBarsCompat.isLegacyMiui) systemBarsCompat.setStatusBarDarkModeForLegacyMiui(value)
+            insetsController.isAppearanceLightStatusBars = value
+        }
+
+    /**
+     * Get or set the dark content (light appearance) of navigation bars.
+     *
+     * | Value | Behavior                                |
+     * | ----- | --------------------------------------- |
+     * | true  | Background bright, font and icons dark. |
+     * | false | Background dark, font and icons bright. |
+     *
+     * - Set to true below Android 8.0 will add a transparent mask,
+     *   because the system does not support inverting colors.
+     * @return [Boolean]
+     */
+    var isDarkContentNavigationBars
+        get() = insetsController.isAppearanceLightNavigationBars
+        set(value) {
+            if (SystemVersion.isLowTo(SystemVersion.O)) systemBarsViews[1].showMask()
+            insetsController.isAppearanceLightNavigationBars = value
+        }
+
+    /**
+     * Automatically adapts the appearance of system bars based on the given [color].
+     * @param color the current color.
+     */
+    fun adaptiveAppearance(color: Int) {
+        val isBrightColor = color.isBrightColor
+        isDarkContentStatusBars = isBrightColor
+        isDarkContentNavigationBars = isBrightColor
+    }
+
+    /**
+     * Destroy the current [SystemBarsController] and restore the current [rootView].
+     *
+     * You can call [init] again to re-initialize the [SystemBarsController].
+     *
+     * - The destroy operation will not be called repeatedly,
+     *   repeated calls will only be performed once.
+     */
+    fun destroy() {
+        if (!isInitOnce || containerLayout == null) return
+        rootView.removeSelfInLayout()
+        systemBarsViews.forEach { it.removeSelfInLayout() }
+        containerLayout?.removeSelfInLayout()
+        parentLayout?.removeAllViewsInLayout()
+        parentLayout?.addView(rootView)
+        parentLayout = null
+        containerLayout = null
+        containerPaddingCallback = null
+        /** Restore to default sets. */
+        originalSystemBarsParams?.also {
+            WindowCompat.setDecorFitsSystemWindows(activity.window, true)
+            activity.window?.statusBarColor = it.statusBarColor
+            activity.window?.navigationBarColor = it.navigationBarColor
+            isDarkContentStatusBars = it.isDarkContentStatusBars
+            isDarkContentNavigationBars = it.isDarkContentNavigationBars
+        }
+        isInitOnce = false
+    }
+
+    // The following functions are deprecated, you should not use them.
+
+    /**
      * Show system bars.
      *
      * - This function is deprecated, use [show] instead.
@@ -689,101 +791,26 @@ class SystemBarsController private constructor(private val activity: Activity) {
     }
 
     /**
-     * Set the system bars background color.
-     * @param type the system bars type.
-     * @param color the color to set.
-     * @throws IllegalStateException if [type] is invalid.
-     */
-    fun setColor(type: SystemBars, @ColorInt color: Int) {
-        when (type) {
-            SystemBars.ALL -> {
-                systemBarsViews[0].setBackgroundColor(color)
-                systemBarsViews[1].setBackgroundColor(color)
-            }
-            SystemBars.STATUS_BARS -> systemBarsViews[0].setBackgroundColor(color)
-            SystemBars.NAVIGATION_BARS -> systemBarsViews[1].setBackgroundColor(color)
-            else -> error("Invalid SystemBars type.")
-        }
-    }
-
-    /**
      * Get or set the dark elements tint color (light appearance) of status bars.
      *
-     * | Value | Behavior                                |
-     * | ----- | --------------------------------------- |
-     * | true  | Background bright, font and icons dark. |
-     * | false | Background dark, font and icons bright. |
-     *
-     * - Set to true below Android 6.0 will add a translucent mask
-     *   when [setColor] is not used, as the system does not support inverting colors.
-     *
-     * - Some systems, such as MIUI based on Android 5,
-     *   will automatically adapt to their own set of inverse color schemes.
-     * @return [Boolean]
+     * - This function is deprecated, use [isDarkContentStatusBars] instead.
      */
+    @Deprecated(message = "Use isDarkContentStatusBars instead.", ReplaceWith("isDarkContentStatusBars"))
     var isDarkColorStatusBars
-        get() = insetsController.isAppearanceLightStatusBars
+        get() = isDarkContentStatusBars
         set(value) {
-            if (SystemVersion.isLowTo(SystemVersion.M) && !systemBarsCompat.isLegacyMiui) systemBarsViews[0].showMask()
-            if (systemBarsCompat.isLegacyMiui) systemBarsCompat.setStatusBarDarkModeForLegacyMiui(value)
-            insetsController.isAppearanceLightStatusBars = value
+            isDarkContentStatusBars = value
         }
 
     /**
      * Get or set the dark elements tint color (light appearance) of navigation bars.
      *
-     * | Value | Behavior                                |
-     * | ----- | --------------------------------------- |
-     * | true  | Background bright, font and icons dark. |
-     * | false | Background dark, font and icons bright. |
-     *
-     * - Set to true below Android 8.0 will add a transparent mask
-     *   when [setColor] is not used, because the system does not support inverting colors.
-     * @return [Boolean]
+     * - This function is deprecated, use [isDarkContentNavigationBars] instead.
      */
+    @Deprecated(message = "Use isDarkContentNavigationBars instead.", ReplaceWith("isDarkContentNavigationBars"))
     var isDarkColorNavigationBars
-        get() = insetsController.isAppearanceLightNavigationBars
+        get() = isDarkContentNavigationBars
         set(value) {
-            if (SystemVersion.isLowTo(SystemVersion.O)) systemBarsViews[1].showMask()
-            insetsController.isAppearanceLightNavigationBars = value
+            isDarkContentNavigationBars = value
         }
-
-    /**
-     * Automatically adapts the appearance of system bars based on the given [color].
-     * @param color the current color.
-     */
-    fun adaptiveAppearance(color: Int) {
-        val isBrightColor = color.isBrightColor
-        isDarkColorStatusBars = isBrightColor
-        isDarkColorNavigationBars = isBrightColor
-    }
-
-    /**
-     * Destroy the current [SystemBarsController] and restore the current [rootView].
-     *
-     * You can call [init] again to re-initialize the [SystemBarsController].
-     *
-     * - The destroy operation will not be called repeatedly,
-     *   repeated calls will only be performed once.
-     */
-    fun destroy() {
-        if (!isInitOnce || containerLayout == null) return
-        rootView.removeSelfInLayout()
-        systemBarsViews.forEach { it.removeSelfInLayout() }
-        containerLayout?.removeSelfInLayout()
-        parentLayout?.removeAllViewsInLayout()
-        parentLayout?.addView(rootView)
-        parentLayout = null
-        containerLayout = null
-        containerPaddingCallback = null
-        /** Restore to default sets. */
-        originalSystemBarsParams?.also {
-            WindowCompat.setDecorFitsSystemWindows(activity.window, true)
-            activity.window?.statusBarColor = it.statusBarColor
-            activity.window?.navigationBarColor = it.navigationBarColor
-            isDarkColorStatusBars = it.isDarkColorStatusBars
-            isDarkColorNavigationBars = it.isDarkColorNavigationBars
-        }
-        isInitOnce = false
-    }
 }
