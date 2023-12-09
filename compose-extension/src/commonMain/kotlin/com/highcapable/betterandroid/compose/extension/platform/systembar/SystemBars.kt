@@ -90,7 +90,7 @@ expect class PlatformSystemBarsController internal constructor(actual: NativeSys
     fun setColor(type: PlatformSystemBars, color: Color)
 
     /**
-     * Get or set the dark elements tint color (light appearance) of status bars.
+     * Get or set the dark content (light appearance) of status bars.
      *
      * | Value | Behavior                                |
      * | ----- | --------------------------------------- |
@@ -98,10 +98,10 @@ expect class PlatformSystemBarsController internal constructor(actual: NativeSys
      * | false | Background dark, font and icons bright. |
      * @return [Boolean]
      */
-    var isDarkColorStatusBars: Boolean
+    var isDarkContentStatusBars: Boolean
 
     /**
-     * Get or set the dark elements tint color (light appearance) of navigation bars.
+     * Get or set the dark content (light appearance) of navigation bars.
      *
      * | Value | Behavior                                |
      * | ----- | --------------------------------------- |
@@ -111,7 +111,7 @@ expect class PlatformSystemBarsController internal constructor(actual: NativeSys
      * - Note: This will no-op for iOS.
      * @return [Boolean]
      */
-    var isDarkColorNavigationBars: Boolean
+    var isDarkContentNavigationBars: Boolean
 
     /**
      * Automatically adapts the appearance of system bars based on the given [color].

@@ -104,7 +104,7 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
     }
 
     /**
-     * Get or set the dark elements tint color (light appearance) of status bars.
+     * Get or set the dark content (light appearance) of status bars.
      *
      * | Value | Behavior                                |
      * | ----- | --------------------------------------- |
@@ -112,14 +112,14 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * | false | Background dark, font and icons bright. |
      * @return [Boolean]
      */
-    actual var isDarkColorStatusBars: Boolean
-        get() = currentActual?.isDarkColorStatusBars == true
+    actual var isDarkContentStatusBars: Boolean
+        get() = currentActual?.isDarkContentStatusBars == true
         set(value) {
-            currentActual?.isDarkColorStatusBars = value
+            currentActual?.isDarkContentStatusBars = value
         }
 
     /**
-     * Get or set the dark elements tint color (light appearance) of navigation bars.
+     * Get or set the dark content (light appearance) of navigation bars.
      *
      * | Value | Behavior                                |
      * | ----- | --------------------------------------- |
@@ -129,10 +129,10 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
      * - Note: This will no-op for iOS.
      * @return [Boolean]
      */
-    actual var isDarkColorNavigationBars: Boolean
-        get() = currentActual?.isDarkColorNavigationBars == true
+    actual var isDarkContentNavigationBars: Boolean
+        get() = currentActual?.isDarkContentNavigationBars == true
         set(value) {
-            currentActual?.isDarkColorNavigationBars = value
+            currentActual?.isDarkContentNavigationBars = value
         }
 
     /**
