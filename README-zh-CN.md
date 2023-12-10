@@ -283,12 +283,6 @@ dependencies {
     <h1><a href="https://github.com/fankes/fankes/blob/main/project-promote/README-zh-CN.md">→ 查看更多关于我的项目，请点击这里 ←</a></h1>
 </div>
 
-## 捐赠支持
-
-工作不易，无意外情况此项目将继续维护下去，提供更多可能，欢迎打赏。
-
-<img src="https://github.com/fankes/fankes/blob/main/img-src/payment_code.jpg?raw=true" width = "500" alt="Payment Code"/>
-
 ## Star History
 
 ![Star History Chart](https://api.star-history.com/svg?repos=BetterAndroid/BetterAndroid&type=Date)
