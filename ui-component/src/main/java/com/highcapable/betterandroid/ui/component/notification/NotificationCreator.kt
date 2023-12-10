@@ -33,6 +33,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 import com.highcapable.betterandroid.ui.component.notification.builder.NotificationBuilder
 import com.highcapable.betterandroid.ui.component.notification.builder.NotificationChannelBuilder
+import com.highcapable.betterandroid.ui.component.notification.factory.createNotification
 import com.highcapable.betterandroid.ui.component.notification.type.NotificationImportance
 import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationChannelWrapper
 import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationWrapper
@@ -47,6 +48,8 @@ class NotificationCreator private constructor(private val context: Context) {
 
         /**
          * Create a new [NotificationCreator] from [context].
+         *
+         * - We recommend to using [Context.createNotification] at first.
          * @param context the current context.
          * @return [NotificationCreator]
          */
