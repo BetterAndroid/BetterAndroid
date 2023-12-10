@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2023/10/28.
  */
-@file:Suppress("unused", "InlinedApi", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate", "InlinedApi", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
 
 package com.highcapable.betterandroid.ui.component.notification
 
