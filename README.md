@@ -8,7 +8,7 @@
 
 Create more useful tool extensions for Android.
 
-English | [简体中文](https://github.com/BetterAndroid/BetterAndroid/blob/main/README-zh-CN.md)
+English | [简体中文](README-zh-CN.md)
 
 | <img src="https://github.com/BetterAndroid/.github/blob/main/img-src/logo.png?raw=true" width = "30" height = "30" alt="LOGO"/> | [BetterAndroid](https://github.com/BetterAndroid) |
 |---------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------|
@@ -284,7 +284,7 @@ If possible, feel free to submit a PR to contribute features you think are neede
 
 ## Changelog
 
-- [Click here](https://github.com/BetterAndroid/BetterAndroid/blob/main/docs/changelog.md) to view the historical changelog
+- [Click here](docs/changelog.md) to view the historical changelog
 
 ## Promotion
 

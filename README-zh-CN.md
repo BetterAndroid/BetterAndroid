@@ -8,7 +8,7 @@
 
 为 Android 创建更多有用的工具扩展。
 
-[English](https://github.com/BetterAndroid/BetterAndroid/blob/main/README.md) | 简体中文
+[English](README.md) | 简体中文
 
 | <img src="https://github.com/BetterAndroid/.github/blob/main/img-src/logo.png?raw=true" width = "30" height = "30" alt="LOGO"/> | [BetterAndroid](https://github.com/BetterAndroid) |
 |---------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------|
@@ -270,7 +270,7 @@ dependencies {
 
 ## 更新日志
 
-- [点击这里](https://github.com/BetterAndroid/BetterAndroid/blob/main/docs/changelog-zh-CN.md) 查看历史更新日志
+- [点击这里](docs/changelog-zh-CN.md) 查看历史更新日志
 
 ## 项目推广
 
