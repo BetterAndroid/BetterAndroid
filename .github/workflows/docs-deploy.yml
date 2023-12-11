@@ -1,0 +1,60 @@
+name: Deploy to GitHub pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'ui-component/src/**'
+      - 'ui-extension/src/**'
+      - 'system-extension/src/**'
+      - 'compose-extension/src/**'
+      - 'docs-source/**'
+      - '.github/workflows/**'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  docs:
+    if: ${{ success() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Prepare Java 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          java-package: jdk
+          distribution: 'temurin'
+          cache: 'gradle'
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            !~/.gradle/caches/build-cache-*
+          key: gradle-deps-core-${{ hashFiles('**/build.gradle.kts') }}
+          restore-keys: |
+            gradle-deps
+      - name: Build VuePress site
+        run: |
+          cd docs-source
+          yarn -i
+          yarn docs:build-gh-pages
+      - name: Deploy to GitHub Pages
+        uses: crazy-max/ghaction-github-pages@v4
+        with:
+          target_branch: gh-pages
+          build_dir: docs-source/dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

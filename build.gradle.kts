@@ -30,7 +30,11 @@ libraryProjects {
         group = "documentation"
         dependsOn("dokkaHtml")
         doLast {
-            val docsDir = rootProject.projectDir.resolve("docs").resolve(project.name)
+            val docsDir = rootProject.projectDir
+                .resolve("docs-source")
+                .resolve("dist")
+                .resolve("KDoc")
+                .resolve(project.name)
             if (docsDir.exists()) docsDir.deleteRecursively() else docsDir.mkdirs()
             layout.buildDirectory.dir("dokka/html").get().asFile.copyRecursively(docsDir)
         }
