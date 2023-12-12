@@ -35,7 +35,7 @@ the [PureReader](https://github.com/PureReader) project.
 
 ## Get Started
 
-[Click here](https://betterandroid.github.io/BetterAndroid) go to the documentation page for more detailed tutorials and content.
+[Click here](https://betterandroid.github.io/BetterAndroid/en) go to the documentation page for more detailed tutorials and content.
 
 ## Promotion
 
