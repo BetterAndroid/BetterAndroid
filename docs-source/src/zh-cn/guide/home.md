@@ -29,4 +29,4 @@ ROM 和第三方厂商定制的 “Android 系统” 以及 Kotlin 开发语言�
 ## 功能贡献
 
 本项目的维护离不开各位开发者的支持和贡献，目前这个项目处于初期阶段，可能依然存在一些问题或者缺少你需要的功能，
-如果可能，欢迎提交 PR 为此项目贡献你认为需要的功能或前往 [GitHub Issues](https://github.com/BetterAndroid/BetterAndroid/issues) 向我们提出建议。
+如果可能，欢迎提交 PR 为此项目贡献你认为需要的功能或前往 [GitHub Issues](repo://issues) 向我们提出建议。

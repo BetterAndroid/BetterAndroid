@@ -39,7 +39,7 @@ implementation("com.highcapable.betterandroid:ui-component:<version>")
 
 ## 功能介绍
 
-你可以 [点击这里](https://betterandroid.github.io/BetterAndroid/KDoc/ui-component) 查看 KDoc。
+你可以 [点击这里](kdoc://ui-component) 查看 KDoc。
 
 <!--------------- 待转移 ---------------
 

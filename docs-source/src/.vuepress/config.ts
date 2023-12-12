@@ -1,7 +1,8 @@
 import { defaultTheme } from 'vuepress';
 import { shikiPlugin } from '@vuepress/plugin-shiki';
 import { searchPlugin } from '@vuepress/plugin-search';
-import { navBarItems, sideBarItems, configs } from './configs/template';
+import { navBarItems, sideBarItems, configs, pageLinkRefs } from './configs/template';
+import { env, markdown } from './configs/utils';
 
 export default {
     dest: configs.dev.dest,
@@ -47,6 +48,9 @@ export default {
             }
         },
     }),
+    extendsMarkdown: (md: markdownit) => {
+        markdown.injectLinks(md, env.dev ? pageLinkRefs.dev : pageLinkRefs.prod);
+    },
     plugins: [
         shikiPlugin({ theme: 'github-dark-dimmed' }),
         searchPlugin({

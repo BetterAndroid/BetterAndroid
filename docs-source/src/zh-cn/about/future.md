@@ -6,4 +6,4 @@
 
 > 这里收录了 `BetterAndroid` 可能会在后期添加的功能。
 
-暂无，如果你有好的想法，欢迎在 [GitHub Issues](https://github.com/BetterAndroid/BetterAndroid/issues) 提交你的想法。
+暂无，如果你有好的想法，欢迎在 [GitHub Issues](repo://issues) 提交你的想法。

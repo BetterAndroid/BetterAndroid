@@ -39,7 +39,7 @@ implementation("com.highcapable.betterandroid:system-extension:<version>")
 
 ## 功能介绍
 
-你可以 [点击这里](https://betterandroid.github.io/BetterAndroid/KDoc/system-extension) 查看 KDoc。
+你可以 [点击这里](kdoc://system-extension) 查看 KDoc。
 
 <!--------------- 待转移 ---------------
 

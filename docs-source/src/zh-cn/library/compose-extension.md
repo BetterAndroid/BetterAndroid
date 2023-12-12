@@ -99,7 +99,7 @@ kotlin {
 
 ## 功能介绍
 
-你可以 [点击这里](https://betterandroid.github.io/BetterAndroid/KDoc/compose-extension) 查看 KDoc。
+你可以 [点击这里](kdoc://compose-extension) 查看 KDoc。
 
 <!--------------- 待转移 ---------------
 

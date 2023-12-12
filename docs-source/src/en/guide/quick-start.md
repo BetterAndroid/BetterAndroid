@@ -84,8 +84,8 @@ You can click on the corresponding modules below to view detailed function intro
 
 ## Demo
 
-You can find some samples [here](https://github.com/BetterAndroid/BetterAndroid/tree/main/samples) view the corresponding demo project to better understand how these functions work and quickly
+You can find some samples [here](repo://tree/main/samples) view the corresponding demo project to better understand how these functions work and quickly
 select the functions you need.
 
-At present, the demo functions is not perfect yet and will be improved after [Flexi UI](https://github.com/BetterAndroid/FlexiUI) is released, you can
+At present, the demo functions is not perfect yet and will be improved after [Flexi UI](repo://FlexiUI) is released, you can
 experience the existing functions first and report bugs to us.

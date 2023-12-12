@@ -99,7 +99,7 @@ Please change `<version>` to the version displayed at the top of this document.
 
 ## Function Introduction
 
-You can view the KDoc [click here](https://betterandroid.github.io/BetterAndroid/KDoc/compose-extension).
+You can view the KDoc [click here](kdoc://compose-extension).
 
 <!--------------- To be migrated ---------------
 

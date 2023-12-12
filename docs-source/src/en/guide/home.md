@@ -41,5 +41,5 @@ The maintenance of this project is inseparable from the support and contribution
 
 This project is currently in its early stages, and there may still be some problems or lack of functions you need.
 
-If possible, feel free to submit a PR to contribute features you think are needed to this project or goto [GitHub Issues](https://github.com/BetterAndroid/BetterAndroid/issues)
+If possible, feel free to submit a PR to contribute features you think are needed to this project or goto [GitHub Issues](repo://issues)
 to make suggestions to us.

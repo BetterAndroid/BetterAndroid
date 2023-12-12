@@ -80,6 +80,6 @@ android {
 
 ## Demo
 
-你可以在 [这里](https://github.com/BetterAndroid/BetterAndroid/tree/main/samples) 找到一些示例，查看对应的演示项目来更好地了解这些功能的运作方式，快速地挑选出你需要的功能。
+你可以在 [这里](repo://tree/main/samples) 找到一些示例，查看对应的演示项目来更好地了解这些功能的运作方式，快速地挑选出你需要的功能。
 
-目前 Demo 功能尚未完善，将在 [Flexi UI](https://github.com/BetterAndroid/FlexiUI) 发布后进行完善，你可以先行体验现有功能并可以向我们反馈 BUG。
+目前 Demo 功能尚未完善，将在 [Flexi UI](repo://FlexiUI) 发布后进行完善，你可以先行体验现有功能并可以向我们反馈 BUG。

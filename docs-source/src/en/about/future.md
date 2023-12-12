@@ -6,4 +6,4 @@
 
 > Features that `BetterAndroid` may add later are included here.
 
-None yet, if you have good ideas, please submit your ideas in [GitHub Issues](https://github.com/BetterAndroid/BetterAndroid/issues).
+None yet, if you have good ideas, please submit your ideas in [GitHub Issues](repo://issues).

@@ -39,7 +39,7 @@ Please change `<version>` to the version displayed at the top of this document.
 
 ## Function Introduction
 
-You can view the KDoc [click here](https://betterandroid.github.io/BetterAndroid/KDoc/system-extension).
+You can view the KDoc [click here](kdoc://system-extension).
 
 <!--------------- To be migrated ---------------
 

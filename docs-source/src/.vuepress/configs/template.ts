@@ -1,5 +1,10 @@
 import { i18n } from './utils';
 
+interface PageLinkRefs {
+    dev: Record<string, string>[];
+    prod: Record<string, string>[];
+}
+
 const navigationLinks = {
     start: [
         '/guide/home',
@@ -46,9 +51,23 @@ export const configs = {
     },
     github: {
         repo: 'https://github.com/BetterAndroid/BetterAndroid',
+        page: 'https://betterandroid.github.io/BetterAndroid',
         branch: 'main',
         dir: 'docs-source/src'
     }
+};
+
+export const pageLinkRefs: PageLinkRefs = {
+    dev: [
+        { 'repo://': `${configs.github.repo}/` },
+        // KDoc URL for local debugging, non-fixed value, adjust according to your own needs.
+        // You can run ./build-dokka.sh and start the local server in dist/KDoc.
+        { 'kdoc://': 'http://localhost:9001/' }
+    ],
+    prod: [
+        { 'repo://': `${configs.github.repo}/` },
+        { 'kdoc://': `${configs.github.page}/KDoc/` }
+    ]
 };
 
 export const navBarItems = {

@@ -4,7 +4,7 @@
 
 ## License
 
-[Apache-2.0](https://github.com/BetterAndroid/BetterAndroid/blob/main/LICENSE)
+[Apache-2.0](repo://blob/main/LICENSE)
 
 ```:no-line-numbers
 Apache License Version 2.0
