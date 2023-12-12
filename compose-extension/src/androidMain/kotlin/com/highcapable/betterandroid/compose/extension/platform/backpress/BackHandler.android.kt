@@ -34,12 +34,13 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.highcapable.betterandroid.ui.component.backpress.BackPressedController
+import com.highcapable.betterandroid.ui.component.backpress.callback.OnBackPressedCallback
 import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
 
 /**
  * An effect for handling presses of the system back button.
  *
- * Supports Android and iOS.
+ * Only support Android platform.
  * @param enabled if this BackHandler should be enabled.
  * @param onBack the action invoked by pressing the system back.
  */
@@ -47,12 +48,13 @@ import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
 internal actual fun _BackHandler(enabled: Boolean, onBack: () -> Unit) {
     val backPressed = rememberBackPressedController()
     val currentOnBack by rememberUpdatedState(onBack)
-    val backCallback = remember { backPressed.addCallback { currentOnBack() } }
+    val backCallback = remember { OnBackPressedCallback { currentOnBack() } }
     // On every successful composition, update the callback with the `enabled` value.
     SideEffect { backCallback.isEnabled = enabled }
     // Destroy the callback when the effect leaves the composition.
     DisposableEffect(backPressed) {
-        onDispose { backCallback.remove() }
+        backPressed.addCallback(backCallback)
+        onDispose { backPressed.removeCallback(backCallback) }
     }
 }
 

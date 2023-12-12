@@ -19,19 +19,18 @@
  *
  * This file is created by fankes on 2023/10/25.
  */
-@file:Suppress("unused")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
 
 package com.highcapable.betterandroid.ui.component.backpress
 
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedDispatcher
 import com.highcapable.betterandroid.ui.component.activity.AppBindingActivity
+import com.highcapable.betterandroid.ui.component.activity.AppComponentActivity
 import com.highcapable.betterandroid.ui.component.activity.AppViewsActivity
-import com.highcapable.betterandroid.ui.component.activity.base.BaseCompatActivity
-import com.highcapable.betterandroid.ui.component.activity.base.BaseComponentActivity
+import com.highcapable.betterandroid.ui.component.backpress.callback.OnBackPressedCallback
 import com.highcapable.betterandroid.ui.component.fragment.AppBindingFragment
 import com.highcapable.betterandroid.ui.component.fragment.AppViewsFragment
-import com.highcapable.betterandroid.ui.component.fragment.base.BaseFragment
-import androidx.activity.OnBackPressedCallback as BaseOnBackPressedCallback
 
 /**
  * Back pressed controller.
@@ -60,36 +59,19 @@ class BackPressedController private constructor(private val activity: ComponentA
          *         val callback = backPressed.addCallback {
          *             // Do something.
          *         }
-         *         // Direct call the back pressed callbacks.
-         *         backPressed.call()
+         *         // Trigger the back pressed.
+         *         backPressed.trigger()
+         *     }
+         *
+         *     override fun onDestroy() {
+         *         super.onDestroy()
+         *         // Destroy the back pressed controller.
+         *         backPressed.destroy()
          *     }
          * }
          * ```
-         *
-         * Or you can use [AppBindingActivity], [AppViewsActivity], [AppBindingFragment], [AppViewsFragment].
-         *
-         * Usage in [BaseFragment] based on [BaseCompatActivity] or [BaseComponentActivity]:
-         *
-         * ```kotlin
-         * class YourFragment : AppViewsFragment() {
-         *
-         *     // Omit layout inflate code.
-         *
-         *     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-         *         super.onViewCreated(view, savedInstanceState)
-         *         // Just add this code.
-         *         backPressed.addCallback {
-         *             // If you want to back pressed and destroy this.
-         *             detachFromActivity()
-         *             remove()
-         *             // If you want to back pressed and hide this.
-         *             hide()
-         *             // When calling show later, remember to re-enable this callback.
-         *             isEnabled = false
-         *         }
-         *     }
-         * }
-         * ```
+         * Or you can use [AppBindingActivity], [AppViewsActivity], [AppComponentActivity],
+         * [AppBindingFragment], [AppViewsFragment].
          * @param activity the current activity.
          * @return [BackPressedController]
          */
@@ -97,93 +79,72 @@ class BackPressedController private constructor(private val activity: ComponentA
         fun from(activity: ComponentActivity) = BackPressedController(activity)
     }
 
-    /** The [OnBackPressedCallback] callbacks. */
-    private val onBackPressedCallbacks = mutableMapOf<String, OnBackPressedCallback>()
+    /** The [OnBackPressedCallback] callback sets. */
+    private val onBackPressedCallbacks = mutableSetOf<OnBackPressedCallback>()
+
+    /**
+     * Get the current [OnBackPressedDispatcher].
+     * @return [OnBackPressedDispatcher]
+     */
+    private val onBackPressedDispatcher get() = activity.onBackPressedDispatcher
+
+    /**
+     * Checks if there is at least one enabled callback registered with this controller.
+     * @return [Boolean]
+     */
+    val hasEnabledCallbacks get() = onBackPressedCallbacks.any { it.isEnabled }
 
     /**
      * Manually trigger the back pressed callbacks.
      *
-     * You need to call [addCallback] to add back pressed callbacks.
-     * @param ignored whether to ignore all [onBackPressedCallbacks] and back pressed immediately, default false.
+     * - This function is deprecated, use [trigger] instead.
+     */
+    @Deprecated(message = "Use trigger instead.", ReplaceWith("trigger(ignored)"))
+    @JvmOverloads
+    fun call(ignored: Boolean = false) = trigger(ignored)
+
+    /**
+     * Manually trigger the back pressed callbacks.
+     * @param ignored whether to ignore all callbacks and back pressed immediately, default false.
      */
     @JvmOverloads
-    fun call(ignored: Boolean = false) {
-        if (activity.isDestroyed) return
-        val states = mutableMapOf<String, Boolean>().apply { onBackPressedCallbacks.forEach { (key, value) -> this[key] = value.isEnabled } }
-        if (ignored) onBackPressedCallbacks.forEach { (_, value) -> value.isEnabled = false }
-        activity.onBackPressedDispatcher.onBackPressed()
-        if (ignored) onBackPressedCallbacks.forEach { (key, value) -> states[key]?.also { state -> value.isEnabled = state } }
-        states.clear()
+    fun trigger(ignored: Boolean = false) {
+        if (activity.isFinishing || activity.isDestroyed) return
+        if (ignored) onBackPressedCallbacks.forEach { it.isEnabled = false }
+        onBackPressedDispatcher.onBackPressed()
     }
 
     /**
-     * Add a new callback.
-     *
-     * To release on back pressed callback, you just need to call [OnBackPressedCallback.releaseAndBack].
-     *
-     * To remove this callback from the [onBackPressedCallbacks], you just need to call [OnBackPressedCallback.remove].
-     * @param isEnable whether to enable this callback, default true.
+     * Add a new callback to this controller.
+     * @param enabled whether to enable this callback, default true.
      * @param initiate the [OnBackPressedCallback] builder body.
      * @return [OnBackPressedCallback]
      */
     @JvmOverloads
-    fun addCallback(isEnable: Boolean = true, initiate: OnBackPressedCallback.() -> Unit): OnBackPressedCallback {
-        val callbackId = initiate.hashCode().toString()
-        val callback = OnBackPressedCallback(callbackId).also {
-            it.wrapper = object : BaseOnBackPressedCallback(isEnable) {
-                override fun handleOnBackPressed() {
-                    it.apply(initiate)
-                }
-            }.also { callback -> activity.onBackPressedDispatcher.addCallback(callback) }
-        }; onBackPressedCallbacks[callbackId] = callback
-        return callback
+    fun addCallback(enabled: Boolean = true, initiate: OnBackPressedCallback.() -> Unit) =
+        OnBackPressedCallback(enabled, initiate).also { addCallback(it) }
+
+    /**
+     * Add a new callback to this controller.
+     * @param callback the callback.
+     */
+    fun addCallback(callback: OnBackPressedCallback) {
+        onBackPressedDispatcher.addCallback(callback)
+        onBackPressedCallbacks.add(callback)
     }
 
     /**
-     * On back pressed callback.
-     * @param callbackId The current callback ID.
-     * @param wrapper the current wrapper of [OnBackPressedCallback].
+     * Remove a callback from this controller.
+     * @param callback the callback.
      */
-    inner class OnBackPressedCallback internal constructor(private val callbackId: String, internal var wrapper: BaseOnBackPressedCallback? = null) {
+    fun removeCallback(callback: OnBackPressedCallback) {
+        callback.remove()
+        onBackPressedCallbacks.remove(callback)
+    }
 
-        /**
-         * Get or set whether the callback is enabled.
-         *
-         * - This property is deprecated, use [isEnabled] instead.
-         * @return [Boolean]
-         */
-        @Deprecated(message = "Use isEnabled instead.", ReplaceWith("isEnabled"))
-        var isEnable get() = isEnabled
-            set(value) {
-                isEnabled = value
-            }
-
-        /**
-         * Get or set whether the callback is enabled.
-         * @return [Boolean]
-         */
-        var isEnabled
-            get() = wrapper?.isEnabled ?: false
-            set(value) {
-                wrapper?.isEnabled = value
-            }
-
-        /** Remove the current callback. */
-        fun remove() {
-            wrapper?.remove()
-            onBackPressedCallbacks.remove(callbackId)
-        }
-
-        /**
-         * Immediately release the current callback and call the back pressed callbacks.
-         * @param isRemove whether to remove this callback after calling, default false.
-         */
-        @JvmOverloads
-        fun releaseAndBack(isRemove: Boolean = false) {
-            isEnabled = false
-            activity.onBackPressedDispatcher.onBackPressed()
-            isEnabled = true
-            if (isRemove) remove()
-        }
+    /** Remove all callbacks from this controller. */
+    fun destroy() {
+        onBackPressedCallbacks.forEach { it.remove() }
+        onBackPressedCallbacks.clear()
     }
 }
