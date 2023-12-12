@@ -33,7 +33,7 @@ It is recommended to use Kotlin as the preferred development language.
 
 This project is entirely written in Kotlin and is compatible with Java in some parts, but it may not be fully compatible.
 
-All Demo sample codes in the document will be described using Kotlin, if you don’t know how to use Kotlin at all, you may not get the best experience.
+All demo & sample codes in the document will be described using Kotlin, if you don’t know how to use Kotlin at all, you may not get the best experience.
 
 ## Contribution
 

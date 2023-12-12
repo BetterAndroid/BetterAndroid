@@ -1,7 +1,7 @@
 # R8 & Proguard Obfuscate
 
-> In most scenarios, the app package can be compressed through obfuscation,
-> here is an introduction to the obfuscation rule configuration method.
+> In most scenarios, the app packages can be compressed through obfuscation,
+> here is an introduction to how to configure obfuscation rules.
 
 `BetterAndroid` uses the reflection function to load `ViewBinding`, so you need to ensure that
 the `ViewBinding` related functions are not obfuscated, otherwise it will not be loaded.
