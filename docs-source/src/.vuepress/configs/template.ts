@@ -18,6 +18,7 @@ const navigationLinks = {
         '/library/compose-extension'
     ],
     config: [
+        '/config/basic',
         '/config/r8-proguard'
     ],
     about: [
