@@ -40,7 +40,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.highcapable.betterandroid.ui.component.adapter.CommonAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.PagerAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.RecyclerAdapterBuilder
-import com.highcapable.betterandroid.ui.component.adapter.fragment.FragmentPageAdapterBuilder
+import com.highcapable.betterandroid.ui.component.adapter.fragment.FragmentPagerAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.fragment.FragmentStateAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.recycler.cosmetic.RecyclerCosmeticMaker
 import com.highcapable.yukireflection.factory.current
@@ -199,14 +199,14 @@ inline fun ViewPager.bindAdapter(initiate: PagerAdapterBuilder<*>.() -> Unit) = 
  * @receiver [ViewPager]
  * @param activity the current activity.
  * @param behavior the current behavior, default is [FragmentPagerAdapter.BEHAVIOR_SET_USER_VISIBLE_HINT].
- * @param initiate the [FragmentPageAdapterBuilder] builder body.
- * @return [FragmentPageAdapterBuilder]
+ * @param initiate the [FragmentPagerAdapterBuilder] builder body.
+ * @return [FragmentPagerAdapterBuilder]
  */
 inline fun ViewPager.bindFragments(
     activity: FragmentActivity,
     behavior: Int = FragmentPagerAdapter.BEHAVIOR_SET_USER_VISIBLE_HINT,
-    initiate: FragmentPageAdapterBuilder.() -> Unit
-) = FragmentPageAdapterBuilder.from(activity, behavior).apply(initiate).build().apply { adapter = this }
+    initiate: FragmentPagerAdapterBuilder.() -> Unit
+) = FragmentPagerAdapterBuilder.from(activity, behavior).apply(initiate).build().apply { adapter = this }
 
 /**
  * Bind the [FragmentPagerAdapter] to [ViewPager].
@@ -216,14 +216,14 @@ inline fun ViewPager.bindFragments(
  * @receiver [ViewPager]
  * @param fragment the current fragment.
  * @param behavior the current behavior, default is [FragmentPagerAdapter.BEHAVIOR_SET_USER_VISIBLE_HINT].
- * @param initiate the [FragmentPageAdapterBuilder] builder body.
- * @return [FragmentPageAdapterBuilder]
+ * @param initiate the [FragmentPagerAdapterBuilder] builder body.
+ * @return [FragmentPagerAdapterBuilder]
  */
 inline fun ViewPager.bindFragments(
     fragment: Fragment,
     behavior: Int = FragmentPagerAdapter.BEHAVIOR_SET_USER_VISIBLE_HINT,
-    initiate: FragmentPageAdapterBuilder.() -> Unit
-) = FragmentPageAdapterBuilder.from(fragment, behavior).apply(initiate).build().apply { adapter = this }
+    initiate: FragmentPagerAdapterBuilder.() -> Unit
+) = FragmentPagerAdapterBuilder.from(fragment, behavior).apply(initiate).build().apply { adapter = this }
 
 /**
  * Bind the [RecyclerView.Adapter] to [ViewPager2], using entity [E].

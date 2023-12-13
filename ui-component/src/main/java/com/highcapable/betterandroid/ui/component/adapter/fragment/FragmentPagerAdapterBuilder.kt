@@ -37,7 +37,7 @@ import com.highcapable.betterandroid.ui.component.adapter.mediator.PagerMediator
  * @param adapterInstance the adapter context, only can be [Context] or [Fragment].
  * @param behavior the current behavior.
  */
-class FragmentPageAdapterBuilder private constructor(private val adapterInstance: Any, private val behavior: Int) : IAdapterBuilder {
+class FragmentPagerAdapterBuilder private constructor(private val adapterInstance: Any, private val behavior: Int) : IAdapterBuilder {
 
     companion object {
 
@@ -50,7 +50,7 @@ class FragmentPageAdapterBuilder private constructor(private val adapterInstance
          * @return [FragmentPagerAdapter]
          */
         @JvmStatic
-        fun from(instance: Any, behavior: Int) = FragmentPageAdapterBuilder(instance, behavior)
+        fun from(instance: Any, behavior: Int) = FragmentPagerAdapterBuilder(instance, behavior)
     }
 
     /** The current each [Fragment] function callbacks. */
@@ -65,21 +65,21 @@ class FragmentPageAdapterBuilder private constructor(private val adapterInstance
     /**
      * Number of pages required.
      * @param pageCount
-     * @return [FragmentPageAdapterBuilder]
+     * @return [FragmentPagerAdapterBuilder]
      */
     fun pageCount(pageCount: Int) = apply { this.pageCount = pageCount }
 
     /**
      * Add and bind each [PagerMediator] of pages.
      * @param initiate the [PagerMediator] builder body.
-     * @return [FragmentPageAdapterBuilder]
+     * @return [FragmentPagerAdapterBuilder]
      */
     fun onBindMediators(initiate: PagerMediator.() -> Unit) = apply { pagerMediatorsCallback = initiate }
 
     /**
      * Add and create each [Fragment].
      * @param bindFragments callback and return each [Fragment].
-     * @return [FragmentPageAdapterBuilder]
+     * @return [FragmentPagerAdapterBuilder]
      */
     fun onBindFragments(bindFragments: (position: Int) -> Fragment) = apply { onBindFragmentsCallback = bindFragments }
 
@@ -91,6 +91,6 @@ class FragmentPageAdapterBuilder private constructor(private val adapterInstance
         override fun getPageWidth(position: Int) = PagerMediator(position).let { pagerMediatorsCallback?.invoke(it); it.width }
         override fun getCount() = pageCount
         override fun getItem(position: Int) = onBindFragmentsCallback?.invoke(position)
-            ?: error("Cannot bound Fragments on FragmentStateAdapter, did you forgot to called onBindFragments function?")
+            ?: error("Cannot bound Fragments on FragmentPagerAdapter, did you forgot to called onBindFragments function?")
     }
 }
