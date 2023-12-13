@@ -19,13 +19,18 @@
  *
  * This file is created by fankes on 2023/10/28.
  */
-@file:Suppress("unused")
+@file:Suppress("unused", "FunctionName")
 @file:JvmName("NotificationUtils")
 
 package com.highcapable.betterandroid.ui.component.notification.factory
 
 import android.content.Context
 import com.highcapable.betterandroid.ui.component.notification.NotificationCreator
+import com.highcapable.betterandroid.ui.component.notification.builder.NotificationBuilder
+import com.highcapable.betterandroid.ui.component.notification.builder.NotificationChannelBuilder
+import com.highcapable.betterandroid.ui.component.notification.type.NotificationImportance
+import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationChannelWrapper
+import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationWrapper
 
 /**
  * Create a notification.
@@ -33,3 +38,25 @@ import com.highcapable.betterandroid.ui.component.notification.NotificationCreat
  * @return [NotificationCreator.Poster]
  */
 inline fun Context.createNotification(initiate: NotificationCreator.() -> Unit) = NotificationCreator.from(this).apply(initiate).build()
+
+/**
+ * Create a notification body.
+ * @param context the current context.
+ * @param initiate the [NotificationCreator] builder body.
+ * @return [NotificationWrapper]
+ */
+inline fun Notification(context: Context, channel: NotificationChannelWrapper, initiate: NotificationBuilder.() -> Unit) =
+    NotificationBuilder.from(context, channel).apply(initiate).build()
+
+/**
+ * Create a notification channel.
+ * @param channelId the channel ID.
+ * @param importance the notification importance, default is [NotificationImportance.DEFAULT].
+ * @param initiate the [NotificationChannelBuilder] builder body.
+ * @return [NotificationChannelWrapper]
+ */
+inline fun NotificationChannel(
+    channelId: String,
+    importance: NotificationImportance = NotificationImportance.DEFAULT,
+    initiate: NotificationChannelBuilder.() -> Unit
+) = NotificationChannelBuilder.from(channelId, importance).apply(initiate).build()
