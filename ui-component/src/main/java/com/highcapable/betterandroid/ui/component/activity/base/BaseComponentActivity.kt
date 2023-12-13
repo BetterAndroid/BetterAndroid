@@ -27,6 +27,7 @@ import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.ComponentActivity
+import androidx.annotation.CallSuper
 import com.highcapable.betterandroid.ui.component.backpress.BackPressedController
 import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
 import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
@@ -68,6 +69,13 @@ abstract class BaseComponentActivity internal constructor() : ComponentActivity(
     override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
         super.setContentView(view, params)
         view?.getBackgroundColor()?.also { systemBars.setBaseBackgroundColor(it) }
+    }
+
+    @CallSuper
+    override fun onDestroy() {
+        systemBars.destroy()
+        backPressed.destroy()
+        super.onDestroy()
     }
 
     /**
