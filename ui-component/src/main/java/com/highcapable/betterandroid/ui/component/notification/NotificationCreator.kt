@@ -19,18 +19,11 @@
  *
  * This file is created by fankes on 2023/10/28.
  */
-@file:Suppress("unused", "MemberVisibilityCanBePrivate", "InlinedApi", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
+@file:Suppress("unused", "UNUSED_PARAMETER", "DEPRECATION", "DeprecatedCallableAddReplaceWith")
 
 package com.highcapable.betterandroid.ui.component.notification
 
-import android.Manifest
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
-import androidx.annotation.RequiresPermission
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 import com.highcapable.betterandroid.ui.component.notification.builder.NotificationBuilder
 import com.highcapable.betterandroid.ui.component.notification.builder.NotificationChannelBuilder
 import com.highcapable.betterandroid.ui.component.notification.factory.createNotification
@@ -40,146 +33,81 @@ import com.highcapable.betterandroid.ui.component.notification.wrapper.Notificat
 
 /**
  * Notification creator.
- * @param context the current context.
+ *
+ * - This class is deprecated and will be removed in the future.
+ *
+ * - Please use [Context.createNotification] instead.
  */
+@Deprecated(message = "No effect and will be removed in the future.")
 class NotificationCreator private constructor(private val context: Context) {
 
     companion object {
 
         /**
-         * Create a new [NotificationCreator] from [context].
-         *
-         * - We recommend to using [Context.createNotification] at first.
-         * @param context the current context.
-         * @return [NotificationCreator]
+         * - This class is deprecated and will be removed in the future.
          */
+        @Deprecated(message = "No effect and will be removed in the future.")
         @JvmStatic
         fun from(context: Context) = NotificationCreator(context)
     }
 
-    /** The current notification channel. */
-    private var channel: NotificationChannelWrapper? = null
-
-    /** The current notification. */
-    private var notification: NotificationWrapper? = null
+    /**
+     * - This class is deprecated and will be removed in the future.
+     */
+    @Deprecated(message = "No effect and will be removed in the future.")
+    fun channel(channel: NotificationChannelWrapper) = this
 
     /**
-     * Set a notification channel.
-     *
-     * - Note: You don't need to consider compatibility with system version below Android 8,
-     *         we have made it compatible for you, this feature will be automatically converted
-     *         to a legacy solution below Android 8.
-     * @param channel the [NotificationChannelWrapper].
-     * @return [NotificationCreator]
+     * - This class is deprecated and will be removed in the future.
      */
-    fun channel(channel: NotificationChannelWrapper) = apply { this.channel = channel }
-
-    /**
-     * Set a notification channel.
-     *
-     * - Note: You don't need to consider compatibility with system version below Android 8,
-     *         we have made it compatible for you, this feature will be automatically converted
-     *         to a legacy solution below Android 8.
-     * @param channelId the channel ID.
-     * @param importance the notification importance, default is [NotificationImportance.DEFAULT].
-     * @param initiate the [NotificationChannelBuilder] builder body.
-     * @return [NotificationCreator]
-     */
+    @Deprecated(message = "No effect and will be removed in the future.")
     inline fun channel(
         channelId: String,
         importance: NotificationImportance = NotificationImportance.DEFAULT,
         initiate: NotificationChannelBuilder.() -> Unit = {}
-    ) = channel(NotificationChannelBuilder.from(channelId, importance).apply(initiate).build())
+    ) = this
 
     /**
-     * Set a notification.
-     * @param notification the [NotificationWrapper].
-     * @return [NotificationCreator]
+     * - This class is deprecated and will be removed in the future.
      */
-    fun notification(notification: NotificationWrapper) = apply { this.notification = notification }
+    @Deprecated(message = "No effect and will be removed in the future.")
+    fun notification(notification: NotificationWrapper) = this
 
     /**
-     * Set a notification.
-     * @param initiate the [NotificationBuilder] builder body.
-     * @return [NotificationCreator]
-     * @throws IllegalStateException if [channel] is not set.
+     * - This class is deprecated and will be removed in the future.
      */
-    inline fun notification(initiate: NotificationBuilder.() -> Unit = {}) = apply {
-        val channel = this.channel ?: error("You must to use channel function to create a notification channel at first.")
-        notification(NotificationBuilder.from(context, channel).apply(initiate).build())
-    }
+    @Deprecated(message = "No effect and will be removed in the future.")
+    inline fun notification(initiate: NotificationBuilder.() -> Unit = {}) = this
 
     /**
-     * Create the notification poster.
-     * @return [Poster]
+     * - This class is deprecated and will be removed in the future.
      */
+    @Deprecated(message = "No effect and will be removed in the future.")
     fun build() = Poster()
 
     /**
-     * Notification poster.
+     * - This class is deprecated and will be removed in the future.
      */
+    @Deprecated(message = "No effect and will be removed in the future.")
     inner class Poster internal constructor() {
 
-        /** The current posted notificaion ID. */
-        private var shownId: Int? = null
-
-        /** The current posted notificaion tag. */
-        private var shownTag = ""
+        /**
+         * - This class is deprecated and will be removed in the future.
+         */
+        @Deprecated(message = "No effect and will be removed in the future.")
+        val isCanceled get() = false
 
         /**
-         * Get the system notification manager.
-         * @return [NotificationManagerCompat]
+         * - This class is deprecated and will be removed in the future.
          */
-        private val manager by lazy { NotificationManagerCompat.from(context) }
-
-        /**
-         * Determine whether the current notification has been canceled.
-         * @return [Boolean]
-         */
-        val isCanceled get() = manager.activeNotifications.none { it.id == shownId || it.tag == shownTag }
-
-        /**
-         * Post the current notification.
-         *
-         * See [NotificationManagerCompat.notify].
-         * @param id the notification ID, default is 0.
-         * @param tag the notification tag.
-         * @return [Poster]
-         * @throws IllegalStateException if [channel] and [notification] are not set.
-         */
-        @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
+        @Deprecated(message = "No effect and will be removed in the future.")
         @JvmOverloads
-        fun post(id: Int = 0, tag: String = "") = apply {
-            val currentChannel = channel ?: error("You must to use channel function to create a notification channel.")
-            val currentNotification = notification ?: error("You must to use notification function to create a notification.")
-            currentChannel.groupInstance?.also { manager.createNotificationChannelGroup(it) }
-            manager.createNotificationChannel(currentChannel.instance)
-            currentNotification.instance.also {
-                if (tag.isNotBlank())
-                    manager.notify(tag, id, it)
-                else manager.notify(id, it)
-                shownId = id
-                shownTag = tag
-                /** Compat the [NotificationCompat.Builder.setTimeoutAfter]. */
-                if (SystemVersion.isLowTo(SystemVersion.O))
-                    currentNotification.builder.timeoutAfter?.also { timeoutAfter ->
-                        Handler(Looper.getMainLooper()).postDelayed({ cancel() }, timeoutAfter)
-                    }
-            }
-        }
+        fun post(id: Int = 0, tag: String = "") = this
 
         /**
-         * Cancel the current notification.
-         *
-         * See [NotificationManagerCompat.cancel].
-         * @return [Poster]
+         * - This class is deprecated and will be removed in the future.
          */
-        fun cancel() = apply {
-            if (isCanceled) return@apply
-            val currentShownId = shownId ?: return@apply
-            if (shownTag.isNotBlank())
-                manager.cancel(shownTag, currentShownId)
-            else manager.cancel(currentShownId)
-        }
+        @Deprecated(message = "No effect and will be removed in the future.")
+        fun cancel() = this
     }
 }

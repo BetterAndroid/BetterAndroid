@@ -25,24 +25,50 @@
 package com.highcapable.betterandroid.ui.component.notification.factory
 
 import android.content.Context
-import com.highcapable.betterandroid.ui.component.notification.NotificationCreator
+import com.highcapable.betterandroid.ui.component.notification.NotificationPoster
 import com.highcapable.betterandroid.ui.component.notification.builder.NotificationBuilder
 import com.highcapable.betterandroid.ui.component.notification.builder.NotificationChannelBuilder
+import com.highcapable.betterandroid.ui.component.notification.builder.NotificationChannelGroupBuilder
 import com.highcapable.betterandroid.ui.component.notification.type.NotificationImportance
+import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationChannelGroupWrapper
 import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationChannelWrapper
 import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationWrapper
 
 /**
- * Create a notification.
- * @param initiate the [NotificationCreator] builder body.
- * @return [NotificationCreator.Poster]
+ * Create the [NotificationPoster] from [NotificationWrapper].
+ * @receiver [NotificationWrapper]
+ * @return [NotificationPoster]
  */
-inline fun Context.createNotification(initiate: NotificationCreator.() -> Unit) = NotificationCreator.from(this).apply(initiate).build()
+fun NotificationWrapper.asPoster() = NotificationPoster(notification = this)
 
 /**
- * Create a notification body.
+ * Create a notification to post.
+ *
+ * Usage:
+ *
+ * ```kotlin
+ * context.createNotification(
+ *     channel = NotificationChannel("my_channel_id") {
+ *         name = "My Channel"
+ *         description = "My channel description."
+ *     }
+ * ) {
+ *     contentTitle = "My Notification"
+ *     contentText = "Hello World!"
+ * }.post() // Post the notification.
+ * ```
+ * @receiver the current context.
+ * @param channel the notification channel.
+ * @param initiate the [NotificationBuilder] builder body.
+ * @return [NotificationPoster]
+ */
+inline fun Context.createNotification(channel: NotificationChannelWrapper, initiate: NotificationBuilder.() -> Unit) =
+    Notification(context = this, channel, initiate).asPoster()
+
+/**
+ * Create a notification.
  * @param context the current context.
- * @param initiate the [NotificationCreator] builder body.
+ * @param initiate the [NotificationBuilder] builder body.
  * @return [NotificationWrapper]
  */
 inline fun Notification(context: Context, channel: NotificationChannelWrapper, initiate: NotificationBuilder.() -> Unit) =
@@ -51,12 +77,33 @@ inline fun Notification(context: Context, channel: NotificationChannelWrapper, i
 /**
  * Create a notification channel.
  * @param channelId the channel ID.
+ * @param group the channel group, default is null.
  * @param importance the notification importance, default is [NotificationImportance.DEFAULT].
  * @param initiate the [NotificationChannelBuilder] builder body.
  * @return [NotificationChannelWrapper]
  */
 inline fun NotificationChannel(
     channelId: String,
+    group: NotificationChannelGroupWrapper? = null,
     importance: NotificationImportance = NotificationImportance.DEFAULT,
     initiate: NotificationChannelBuilder.() -> Unit
-) = NotificationChannelBuilder.from(channelId, importance).apply(initiate).build()
+) = NotificationChannelBuilder.from(channelId, group, importance).apply(initiate).build()
+
+/**
+ * Create a notification channel group.
+ * @param groupId the channel group ID.
+ * @param initiate the [NotificationChannelGroupBuilder] builder body.
+ * @return [NotificationChannelGroupWrapper]
+ */
+inline fun NotificationChannelGroup(groupId: String, initiate: NotificationChannelGroupBuilder.() -> Unit) =
+    NotificationChannelGroupBuilder.from(groupId).apply(initiate).build()
+
+/**
+ * Create a notification.
+ *
+ * - This function is deprecated and no effect, use [Context.createNotification] instead.
+ */
+@Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
+@Deprecated(message = "Use createNotification instead.")
+inline fun Context.createNotification(initiate: com.highcapable.betterandroid.ui.component.notification.NotificationCreator.() -> Unit) =
+    com.highcapable.betterandroid.ui.component.notification.NotificationCreator.from(this).apply(initiate).build()

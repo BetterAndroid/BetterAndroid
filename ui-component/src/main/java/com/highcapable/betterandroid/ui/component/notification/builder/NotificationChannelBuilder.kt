@@ -23,16 +23,15 @@
 
 package com.highcapable.betterandroid.ui.component.notification.builder
 
-import android.app.NotificationChannelGroup
 import android.content.Context
 import android.media.AudioAttributes
 import android.net.Uri
 import androidx.annotation.ColorInt
 import androidx.core.app.NotificationChannelCompat
-import androidx.core.app.NotificationChannelGroupCompat
 import com.highcapable.betterandroid.ui.component.notification.factory.createNotification
 import com.highcapable.betterandroid.ui.component.notification.proxy.INotificationBuilder
 import com.highcapable.betterandroid.ui.component.notification.type.NotificationImportance
+import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationChannelGroupWrapper
 import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationChannelWrapper
 
 /**
@@ -42,10 +41,14 @@ import com.highcapable.betterandroid.ui.component.notification.wrapper.Notificat
  *         we have made it compatible for you, this feature will be automatically converted
  *         to a legacy solution below Android 8.
  * @param channelId the channel ID.
+ * @param group the channel group.
  * @param importance the notification importance.
  */
-class NotificationChannelBuilder private constructor(internal val channelId: String, internal val importance: NotificationImportance) :
-    INotificationBuilder {
+class NotificationChannelBuilder private constructor(
+    internal val channelId: String,
+    internal val group: NotificationChannelGroupWrapper?,
+    internal val importance: NotificationImportance
+) : INotificationBuilder {
 
     companion object {
 
@@ -54,35 +57,24 @@ class NotificationChannelBuilder private constructor(internal val channelId: Str
          *
          * - We recommend to using [Context.createNotification] at first.
          * @param channelId the channel ID.
+         * @param group the channel group, default is null.
          * @param importance the notification importance, default is [NotificationImportance.DEFAULT].
          * @return [NotificationChannelBuilder]
          */
         @JvmStatic
         @JvmOverloads
-        fun from(channelId: String, importance: NotificationImportance = NotificationImportance.DEFAULT) =
-            NotificationChannelBuilder(channelId, importance)
+        fun from(
+            channelId: String,
+            group: NotificationChannelGroupWrapper? = null,
+            importance: NotificationImportance = NotificationImportance.DEFAULT
+        ) = NotificationChannelBuilder(channelId, group, importance)
     }
-
-    /** See [NotificationChannelGroupCompat.Builder.setName]. */
-    internal var groupName: CharSequence = ""
-
-    /** See [NotificationChannelGroupCompat.Builder.setDescription]. */
-    internal var groupDescription = ""
 
     /** See [NotificationChannelCompat.Builder.setSound]. */
     internal var sound: Pair<Uri?, AudioAttributes?>? = null
 
     /** See [NotificationChannelCompat.Builder.setConversationId]. */
     internal var conversationId: Pair<String, String>? = null
-
-    /**
-     * See also [NotificationChannelCompat.Builder.setGroup], [NotificationChannelGroupCompat].
-     *
-     * When you set a group ID, there will automatic create a [NotificationChannelGroup].
-     *
-     * - Note: This function will no-op on system version prior to Android 8.
-     */
-    var group = ""
 
     /** See [NotificationChannelCompat.Builder.setName]. */
     var name: CharSequence = ""
@@ -121,24 +113,12 @@ class NotificationChannelBuilder private constructor(internal val channelId: Str
     fun description(description: String) = apply { this.description = description }
 
     /**
-     * See also [NotificationChannelCompat.Builder.setGroup],
-     * [NotificationChannelGroupCompat.Builder.setName],
-     * [NotificationChannelGroupCompat.Builder.setDescription].
-     *
-     * When you set a group ID, there will automatic create a [NotificationChannelGroup].
-     *
-     * - Note: This function will no-op on system version prior to Android 8.
-     * @param id the notification channel group ID.
-     * @param name the notification channel group name, default is empty.
-     * @param description the notification channel group description, default is empty.
-     * @return [NotificationChannelBuilder]
+     * - This function is deprecated and no effect, use [NotificationChannelGroupBuilder] instead.
      */
+    @Suppress("UNUSED_PARAMETER", "DeprecatedCallableAddReplaceWith")
+    @Deprecated(message = "Use NotificationChannelGroupBuilder instead.")
     @JvmOverloads
-    fun group(id: String, name: CharSequence = "", description: String = "") = apply {
-        this.group = id
-        this.groupName = name
-        this.groupDescription = description
-    }
+    fun group(id: String, name: CharSequence = "", description: String = "") = this
 
     /**
      * See [NotificationChannelCompat.Builder.setShowBadge].

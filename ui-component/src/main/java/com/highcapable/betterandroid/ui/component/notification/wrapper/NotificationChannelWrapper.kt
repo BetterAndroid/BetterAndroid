@@ -22,7 +22,6 @@
 package com.highcapable.betterandroid.ui.component.notification.wrapper
 
 import androidx.core.app.NotificationChannelCompat
-import androidx.core.app.NotificationChannelGroupCompat
 import androidx.core.app.NotificationManagerCompat
 import com.highcapable.betterandroid.ui.component.notification.builder.NotificationChannelBuilder
 import com.highcapable.betterandroid.ui.component.notification.proxy.INotificationWrapper
@@ -46,24 +45,11 @@ class NotificationChannelWrapper internal constructor(internal var builder: Noti
         NotificationImportance.HIGH -> NotificationManagerCompat.IMPORTANCE_HIGH
     }
 
-    /**
-     * Cteate the group instance.
-     * @return [NotificationChannelGroupCompat] or null.
-     */
-    internal val groupInstance by lazy {
-        if (builder.group.isNotBlank())
-            NotificationChannelGroupCompat.Builder(builder.group).apply {
-                builder.groupName.takeIf(CharSequence::isNotBlank)?.also { setName(it) }
-                builder.groupDescription.takeIf(String::isNotBlank)?.also { setDescription(it) }
-            }.build()
-        else null
-    }
-
     override val instance by lazy {
         NotificationChannelCompat.Builder(builder.channelId, builder.importance.toImportanceType()).apply {
+            builder.group?.also { setGroup(it.builder.groupId) }
             builder.name.takeIf(CharSequence::isNotBlank)?.also { setName(it) }
             builder.description.takeIf(CharSequence::isNotBlank)?.also { setDescription(it) }
-            builder.group.takeIf(CharSequence::isNotBlank)?.also { setGroup(it) }
             builder.isShowBadge?.also { setShowBadge(it) }
             builder.sound?.also { setSound(it.first, it.second) }
             builder.isLightsEnabled?.also { setShowBadge(it) }
