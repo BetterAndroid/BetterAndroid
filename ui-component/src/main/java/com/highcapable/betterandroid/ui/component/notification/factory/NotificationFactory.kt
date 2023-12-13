@@ -32,5 +32,4 @@ import com.highcapable.betterandroid.ui.component.notification.NotificationCreat
  * @param initiate the [NotificationCreator] builder body.
  * @return [NotificationCreator.Poster]
  */
-@JvmName("-createNotification-")
 inline fun Context.createNotification(initiate: NotificationCreator.() -> Unit) = NotificationCreator.from(this).apply(initiate).build()

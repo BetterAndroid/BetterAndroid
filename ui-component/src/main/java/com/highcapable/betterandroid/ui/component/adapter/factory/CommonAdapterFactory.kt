@@ -20,7 +20,7 @@
  * This file is created by fankes on 2022/11/2.
  */
 @file:JvmName("CommonAdapterUtils")
-@file:Suppress("unused", "DEPRECATION")
+@file:Suppress("unused", "FunctionName", "DEPRECATION")
 
 package com.highcapable.betterandroid.ui.component.adapter.factory
 
@@ -52,7 +52,7 @@ import androidx.appcompat.widget.ListPopupWindow as AndroidX_ListPopupWindow
  * @param initiate the [CommonAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
-@JvmName("-bindAdapter_Generics-")
+@JvmName("bindAdapter_Generics")
 inline fun <reified E> ListView.bindAdapter(initiate: CommonAdapterBuilder<E>.() -> Unit) =
     CommonAdapterBuilder.from<E>(context).apply(initiate).build().apply { adapter = this }
 
@@ -62,7 +62,6 @@ inline fun <reified E> ListView.bindAdapter(initiate: CommonAdapterBuilder<E>.()
  * @param initiate the [CommonAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
-@JvmName("-bindAdapter-")
 inline fun ListView.bindAdapter(initiate: CommonAdapterBuilder<*>.() -> Unit) = bindAdapter<Any>(initiate)
 
 /**
@@ -71,7 +70,7 @@ inline fun ListView.bindAdapter(initiate: CommonAdapterBuilder<*>.() -> Unit) = 
  * @param initiate the [CommonAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
-@JvmName("-bindAdapter_Generics-")
+@JvmName("bindAdapter_Generics")
 inline fun <reified E> AutoCompleteTextView.bindAdapter(initiate: CommonAdapterBuilder<E>.() -> Unit) =
     CommonAdapterBuilder.from<E>(context).apply(initiate).build()
         .also { current(ignored = true).method { name = "setAdapter"; paramCount = 1 }.call(it) }
@@ -82,7 +81,6 @@ inline fun <reified E> AutoCompleteTextView.bindAdapter(initiate: CommonAdapterB
  * @param initiate the [CommonAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
-@JvmName("-bindAdapter-")
 inline fun AutoCompleteTextView.bindAdapter(initiate: CommonAdapterBuilder<*>.() -> Unit) = bindAdapter<Any>(initiate)
 
 /**
@@ -92,7 +90,7 @@ inline fun AutoCompleteTextView.bindAdapter(initiate: CommonAdapterBuilder<*>.()
  * @param initiate the [CommonAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
-@JvmName("-bindAdapter_Generics-")
+@JvmName("bindAdapter_Generics")
 inline fun <reified E> ListPopupWindow.bindAdapter(context: Context, initiate: CommonAdapterBuilder<E>.() -> Unit) =
     CommonAdapterBuilder.from<E>(context).apply(initiate).build().apply { setAdapter(this) }
 
@@ -103,7 +101,6 @@ inline fun <reified E> ListPopupWindow.bindAdapter(context: Context, initiate: C
  * @param initiate the [CommonAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
-@JvmName("-bindAdapter-")
 inline fun ListPopupWindow.bindAdapter(context: Context, initiate: CommonAdapterBuilder<*>.() -> Unit) = bindAdapter<Any>(context, initiate)
 
 /**
@@ -113,7 +110,7 @@ inline fun ListPopupWindow.bindAdapter(context: Context, initiate: CommonAdapter
  * @param initiate the [CommonAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
-@JvmName("-bindAdapter_Generics-")
+@JvmName("bindAdapter_Generics")
 inline fun <reified E> AndroidX_ListPopupWindow.bindAdapter(context: Context, initiate: CommonAdapterBuilder<E>.() -> Unit) =
     CommonAdapterBuilder.from<E>(context).apply(initiate).build().apply { setAdapter(this) }
 
@@ -124,7 +121,6 @@ inline fun <reified E> AndroidX_ListPopupWindow.bindAdapter(context: Context, in
  * @param initiate the [CommonAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
-@JvmName("-bindAdapter-")
 inline fun AndroidX_ListPopupWindow.bindAdapter(context: Context, initiate: CommonAdapterBuilder<*>.() -> Unit) =
     bindAdapter<Any>(context, initiate)
 
@@ -145,7 +141,7 @@ inline fun AndroidX_ListPopupWindow.bindAdapter(context: Context, initiate: Comm
  * @param initiate the [RecyclerAdapterBuilder] builder body.
  * @return [RecyclerView.Adapter]<[RecyclerAdapterBuilder.BaseRecyclerHolder]>
  */
-@JvmName("-bindAdapter_Generics-")
+@JvmName("bindAdapter_Generics")
 inline fun <reified E> RecyclerView.bindAdapter(
     cosmeticMaker: RecyclerCosmeticMaker = RecyclerCosmeticMaker.fromLinearVertical(context),
     initiate: RecyclerAdapterBuilder<E>.() -> Unit
@@ -172,7 +168,6 @@ inline fun <reified E> RecyclerView.bindAdapter(
  * @param initiate the [RecyclerAdapterBuilder] builder body.
  * @return [RecyclerView.Adapter]<[RecyclerAdapterBuilder.BaseRecyclerHolder]>
  */
-@JvmName("-bindAdapter-")
 inline fun RecyclerView.bindAdapter(
     cosmeticMaker: RecyclerCosmeticMaker = RecyclerCosmeticMaker.fromLinearVertical(context),
     initiate: RecyclerAdapterBuilder<*>.() -> Unit
@@ -184,7 +179,7 @@ inline fun RecyclerView.bindAdapter(
  * @param initiate the [PagerAdapterBuilder] builder body.
  * @return [PagerAdapter]
  */
-@JvmName("-bindAdapter_Generics-")
+@JvmName("bindAdapter_Generics")
 inline fun <reified E> ViewPager.bindAdapter(initiate: PagerAdapterBuilder<E>.() -> Unit) =
     PagerAdapterBuilder.from<E>(context).apply(initiate).build().apply { adapter = this }
 
@@ -194,7 +189,6 @@ inline fun <reified E> ViewPager.bindAdapter(initiate: PagerAdapterBuilder<E>.()
  * @param initiate the [PagerAdapterBuilder] builder body.
  * @return [PagerAdapter]
  */
-@JvmName("-bindAdapter-")
 inline fun ViewPager.bindAdapter(initiate: PagerAdapterBuilder<*>.() -> Unit) = bindAdapter<Any>(initiate)
 
 /**
@@ -208,7 +202,6 @@ inline fun ViewPager.bindAdapter(initiate: PagerAdapterBuilder<*>.() -> Unit) = 
  * @param initiate the [FragmentPageAdapterBuilder] builder body.
  * @return [FragmentPageAdapterBuilder]
  */
-@JvmName("-bindFragments-")
 inline fun ViewPager.bindFragments(
     activity: FragmentActivity,
     behavior: Int = FragmentPagerAdapter.BEHAVIOR_SET_USER_VISIBLE_HINT,
@@ -226,7 +219,6 @@ inline fun ViewPager.bindFragments(
  * @param initiate the [FragmentPageAdapterBuilder] builder body.
  * @return [FragmentPageAdapterBuilder]
  */
-@JvmName("-bindFragments-")
 inline fun ViewPager.bindFragments(
     fragment: Fragment,
     behavior: Int = FragmentPagerAdapter.BEHAVIOR_SET_USER_VISIBLE_HINT,
@@ -239,7 +231,7 @@ inline fun ViewPager.bindFragments(
  * @param initiate the [RecyclerAdapterBuilder] builder body.
  * @return [RecyclerView.Adapter]<[RecyclerAdapterBuilder.BaseRecyclerHolder]>
  */
-@JvmName("-bindAdapter_Generics-")
+@JvmName("bindAdapter_Generics")
 inline fun <reified E> ViewPager2.bindAdapter(initiate: RecyclerAdapterBuilder<E>.() -> Unit) =
     RecyclerAdapterBuilder.from<E>(context).apply(initiate).build().apply { adapter = this }
 
@@ -249,7 +241,6 @@ inline fun <reified E> ViewPager2.bindAdapter(initiate: RecyclerAdapterBuilder<E
  * @param initiate the [RecyclerAdapterBuilder] builder body.
  * @return [RecyclerView.Adapter]<[RecyclerAdapterBuilder.BaseRecyclerHolder]>
  */
-@JvmName("-bindAdapter-")
 inline fun ViewPager2.bindAdapter(initiate: RecyclerAdapterBuilder<*>.() -> Unit) = bindAdapter<Any>(initiate)
 
 /**
@@ -259,7 +250,6 @@ inline fun ViewPager2.bindAdapter(initiate: RecyclerAdapterBuilder<*>.() -> Unit
  * @param initiate the [FragmentStateAdapterBuilder] builder body.
  * @return [FragmentStateAdapter]
  */
-@JvmName("-bindFragments-")
 inline fun ViewPager2.bindFragments(activity: FragmentActivity, initiate: FragmentStateAdapterBuilder.() -> Unit) =
     FragmentStateAdapterBuilder.from(activity).apply(initiate).build().apply { adapter = this }
 
@@ -270,6 +260,5 @@ inline fun ViewPager2.bindFragments(activity: FragmentActivity, initiate: Fragme
  * @param initiate the [FragmentStateAdapterBuilder] builder body.
  * @return [FragmentStateAdapter]
  */
-@JvmName("-bindFragments-")
 inline fun ViewPager2.bindFragments(fragment: Fragment, initiate: FragmentStateAdapterBuilder.() -> Unit) =
     FragmentStateAdapterBuilder.from(fragment).apply(initiate).build().apply { adapter = this }
