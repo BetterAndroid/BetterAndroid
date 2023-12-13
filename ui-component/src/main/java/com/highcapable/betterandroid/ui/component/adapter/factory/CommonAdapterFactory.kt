@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2022/11/2.
  */
-@file:Suppress("unused", "FunctionName", "DEPRECATION")
+@file:Suppress("unused", "FunctionName", "DEPRECATION", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
 @file:JvmName("CommonAdapterUtils")
 
 package com.highcapable.betterandroid.ui.component.adapter.factory
@@ -42,7 +42,7 @@ import com.highcapable.betterandroid.ui.component.adapter.PagerAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.RecyclerAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.fragment.FragmentPagerAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.fragment.FragmentStateAdapterBuilder
-import com.highcapable.betterandroid.ui.component.adapter.recycler.cosmetic.RecyclerCosmeticMaker
+import com.highcapable.betterandroid.ui.component.adapter.recycler.cosmetic.RecyclerCosmetic
 import com.highcapable.yukireflection.factory.current
 import androidx.appcompat.widget.ListPopupWindow as AndroidX_ListPopupWindow
 
@@ -128,26 +128,26 @@ inline fun AndroidX_ListPopupWindow.bindAdapter(context: Context, initiate: Comm
  *
  * We have preset several common adapter layout types for you to use:
  *
- * - [RecyclerCosmeticMaker.fromLinearVertical] the linear vertical cosmetic (there are two kinds).
+ * - [RecyclerCosmetic.fromLinearVertical] the linear vertical cosmetic (there are two kinds).
  *
- * - [RecyclerCosmeticMaker.fromLinearHorizontal] the linear horizontal cosmetic (there are two kinds).
+ * - [RecyclerCosmetic.fromLinearHorizontal] the linear horizontal cosmetic (there are two kinds).
  *
- * - [RecyclerCosmeticMaker.fromGridVertical] the grid vertical cosmetic (there are two kinds).
+ * - [RecyclerCosmetic.fromGridVertical] the grid vertical cosmetic (there are two kinds).
  *
- * You can also manually call [RecyclerCosmeticMaker.from] to create a custom cosmetic.
+ * You can also manually call [RecyclerCosmetic.from] to create a custom cosmetic.
  * @receiver [RecyclerView]
- * @param cosmeticMaker the maker, default is [RecyclerCosmeticMaker.fromLinearVertical].
+ * @param cosmetic the cosmetic, default is [RecyclerCosmetic.fromLinearVertical].
  * @param initiate the [RecyclerAdapterBuilder] builder body.
  * @return [RecyclerView.Adapter]<[RecyclerAdapterBuilder.BaseRecyclerHolder]>
  */
 @JvmName("bindAdapter_Generics")
 inline fun <reified E> RecyclerView.bindAdapter(
-    cosmeticMaker: RecyclerCosmeticMaker = RecyclerCosmeticMaker.fromLinearVertical(context),
+    cosmetic: RecyclerCosmetic = RecyclerCosmetic.fromLinearVertical(context),
     initiate: RecyclerAdapterBuilder<E>.() -> Unit
 ): RecyclerView.Adapter<RecyclerAdapterBuilder<E>.BaseRecyclerHolder> {
-    layoutManager = cosmeticMaker.layoutManager
-    cosmeticMaker.itemDecoration?.also { addItemDecoration(it) }
-    return RecyclerAdapter<E>(context, cosmeticMaker, initiate).apply { adapter = this }
+    layoutManager = cosmetic.layoutManager
+    addItemDecoration(cosmetic.itemDecoration)
+    return RecyclerAdapter<E>(context, cosmetic, initiate).apply { adapter = this }
 }
 
 /**
@@ -155,22 +155,22 @@ inline fun <reified E> RecyclerView.bindAdapter(
  *
  * We have preset several common adapter layout types for you to use:
  *
- * - [RecyclerCosmeticMaker.fromLinearVertical] the linear vertical cosmetic (there are two kinds).
+ * - [RecyclerCosmetic.fromLinearVertical] the linear vertical cosmetic (there are two kinds).
  *
- * - [RecyclerCosmeticMaker.fromLinearHorizontal] the linear horizontal cosmetic (there are two kinds).
+ * - [RecyclerCosmetic.fromLinearHorizontal] the linear horizontal cosmetic (there are two kinds).
  *
- * - [RecyclerCosmeticMaker.fromGridVertical] the grid vertical cosmetic (there are two kinds).
+ * - [RecyclerCosmetic.fromGridVertical] the grid vertical cosmetic (there are two kinds).
  *
- * You can also manually call [RecyclerCosmeticMaker.from] to create a custom cosmetic.
+ * You can also manually call [RecyclerCosmetic.from] to create a custom cosmetic.
  * @receiver [RecyclerView]
- * @param cosmeticMaker the maker, default is [RecyclerCosmeticMaker.fromLinearVertical].
+ * @param cosmetic the cosmetic, default is [RecyclerCosmetic.fromLinearVertical].
  * @param initiate the [RecyclerAdapterBuilder] builder body.
  * @return [RecyclerView.Adapter]<[RecyclerAdapterBuilder.BaseRecyclerHolder]>
  */
 inline fun RecyclerView.bindAdapter(
-    cosmeticMaker: RecyclerCosmeticMaker = RecyclerCosmeticMaker.fromLinearVertical(context),
+    cosmetic: RecyclerCosmetic = RecyclerCosmetic.fromLinearVertical(context),
     initiate: RecyclerAdapterBuilder<*>.() -> Unit
-) = bindAdapter<Any>(cosmeticMaker, initiate)
+) = bindAdapter<Any>(cosmetic, initiate)
 
 /**
  * Bind the [PagerAdapter] to [ViewPager], using entity [E].
@@ -283,29 +283,29 @@ inline fun CommonAdapter(context: Context, initiate: CommonAdapterBuilder<*>.() 
 /**
  * Create a [RecyclerView.Adapter], using entity [E].
  * @param context the current context.
- * @param cosmeticMaker the maker, default is [RecyclerCosmeticMaker.fromLinearVertical].
+ * @param cosmetic the cosmetic, will take effect on using [RecyclerView], default is null.
  * @param initiate the [RecyclerAdapterBuilder] builder body.
  * @return [RecyclerView.Adapter]<[RecyclerAdapterBuilder.BaseRecyclerHolder]>
  */
 @JvmName("RecyclerAdapter_Generics")
 inline fun <reified E> RecyclerAdapter(
     context: Context,
-    cosmeticMaker: RecyclerCosmeticMaker = RecyclerCosmeticMaker.fromLinearVertical(context),
+    cosmetic: RecyclerCosmetic? = null,
     initiate: RecyclerAdapterBuilder<E>.() -> Unit
-) = RecyclerAdapterBuilder.from<E>(context, cosmeticMaker).apply(initiate).build()
+) = RecyclerAdapterBuilder.from<E>(context, cosmetic).apply(initiate).build()
 
 /**
  * Create a [RecyclerView.Adapter].
  * @param context the current context.
- * @param cosmeticMaker the maker, default is [RecyclerCosmeticMaker.fromLinearVertical].
+ * @param cosmetic the cosmetic, will take effect on using [RecyclerView], default is null.
  * @param initiate the [RecyclerAdapterBuilder] builder body.
  * @return [RecyclerView.Adapter]<[RecyclerAdapterBuilder.BaseRecyclerHolder]>
  */
 inline fun RecyclerAdapter(
     context: Context,
-    cosmeticMaker: RecyclerCosmeticMaker = RecyclerCosmeticMaker.fromLinearVertical(context),
+    cosmetic: RecyclerCosmetic? = null,
     initiate: RecyclerAdapterBuilder<*>.() -> Unit
-) = RecyclerAdapter<Any>(context, cosmeticMaker, initiate)
+) = RecyclerAdapter<Any>(context, cosmetic, initiate)
 
 /**
  * Create a [PagerAdapter], using entity [E].

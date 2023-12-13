@@ -32,7 +32,8 @@ import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.widget.ViewPager2
 import com.highcapable.betterandroid.ui.component.adapter.base.IAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.factory.bindAdapter
-import com.highcapable.betterandroid.ui.component.adapter.recycler.cosmetic.RecyclerCosmeticMaker
+import com.highcapable.betterandroid.ui.component.adapter.recycler.cosmetic.RecyclerCosmetic
+import com.highcapable.betterandroid.ui.component.adapter.recycler.decoration.base.BaseRecyclerItemDecoration
 import com.highcapable.betterandroid.ui.component.adapter.view.RecyclerItemView
 import com.highcapable.betterandroid.ui.extension.component.base.inflateViewBinding
 import com.highcapable.betterandroid.ui.extension.widget.inflate
@@ -41,9 +42,9 @@ import com.highcapable.yukireflection.factory.classOf
 /**
  * [RecyclerView.Adapter] builder, using entity [E].
  * @param adapterContext the current context.
- * @param cosmeticMaker the maker, will take effect on using [RecyclerView].
+ * @param cosmetic the cosmetic, will take effect on using [RecyclerView].
  */
-class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: Context, private val cosmeticMaker: RecyclerCosmeticMaker?) :
+class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: Context, private val cosmetic: RecyclerCosmetic?) :
     IAdapterBuilder {
 
     companion object {
@@ -55,12 +56,12 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
          * - [RecyclerView.bindAdapter]
          * - [ViewPager2.bindAdapter]
          * @param context the current context.
-         * @param cosmeticMaker the maker, will take effect on using [RecyclerView], default is null.
+         * @param cosmetic the cosmetic, will take effect on using [RecyclerView], default is null.
          * @return [RecyclerAdapterBuilder]<[E]>
          */
         @JvmStatic
         @JvmOverloads
-        fun <E> from(context: Context, cosmeticMaker: RecyclerCosmeticMaker? = null) = RecyclerAdapterBuilder<E>(context, cosmeticMaker)
+        fun <E> from(context: Context, cosmetic: RecyclerCosmetic? = null) = RecyclerAdapterBuilder<E>(context, cosmetic)
     }
 
     /** The current each item function callbacks. */
@@ -190,6 +191,14 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
          */
         private fun boundItemViewsCallbacks(viewType: Int) = boundItemViewsCallbacks.firstOrNull { it.viewType == viewType }
 
+        /**
+         * Update the currently bound data set count.
+         * @param dataSetCount the data set count.
+         */
+        private fun updateDataSetCount(dataSetCount: Int) {
+            (cosmetic?.itemDecoration as? BaseRecyclerItemDecoration?)?.dataSetCount = dataSetCount
+        }
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             boundItemViewsCallbacks(viewType)?.let {
                 when {
@@ -224,8 +233,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
 
         override fun getItemViewType(position: Int) = entityTypeCallback?.invoke(getCurrentEntity(position), position) ?: 0
         override fun getItemId(position: Int) = position.toLong()
-        override fun getItemCount() = (dataSetCount.takeIf { it >= 0 }
-            ?: listDataCallback?.invoke()?.size)?.also { cosmeticMaker?.baseItemDecoration?.boundDataArraySize = it } ?: 0
+        override fun getItemCount() = (dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size)?.also { updateDataSetCount(it) } ?: 0
     }
 
     /**

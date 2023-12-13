@@ -27,15 +27,13 @@ import androidx.recyclerview.widget.RecyclerView
 
 /**
  * [RecyclerView] base item decoration.
+ * @param dataSetCount the size of the currently bound data set.
  */
-abstract class BaseRecyclerItemDecoration internal constructor() : RecyclerView.ItemDecoration() {
-
-    /** The size of the currently bound data array. */
-    internal var boundDataArraySize: Int = -1
+abstract class BaseRecyclerItemDecoration internal constructor(internal var dataSetCount: Int = -1) : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         super.getItemOffsets(outRect, view, parent, state)
-        if (boundDataArraySize >= 0) calculateItemOffsets(outRect, parent.getChildAdapterPosition(view), boundDataArraySize)
+        if (dataSetCount >= 0) calculateItemOffsets(outRect, parent.getChildAdapterPosition(view), dataSetCount)
     }
 
     /**
