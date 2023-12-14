@@ -49,6 +49,7 @@ import com.highcapable.betterandroid.system.extension.tool.SystemVersion
  * @param flags the flags, default is [Context.RECEIVER_EXPORTED].
  * @param onReceive callback the receiver event function body.
  */
+@JvmOverloads
 fun Context.registerReceiver(filter: IntentFilter, flags: Int? = null, onReceive: (context: Context, intent: Intent) -> Unit) {
     val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -82,6 +83,7 @@ fun Context.registerReceiver(filter: IntentFilter, flags: Int? = null, onReceive
  * @param action the actions you want to send, default is empty.
  * @param initiate the [Intent] builder body.
  */
+@JvmOverloads
 fun Context.sendBroadcast(packageName: String = "", vararg action: String, initiate: Intent.() -> Unit = {}) =
     sendBroadcast(Intent().apply {
         if (packageName.isNotBlank()) setPackage(packageName)

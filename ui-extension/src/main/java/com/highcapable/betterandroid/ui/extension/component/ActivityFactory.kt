@@ -59,7 +59,6 @@ val Activity.isInMultiWindowModeCompat get() = SystemVersion.require(SystemVersi
  * @param newTask whether to start with a new task, default is false.
  * @param initiate the [Intent] builder body, default is empty.
  */
-@JvmOverloads
 inline fun <reified T : Activity> Context.startActivity(newTask: Boolean = false, initiate: Intent.() -> Unit = {}) =
     startActivity(Intent(this, classOf<T>()).apply { if (newTask) flags = flags or Intent.FLAG_ACTIVITY_NEW_TASK }.apply(initiate))
 

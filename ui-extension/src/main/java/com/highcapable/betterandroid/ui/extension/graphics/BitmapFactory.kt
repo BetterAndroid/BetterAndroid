@@ -55,6 +55,7 @@ import kotlin.math.sqrt
  * @return [Bitmap]
  * @throws IllegalStateException if the bitmap decode failed.
  */
+@JvmOverloads
 fun File.decodeToBitmap(opts: BitmapFactory.Options? = null) =
     decodeToBitmapOrNull(opts) ?: error("Unable to decode file $absolutePath of a bitmap.")
 
@@ -70,6 +71,7 @@ fun File.decodeToBitmap(opts: BitmapFactory.Options? = null) =
  * @return [Bitmap]
  * @throws IllegalStateException if the bitmap decode failed.
  */
+@JvmOverloads
 fun InputStream.decodeToBitmap(outPadding: Rect? = null, opts: BitmapFactory.Options? = null) =
     decodeToBitmapOrNull(outPadding, opts) ?: error("Unable to decode stream $this of a bitmap.")
 
@@ -85,6 +87,7 @@ fun InputStream.decodeToBitmap(outPadding: Rect? = null, opts: BitmapFactory.Opt
  * @return [Bitmap]
  * @throws IllegalStateException if the bitmap decode failed.
  */
+@JvmOverloads
 fun ByteArray.decodeToBitmap(offset: Int = 0, size: Int = this.size) =
     decodeToBitmapOrNull(offset, size) ?: error("Unable to decode byte array $this of a bitmap.")
 
@@ -100,6 +103,7 @@ fun ByteArray.decodeToBitmap(offset: Int = 0, size: Int = this.size) =
  * @return [Bitmap]
  * @throws IllegalStateException if the bitmap decode failed.
  */
+@JvmOverloads
 fun Resources.createBitmap(@DrawableRes resId: Int, opts: BitmapFactory.Options? = null) =
     createBitmapOrNull(resId, opts) ?: error("Unable to create a bitmap from resource ID ${resId.toHexResourceId()}.")
 
@@ -111,6 +115,7 @@ fun Resources.createBitmap(@DrawableRes resId: Int, opts: BitmapFactory.Options?
  * @param opts the [BitmapFactory.Options], default is null.
  * @return [Bitmap] or null.
  */
+@JvmOverloads
 fun File.decodeToBitmapOrNull(opts: BitmapFactory.Options? = null) =
     runCatching { BitmapFactory.decodeFile(absolutePath, opts) }.getOrNull()
 
@@ -123,6 +128,7 @@ fun File.decodeToBitmapOrNull(opts: BitmapFactory.Options? = null) =
  * @param opts the [BitmapFactory.Options], default is null.
  * @return [Bitmap] or null.
  */
+@JvmOverloads
 fun InputStream.decodeToBitmapOrNull(outPadding: Rect? = null, opts: BitmapFactory.Options? = null) =
     runCatching { BitmapFactory.decodeStream(this, outPadding, opts) }.getOrNull()
 
@@ -135,6 +141,7 @@ fun InputStream.decodeToBitmapOrNull(outPadding: Rect? = null, opts: BitmapFacto
  * @param size the current data length, default is [ByteArray.size].
  * @return [Bitmap] or null.
  */
+@JvmOverloads
 fun ByteArray.decodeToBitmapOrNull(offset: Int = 0, size: Int = this.size) =
     runCatching { BitmapFactory.decodeByteArray(this, offset, size) }.getOrNull()
 
@@ -147,6 +154,7 @@ fun ByteArray.decodeToBitmapOrNull(offset: Int = 0, size: Int = this.size) =
  * @param opts the [BitmapFactory.Options], default is null.
  * @return [Bitmap] or null.
  */
+@JvmOverloads
 fun Resources.createBitmapOrNull(@DrawableRes resId: Int, opts: BitmapFactory.Options? = null) =
     runCatching { BitmapFactory.decodeResource(this, resId, opts) }.getOrNull()
 
@@ -157,6 +165,7 @@ fun Resources.createBitmapOrNull(@DrawableRes resId: Int, opts: BitmapFactory.Op
  * @param format the bitmap format, defaul is [Bitmap.CompressFormat.PNG].
  * @param quality the quality, default is 100.
  */
+@JvmOverloads
 fun File.writeBitmap(bitmap: Bitmap, format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG, quality: Int = 100) {
     createNewFile()
     outputStream().apply {
@@ -183,6 +192,7 @@ fun Bitmap.blur(radius: Int) = BitmapBlurFactory.process(this, radius)
  * @param config the config, default is [Bitmap.Config.ARGB_8888].
  * @return [Bitmap]
  */
+@JvmOverloads
 fun Bitmap.round(@Px radius: Float, config: Bitmap.Config = Bitmap.Config.ARGB_8888) =
     runCatching {
         Bitmap.createBitmap(width, height, config).also { outBitmap ->
@@ -205,6 +215,7 @@ fun Bitmap.round(@Px radius: Float, config: Bitmap.Config = Bitmap.Config.ARGB_8
  * @param quality the quality, default is 100.
  * @return [Bitmap]
  */
+@JvmOverloads
 fun Bitmap.compress(maxSize: Float, format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG, quality: Int = 100): Bitmap {
     var outBitmap = this
     val baos = ByteArrayOutputStream()
@@ -225,6 +236,7 @@ fun Bitmap.compress(maxSize: Float, format: Bitmap.CompressFormat = Bitmap.Compr
  * @param multiple the reduce multiple, default is 2.
  * @return [Bitmap]
  */
+@JvmOverloads
 fun Bitmap.reduce(multiple: Int = 2): Bitmap {
     if (multiple <= 1) return this
     val floatWidth = (width / multiple).toFloat()

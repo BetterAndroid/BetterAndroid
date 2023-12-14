@@ -137,6 +137,7 @@ fun View.performTouch(downX: Float, downY: Float, upX: Float, upY: Float, durati
  * @param right the right margin (px), default is [marginRight].
  * @param bottom the bottom margin (px), default is [marginBottom].
  */
+@JvmOverloads
 fun View.updateMargin(
     @Px left: Int = marginLeft,
     @Px top: Int = marginTop,
@@ -159,6 +160,7 @@ fun View.updateMargin(
  * @param attachToRoot whether to attach to the root view, default false.
  * @return [View]
  */
+@JvmOverloads
 fun ViewGroup.inflate(resId: Int, attachToRoot: Boolean = false): View = LayoutInflater.from(context).inflate(resId, this, attachToRoot)
 
 /**
@@ -169,6 +171,7 @@ fun ViewGroup.inflate(resId: Int, attachToRoot: Boolean = false): View = LayoutI
  * @param attachToRoot whether to attach to the root view, default false.
  * @return [View]
  */
+@JvmOverloads
 fun Context.inflate(resId: Int, parent: ViewGroup? = null, attachToRoot: Boolean = false): View =
     LayoutInflater.from(this).inflate(resId, parent, attachToRoot)
 
@@ -227,7 +230,6 @@ object ViewLayoutParams {
      * @throws IllegalStateException if [VGLP] is not supported.
      */
     @JvmStatic
-    @JvmOverloads
     inline fun <reified VGLP : ViewGroup.LayoutParams> create(
         matchParent: Boolean = false,
         widthMatchParent: Boolean = false,

@@ -79,6 +79,7 @@ var TextView.textColor
  * @param inputType the input type, default is [InputType.TYPE_CLASS_TEXT] | [InputType.TYPE_TEXT_VARIATION_NORMAL].
  * @param locale the locale, default is [Locale.ROOT], require Android 8.0 (26).
  */
+@JvmOverloads
 fun TextView.setDigits(
     acceptedChars: String,
     inputType: Int = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_NORMAL,

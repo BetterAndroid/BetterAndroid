@@ -97,6 +97,7 @@ private fun <VB : ViewBinding> baseInflateViewBinding(
  * @param attachToRoot whether to attach the root view, default is false.
  * @return [VB]
  */
+@JvmOverloads
 fun <VB : ViewBinding> Activity.inflateViewBinding(
     inflater: LayoutInflater = layoutInflater,
     parent: ViewGroup? = null,
@@ -142,6 +143,7 @@ fun <VB : ViewBinding> Activity.inflateViewBinding(
  * @param attachToRoot whether to attach the root view, default is false.
  * @return [VB]
  */
+@JvmOverloads
 fun <VB : ViewBinding> Fragment.inflateViewBinding(
     inflater: LayoutInflater = layoutInflater,
     parent: ViewGroup? = null,
@@ -164,6 +166,7 @@ fun <VB : ViewBinding> Fragment.inflateViewBinding(
  * @param attachToRoot whether to attach the root view, default is false.
  * @return [VB]
  */
+@JvmOverloads
 @JvmName("inflateViewBinding_Generics")
 fun <VB : ViewBinding> Context.inflateViewBinding(
     bindingClass: Class<*>,
@@ -188,6 +191,7 @@ fun <VB : ViewBinding> Context.inflateViewBinding(
  * @param attachToRoot whether to attach the root view, default is false.
  * @return [ViewBinding]
  */
+@JvmOverloads
 fun Context.inflateViewBinding(
     bindingClass: Class<*>,
     inflater: LayoutInflater = LayoutInflater.from(this),

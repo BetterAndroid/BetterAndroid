@@ -39,6 +39,7 @@ import androidx.fragment.app.Fragment
  * @param label the clip data visible label, default is null.
  * @return [Boolean] whether succeed.
  */
+@JvmOverloads
 fun Context.copyToClipboard(text: CharSequence, label: CharSequence? = null) =
     getSystemService<ClipboardManager>()?.let { manager ->
         manager.setPrimaryClip(ClipData.newPlainText(label, text))
@@ -52,6 +53,7 @@ fun Context.copyToClipboard(text: CharSequence, label: CharSequence? = null) =
  * @param label the clip data visible label, default is null.
  * @return [Boolean] whether succeed.
  */
+@JvmOverloads
 fun Fragment.copyToClipboard(text: CharSequence, label: CharSequence? = null) = requireContext().copyToClipboard(text, label)
 
 /**
@@ -61,6 +63,7 @@ fun Fragment.copyToClipboard(text: CharSequence, label: CharSequence? = null) = 
  * @param label the clip data visible label, default is null.
  * @return [Boolean] whether succeed.
  */
+@JvmOverloads
 fun View.copyToClipboard(text: CharSequence, label: CharSequence? = null) = context.copyToClipboard(text, label)
 
 /**
@@ -70,4 +73,5 @@ fun View.copyToClipboard(text: CharSequence, label: CharSequence? = null) = cont
  * @param label the clip data visible label, default is null.
  * @return [Boolean] whether succeed.
  */
+@JvmOverloads
 fun Dialog.copyToClipboard(text: CharSequence, label: CharSequence? = null) = context.copyToClipboard(text, label)

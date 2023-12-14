@@ -124,7 +124,6 @@ fun Resources.getDrawableCompat(@DrawableRes id: Int, theme: Theme? = null) = ge
  * @throws [Resources.NotFoundException] if the resource is not found.
  * @throws IllegalStateException if [Drawable] type is not [T].
  */
-@JvmOverloads
 @JvmName("getDrawableCompat_Generics")
 inline fun <reified T : Drawable> Resources.getDrawableCompat(@DrawableRes id: Int, theme: Theme? = null) =
     ResourcesCompat.getDrawable(this, id, theme) as? T ?: error("Drawable type cannot cast to ${classOf<T>()}.")
@@ -467,7 +466,6 @@ fun TypedArray.getColorOrNull(@StyleableRes index: Int, @ColorInt defValue: Int?
  * @param styleIds the style ids.
  * @param result callback [TypedArray], will no effect whether if [attrs] is null.
  */
-@JvmOverloads
 inline fun View.obtainStyledAttributes(attrs: AttributeSet? = null, styleIds: IntArray, result: (TypedArray) -> Unit) {
     if (attrs == null) return
     context?.obtainStyledAttributes(attrs, styleIds)?.apply { result(this) }?.recycle()

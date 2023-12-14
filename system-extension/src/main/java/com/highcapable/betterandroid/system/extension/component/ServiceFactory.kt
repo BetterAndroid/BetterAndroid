@@ -38,7 +38,6 @@ import com.highcapable.yukireflection.factory.classOf
  * @param initiate the [Intent] builder body, default is empty.
  * @return [ComponentName] or null.
  */
-@JvmOverloads
 inline fun <reified T : Service> Context.startService(initiate: Intent.() -> Unit = {}) =
     startService(Intent(this, classOf<T>()).apply(initiate))
 
@@ -49,7 +48,6 @@ inline fun <reified T : Service> Context.startService(initiate: Intent.() -> Uni
  * @return [ComponentName] or null.
  */
 @RequiresApi(SystemVersion.O)
-@JvmOverloads
 inline fun <reified T : Service> Context.startForegroundService(initiate: Intent.() -> Unit = {}) =
     startForegroundService(Intent(this, classOf<T>()).apply(initiate))
 

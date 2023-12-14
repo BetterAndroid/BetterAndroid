@@ -48,6 +48,7 @@ object SystemProperties {
      * @param key the key name.
      * @return [Boolean]
      */
+    @JvmStatic
     fun contains(key: String) = get(key).isNotBlank()
 
     /**
@@ -56,6 +57,8 @@ object SystemProperties {
      * @param default the default value.
      * @return [String]
      */
+    @JvmStatic
+    @JvmOverloads
     fun get(key: String, default: String = "") =
         SystemPropertiesClass.method {
             name = "get"
@@ -68,6 +71,8 @@ object SystemProperties {
      * @param default the default value.
      * @return [Int]
      */
+    @JvmStatic
+    @JvmOverloads
     fun getInt(key: String, default: Int = 0) =
         SystemPropertiesClass.method {
             name = "getInt"
@@ -80,6 +85,8 @@ object SystemProperties {
      * @param default the default value.
      * @return [Long]
      */
+    @JvmStatic
+    @JvmOverloads
     fun getLong(key: String, default: Long = 0L) =
         SystemPropertiesClass.method {
             name = "getLong"
@@ -100,6 +107,8 @@ object SystemProperties {
      * @param default the default value.
      * @return [Boolean]
      */
+    @JvmStatic
+    @JvmOverloads
     fun getBoolean(key: String, default: Boolean = false) =
         SystemPropertiesClass.method {
             name = "getInt"
