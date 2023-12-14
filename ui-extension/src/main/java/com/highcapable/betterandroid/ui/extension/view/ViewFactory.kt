@@ -127,6 +127,19 @@ fun View.performTouch(downX: Float, downY: Float, upX: Float, upY: Float, durati
 }
 
 /**
+ * Updates this view's horizontal or vertical padding.
+ * @see View.updatePadding
+ * @receiver [View]
+ * @param horizontal the horizontal padding (px).
+ * @param vertical the vertical padding (px).
+ */
+@JvmOverloads
+fun View.updatePadding(@Px horizontal: Int = -1, @Px vertical: Int = -1) {
+    if (horizontal >= 0) updatePadding(left = horizontal, right = horizontal)
+    if (vertical >= 0) updatePadding(top = vertical, bottom = vertical)
+}
+
+/**
  * Updates this view's margin.
  *
  * Same like [View.updatePadding].
