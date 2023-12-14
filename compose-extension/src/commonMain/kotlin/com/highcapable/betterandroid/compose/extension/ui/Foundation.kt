@@ -57,8 +57,7 @@ fun Modifier.componentState(
 
 /**
  * Extension for [foundationClickable].
- *
- * See also [foundationClickable].
+ * @see foundationClickable
  * @return [Modifier]
  */
 fun Modifier.clickable(
@@ -92,8 +91,7 @@ fun Modifier.clickable(
 
 /**
  * Extension for [foundationCombinedClickable].
- *
- * See also [foundationCombinedClickable].
+ * @see foundationCombinedClickable
  * @return [Modifier]
  */
 fun Modifier.combinedClickable(
@@ -136,8 +134,7 @@ fun Modifier.combinedClickable(
 
 /**
  * Extension for [foundationToggleable].
- *
- * See also [foundationToggleable].
+ * @see foundationToggleable
  * @return [Modifier]
  */
 fun Modifier.toggleable(
@@ -171,8 +168,7 @@ fun Modifier.toggleable(
 
 /**
  * Extension for [foundationSelectable].
- *
- * See also [foundationSelectable].
+ * @see foundationSelectable
  * @return [Modifier]
  */
 fun Modifier.selectable(

@@ -33,8 +33,7 @@ enum class NotificationImportance {
      *
      * - Note: Some third-party ROMs will always display the icon in
      *   the status bar, such as MIUI, HyperOS.
-     *
-     * See also [NotificationManagerCompat.IMPORTANCE_MIN].
+     * @see NotificationManagerCompat.IMPORTANCE_MIN
      */
     MIN,
 
@@ -45,24 +44,21 @@ enum class NotificationImportance {
      * - Note: Some third-party ROMs will not display the icon in
      *   the status bar, such as ColorOS, but some are always displayed,
      *   such as MIUI, HyperOS.
-     *
-     * See also [NotificationManagerCompat.IMPORTANCE_LOW].
+     * @see NotificationManagerCompat.IMPORTANCE_LOW
      */
     LOW,
 
     /**
      * Turn on the notification, it will not pop up,
      * a prompt sound will rings, and it icon will be displayed in the status bar.
-     *
-     * See also [NotificationManagerCompat.IMPORTANCE_DEFAULT].
+     * @see NotificationManagerCompat.IMPORTANCE_DEFAULT
      */
     DEFAULT,
 
     /**
      * Turn on the notification, it will pop up, sound a prompt,
      * and it icon will be displayed in the status bar.
-     *
-     * See also [NotificationManagerCompat.IMPORTANCE_HIGH].
+     * @see NotificationManagerCompat.IMPORTANCE_HIGH
      */
     HIGH
 }

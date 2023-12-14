@@ -70,43 +70,43 @@ class NotificationChannelBuilder private constructor(
         ) = NotificationChannelBuilder(channelId, group, importance)
     }
 
-    /** See [NotificationChannelCompat.Builder.setSound]. */
+    /** @see NotificationChannelCompat.Builder.setSound */
     internal var sound: Pair<Uri?, AudioAttributes?>? = null
 
-    /** See [NotificationChannelCompat.Builder.setConversationId]. */
+    /** @see NotificationChannelCompat.Builder.setConversationId */
     internal var conversationId: Pair<String, String>? = null
 
-    /** See [NotificationChannelCompat.Builder.setName]. */
+    /** @see NotificationChannelCompat.Builder.setName */
     var name: CharSequence = ""
 
-    /** See [NotificationChannelCompat.Builder.setDescription]. */
+    /** @see NotificationChannelCompat.Builder.setDescription */
     var description = ""
 
-    /** See [NotificationChannelCompat.Builder.setShowBadge]. */
+    /** @see NotificationChannelCompat.Builder.setShowBadge */
     var isShowBadge: Boolean? = null
 
-    /** See [NotificationChannelCompat.Builder.setLightsEnabled]. */
+    /** @see NotificationChannelCompat.Builder.setLightsEnabled */
     var isLightsEnabled: Boolean? = null
 
-    /** See [NotificationChannelCompat.Builder.setLightColor]. */
+    /** @see NotificationChannelCompat.Builder.setLightColor */
     @ColorInt
     var lightColor: Int? = null
 
-    /** See [NotificationChannelCompat.Builder.setVibrationEnabled]. */
+    /** @see NotificationChannelCompat.Builder.setVibrationEnabled */
     var isVibrationEnabled: Boolean? = null
 
-    /** See [NotificationChannelCompat.Builder.setVibrationPattern]. */
+    /** @see NotificationChannelCompat.Builder.setVibrationPattern */
     var vibrationPattern: LongArray? = null
 
     /**
-     * See [NotificationChannelCompat.Builder.setName].
+     * @see NotificationChannelCompat.Builder.setName
      * @param name
      * @return [NotificationChannelBuilder]
      */
     fun name(name: CharSequence) = apply { this.name = name }
 
     /**
-     * See [NotificationChannelCompat.Builder.setDescription].
+     * @see NotificationChannelCompat.Builder.setDescription
      * @param description
      * @return [NotificationChannelBuilder]
      */
@@ -121,14 +121,14 @@ class NotificationChannelBuilder private constructor(
     fun group(id: String, name: CharSequence = "", description: String = "") = this
 
     /**
-     * See [NotificationChannelCompat.Builder.setShowBadge].
+     * @see NotificationChannelCompat.Builder.setShowBadge
      * @param showBadge
      * @return [NotificationChannelBuilder]
      */
     fun showBadge(showBadge: Boolean) = apply { this.isShowBadge = showBadge }
 
     /**
-     * See [NotificationChannelCompat.Builder.setSound].
+     * @see NotificationChannelCompat.Builder.setSound
      * @param sound the sound, default is null.
      * @param audioAttributes the audio attributes, default is null.
      * @return [NotificationChannelBuilder]
@@ -137,35 +137,35 @@ class NotificationChannelBuilder private constructor(
     fun sound(sound: Uri? = null, audioAttributes: AudioAttributes? = null) = apply { this.sound = sound to audioAttributes }
 
     /**
-     * See [NotificationChannelCompat.Builder.setLightsEnabled].
+     * @see NotificationChannelCompat.Builder.setLightsEnabled
      * @param lightsEnabled
      * @return [NotificationChannelBuilder]
      */
     fun lightsEnabled(lightsEnabled: Boolean) = apply { this.isLightsEnabled = lightsEnabled }
 
     /**
-     * See [NotificationChannelCompat.Builder.setLightColor].
+     * @see NotificationChannelCompat.Builder.setLightColor
      * @param lightColor
      * @return [NotificationChannelBuilder]
      */
     fun lightColor(@ColorInt lightColor: Int) = apply { this.lightColor = lightColor }
 
     /**
-     * See [NotificationChannelCompat.Builder.setVibrationEnabled].
+     * @see NotificationChannelCompat.Builder.setVibrationEnabled
      * @param vibrationEnabled
      * @return [NotificationChannelBuilder]
      */
     fun vibrationEnabled(vibrationEnabled: Boolean) = apply { this.isVibrationEnabled = vibrationEnabled }
 
     /**
-     * See [NotificationChannelCompat.Builder.setVibrationPattern].
+     * @see NotificationChannelCompat.Builder.setVibrationPattern
      * @param vibrationPattern
      * @return [NotificationChannelBuilder]
      */
     fun vibrationPattern(vibrationPattern: LongArray) = apply { this.vibrationPattern = vibrationPattern }
 
     /**
-     * See [NotificationChannelCompat.Builder.setConversationId].
+     * @see NotificationChannelCompat.Builder.setConversationId
      * @param parentChannelId the parent channel ID.
      * @param conversationId the conversation ID.
      * @return [NotificationChannelBuilder]

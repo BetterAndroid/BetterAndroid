@@ -37,8 +37,7 @@ import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
 
 /**
  * Create a new [PlatformInsets].
- *
- * See also [PlatformInsets].
+ * @see PlatformInsets
  * @param start the start insets.
  * @param top the top insets.
  * @param end the end insets.
@@ -55,8 +54,7 @@ fun PlatformInsets(
 
 /**
  * Create a new [PlatformInsets] from [LayoutDirection].
- *
- * See also [PlatformInsets].
+ * @see PlatformInsets
  * @param layoutDirection the layout direction, default is [LayoutDirection.Ltr].
  * @param left the left insets.
  * @param top the top insets.
@@ -78,8 +76,7 @@ fun PlatformInsets(
 
 /**
  * Create a new [PlatformSystemBarsInsets].
- *
- * See also [PlatformSystemBarsInsets].
+ * @see PlatformSystemBarsInsets
  * @param stableStart the stable start insets.
  * @param stableTop the stable top insets.
  * @param stableEnd the stable end insets.
@@ -107,8 +104,7 @@ fun PlatformSystemBarsInsets(
 
 /**
  * Create a new [PlatformSystemBarsInsets] from [LayoutDirection].
- *
- * See also [PlatformSystemBarsInsets].
+ * @see PlatformSystemBarsInsets
  * @param layoutDirection the layout direction, default is [LayoutDirection.Ltr].
  * @param stableLeft the stable left insets.
  * @param stableTop the stable top insets.
@@ -297,8 +293,7 @@ private data class PlatformSystemBarsInsetsImpl(
 
 /**
  * Apply the system bars insets and cutout padding in layout.
- *
- * See also [PlatformSystemBarsController.systemBarsInsets].
+ * @see PlatformSystemBarsController.systemBarsInsets
  * @param start whether to apply the start insets.
  * @param top whether to apply the top insets.
  * @param end whether to apply the end insets.

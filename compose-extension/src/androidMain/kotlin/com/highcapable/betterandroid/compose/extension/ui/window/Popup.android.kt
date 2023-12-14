@@ -35,8 +35,7 @@ import androidx.compose.ui.window.Popup as ComposePopup
 
 /**
  * Extension for [ComposePopup] to separate [onPreviewKeyEvent], [onKeyEvent] on Android.
- *
- * See also [ComposePopup].
+ * @see ComposePopup
  */
 @Composable
 actual fun Popup(

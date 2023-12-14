@@ -86,8 +86,7 @@ fun Context.startActivity(packageName: String, activityClass: String, newTask: B
  *
  * - The [Manifest.permission.QUERY_ALL_PACKAGES] permissions or a queries list declaration required
  *   when target sdk higher than 29.
- *
- * See also [Context.startActivityOrElse].
+ * @see Context.startActivityOrElse
  * @receiver the current context.
  * @param packageName the target package name.
  * @param newTask whether to start with a new task, default is true,

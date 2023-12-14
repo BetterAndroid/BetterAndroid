@@ -60,8 +60,7 @@ class NotificationPoster internal constructor(private val notification: Notifica
 
     /**
      * Post the current notification.
-     *
-     * See also [NotificationManagerCompat.notify].
+     * @see NotificationManagerCompat.notify
      * @param id the notification ID, default is 0.
      * @param tag the notification tag.
      * @return [NotificationPoster]
@@ -89,8 +88,7 @@ class NotificationPoster internal constructor(private val notification: Notifica
 
     /**
      * Cancel the current notification.
-     *
-     * See also [NotificationManagerCompat.cancel].
+     * @see NotificationManagerCompat.cancel
      * @return [NotificationPoster]
      */
     fun cancel() = apply {

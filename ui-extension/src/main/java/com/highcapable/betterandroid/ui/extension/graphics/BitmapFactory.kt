@@ -48,8 +48,7 @@ import kotlin.math.sqrt
  * Decode a file into a bitmap.
  *
  * If cannot be decoded into a bitmap, will throw an exception.
- *
- * You can see [File.decodeToBitmapOrNull].
+ * @see File.decodeToBitmapOrNull
  * @receiver [File]
  * @param opts the [BitmapFactory.Options], default is null.
  * @return [Bitmap]
@@ -63,8 +62,7 @@ fun File.decodeToBitmap(opts: BitmapFactory.Options? = null) =
  * Decode a stream into a bitmap.
  *
  * If cannot be decoded into a bitmap, will throw an exception.
- *
- * You can see [InputStream.decodeToBitmapOrNull].
+ * @see InputStream.decodeToBitmapOrNull
  * @receiver [InputStream]
  * @param outPadding set the padding of this bitmap, default is null.
  * @param opts the [BitmapFactory.Options], default is null.
@@ -79,8 +77,7 @@ fun InputStream.decodeToBitmap(outPadding: Rect? = null, opts: BitmapFactory.Opt
  * Decode a byte array into a bitmap.
  *
  * If cannot be decoded into a bitmap, will throw an exception.
- *
- * You can see [ByteArray.decodeToBitmapOrNull].
+ * @see ByteArray.decodeToBitmapOrNull
  * @receiver [ByteArray]
  * @param offset the current offset, default is 0.
  * @param size the current data length, default is [ByteArray.size].
@@ -95,8 +92,7 @@ fun ByteArray.decodeToBitmap(offset: Int = 0, size: Int = this.size) =
  * Create a bitmap from resources.
  *
  * If cannot be decoded into a bitmap, will throw an exception.
- *
- * You can see [Resources.createBitmapOrNull].
+ * @see Resources.createBitmapOrNull
  * @receiver [Resources]
  * @param resId the drawable resource id.
  * @param opts the [BitmapFactory.Options], default is null.

@@ -33,6 +33,7 @@ import com.highcapable.betterandroid.ui.component.systembar.factory.applySystemB
  *
  * - This view is deprecated and no effect, see [SystemBarsController.SystemBarsView],
  *   please use [View.applySystemBarsInsets], [View.appendSystemBarsInsets] instead.
+ * @see SystemBarsController.SystemBarsView
  */
 @Deprecated(message = "Use View.applySystemInsets, View.appendSystemInsets, View.removeSystemInsets instead.")
 class SystemBarsView(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {

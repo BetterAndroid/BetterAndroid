@@ -31,8 +31,7 @@ import androidx.compose.ui.window.Dialog as ComposeDialog
  * Extension for [ComposeDialog] to support different parameters of Android.
  *
  * Use [DialogPropertiesWrapper] instead [DialogProperties].
- *
- * See also [ComposeDialog].
+ * @see ComposeDialog
  */
 @Composable
 actual fun Dialog(

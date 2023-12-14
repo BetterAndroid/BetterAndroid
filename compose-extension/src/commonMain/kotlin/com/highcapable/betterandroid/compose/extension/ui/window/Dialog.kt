@@ -33,9 +33,8 @@ import androidx.compose.ui.window.Dialog as ComposeDialog
 /**
  * A wrapper to resolve [DialogProperties].
  *
- * See also [DialogProperties].
- *
  * - Note: The [scrimColor] only the alpha can support on Android platform's dimAmount.
+ * @see DialogProperties
  */
 @Immutable
 data class DialogPropertiesWrapper(
@@ -51,8 +50,7 @@ data class DialogPropertiesWrapper(
      * Android platform's properties.
      *
      * - Note: This properties only available on Android platform.
-     *
-     * See also Android platform's [DialogProperties].
+     * @see DialogProperties
      */
     data class AndroidProperties(
         val securePolicy: SecureFlagPolicyWrapper = SecureFlagPolicyWrapper.Inherit,
@@ -62,18 +60,17 @@ data class DialogPropertiesWrapper(
 
 /**
  * A wrapper to resolve SecureFlagPolicy.
- *
- * See also [androidx.compose.ui.window.SecureFlagPolicy].
+ * @see androidx.compose.ui.window.SecureFlagPolicy
  */
 @Stable
 enum class SecureFlagPolicyWrapper {
-    /** See [androidx.compose.ui.window.SecureFlagPolicy.Inherit]. */
+    /** @see androidx.compose.ui.window.SecureFlagPolicy.Inherit */
     Inherit,
 
-    /** See [androidx.compose.ui.window.SecureFlagPolicy.SecureOn]. */
+    /** @see androidx.compose.ui.window.SecureFlagPolicy.SecureOn */
     SecureOn,
 
-    /** See [androidx.compose.ui.window.SecureFlagPolicy.SecureOff]. */
+    /** @see androidx.compose.ui.window.SecureFlagPolicy.SecureOff */
     SecureOff
 }
 
@@ -81,8 +78,7 @@ enum class SecureFlagPolicyWrapper {
  * Extension for [ComposeDialog] to support different parameters of Android.
  *
  * Use [DialogPropertiesWrapper] instead [DialogProperties].
- *
- * See also [ComposeDialog].
+ * @see ComposeDialog
  */
 @Composable
 expect fun Dialog(

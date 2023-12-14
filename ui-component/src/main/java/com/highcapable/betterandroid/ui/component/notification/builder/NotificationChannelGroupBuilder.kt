@@ -52,21 +52,21 @@ class NotificationChannelGroupBuilder private constructor(internal val groupId: 
         fun from(groupId: String) = NotificationChannelGroupBuilder(groupId)
     }
 
-    /** See [NotificationChannelGroupCompat.Builder.setName]. */
+    /** @see NotificationChannelGroupCompat.Builder.setName */
     var name: CharSequence = ""
 
-    /** See [NotificationChannelGroupCompat.Builder.setDescription]. */
+    /** @see NotificationChannelGroupCompat.Builder.setDescription */
     var description = ""
 
     /**
-     * See [NotificationChannelGroupCompat.Builder.setName].
+     * @see NotificationChannelGroupCompat.Builder.setName
      * @param name
      * @return [NotificationChannelGroupBuilder]
      */
     fun name(name: CharSequence) = apply { this.name = name }
 
     /**
-     * See [NotificationChannelGroupCompat.Builder.setDescription].
+     * @see NotificationChannelGroupCompat.Builder.setDescription
      * @param description
      * @return [NotificationChannelGroupBuilder]
      */
