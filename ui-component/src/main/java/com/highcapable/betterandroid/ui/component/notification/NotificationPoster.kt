@@ -40,11 +40,11 @@ import com.highcapable.betterandroid.ui.component.notification.wrapper.Notificat
  */
 class NotificationPoster internal constructor(private val notification: NotificationWrapper) {
 
-    /** The current posted notificaion ID. */
-    private var postedId: Int? = null
+    /** The current shown notificaion ID. */
+    private var shownId: Int? = null
 
-    /** The current posted notificaion tag. */
-    private var postedTag = ""
+    /** The current shown notificaion tag. */
+    private var shownTag = ""
 
     /**
      * Get the system notification manager.
@@ -56,7 +56,7 @@ class NotificationPoster internal constructor(private val notification: Notifica
      * Determine whether the current notification has been canceled.
      * @return [Boolean]
      */
-    val isCanceled get() = manager.activeNotifications.none { it.id == postedId || it.tag == postedTag }
+    val isCanceled get() = manager.activeNotifications.none { it.id == shownId || it.tag == shownTag }
 
     /**
      * Post the current notification.
@@ -77,8 +77,8 @@ class NotificationPoster internal constructor(private val notification: Notifica
             if (tag.isNotBlank())
                 manager.notify(tag, id, it)
             else manager.notify(id, it)
-            postedId = id
-            postedTag = tag
+            shownId = id
+            shownTag = tag
             /** Compat the [NotificationCompat.Builder.setTimeoutAfter]. */
             if (SystemVersion.isLowTo(SystemVersion.O))
                 notification.builder.timeoutAfter?.also { timeoutAfter ->
@@ -95,9 +95,9 @@ class NotificationPoster internal constructor(private val notification: Notifica
      */
     fun cancel() = apply {
         if (isCanceled) return@apply
-        val currentShownId = postedId ?: return@apply
-        if (postedTag.isNotBlank())
-            manager.cancel(postedTag, currentShownId)
+        val currentShownId = shownId ?: return@apply
+        if (shownTag.isNotBlank())
+            manager.cancel(shownTag, currentShownId)
         else manager.cancel(currentShownId)
     }
 }
