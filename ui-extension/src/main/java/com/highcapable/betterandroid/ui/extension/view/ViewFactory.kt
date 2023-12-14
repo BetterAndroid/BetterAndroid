@@ -132,10 +132,11 @@ fun View.performTouch(downX: Float, downY: Float, upX: Float, upY: Float, durati
  * Same like [View.updatePadding].
  *
  * This view layout params need to be a [ViewGroup.MarginLayoutParams].
- * @param left the left margin (px), default is [marginLeft].
- * @param top the top margin (px), default is [marginTop].
- * @param right the right margin (px), default is [marginRight].
- * @param bottom the bottom margin (px), default is [marginBottom].
+ * @receiver [View]
+ * @param left the left margin (px).
+ * @param top the top margin (px).
+ * @param right the right margin (px).
+ * @param bottom the bottom margin (px).
  */
 @JvmOverloads
 fun View.updateMargin(
