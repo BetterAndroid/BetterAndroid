@@ -343,7 +343,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
 
     /**
      * Create system bars insets from [WindowInsetsCompat].
-     * @receiver [WindowInsetsCompat].
+     * @receiver [WindowInsetsCompat]
      * @return [SystemBarsInsets]
      */
     private fun WindowInsetsCompat.createSystemBarsInsets(): SystemBarsInsets {
@@ -357,7 +357,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
 
         /**
          * Get a non-null cutout size.
-         * @receiver [WindowInsetsCompat].
+         * @receiver [WindowInsetsCompat]
          * @param direction the cutout direction.
          * @return [Int]
          */
