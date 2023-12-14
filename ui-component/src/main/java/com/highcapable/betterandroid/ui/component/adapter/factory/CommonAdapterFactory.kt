@@ -135,6 +135,7 @@ inline fun AndroidX_ListPopupWindow.bindAdapter(context: Context, initiate: Comm
  * - [RecyclerCosmetic.fromGridVertical] the grid vertical cosmetic (there are two kinds).
  *
  * You can also manually call [RecyclerCosmetic.from] to create a custom cosmetic.
+ * @see RecyclerCosmetic.from
  * @receiver [RecyclerView]
  * @param cosmetic the cosmetic, default is [RecyclerCosmetic.fromLinearVertical].
  * @param initiate the [RecyclerAdapterBuilder] builder body.
@@ -162,6 +163,7 @@ inline fun <reified E> RecyclerView.bindAdapter(
  * - [RecyclerCosmetic.fromGridVertical] the grid vertical cosmetic (there are two kinds).
  *
  * You can also manually call [RecyclerCosmetic.from] to create a custom cosmetic.
+ * @see RecyclerCosmetic.from
  * @receiver [RecyclerView]
  * @param cosmetic the cosmetic, default is [RecyclerCosmetic.fromLinearVertical].
  * @param initiate the [RecyclerAdapterBuilder] builder body.

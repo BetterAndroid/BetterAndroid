@@ -55,8 +55,7 @@ class NotificationBuilder private constructor(internal val context: Context, int
 
         /**
          * Create a new [NotificationBuilder] from [context] and [channel].
-         *
-         * - We recommend to using [Context.createNotification] at first.
+         * @see Context.createNotification
          * @param context the current context.
          * @param channel the current notification channel wrapper.
          * @return [NotificationBuilder]
@@ -179,7 +178,7 @@ class NotificationBuilder private constructor(internal val context: Context, int
      * - Note: Some third-party ROMs may modify this function causing it to
      *         not work as expected, such as MIUI (HyperOS),
      *         ZUI, NubiaUI, HarmonyOS 4.0.0, etc.
-     *         You can @see here](https://github.com/fankes/AndroidNotifyIconAdapt) for more info.
+     *         You can see [here](https://github.com/fankes/AndroidNotifyIconAdapt) for more info.
      * @see NotificationCompat.Builder.setSmallIcon
      */
     @DrawableRes
@@ -454,7 +453,7 @@ class NotificationBuilder private constructor(internal val context: Context, int
      * - Note: Some third-party ROMs may modify this function causing it to
      *         not work as expected, such as MIUI (HyperOS),
      *         ZUI, NubiaUI, HarmonyOS 4.0.0, etc.
-     *         You can @see here](https://github.com/fankes/AndroidNotifyIconAdapt) for more info.
+     *         You can see [here](https://github.com/fankes/AndroidNotifyIconAdapt) for more info.
      * @see NotificationCompat.Builder.setSmallIcon
      * @param smallIcon
      * @return [NotificationBuilder]
@@ -468,7 +467,7 @@ class NotificationBuilder private constructor(internal val context: Context, int
      * - Note: Some third-party ROMs may modify this function causing it to
      *         not work as expected, such as MIUI (HyperOS),
      *         ZUI, NubiaUI, HarmonyOS 4.0.0, etc.
-     *         You can @see here](https://github.com/fankes/AndroidNotifyIconAdapt) for more info.
+     *         You can see [here](https://github.com/fankes/AndroidNotifyIconAdapt) for more info.
      * @see NotificationCompat.Builder.setSmallIcon
      * @param smallIcon
      * @return [NotificationBuilder]

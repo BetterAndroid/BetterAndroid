@@ -72,6 +72,11 @@ class BackPressedController private constructor(private val activity: ComponentA
          * ```
          * Or you can use [AppBindingActivity], [AppViewsActivity], [AppComponentActivity],
          * [AppBindingFragment], [AppViewsFragment].
+         * @see AppBindingActivity
+         * @see AppViewsActivity
+         * @see AppComponentActivity
+         * @see AppBindingFragment
+         * @see AppViewsFragment
          * @param activity the current activity.
          * @return [BackPressedController]
          */

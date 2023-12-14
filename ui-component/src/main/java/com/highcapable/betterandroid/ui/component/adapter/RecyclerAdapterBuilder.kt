@@ -51,10 +51,8 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
 
         /**
          * Create a new [RecyclerAdapterBuilder]<[E]> from [context].
-         *
-         * - We recommend to using at first:
-         * - [RecyclerView.bindAdapter]
-         * - [ViewPager2.bindAdapter]
+         * @see RecyclerView.bindAdapter
+         * @see ViewPager2.bindAdapter
          * @param context the current context.
          * @param cosmetic the cosmetic, will take effect on using [RecyclerView], default is null.
          * @return [RecyclerAdapterBuilder]<[E]>

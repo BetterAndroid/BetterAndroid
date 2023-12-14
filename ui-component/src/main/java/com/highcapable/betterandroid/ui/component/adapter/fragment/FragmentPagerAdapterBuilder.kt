@@ -43,8 +43,7 @@ class FragmentPagerAdapterBuilder private constructor(private val adapterInstanc
 
         /**
          * Create a new [FragmentPagerAdapter] from [instance].
-         *
-         * - We recommend to using [ViewPager.bindFragments] at first.
+         * @see ViewPager.bindFragments
          * @param instance the current instance, only can be [Context] or [Fragment].
          * @param behavior the current behavior.
          * @return [FragmentPagerAdapter]

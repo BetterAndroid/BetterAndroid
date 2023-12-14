@@ -52,12 +52,10 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
 
         /**
          * Create a new [CommonAdapterBuilder]<[E]> from [context].
-         *
-         * - We recommend to using at first:
-         * - [ListView.bindAdapter]
-         * - [AutoCompleteTextView.bindAdapter]
-         * - [ListPopupWindow.bindAdapter]
-         * - [AndroidX_ListPopupWindow.bindAdapter]
+         * @see ListView.bindAdapter
+         * @see AutoCompleteTextView.bindAdapter
+         * @see ListPopupWindow.bindAdapter
+         * @see AndroidX_ListPopupWindow.bindAdapter
          * @param context the current context.
          * @return [CommonAdapterBuilder]<[E]>
          */

@@ -48,8 +48,7 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
 
         /**
          * Create a new [PagerAdapterBuilder]<[E]> from [context].
-         *
-         * - We recommend to using [ViewPager.bindAdapter] at first.
+         * @see ViewPager.bindAdapter
          * @param context the current context.
          * @return [PagerAdapterBuilder]<[E]>
          */

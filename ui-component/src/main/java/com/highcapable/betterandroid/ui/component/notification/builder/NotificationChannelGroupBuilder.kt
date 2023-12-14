@@ -43,8 +43,7 @@ class NotificationChannelGroupBuilder private constructor(internal val groupId: 
 
         /**
          * Create a new [NotificationChannelGroupBuilder] from [groupId].
-         *
-         * - We recommend to using [Context.createNotification] at first.
+         * @see Context.createNotification
          * @param groupId the channel group ID.
          * @return [NotificationChannelGroupBuilder]
          */

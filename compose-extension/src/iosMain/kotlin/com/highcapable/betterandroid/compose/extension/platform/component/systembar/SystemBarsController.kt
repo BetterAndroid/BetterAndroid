@@ -55,7 +55,7 @@ class SystemBarsController private constructor(private val controller: AppCompon
          * Create a new [SystemBarsController] from [AppComponentUIViewController].
          *
          * Creating an [UIViewController] yourself is still in the experimental stage in Kotlin Native,
-         * we recommend that you use [AppComponentUIViewController] directly for now.
+         * @see AppComponentUIViewController
          * @param controller the current UI view controller.
          */
         fun from(controller: AppComponentUIViewController) = SystemBarsController(controller)

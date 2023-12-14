@@ -54,8 +54,7 @@ class NotificationChannelBuilder private constructor(
 
         /**
          * Create a new [NotificationChannelBuilder] from [channelId].
-         *
-         * - We recommend to using [Context.createNotification] at first.
+         * @see Context.createNotification
          * @param channelId the channel ID.
          * @param group the channel group, default is null.
          * @param importance the notification importance, default is [NotificationImportance.DEFAULT].
