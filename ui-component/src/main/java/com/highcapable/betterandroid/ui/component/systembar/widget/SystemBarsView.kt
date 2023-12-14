@@ -29,7 +29,7 @@ import com.highcapable.betterandroid.ui.component.systembar.factory.appendSystem
 import com.highcapable.betterandroid.ui.component.systembar.factory.applySystemBarsInsets
 
 /**
- * System bars stub view (a placeholder layout).
+ * System bars stub view. (a placeholder layout)
  *
  * - This view is deprecated and no effect, see [SystemBarsController.SystemBarsView],
  *   please use [View.applySystemBarsInsets], [View.appendSystemBarsInsets] instead.

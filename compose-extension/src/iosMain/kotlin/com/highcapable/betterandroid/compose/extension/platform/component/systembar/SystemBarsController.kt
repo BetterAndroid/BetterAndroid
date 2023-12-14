@@ -77,7 +77,7 @@ class SystemBarsController private constructor(private val controller: AppCompon
     private var currentBehavior = SystemBarsBehavior.SCREEN_EDGES_DEFERRING_SYSTEM_GESTURES
 
     /**
-     * System bars stub view (a placeholder layout).
+     * System bars stub view. (a placeholder layout)
      */
     private class SystemBarsView {
 
