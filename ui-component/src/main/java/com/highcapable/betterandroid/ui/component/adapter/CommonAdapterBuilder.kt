@@ -37,8 +37,8 @@ import androidx.viewbinding.ViewBinding
 import com.highcapable.betterandroid.ui.component.adapter.base.IAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.factory.bindAdapter
 import com.highcapable.betterandroid.ui.component.adapter.view.CommonItemView
-import com.highcapable.betterandroid.ui.extension.component.base.inflateViewBinding
-import com.highcapable.betterandroid.ui.extension.widget.inflate
+import com.highcapable.betterandroid.ui.extension.view.inflate
+import com.highcapable.betterandroid.ui.extension.view.inflateViewBinding
 import com.highcapable.yukireflection.factory.classOf
 import androidx.appcompat.widget.ListPopupWindow as AndroidX_ListPopupWindow
 

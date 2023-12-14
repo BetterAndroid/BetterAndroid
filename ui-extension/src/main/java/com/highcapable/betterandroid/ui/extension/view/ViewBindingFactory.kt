@@ -22,7 +22,7 @@
 @file:Suppress("unused")
 @file:JvmName("ViewBindingUtils")
 
-package com.highcapable.betterandroid.ui.extension.component.base
+package com.highcapable.betterandroid.ui.extension.view
 
 import android.app.Activity
 import android.content.Context

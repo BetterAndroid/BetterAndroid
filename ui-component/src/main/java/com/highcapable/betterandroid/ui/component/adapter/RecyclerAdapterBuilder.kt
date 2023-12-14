@@ -35,8 +35,8 @@ import com.highcapable.betterandroid.ui.component.adapter.factory.bindAdapter
 import com.highcapable.betterandroid.ui.component.adapter.recycler.cosmetic.RecyclerCosmetic
 import com.highcapable.betterandroid.ui.component.adapter.recycler.decoration.base.BaseRecyclerItemDecoration
 import com.highcapable.betterandroid.ui.component.adapter.view.RecyclerItemView
-import com.highcapable.betterandroid.ui.extension.component.base.inflateViewBinding
-import com.highcapable.betterandroid.ui.extension.widget.inflate
+import com.highcapable.betterandroid.ui.extension.view.inflate
+import com.highcapable.betterandroid.ui.extension.view.inflateViewBinding
 import com.highcapable.yukireflection.factory.classOf
 
 /**

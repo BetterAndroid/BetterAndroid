@@ -22,7 +22,7 @@
 @file:Suppress("unused", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
 @file:JvmName("ViewUtils")
 
-package com.highcapable.betterandroid.ui.extension.widget
+package com.highcapable.betterandroid.ui.extension.view
 
 import android.content.Context
 import android.graphics.Point

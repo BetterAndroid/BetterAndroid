@@ -32,7 +32,7 @@ import com.highcapable.betterandroid.ui.component.backpress.BackPressedControlle
 import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
 import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
 import com.highcapable.betterandroid.ui.component.systembar.SystemBarsController
-import com.highcapable.betterandroid.ui.extension.widget.inflate
+import com.highcapable.betterandroid.ui.extension.view.inflate
 
 /**
  * Base component activity with [ISystemBarsController], [IBackPressedController].

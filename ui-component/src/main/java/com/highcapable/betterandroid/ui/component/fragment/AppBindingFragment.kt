@@ -33,7 +33,7 @@ import com.highcapable.betterandroid.ui.component.fragment.base.BaseFragment
 import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
 import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
 import com.highcapable.betterandroid.ui.component.proxy.IViewBinding
-import com.highcapable.betterandroid.ui.extension.component.base.inflateViewBinding
+import com.highcapable.betterandroid.ui.extension.view.inflateViewBinding
 
 /**
  * App binding fragment with [IViewBinding].

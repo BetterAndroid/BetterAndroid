@@ -22,7 +22,7 @@
 @file:Suppress("unused")
 @file:JvmName("TextViewUtils")
 
-package com.highcapable.betterandroid.ui.extension.widget
+package com.highcapable.betterandroid.ui.extension.view
 
 import android.graphics.Paint
 import android.text.InputType

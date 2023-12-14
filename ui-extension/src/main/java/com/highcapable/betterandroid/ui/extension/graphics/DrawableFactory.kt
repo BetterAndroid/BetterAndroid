@@ -22,7 +22,7 @@
 @file:Suppress("unused")
 @file:JvmName("DrawableUtils")
 
-package com.highcapable.betterandroid.ui.extension.component.base
+package com.highcapable.betterandroid.ui.extension.graphics
 
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable

@@ -22,7 +22,7 @@
 @file:Suppress("unused")
 @file:JvmName("WindowUtils")
 
-package com.highcapable.betterandroid.ui.extension.component
+package com.highcapable.betterandroid.ui.extension.view
 
 import android.view.Window
 import android.view.WindowManager

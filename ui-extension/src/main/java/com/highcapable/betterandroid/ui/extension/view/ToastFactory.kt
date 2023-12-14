@@ -22,7 +22,7 @@
 @file:Suppress("unused")
 @file:JvmName("ToastUtils")
 
-package com.highcapable.betterandroid.ui.extension.component
+package com.highcapable.betterandroid.ui.extension.view
 
 import android.Manifest
 import android.app.Dialog
