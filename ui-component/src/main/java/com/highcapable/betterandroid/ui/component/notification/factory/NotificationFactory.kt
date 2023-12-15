@@ -97,13 +97,3 @@ inline fun NotificationChannel(
  */
 inline fun NotificationChannelGroup(groupId: String, initiate: NotificationChannelGroupBuilder.() -> Unit) =
     NotificationChannelGroupBuilder.from(groupId).apply(initiate).build()
-
-/**
- * Create a notification.
- *
- * - This function is deprecated and no effect, use [Context.createNotification] instead.
- */
-@Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
-@Deprecated(message = "Use createNotification instead.")
-inline fun Context.createNotification(initiate: com.highcapable.betterandroid.ui.component.notification.NotificationCreator.() -> Unit) =
-    com.highcapable.betterandroid.ui.component.notification.NotificationCreator.from(this).apply(initiate).build()
