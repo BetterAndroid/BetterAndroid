@@ -21,7 +21,7 @@
  */
 @file:Suppress("unused", "MemberVisibilityCanBePrivate")
 
-package com.highcapable.betterandroid.ui.component.notification.builder
+package com.highcapable.betterandroid.ui.component.notification
 
 import android.content.Context
 import androidx.core.app.NotificationChannelGroupCompat

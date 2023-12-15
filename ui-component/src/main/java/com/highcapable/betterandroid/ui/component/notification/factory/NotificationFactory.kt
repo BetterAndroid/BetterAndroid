@@ -25,10 +25,10 @@
 package com.highcapable.betterandroid.ui.component.notification.factory
 
 import android.content.Context
+import com.highcapable.betterandroid.ui.component.notification.NotificationBuilder
+import com.highcapable.betterandroid.ui.component.notification.NotificationChannelBuilder
+import com.highcapable.betterandroid.ui.component.notification.NotificationChannelGroupBuilder
 import com.highcapable.betterandroid.ui.component.notification.NotificationPoster
-import com.highcapable.betterandroid.ui.component.notification.builder.NotificationBuilder
-import com.highcapable.betterandroid.ui.component.notification.builder.NotificationChannelBuilder
-import com.highcapable.betterandroid.ui.component.notification.builder.NotificationChannelGroupBuilder
 import com.highcapable.betterandroid.ui.component.notification.type.NotificationImportance
 import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationChannelGroupWrapper
 import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationChannelWrapper

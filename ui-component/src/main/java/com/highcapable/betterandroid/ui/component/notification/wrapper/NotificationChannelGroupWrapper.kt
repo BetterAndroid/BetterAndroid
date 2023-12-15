@@ -22,7 +22,7 @@
 package com.highcapable.betterandroid.ui.component.notification.wrapper
 
 import androidx.core.app.NotificationChannelGroupCompat
-import com.highcapable.betterandroid.ui.component.notification.builder.NotificationChannelGroupBuilder
+import com.highcapable.betterandroid.ui.component.notification.NotificationChannelGroupBuilder
 import com.highcapable.betterandroid.ui.component.notification.proxy.INotificationWrapper
 
 /**

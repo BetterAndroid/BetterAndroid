@@ -23,7 +23,7 @@ package com.highcapable.betterandroid.ui.component.notification.wrapper
 
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationManagerCompat
-import com.highcapable.betterandroid.ui.component.notification.builder.NotificationChannelBuilder
+import com.highcapable.betterandroid.ui.component.notification.NotificationChannelBuilder
 import com.highcapable.betterandroid.ui.component.notification.proxy.INotificationWrapper
 import com.highcapable.betterandroid.ui.component.notification.type.NotificationImportance
 
