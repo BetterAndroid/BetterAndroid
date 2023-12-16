@@ -92,13 +92,14 @@ class GridItemVerticalDecoration : BaseRecyclerItemDecoration {
         this.rowSpacing = rowSpacing
     }
 
-    override fun calculateItemOffsets(outRect: Rect, position: Int, size: Int) {
+    override fun onCalculateItemOffsets(outRect: Rect, position: Int, itemCount: Int) {
         rowColumnRect?.apply {
-            val fullyLastIndex = size - (size % spanCount) - 1
+            val fullyLastIndex = itemCount - (itemCount % spanCount) - 1
             val isFirstColumn = position % spanCount == 0
             val isLastColumn = (position + 1) % spanCount == 0
             val isFirstRow = position < spanCount
-            val isLastRow = position > fullyLastIndex || ((fullyLastIndex == size - 1) && (position in size - spanCount..size))
+            val isLastRow = position > fullyLastIndex || ((fullyLastIndex == itemCount - 1) &&
+                (position in itemCount - spanCount..itemCount))
             outRect.set(
                 if (isFirstColumn) firstLeft else left,
                 if (isFirstRow) firstTop else top,

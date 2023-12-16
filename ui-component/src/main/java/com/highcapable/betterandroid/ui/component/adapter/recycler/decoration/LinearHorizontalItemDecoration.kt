@@ -73,8 +73,9 @@ class LinearHorizontalItemDecoration : BaseRecyclerItemDecoration {
         this.columnSpacing = columnSpacing
     }
 
-    override fun calculateItemOffsets(outRect: Rect, position: Int, size: Int) {
-        rowColumnRect?.apply { outRect.set(if (position == 0) firstLeft else left, top, if (position == size - 1) lastRight else right, bottom) }
-            ?: run { outRect.set(0, 0, if (position == size - 1) 0 else columnSpacing, 0) }
+    override fun onCalculateItemOffsets(outRect: Rect, position: Int, itemCount: Int) {
+        rowColumnRect?.apply {
+            outRect.set(if (position == 0) firstLeft else left, top, if (position == itemCount - 1) lastRight else right, bottom)
+        } ?: run { outRect.set(0, 0, if (position == itemCount - 1) 0 else columnSpacing, 0) }
     }
 }

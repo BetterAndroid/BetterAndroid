@@ -27,20 +27,20 @@ import androidx.recyclerview.widget.RecyclerView
 
 /**
  * [RecyclerView] base item decoration.
- * @param dataSetCount the size of the currently bound data set.
  */
-abstract class BaseRecyclerItemDecoration internal constructor(internal var dataSetCount: Int = -1) : RecyclerView.ItemDecoration() {
+abstract class BaseRecyclerItemDecoration internal constructor() : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         super.getItemOffsets(outRect, view, parent, state)
-        if (dataSetCount >= 0) calculateItemOffsets(outRect, parent.getChildAdapterPosition(view), dataSetCount)
+        val dataSetCount = parent.adapter?.itemCount ?: 0
+        if (dataSetCount >= 0) onCalculateItemOffsets(outRect, parent.getChildAdapterPosition(view), dataSetCount)
     }
 
     /**
      * Callback and calculate the each item offsets.
      * @param outRect the item out rect.
      * @param position the current position.
-     * @param size the data array size.
+     * @param itemCount the data set count.
      */
-    internal abstract fun calculateItemOffsets(outRect: Rect, position: Int, size: Int)
+    internal abstract fun onCalculateItemOffsets(outRect: Rect, position: Int, itemCount: Int)
 }

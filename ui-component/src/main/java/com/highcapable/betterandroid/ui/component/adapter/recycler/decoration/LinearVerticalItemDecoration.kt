@@ -73,8 +73,9 @@ class LinearVerticalItemDecoration : BaseRecyclerItemDecoration {
         this.rowSpacing = rowSpacing
     }
 
-    override fun calculateItemOffsets(outRect: Rect, position: Int, size: Int) {
-        rowColumnRect?.apply { outRect.set(left, if (position == 0) firstTop else top, right, if (position == size - 1) lastBottom else bottom) }
-            ?: run { outRect.set(0, 0, 0, if (position == size - 1) 0 else rowSpacing) }
+    override fun onCalculateItemOffsets(outRect: Rect, position: Int, itemCount: Int) {
+        rowColumnRect?.apply {
+            outRect.set(left, if (position == 0) firstTop else top, right, if (position == itemCount - 1) lastBottom else bottom)
+        } ?: run { outRect.set(0, 0, 0, if (position == itemCount - 1) 0 else rowSpacing) }
     }
 }

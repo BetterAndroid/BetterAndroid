@@ -148,7 +148,7 @@ inline fun <reified E> RecyclerView.bindAdapter(
 ): RecyclerView.Adapter<RecyclerAdapterBuilder<E>.BaseRecyclerHolder> {
     layoutManager = cosmetic.layoutManager
     addItemDecoration(cosmetic.itemDecoration)
-    return RecyclerAdapter<E>(context, cosmetic, initiate).apply { adapter = this }
+    return RecyclerAdapter<E>(context, initiate).apply { adapter = this }
 }
 
 /**
@@ -285,29 +285,20 @@ inline fun CommonAdapter(context: Context, initiate: CommonAdapterBuilder<*>.() 
 /**
  * Create a [RecyclerView.Adapter], using entity [E].
  * @param context the current context.
- * @param cosmetic the cosmetic, will take effect on using [RecyclerView], default is null.
  * @param initiate the [RecyclerAdapterBuilder] builder body.
  * @return [RecyclerView.Adapter]<[RecyclerAdapterBuilder.BaseRecyclerHolder]>
  */
 @JvmName("RecyclerAdapter_Generics")
-inline fun <reified E> RecyclerAdapter(
-    context: Context,
-    cosmetic: RecyclerCosmetic? = null,
-    initiate: RecyclerAdapterBuilder<E>.() -> Unit
-) = RecyclerAdapterBuilder.from<E>(context, cosmetic).apply(initiate).build()
+inline fun <reified E> RecyclerAdapter(context: Context, initiate: RecyclerAdapterBuilder<E>.() -> Unit) =
+    RecyclerAdapterBuilder.from<E>(context).apply(initiate).build()
 
 /**
  * Create a [RecyclerView.Adapter].
  * @param context the current context.
- * @param cosmetic the cosmetic, will take effect on using [RecyclerView], default is null.
  * @param initiate the [RecyclerAdapterBuilder] builder body.
  * @return [RecyclerView.Adapter]<[RecyclerAdapterBuilder.BaseRecyclerHolder]>
  */
-inline fun RecyclerAdapter(
-    context: Context,
-    cosmetic: RecyclerCosmetic? = null,
-    initiate: RecyclerAdapterBuilder<*>.() -> Unit
-) = RecyclerAdapter<Any>(context, cosmetic, initiate)
+inline fun RecyclerAdapter(context: Context, initiate: RecyclerAdapterBuilder<*>.() -> Unit) = RecyclerAdapter<Any>(context, initiate)
 
 /**
  * Create a [PagerAdapter], using entity [E].
