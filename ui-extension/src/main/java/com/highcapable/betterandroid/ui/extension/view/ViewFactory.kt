@@ -24,6 +24,7 @@
 
 package com.highcapable.betterandroid.ui.extension.view
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Point
 import android.view.KeyEvent
@@ -187,7 +188,7 @@ fun ViewGroup.inflate(resId: Int, attachToRoot: Boolean = false): View = LayoutI
  */
 @JvmOverloads
 fun Context.inflate(resId: Int, parent: ViewGroup? = null, attachToRoot: Boolean = false): View =
-    LayoutInflater.from(this).inflate(resId, parent, attachToRoot)
+    (if (this is Activity) layoutInflater else LayoutInflater.from(this)).inflate(resId, parent, attachToRoot)
 
 /**
  * Inflate a view using [resId].
