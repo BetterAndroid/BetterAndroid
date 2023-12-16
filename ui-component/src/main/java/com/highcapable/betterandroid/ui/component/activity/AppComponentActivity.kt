@@ -31,7 +31,7 @@ import com.highcapable.betterandroid.ui.component.activity.base.BaseComponentAct
  * Inherited from [BaseComponentActivity].
  *
  * - Note: This activity does not add any possible system bars insets to the root layout,
- *         and all layout content is tiled and expanded to full screen.
+ *   and all layout content is tiled and expanded to full screen.
  */
 open class AppComponentActivity : BaseComponentActivity() {
 

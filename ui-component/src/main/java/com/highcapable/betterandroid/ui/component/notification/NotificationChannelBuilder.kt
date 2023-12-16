@@ -38,8 +38,8 @@ import com.highcapable.betterandroid.ui.component.notification.wrapper.Notificat
  * [NotificationChannelWrapper] builder.
  *
  * - Note: You don't need to consider compatibility with system version below Android 8,
- *         we have made it compatible for you, this feature will be automatically converted
- *         to a legacy solution below Android 8.
+ *   we have made it compatible for you, this feature will be automatically converted
+ *   to a legacy solution below Android 8.
  * @param channelId the channel ID.
  * @param group the channel group.
  * @param importance the notification importance.

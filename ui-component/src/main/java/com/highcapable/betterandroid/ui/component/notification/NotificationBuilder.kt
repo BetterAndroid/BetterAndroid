@@ -144,7 +144,7 @@ class NotificationBuilder private constructor(internal val context: Context, int
 
     /**
      * - Note: Some third-party ROMs may modify this function causing it to
-     *         not work as expected, such as MIUI (HyperOS), etc.
+     *   not work as expected, such as MIUI (HyperOS), etc.
      * @see NotificationCompat.Builder.setColor
      */
     @ColorInt
@@ -176,9 +176,9 @@ class NotificationBuilder private constructor(internal val context: Context, int
      *   if you not set it, it will be set to defaults [R.drawable.ic_simple_notification].
      *
      * - Note: Some third-party ROMs may modify this function causing it to
-     *         not work as expected, such as MIUI (HyperOS),
-     *         ZUI, NubiaUI, HarmonyOS 4.0.0, etc.
-     *         You can see [here](https://github.com/fankes/AndroidNotifyIconAdapt) for more info.
+     *   not work as expected, such as MIUI (HyperOS),
+     *   ZUI, NubiaUI, HarmonyOS 4.0.0, etc.
+     *   You can see [here](https://github.com/fankes/AndroidNotifyIconAdapt) for more info.
      * @see NotificationCompat.Builder.setSmallIcon
      */
     @DrawableRes
@@ -189,9 +189,9 @@ class NotificationBuilder private constructor(internal val context: Context, int
      *   if you not set it, it will be set to defaults [R.drawable.ic_simple_notification].
      *
      * - Note: Some third-party ROMs may modify this function causing it to
-     *         not work as expected, such as MIUI (HyperOS),
-     *         ZUI, NubiaUI, HarmonyOS 4.0.0, etc.
-     *         You can see [here](https://github.com/fankes/AndroidNotifyIconAdapt) for more info.
+     *   not work as expected, such as MIUI (HyperOS),
+     *   ZUI, NubiaUI, HarmonyOS 4.0.0, etc.
+     *   You can see [here](https://github.com/fankes/AndroidNotifyIconAdapt) for more info.
      * @see NotificationCompat.Builder.setSmallIcon
      */
     @RequiresApi(SystemVersion.M)
@@ -379,7 +379,7 @@ class NotificationBuilder private constructor(internal val context: Context, int
 
     /**
      * - Note: Some third-party ROMs may modify this function causing it to
-     *         not work as expected, such as MIUI (HyperOS), etc.
+     *   not work as expected, such as MIUI (HyperOS), etc.
      * @see NotificationCompat.Builder.setColor
      * @param color
      * @return [NotificationBuilder]
@@ -451,9 +451,9 @@ class NotificationBuilder private constructor(internal val context: Context, int
      *   if you not set it, it will be set to defaults [R.drawable.ic_simple_notification].
      *
      * - Note: Some third-party ROMs may modify this function causing it to
-     *         not work as expected, such as MIUI (HyperOS),
-     *         ZUI, NubiaUI, HarmonyOS 4.0.0, etc.
-     *         You can see [here](https://github.com/fankes/AndroidNotifyIconAdapt) for more info.
+     *   not work as expected, such as MIUI (HyperOS),
+     *   ZUI, NubiaUI, HarmonyOS 4.0.0, etc.
+     *   You can see [here](https://github.com/fankes/AndroidNotifyIconAdapt) for more info.
      * @see NotificationCompat.Builder.setSmallIcon
      * @param smallIcon
      * @return [NotificationBuilder]
@@ -465,9 +465,9 @@ class NotificationBuilder private constructor(internal val context: Context, int
      *   if you not set it, it will be set to defaults [R.drawable.ic_simple_notification].
      *
      * - Note: Some third-party ROMs may modify this function causing it to
-     *         not work as expected, such as MIUI (HyperOS),
-     *         ZUI, NubiaUI, HarmonyOS 4.0.0, etc.
-     *         You can see [here](https://github.com/fankes/AndroidNotifyIconAdapt) for more info.
+     *   not work as expected, such as MIUI (HyperOS),
+     *   ZUI, NubiaUI, HarmonyOS 4.0.0, etc.
+     *   You can see [here](https://github.com/fankes/AndroidNotifyIconAdapt) for more info.
      * @see NotificationCompat.Builder.setSmallIcon
      * @param smallIcon
      * @return [NotificationBuilder]

@@ -31,9 +31,9 @@ import com.highcapable.betterandroid.compose.extension.platform.component.uiview
  * Create a new [AppComponentUIViewController] for composables.
  *
  * - Note: Don't use an UIViewControllerRepresentable to create an UIViewController for Swift UI,
- *         that will cause the system bars controller related functions to become invalid,
- *         because Swift UI will take over the state of the entire view, at this time,
- *         you can only control system bars in Swift UI.
+ *   that will cause the system bars controller related functions to become invalid,
+ *   because Swift UI will take over the state of the entire view, at this time,
+ *   you can only control system bars in Swift UI.
  *
  * You can use the AppDelegate to create a standard project that you want to create an **Compose UI Only** project.
  *

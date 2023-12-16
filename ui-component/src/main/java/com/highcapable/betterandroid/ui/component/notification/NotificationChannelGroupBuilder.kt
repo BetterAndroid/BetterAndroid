@@ -33,8 +33,8 @@ import com.highcapable.betterandroid.ui.component.notification.wrapper.Notificat
  * [NotificationChannelGroupWrapper] builder.
  *
  * - Note: You don't need to consider compatibility with system version below Android 8,
- *         we have made it compatible for you, this feature will be automatically converted
- *         to a legacy solution below Android 8.
+ *   we have made it compatible for you, this feature will be automatically converted
+ *   to a legacy solution below Android 8.
  * @param groupId the channel group ID.
  */
 class NotificationChannelGroupBuilder private constructor(internal val groupId: String) : INotificationBuilder {

@@ -347,8 +347,8 @@ class WindowInsetsWrapper private constructor(private val windowInsets: WindowIn
      * - Higher than Android 9 calling this function the safeInsetTop will be set to 0
      *
      * - Note: The compatibility of each device and system has not been tested in turn,
-     *         if there are legacy system compatibility issues and the device and system
-     *         are very niche, they will no longer be adapted.
+     *   if there are legacy system compatibility issues and the device and system
+     *   are very niche, they will no longer be adapted.
      * @return [InsetsWrapper]
      */
     private fun createLegacyDisplayCutoutInsets(): InsetsWrapper {
