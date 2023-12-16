@@ -97,9 +97,9 @@ class RecyclerCosmetic private constructor(
          * @param firstTop the first top spacing (px), default is 0.
          * @param top the each top spacing (px), default is 0.
          * @param lastRight the last right spacing (px), default is 0.
-         * @param right the each right spacing (px), default is [defaultSpacingPx].
+         * @param right the each right spacing (px), default is 0.
          * @param lastBottom the last bottom spacing (px), default is 0.
-         * @param bottom the each bottom spacing (px), default is [defaultSpacingPx].
+         * @param bottom the each bottom spacing (px), default is 0.
          * @param isReverseLayout reverse the layout, default false.
          * @return [RecyclerCosmetic]
          */
@@ -107,9 +107,16 @@ class RecyclerCosmetic private constructor(
         @JvmOverloads
         @JvmName("fromCustomSpacingGridVertical")
         fun fromGridVertical(
-            context: Context, spanCount: Int = 3, @Px firstLeft: Int = 0, @Px left: Int = 0, @Px firstTop: Int = 0,
-            @Px top: Int = 0, @Px lastRight: Int = 0, @Px right: Int = context.defaultSpacingPx(),
-            @Px lastBottom: Int = 0, @Px bottom: Int = context.defaultSpacingPx(),
+            context: Context,
+            spanCount: Int = 3,
+            @Px firstLeft: Int = 0,
+            @Px left: Int = 0,
+            @Px firstTop: Int = 0,
+            @Px top: Int = 0,
+            @Px lastRight: Int = 0,
+            @Px right: Int = 0,
+            @Px lastBottom: Int = 0,
+            @Px bottom: Int = 0,
             isReverseLayout: Boolean = false
         ) = from(
             layoutManager = GridLayoutManager(context, spanCount, RecyclerView.VERTICAL, isReverseLayout),
@@ -142,7 +149,7 @@ class RecyclerCosmetic private constructor(
          * @param top the each top spacing (px), default is 0.
          * @param right the each right spacing (px), default is 0.
          * @param lastBottom the last bottom spacing (px), default is 0.
-         * @param bottom the each bottom spacing (px), default is [defaultSpacingPx].
+         * @param bottom the each bottom spacing (px), default is 0.
          * @param isReverseLayout reverse the layout, default false.
          * @return [RecyclerCosmetic]
          */
@@ -150,8 +157,13 @@ class RecyclerCosmetic private constructor(
         @JvmOverloads
         @JvmName("fromCustomSpacingLinearVertical")
         fun fromLinearVertical(
-            context: Context, @Px left: Int = 0, @Px firstTop: Int = 0, @Px top: Int = 0,
-            @Px right: Int = 0, @Px lastBottom: Int = 0, @Px bottom: Int = context.defaultSpacingPx(),
+            context: Context,
+            @Px left: Int = 0,
+            @Px firstTop: Int = 0,
+            @Px top: Int = 0,
+            @Px right: Int = 0,
+            @Px lastBottom: Int = 0,
+            @Px bottom: Int = 0,
             isReverseLayout: Boolean = false
         ) = from(
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, isReverseLayout),
@@ -183,7 +195,7 @@ class RecyclerCosmetic private constructor(
          * @param left the each left spacing (px), default is 0.
          * @param top the each top spacing (px), default is 0.
          * @param lastRight the last right spacing (px), default is 0.
-         * @param right the each right spacing (px), default is [defaultSpacingPx].
+         * @param right the each right spacing (px), default is 0.
          * @param bottom the each bottom spacing (px), default is 0.
          * @param isReverseLayout reverse the layout, default false.
          * @return [RecyclerCosmetic]
@@ -192,8 +204,13 @@ class RecyclerCosmetic private constructor(
         @JvmOverloads
         @JvmName("fromCustomSpacingLinearHorizontal")
         fun fromLinearHorizontal(
-            context: Context, @Px firstLeft: Int = 0, @Px left: Int = 0, @Px top: Int = 0, @Px lastRight: Int = 0,
-            @Px right: Int = context.defaultSpacingPx(), @Px bottom: Int = 0,
+            context: Context,
+            @Px firstLeft: Int = 0,
+            @Px left: Int = 0,
+            @Px top: Int = 0,
+            @Px lastRight: Int = 0,
+            @Px right: Int = 0,
+            @Px bottom: Int = 0,
             isReverseLayout: Boolean = false
         ) = from(
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, isReverseLayout),
