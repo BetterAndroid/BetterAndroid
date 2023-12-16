@@ -66,12 +66,12 @@ class BackPressedController private constructor(private val activity: ComponentA
          *     override fun onDestroy() {
          *         super.onDestroy()
          *         // Destroy the back pressed controller.
+         *         // Optional, prevent memory leaks.
          *         backPressed.destroy()
          *     }
          * }
          * ```
-         * Or you can use [AppBindingActivity], [AppViewsActivity], [AppComponentActivity],
-         * [AppBindingFragment], [AppViewsFragment].
+         * Or you can inherit the related activities or fragments.
          * @see AppBindingActivity
          * @see AppViewsActivity
          * @see AppComponentActivity
