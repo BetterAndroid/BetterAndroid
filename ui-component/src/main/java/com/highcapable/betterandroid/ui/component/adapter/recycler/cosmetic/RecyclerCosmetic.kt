@@ -92,14 +92,14 @@ class RecyclerCosmetic private constructor(
          * Create a grid vertical cosmetic.
          * @param context the current context.
          * @param spanCount the column count, default is 3.
-         * @param firstLeft the first left spacing (px), default is 0.
-         * @param left the each left spacing (px), default is 0.
-         * @param firstTop the first top spacing (px), default is 0.
-         * @param top the each top spacing (px), default is 0.
-         * @param lastRight the last right spacing (px), default is 0.
-         * @param right the each right spacing (px), default is 0.
-         * @param lastBottom the last bottom spacing (px), default is 0.
-         * @param bottom the each bottom spacing (px), default is 0.
+         * @param firstLeft the first left spacing (px).
+         * @param left the each left spacing (px).
+         * @param firstTop the first top spacing (px).
+         * @param top the each top spacing (px).
+         * @param lastRight the last right spacing (px).
+         * @param right the each right spacing (px).
+         * @param lastBottom the last bottom spacing (px).
+         * @param bottom the each bottom spacing (px).
          * @param isReverseLayout reverse the layout, default false.
          * @return [RecyclerCosmetic]
          */
@@ -144,12 +144,12 @@ class RecyclerCosmetic private constructor(
         /**
          * Create a linear vertical cosmetic.
          * @param context the current context.
-         * @param left the each left spacing (px), default is 0.
-         * @param firstTop the first top spacing (px), default is 0.
-         * @param top the each top spacing (px), default is 0.
-         * @param right the each right spacing (px), default is 0.
-         * @param lastBottom the last bottom spacing (px), default is 0.
-         * @param bottom the each bottom spacing (px), default is 0.
+         * @param left the each left spacing (px).
+         * @param firstTop the first top spacing (px).
+         * @param top the each top spacing (px).
+         * @param right the each right spacing (px).
+         * @param lastBottom the last bottom spacing (px).
+         * @param bottom the each bottom spacing (px).
          * @param isReverseLayout reverse the layout, default false.
          * @return [RecyclerCosmetic]
          */
@@ -191,12 +191,12 @@ class RecyclerCosmetic private constructor(
         /**
          * Create a linear horizontal cosmetic.
          * @param context the current context.
-         * @param firstLeft the first left spacing (px), default is 0.
-         * @param left the each left spacing (px), default is 0.
-         * @param top the each top spacing (px), default is 0.
-         * @param lastRight the last right spacing (px), default is 0.
-         * @param right the each right spacing (px), default is 0.
-         * @param bottom the each bottom spacing (px), default is 0.
+         * @param firstLeft the first left spacing (px).
+         * @param left the each left spacing (px).
+         * @param top the each top spacing (px).
+         * @param lastRight the last right spacing (px).
+         * @param right the each right spacing (px).
+         * @param bottom the each bottom spacing (px).
          * @param isReverseLayout reverse the layout, default false.
          * @return [RecyclerCosmetic]
          */
