@@ -103,6 +103,7 @@ class BackPressedController private constructor(private val activity: ComponentA
      * Manually trigger the back pressed callbacks.
      *
      * - This function is deprecated, use [trigger] instead.
+     * @see trigger
      */
     @Deprecated(message = "Use trigger instead.", ReplaceWith("trigger(ignored)"))
     @JvmOverloads

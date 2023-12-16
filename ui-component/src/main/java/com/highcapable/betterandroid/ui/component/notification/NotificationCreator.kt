@@ -37,6 +37,7 @@ import com.highcapable.betterandroid.ui.component.notification.wrapper.Notificat
  * - This class is deprecated and will be removed in the future.
  *
  * - Please use [Context.createNotification] instead.
+ * @see Context.createNotification
  */
 @Deprecated(message = "No effect and will be removed in the future.")
 class NotificationCreator private constructor(private val context: Context) {
@@ -45,6 +46,7 @@ class NotificationCreator private constructor(private val context: Context) {
 
         /**
          * - This class is deprecated and will be removed in the future.
+         * @see Context.createNotification
          */
         @Deprecated(message = "No effect and will be removed in the future.")
         @JvmStatic
@@ -53,12 +55,14 @@ class NotificationCreator private constructor(private val context: Context) {
 
     /**
      * - This class is deprecated and will be removed in the future.
+     * @see Context.createNotification
      */
     @Deprecated(message = "No effect and will be removed in the future.")
     fun channel(channel: NotificationChannelWrapper) = this
 
     /**
      * - This class is deprecated and will be removed in the future.
+     * @see Context.createNotification
      */
     @Deprecated(message = "No effect and will be removed in the future.")
     inline fun channel(
@@ -69,36 +73,42 @@ class NotificationCreator private constructor(private val context: Context) {
 
     /**
      * - This class is deprecated and will be removed in the future.
+     * @see Context.createNotification
      */
     @Deprecated(message = "No effect and will be removed in the future.")
     fun notification(notification: NotificationWrapper) = this
 
     /**
      * - This class is deprecated and will be removed in the future.
+     * @see Context.createNotification
      */
     @Deprecated(message = "No effect and will be removed in the future.")
     inline fun notification(initiate: NotificationBuilder.() -> Unit = {}) = this
 
     /**
      * - This class is deprecated and will be removed in the future.
+     * @see Context.createNotification
      */
     @Deprecated(message = "No effect and will be removed in the future.")
     fun build() = Poster()
 
     /**
      * - This class is deprecated and will be removed in the future.
+     * @see Context.createNotification
      */
     @Deprecated(message = "No effect and will be removed in the future.")
     inner class Poster internal constructor() {
 
         /**
          * - This class is deprecated and will be removed in the future.
+         * @see Context.createNotification
          */
         @Deprecated(message = "No effect and will be removed in the future.")
         val isCanceled get() = false
 
         /**
          * - This class is deprecated and will be removed in the future.
+         * @see Context.createNotification
          */
         @Deprecated(message = "No effect and will be removed in the future.")
         @JvmOverloads
@@ -106,6 +116,7 @@ class NotificationCreator private constructor(private val context: Context) {
 
         /**
          * - This class is deprecated and will be removed in the future.
+         * @see Context.createNotification
          */
         @Deprecated(message = "No effect and will be removed in the future.")
         fun cancel() = this

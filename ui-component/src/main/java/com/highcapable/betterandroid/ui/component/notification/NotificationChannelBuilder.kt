@@ -113,6 +113,7 @@ class NotificationChannelBuilder private constructor(
 
     /**
      * - This function is deprecated and no effect, use [NotificationChannelGroupBuilder] instead.
+     * @see NotificationChannelGroupBuilder
      */
     @Suppress("UNUSED_PARAMETER", "DeprecatedCallableAddReplaceWith")
     @Deprecated(message = "Use NotificationChannelGroupBuilder instead.")

@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView
  * - This class is deprecated and no effect and will be removed in the future.
  *
  * - Please use [RecyclerCosmetic] instead.
+ * @see RecyclerCosmetic
  */
 @Deprecated(message = "Use RecyclerCosmetic instead.")
 class RecyclerCosmeticMaker private constructor() {
@@ -43,6 +44,7 @@ class RecyclerCosmeticMaker private constructor() {
          * - This class is deprecated and no effect and will be removed in the future.
          *
          * - Please use [RecyclerCosmetic] instead.
+         * @see RecyclerCosmetic
          */
         @Deprecated(message = "Use RecyclerCosmetic instead.")
         @JvmStatic
@@ -55,6 +57,7 @@ class RecyclerCosmeticMaker private constructor() {
          * - This class is deprecated and no effect and will be removed in the future.
          *
          * - Please use [RecyclerCosmetic] instead.
+         * @see RecyclerCosmetic
          */
         @Deprecated(message = "Use RecyclerCosmetic instead.")
         @JvmStatic
@@ -71,6 +74,7 @@ class RecyclerCosmeticMaker private constructor() {
          * - This class is deprecated and no effect and will be removed in the future.
          *
          * - Please use [RecyclerCosmetic] instead.
+         * @see RecyclerCosmetic
          */
         @Deprecated(message = "Use RecyclerCosmetic instead.")
         @JvmStatic
@@ -87,6 +91,7 @@ class RecyclerCosmeticMaker private constructor() {
          * - This class is deprecated and no effect and will be removed in the future.
          *
          * - Please use [RecyclerCosmetic] instead.
+         * @see RecyclerCosmetic
          */
         @Deprecated(message = "Use RecyclerCosmetic instead.")
         @JvmStatic
@@ -101,6 +106,7 @@ class RecyclerCosmeticMaker private constructor() {
          * - This class is deprecated and no effect and will be removed in the future.
          *
          * - Please use [RecyclerCosmetic] instead.
+         * @see RecyclerCosmetic
          */
         @Deprecated(message = "Use RecyclerCosmetic instead.")
         @JvmStatic
@@ -146,6 +152,7 @@ class RecyclerCosmeticMaker private constructor() {
      * - This class is deprecated and no effect and will be removed in the future.
      *
      * - Please use [RecyclerCosmetic] instead.
+     * @see RecyclerCosmetic
      */
     @Deprecated(message = "Use RecyclerCosmetic instead.")
     var layoutManager: RecyclerView.LayoutManager? = null
@@ -154,6 +161,7 @@ class RecyclerCosmeticMaker private constructor() {
      * - This class is deprecated and no effect and will be removed in the future.
      *
      * - Please use [RecyclerCosmetic] instead.
+     * @see RecyclerCosmetic
      */
     @Deprecated(message = "Use RecyclerCosmetic instead.")
     var itemDecoration: RecyclerView.ItemDecoration? = null
