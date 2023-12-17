@@ -20,6 +20,8 @@
  * This file is created by fankes on 2022/11/8.
  * This file is modified by fankes on 2023/12/13.
  */
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
+
 package com.highcapable.betterandroid.ui.component.adapter.recycler.cosmetic
 
 import android.content.Context
@@ -37,9 +39,9 @@ import com.highcapable.betterandroid.ui.extension.component.base.asDp
  * @param layoutManager the layout manager.
  * @param itemDecoration the item decoration.
  */
-class RecyclerCosmetic private constructor(
-    val layoutManager: RecyclerView.LayoutManager,
-    val itemDecoration: RecyclerView.ItemDecoration
+class RecyclerCosmetic<RVLM : RecyclerView.LayoutManager, RVID : RecyclerView.ItemDecoration> private constructor(
+    val layoutManager: RVLM,
+    val itemDecoration: RVID
 ) {
 
     companion object {
@@ -58,12 +60,12 @@ class RecyclerCosmetic private constructor(
          * Create a custom cosmetic.
          * @param layoutManager the layout manager.
          * @param itemDecoration the item decoration.
-         * @return [RecyclerCosmetic]
+         * @return [RecyclerCosmetic]<[RVLM], [RVID]>
          */
         @JvmStatic
-        fun from(
-            layoutManager: RecyclerView.LayoutManager,
-            itemDecoration: RecyclerView.ItemDecoration
+        fun <RVLM : RecyclerView.LayoutManager, RVID : RecyclerView.ItemDecoration> from(
+            layoutManager: RVLM,
+            itemDecoration: RVID
         ) = RecyclerCosmetic(layoutManager, itemDecoration)
 
         /**

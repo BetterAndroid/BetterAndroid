@@ -143,7 +143,7 @@ inline fun AndroidX_ListPopupWindow.bindAdapter(context: Context, initiate: Comm
  */
 @JvmName("bindAdapter_Generics")
 inline fun <reified E> RecyclerView.bindAdapter(
-    cosmetic: RecyclerCosmetic = RecyclerCosmetic.fromLinearVertical(context),
+    cosmetic: RecyclerCosmetic<*, *> = RecyclerCosmetic.fromLinearVertical(context),
     initiate: RecyclerAdapterBuilder<E>.() -> Unit
 ): RecyclerView.Adapter<RecyclerAdapterBuilder<E>.BaseRecyclerHolder> {
     layoutManager = cosmetic.layoutManager
@@ -170,7 +170,7 @@ inline fun <reified E> RecyclerView.bindAdapter(
  * @return [RecyclerView.Adapter]<[RecyclerAdapterBuilder.BaseRecyclerHolder]>
  */
 inline fun RecyclerView.bindAdapter(
-    cosmetic: RecyclerCosmetic = RecyclerCosmetic.fromLinearVertical(context),
+    cosmetic: RecyclerCosmetic<*, *> = RecyclerCosmetic.fromLinearVertical(context),
     initiate: RecyclerAdapterBuilder<*>.() -> Unit
 ) = bindAdapter<Any>(cosmetic, initiate)
 
