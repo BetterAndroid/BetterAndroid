@@ -19,6 +19,8 @@
  *
  * This file is created by fankes on 2023/11/24.
  */
+@file:Suppress("unused")
+
 package com.highcapable.betterandroid.ui.component.systembar.type
 
 /**

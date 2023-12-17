@@ -21,9 +21,11 @@
  */
 package com.highcapable.betterandroid.ui.component.activity
 
-import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import com.highcapable.betterandroid.ui.component.activity.base.BaseCompatActivity
+import android.R as Android_R
 
 /**
  * App views activity.
@@ -49,8 +51,21 @@ import com.highcapable.betterandroid.ui.component.activity.base.BaseCompatActivi
 open class AppViewsActivity : BaseCompatActivity() {
 
     @CallSuper
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        systemBars.init()
+    override fun setContentView(layoutResID: Int) {
+        super.setContentView(layoutResID)
+        val rootView = findViewById<ViewGroup>(Android_R.id.content).getChildAt(0)
+        systemBars.init(rootView)
+    }
+
+    @CallSuper
+    override fun setContentView(view: View?) {
+        super.setContentView(view)
+        systemBars.init(view)
+    }
+
+    @CallSuper
+    override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
+        super.setContentView(view, params)
+        systemBars.init(view)
     }
 }

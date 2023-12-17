@@ -32,8 +32,5 @@ enum class SystemBars {
     STATUS_BARS,
 
     /** Navigation bars. */
-    NAVIGATION_BARS,
-
-    /** System gestures. */
-    SYSTEM_GESTURES
+    NAVIGATION_BARS
 }

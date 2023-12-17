@@ -22,16 +22,20 @@
 package com.highcapable.betterandroid.ui.component.activity
 
 import android.os.Bundle
+import android.view.View
 import androidx.annotation.CallSuper
 import com.highcapable.betterandroid.ui.component.activity.base.BaseComponentActivity
+import com.highcapable.betterandroid.ui.component.insets.factory.handleOnWindowInsetsChanged
 
 /**
  * App component activity.
  *
  * Inherited from [BaseComponentActivity].
  *
- * - Note: This activity does not add any possible system bars insets to the root layout,
+ * - Note: This activity does not add any possible window insets to the root view,
  *   and all layout content is tiled and expanded to full screen.
+ *
+ * You can use [View.handleOnWindowInsetsChanged] to handle the insets change.
  */
 open class AppComponentActivity : BaseComponentActivity() {
 

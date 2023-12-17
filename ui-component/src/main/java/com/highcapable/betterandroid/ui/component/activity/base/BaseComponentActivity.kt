@@ -23,16 +23,12 @@
 
 package com.highcapable.betterandroid.ui.component.activity.base
 
-import android.graphics.drawable.ColorDrawable
-import android.view.View
-import android.view.ViewGroup
 import androidx.activity.ComponentActivity
 import androidx.annotation.CallSuper
 import com.highcapable.betterandroid.ui.component.backpress.BackPressedController
 import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
 import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
 import com.highcapable.betterandroid.ui.component.systembar.SystemBarsController
-import com.highcapable.betterandroid.ui.extension.view.inflate
 
 /**
  * Base component activity with [ISystemBarsController], [IBackPressedController].
@@ -47,28 +43,13 @@ abstract class BaseComponentActivity internal constructor() : ComponentActivity(
 
     @Deprecated(
         message = "Android has deprecated overriding or calling onBackPressed, " +
-            "in the latest system version, please use backPressed.addEvent(...) and backPressed.call(...) to replace it.",
-        replaceWith = ReplaceWith("backPressed.call()"),
+            "please use backPressed.addCallback(...) and backPressed.trigger(...) to replace it.",
+        replaceWith = ReplaceWith("backPressed.trigger()"),
         level = DeprecationLevel.ERROR
     )
     @Suppress("DEPRECATION", "KotlinRedundantDiagnosticSuppress")
     override fun onBackPressed() {
         super.onBackPressed()
-    }
-
-    override fun setContentView(layoutResID: Int) {
-        super.setContentView(layoutResID)
-        inflate(layoutResID).getBackgroundColor()?.also { systemBars.setBaseBackgroundColor(it) }
-    }
-
-    override fun setContentView(view: View?) {
-        super.setContentView(view)
-        view?.getBackgroundColor()?.also { systemBars.setBaseBackgroundColor(it) }
-    }
-
-    override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
-        super.setContentView(view, params)
-        view?.getBackgroundColor()?.also { systemBars.setBaseBackgroundColor(it) }
     }
 
     @CallSuper
@@ -77,11 +58,4 @@ abstract class BaseComponentActivity internal constructor() : ComponentActivity(
         backPressed.destroy()
         super.onDestroy()
     }
-
-    /**
-     * Get the background color of the view.
-     * @receiver [View]
-     * @return [Int] or null.
-     */
-    internal fun View.getBackgroundColor() = (background as? ColorDrawable)?.color
 }

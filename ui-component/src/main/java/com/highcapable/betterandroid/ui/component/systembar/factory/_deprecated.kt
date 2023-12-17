@@ -19,69 +19,54 @@
  *
  * This file is created by fankes on 2023/11/24.
  */
-@file:Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith", "UNUSED_PARAMETER", "UnusedReceiverParameter")
+@file:Suppress("DeprecatedCallableAddReplaceWith", "UNUSED_PARAMETER", "UnusedReceiverParameter")
 @file:JvmName("SystemInsetsUtils")
 
 package com.highcapable.betterandroid.ui.component.systembar.factory
 
 import android.view.View
 import androidx.core.graphics.Insets
-import com.highcapable.betterandroid.ui.component.systembar.insets.SystemBarsInsets
-import com.highcapable.betterandroid.ui.component.systembar.type.InsetsType
-import com.highcapable.betterandroid.ui.component.systembar.type.SystemInsetsType
+import com.highcapable.betterandroid.ui.component.insets.factory.handleOnWindowInsetsChanged
+import com.highcapable.betterandroid.ui.component.insets.factory.setInsetsPadding
+import com.highcapable.betterandroid.ui.component.insets.factory.updateInsetsPadding
 
 /**
  * Apply the system insets and cutout padding in layout.
  *
- * - This function is deprecated, use [View.applySystemBarsInsets] instead.
- * @return [Insets]
+ * - This function is deprecated and no effect, if you want to add your own insets changes listener,
+ *   please use the [View.handleOnWindowInsetsChanged] to your view and use [View.setInsetsPadding] or [View.updateInsetsPadding].
+ * @see View.handleOnWindowInsetsChanged
+ * @see View.setInsetsPadding
+ * @see View.updateInsetsPadding
  */
-@Deprecated(message = "Use View.applySystemBarsInsets instead.")
+@Deprecated(message = "Use your own View.handleOnWindowInsetsChanged instead.")
 @JvmOverloads
-fun View.applySystemInsets(
-    systemInsets: SystemBarsInsets,
-    vararg types: SystemInsetsType,
-    ignoredCutout: Boolean = false
-) = applySystemBarsInsets(
-    systemBarsInsets = systemInsets,
-    left = types.contains(SystemInsetsType.LEFT),
-    top = types.contains(SystemInsetsType.TOP),
-    right = types.contains(SystemInsetsType.RIGHT),
-    bottom = types.contains(SystemInsetsType.BOTTOM),
-    type = if (ignoredCutout) InsetsType.STABLE else InsetsType.ADAPTIVE
-)
+fun View.applySystemInsets(systemInsets: Any, vararg types: Any, ignoredCutout: Boolean = false) {
+}
 
 /**
  * Append the system insets and cutout padding in layout.
  *
- * - This function is deprecated, use [View.appendSystemBarsInsets] instead.
- * @return [Insets]
+ * - This function is deprecated and no effect, if you want to add your own insets changes listener,
+ *   please use the [View.handleOnWindowInsetsChanged] to your view and use [View.setInsetsPadding] or [View.updateInsetsPadding].
+ * @see View.handleOnWindowInsetsChanged
+ * @see View.setInsetsPadding
+ * @see View.updateInsetsPadding
  */
-@Deprecated(message = "Use View.appendSystemBarsInsets instead.")
+@Deprecated(message = "Use your own View.handleOnWindowInsetsChanged instead.")
 @JvmOverloads
-fun View.appendSystemInsets(
-    systemInsets: SystemBarsInsets,
-    vararg types: SystemInsetsType,
-    ignoredCutout: Boolean = false
-) = appendSystemBarsInsets(
-    systemBarsInsets = systemInsets,
-    left = types.contains(SystemInsetsType.LEFT),
-    top = types.contains(SystemInsetsType.TOP),
-    right = types.contains(SystemInsetsType.RIGHT),
-    bottom = types.contains(SystemInsetsType.BOTTOM),
-    type = if (ignoredCutout) InsetsType.STABLE else InsetsType.ADAPTIVE
-)
+fun View.appendSystemInsets(systemInsets: Any, vararg types: Any, ignoredCutout: Boolean = false) {
+}
 
 /**
  * Remove the system insets and cutout padding in layout.
  *
- * - This function is deprecated and no effect, use [View.applySystemBarsInsets] or [View.appendSystemBarsInsets] instead.
- * @return [Insets]
+ * - This function is deprecated and no effect, if you want to add your own insets changes listener,
+ *   please use the [View.handleOnWindowInsetsChanged] to your view and use [View.setInsetsPadding] or [View.updateInsetsPadding].
+ * @see View.handleOnWindowInsetsChanged
+ * @see View.setInsetsPadding
+ * @see View.updateInsetsPadding
  */
-@Deprecated(message = "Use View.applySystemBarsInsets or View.appendSystemBarsInsets instead.")
+@Deprecated(message = "Use your own View.handleOnWindowInsetsChanged instead.")
 @JvmOverloads
-fun View.removeSystemInsets(
-    systemInsets: SystemBarsInsets,
-    vararg types: SystemInsetsType,
-    ignoredCutout: Boolean = false
-) = Insets.NONE
+fun View.removeSystemInsets(systemInsets: Any, vararg types: Any, ignoredCutout: Boolean = false) = Insets.NONE

@@ -63,8 +63,8 @@ open class AppBindingActivity<VB : ViewBinding> : BaseCompatActivity(), IViewBin
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         baseBinding = inflateViewBinding()
-        systemBars.init()
         super.setContentView(binding.root)
+        systemBars.init(binding.root)
     }
 
     @Deprecated(message = "Use binding instead it.", level = DeprecationLevel.ERROR)
