@@ -21,11 +21,12 @@
  */
 package com.highcapable.betterandroid.ui.component.activity
 
-import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import com.highcapable.betterandroid.ui.component.activity.base.BaseComponentActivity
 import com.highcapable.betterandroid.ui.component.insets.factory.handleOnWindowInsetsChanged
+import android.R as Android_R
 
 /**
  * App component activity.
@@ -40,8 +41,21 @@ import com.highcapable.betterandroid.ui.component.insets.factory.handleOnWindowI
 open class AppComponentActivity : BaseComponentActivity() {
 
     @CallSuper
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        systemBars.init(defaultPadding = false)
+    override fun setContentView(layoutResID: Int) {
+        super.setContentView(layoutResID)
+        val rootView = findViewById<ViewGroup>(Android_R.id.content).getChildAt(0)
+        systemBars.init(rootView, defaultPadding = false)
+    }
+
+    @CallSuper
+    override fun setContentView(view: View?) {
+        super.setContentView(view)
+        systemBars.init(view, defaultPadding = false)
+    }
+
+    @CallSuper
+    override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
+        super.setContentView(view, params)
+        systemBars.init(view, defaultPadding = false)
     }
 }
