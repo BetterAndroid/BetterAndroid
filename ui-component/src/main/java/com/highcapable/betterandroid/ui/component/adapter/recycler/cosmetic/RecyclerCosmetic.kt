@@ -27,7 +27,7 @@ import androidx.annotation.Px
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.highcapable.betterandroid.ui.component.adapter.recycler.decoration.GridItemVerticalDecoration
+import com.highcapable.betterandroid.ui.component.adapter.recycler.decoration.GridVerticalItemDecoration
 import com.highcapable.betterandroid.ui.component.adapter.recycler.decoration.LinearHorizontalItemDecoration
 import com.highcapable.betterandroid.ui.component.adapter.recycler.decoration.LinearVerticalItemDecoration
 import com.highcapable.betterandroid.ui.extension.component.base.asDp
@@ -85,7 +85,7 @@ class RecyclerCosmetic private constructor(
             isReverseLayout: Boolean = false
         ) = from(
             layoutManager = GridLayoutManager(context, spanCount, RecyclerView.VERTICAL, isReverseLayout),
-            itemDecoration = GridItemVerticalDecoration(spanCount, columnSpacing, rowSpacing)
+            itemDecoration = GridVerticalItemDecoration(spanCount, columnSpacing, rowSpacing)
         )
 
         /**
@@ -120,7 +120,7 @@ class RecyclerCosmetic private constructor(
             isReverseLayout: Boolean = false
         ) = from(
             layoutManager = GridLayoutManager(context, spanCount, RecyclerView.VERTICAL, isReverseLayout),
-            itemDecoration = GridItemVerticalDecoration(spanCount, firstLeft, left, firstTop, top, lastRight, right, lastBottom, bottom)
+            itemDecoration = GridVerticalItemDecoration(spanCount, firstLeft, left, firstTop, top, lastRight, right, lastBottom, bottom)
         )
 
         /**

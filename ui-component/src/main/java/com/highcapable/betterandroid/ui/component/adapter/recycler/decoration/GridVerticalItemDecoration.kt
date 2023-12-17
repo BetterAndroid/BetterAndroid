@@ -29,7 +29,7 @@ import com.highcapable.betterandroid.ui.component.adapter.recycler.decoration.ba
 /**
  * [RecyclerView] grid item decoration.
  */
-class GridItemVerticalDecoration : BaseRecyclerItemDecoration {
+class GridVerticalItemDecoration : BaseRecyclerItemDecoration {
 
     /** The current column count. */
     private var spanCount = 0
