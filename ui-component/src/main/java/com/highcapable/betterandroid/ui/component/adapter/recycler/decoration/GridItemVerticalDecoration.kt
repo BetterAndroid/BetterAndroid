@@ -55,13 +55,19 @@ class GridItemVerticalDecoration : BaseRecyclerItemDecoration {
      * @param bottom the each bottom spacing (px).
      */
     private class RowColumnRect(
-        @Px val firstLeft: Int, @Px val left: Int, @Px val firstTop: Int, @Px val top: Int,
-        @Px val lastRight: Int, @Px val right: Int, @Px val lastBottom: Int, @Px val bottom: Int
+        @Px val firstLeft: Int,
+        @Px val left: Int,
+        @Px val firstTop: Int,
+        @Px val top: Int,
+        @Px val lastRight: Int,
+        @Px val right: Int,
+        @Px val lastBottom: Int,
+        @Px val bottom: Int
     )
 
     /**
      * Initialized as custom entry spacing adaptation.
-     * @param spanCount the column count.
+     * @param spanCount the column count, default is 3.
      * @param firstLeft the first left spacing (px).
      * @param left the each left spacing (px).
      * @param firstTop the first top spacing (px).
@@ -71,10 +77,16 @@ class GridItemVerticalDecoration : BaseRecyclerItemDecoration {
      * @param lastBottom the last bottom spacing (px).
      * @param bottom the each bottom spacing (px).
      */
-    internal constructor(
-        spanCount: Int,
-        @Px firstLeft: Int, @Px left: Int, @Px firstTop: Int, @Px top: Int,
-        @Px lastRight: Int, @Px right: Int, @Px lastBottom: Int, @Px bottom: Int
+    constructor(
+        spanCount: Int = 3,
+        @Px firstLeft: Int = 0,
+        @Px left: Int = 0,
+        @Px firstTop: Int = 0,
+        @Px top: Int = 0,
+        @Px lastRight: Int = 0,
+        @Px right: Int = 0,
+        @Px lastBottom: Int = 0,
+        @Px bottom: Int = 0
     ) {
         this.spanCount = spanCount
         rowColumnRect = RowColumnRect(firstLeft, left, firstTop, top, lastRight, right, lastBottom, bottom)
@@ -82,11 +94,11 @@ class GridItemVerticalDecoration : BaseRecyclerItemDecoration {
 
     /**
      * Initialized as fixed column spacing and row spacing.
-     * @param spanCount the column count.
+     * @param spanCount the column count, default is 3.
      * @param columnSpacing the column spacing (px).
      * @param rowSpacing the row spacing (px).
      */
-    internal constructor(spanCount: Int, @Px columnSpacing: Int, @Px rowSpacing: Int) {
+    constructor(spanCount: Int = 3, @Px columnSpacing: Int, @Px rowSpacing: Int) {
         this.spanCount = spanCount
         this.columnSpacing = columnSpacing
         this.rowSpacing = rowSpacing

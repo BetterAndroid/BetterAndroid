@@ -47,9 +47,12 @@ class LinearHorizontalItemDecoration : BaseRecyclerItemDecoration {
      * @param bottom the each bottom spacing (px).
      */
     private class RowColumnRect(
-        @Px val firstLeft: Int, @Px val left: Int,
-        @Px val top: Int, @Px val lastRight: Int,
-        @Px val right: Int, @Px val bottom: Int
+        @Px val firstLeft: Int,
+        @Px val left: Int,
+        @Px val top: Int,
+        @Px val lastRight: Int,
+        @Px val right: Int,
+        @Px val bottom: Int
     )
 
     /**
@@ -61,7 +64,14 @@ class LinearHorizontalItemDecoration : BaseRecyclerItemDecoration {
      * @param right the each right spacing (px).
      * @param bottom the each bottom spacing (px).
      */
-    internal constructor(@Px firstLeft: Int, @Px left: Int, @Px top: Int, @Px lastRight: Int, @Px right: Int, @Px bottom: Int) {
+    constructor(
+        @Px firstLeft: Int = 0,
+        @Px left: Int = 0,
+        @Px top: Int = 0,
+        @Px lastRight: Int = 0,
+        @Px right: Int = 0,
+        @Px bottom: Int = 0
+    ) {
         rowColumnRect = RowColumnRect(firstLeft, left, top, lastRight, right, bottom)
     }
 
@@ -69,7 +79,7 @@ class LinearHorizontalItemDecoration : BaseRecyclerItemDecoration {
      * Initialized as fixed column spacing.
      * @param columnSpacing the column spacing (px).
      */
-    internal constructor(@Px columnSpacing: Int) {
+    constructor(@Px columnSpacing: Int) {
         this.columnSpacing = columnSpacing
     }
 

@@ -47,9 +47,12 @@ class LinearVerticalItemDecoration : BaseRecyclerItemDecoration {
      * @param bottom the each bottom spacing (px).
      */
     private class RowColumnRect(
-        @Px val left: Int, @Px val firstTop: Int,
-        @Px val top: Int, @Px val right: Int,
-        @Px val lastBottom: Int, @Px val bottom: Int
+        @Px val left: Int,
+        @Px val firstTop: Int,
+        @Px val top: Int,
+        @Px val right: Int,
+        @Px val lastBottom: Int,
+        @Px val bottom: Int
     )
 
     /**
@@ -61,7 +64,14 @@ class LinearVerticalItemDecoration : BaseRecyclerItemDecoration {
      * @param lastBottom the last bottom spacing (px).
      * @param bottom the each bottom spacing (px).
      */
-    internal constructor(@Px left: Int, @Px firstTop: Int, @Px top: Int, @Px right: Int, @Px lastBottom: Int, @Px bottom: Int) {
+    constructor(
+        @Px left: Int = 0,
+        @Px firstTop: Int = 0,
+        @Px top: Int = 0,
+        @Px right: Int = 0,
+        @Px lastBottom: Int = 0,
+        @Px bottom: Int = 0
+    ) {
         rowColumnRect = RowColumnRect(left, firstTop, top, right, lastBottom, bottom)
     }
 
@@ -69,7 +79,7 @@ class LinearVerticalItemDecoration : BaseRecyclerItemDecoration {
      * Initialized as fixed row spacing.
      * @param rowSpacing the row spacing (px).
      */
-    internal constructor(@Px rowSpacing: Int) {
+    constructor(@Px rowSpacing: Int) {
         this.rowSpacing = rowSpacing
     }
 
