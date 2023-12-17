@@ -86,7 +86,7 @@ class RecyclerCosmetic<RVLM : RecyclerView.LayoutManager, RVID : RecyclerView.It
             @Px rowSpacing: Int = context.defaultSpacingPx(),
             isReverseLayout: Boolean = false
         ) = from(
-            layoutManager = GridLayoutManager(context, spanCount, RecyclerView.VERTICAL, isReverseLayout),
+            layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.VERTICAL, isReverseLayout),
             itemDecoration = GridVerticalItemDecoration(spanCount, columnSpacing, rowSpacing)
         )
 
@@ -121,7 +121,7 @@ class RecyclerCosmetic<RVLM : RecyclerView.LayoutManager, RVID : RecyclerView.It
             @Px bottom: Int = 0,
             isReverseLayout: Boolean = false
         ) = from(
-            layoutManager = GridLayoutManager(context, spanCount, RecyclerView.VERTICAL, isReverseLayout),
+            layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.VERTICAL, isReverseLayout),
             itemDecoration = GridVerticalItemDecoration(spanCount, firstLeft, left, firstTop, top, lastRight, right, lastBottom, bottom)
         )
 
