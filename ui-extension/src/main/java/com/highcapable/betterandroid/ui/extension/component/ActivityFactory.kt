@@ -56,7 +56,7 @@ val Activity.isInMultiWindowModeCompat get() = SystemVersion.require(SystemVersi
 /**
  * Start an [Activity] instance [T].
  * @receiver the current context.
- * @param newTask whether to start with a new task, default is false.
+ * @param newTask whether to start with a new task, default false.
  * @param initiate the [Intent] builder body, default is empty.
  */
 inline fun <reified T : Activity> Context.startActivity(newTask: Boolean = false, initiate: Intent.() -> Unit = {}) =
@@ -67,7 +67,7 @@ inline fun <reified T : Activity> Context.startActivity(newTask: Boolean = false
  * @receiver the current context.
  * @param packageName the target package name.
  * @param activityClass the target app [Activity] class name.
- * @param newTask whether to start with a new task, default is true,
+ * @param newTask whether to start with a new task, default true,
  * if not it will cause the top stack to overlap.
  * @param initiate the [Intent] builder body, default is empty.
  */
@@ -89,7 +89,7 @@ fun Context.startActivity(packageName: String, activityClass: String, newTask: B
  * @see Context.startActivityOrElse
  * @receiver the current context.
  * @param packageName the target package name.
- * @param newTask whether to start with a new task, default is true,
+ * @param newTask whether to start with a new task, default true,
  * if not it will cause the top stack to overlap.
  * @param initiate the [Intent] builder body, default is empty.
  * @throws IllegalStateException if the [Activity] class name that needs to be
@@ -112,7 +112,7 @@ fun Context.startActivity(packageName: String, newTask: Boolean = true, initiate
  *   when target sdk higher than 29.
  * @receiver the current context.
  * @param packageName the target package name.
- * @param newTask whether to start with a new task, default is true,
+ * @param newTask whether to start with a new task, default true,
  * if not it will cause the top stack to overlap.
  * @param initiate the [Intent] builder body, default is empty.
  * @return [Boolean] whether succeed.

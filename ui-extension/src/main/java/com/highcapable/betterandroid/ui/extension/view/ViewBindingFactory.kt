@@ -41,7 +41,7 @@ import com.highcapable.yukireflection.type.java.BooleanType
  * or inflate [ViewBinding] with the current [Class] (base function).
  * @param inflater the inflater.
  * @param parent the parent view, default is null.
- * @param attachToRoot whether to attach the root view, default is false.
+ * @param attachToRoot whether to attach the root view, default false.
  * @param instance the current instance ([Context], [Activity], [Fragment] or the other type).
  * @param instanceClass the current instance [Class].
  * @return [VB]
@@ -94,7 +94,7 @@ private fun <VB : ViewBinding> baseInflateViewBinding(
  * @receiver the current activity.
  * @param inflater the inflater, default is [Activity.getLayoutInflater].
  * @param parent the parent view, default is null.
- * @param attachToRoot whether to attach the root view, default is false.
+ * @param attachToRoot whether to attach the root view, default false.
  * @return [VB]
  */
 @JvmOverloads
@@ -140,7 +140,7 @@ fun <VB : ViewBinding> Activity.inflateViewBinding(
  * @receiver the current fragment.
  * @param inflater the inflater, default is [Fragment.getLayoutInflater].
  * @param parent the parent view, default is null.
- * @param attachToRoot whether to attach the root view, default is false.
+ * @param attachToRoot whether to attach the root view, default false.
  * @return [VB]
  */
 @JvmOverloads
@@ -163,7 +163,7 @@ fun <VB : ViewBinding> Fragment.inflateViewBinding(
  * @param bindingClass the current instance of [ViewBinding].
  * @param inflater the inflater, default to create a new [LayoutInflater] using the current [Context].
  * @param parent the parent view, default is null.
- * @param attachToRoot whether to attach the root view, default is false.
+ * @param attachToRoot whether to attach the root view, default false.
  * @return [VB]
  */
 @JvmOverloads
@@ -188,7 +188,7 @@ fun <VB : ViewBinding> Context.inflateViewBinding(
  * @param bindingClass the current instance of [ViewBinding].
  * @param inflater the inflater, default to create a new [LayoutInflater] using the current [Context].
  * @param parent the parent view, default is null.
- * @param attachToRoot whether to attach the root view, default is false.
+ * @param attachToRoot whether to attach the root view, default false.
  * @return [ViewBinding]
  */
 @JvmOverloads
