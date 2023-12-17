@@ -145,6 +145,7 @@ object SystemVersion {
      * The target sdk is required to be [target] or higher than [target] to call [callback].
      *
      * - Note: This function required [defaultValue] non-null, otherwise please use [requireOrNull] instead it.
+     * @see requireOrNull
      * @param target the target sdk.
      * @param defaultValue the default value when the above conditions are not met.
      * @param callback callback when the above conditions are met.

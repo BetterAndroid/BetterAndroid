@@ -250,10 +250,8 @@ class SystemBarsController private constructor(private val activity: Activity) {
         onChange(parentView?.createRootWindowInsetsWrapper(activity.window))
         parentView?.handleOnWindowInsetsChanged { _, insetsWrapper ->
             onChange(insetsWrapper)
-            /**
-             * In here, we won't consumed the insets for child views,
-             * so you can use the [View.handleOnWindowInsetsChanged] to handle the child views insets.
-             */
+            // In here, we won't consumed the insets for child views,
+            // so you can use the [View.handleOnWindowInsetsChanged] to handle the child views insets.
             false
         }
     }
@@ -299,11 +297,11 @@ class SystemBarsController private constructor(private val activity: Activity) {
         SystemVersion.require(SystemVersion.Q) {
             isStatusBarContrastEnforced = activity.window?.isStatusBarContrastEnforced == true
             isNavigationBarContrastEnforced = activity.window?.isNavigationBarContrastEnforced == true
-            /** Remove system-made masking of forced contrast colors. */
+            // Remove system-made masking of forced contrast colors.
             activity.window?.isStatusBarContrastEnforced = false
             activity.window?.isNavigationBarContrastEnforced = false
         }
-        /** Save the original system bars params. */
+        // Save the original system bars params.
         originalSystemBarParams = SystemBarParams(
             statusBarColor = activity.window?.statusBarColor ?: Color.TRANSPARENT,
             navigationBarColor = activity.window?.navigationBarColor ?: Color.TRANSPARENT,
@@ -312,12 +310,12 @@ class SystemBarsController private constructor(private val activity: Activity) {
             isAppearanceLightStatusBars = parentInsetsController?.isAppearanceLightStatusBars == true,
             isAppearanceLightNavigationBars = parentInsetsController?.isAppearanceLightNavigationBars == true
         )
-        /** Set the layout overlay to status bars and navigation bars. */
+        // Set the layout overlay to status bars and navigation bars.
         WindowCompat.setDecorFitsSystemWindows(activity.window, false)
         SystemVersion.require(SystemVersion.P) {
-            /** Set the notch area not to interfere with the current UI. */
+            // Set the notch area not to interfere with the current UI.
             activity.window?.attributes?.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-            /** Remove the color of the navigation bars divider. */
+            // Remove the color of the navigation bars divider.
             activity.window?.navigationBarDividerColor = Color.TRANSPARENT
         }
         initializeDefaults()
@@ -576,13 +574,10 @@ class SystemBarsController private constructor(private val activity: Activity) {
         when (type) {
             SystemBars.STATUS_BARS -> {
                 enableDrawsSystemBarBackgrounds()
-                /**
-                 * Below Android 6.0 will add a translucent mask,
-                 * as the system does not support inverting colors.
-                 *
-                 * - Some systems, such as MIUI based on Android 5,
-                 *   will automatically adapt to their own set of inverse color schemes.
-                 */
+                // Below Android 6.0 will add a translucent mask,
+                // as the system does not support inverting colors.
+                // Some systems, such as MIUI based on Android 5,
+                // will automatically adapt to their own set of inverse color schemes.
                 activity.window?.statusBarColor =
                     if (SystemVersion.isLowTo(SystemVersion.M) && !systemBarsCompat.isLegacyMiui && lightApperance)
                         mixColorOf(backgroundColor, Color.BLACK)
@@ -592,10 +587,8 @@ class SystemBarsController private constructor(private val activity: Activity) {
             }
             SystemBars.NAVIGATION_BARS -> {
                 enableDrawsSystemBarBackgrounds()
-                /**
-                 * Below Android 8.0 will add a transparent mask,
-                 * because the system does not support inverting colors.
-                 */
+                // Below Android 8.0 will add a transparent mask,
+                // because the system does not support inverting colors.
                 activity.window?.navigationBarColor =
                     if (SystemVersion.isLowTo(SystemVersion.O) && lightApperance)
                         mixColorOf(backgroundColor, Color.BLACK)
@@ -626,7 +619,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
      */
     fun destroy() {
         if (!isInitOnce || rootView == null) return
-        /** Restore to default sets. */
+        // Restore to default sets.
         originalSystemBarParams?.also {
             WindowCompat.setDecorFitsSystemWindows(activity.window, true)
             activity.window?.statusBarColor = it.statusBarColor
@@ -638,10 +631,8 @@ class SystemBarsController private constructor(private val activity: Activity) {
             parentInsetsController?.isAppearanceLightStatusBars = it.isAppearanceLightStatusBars
             parentInsetsController?.isAppearanceLightNavigationBars = it.isAppearanceLightNavigationBars
         }
-        /**
-         * If the window insets is not applied to the root view,
-         * we should not change the root view's padding.
-         */
+        // If the window insets is not applied to the root view,
+        // we should not change the root view's padding.
         if (rootPaddingCallback != null) removeRootInsetsPadding()
         parentInsetsWrapper = null
         parentInsetsController = null

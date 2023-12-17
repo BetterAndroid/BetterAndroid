@@ -285,7 +285,7 @@ fun Fragment.show(
     runOnCommit: Runnable? = null,
     isAllowingStateLoss: Boolean = true
 ) {
-    /** 开始执行 */
+    /** Begin. */
     fun FragmentTransaction.begin() {
         setCustomAnimations(enterAnimId, exitAnimId)
         show(this@show)
@@ -315,7 +315,7 @@ fun Fragment.hide(
     runOnCommit: Runnable? = null,
     isAllowingStateLoss: Boolean = true
 ) {
-    /** 开始执行 */
+    /** Begin. */
     fun FragmentTransaction.begin() {
         setCustomAnimations(enterAnimId, exitAnimId)
         hide(this@hide)

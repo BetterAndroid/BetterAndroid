@@ -67,7 +67,7 @@ class WindowInsetsWrapper private constructor(private val windowInsets: WindowIn
          * this parameter usually comes from [Activity.getWindow], otherwise it can be null.
          * @see WindowInsetsCompat.createWrapper
          * @param windowInsets the window insets.
-         * @param window the window, default null.
+         * @param window the window, default is null.
          * @return [WindowInsetsWrapper]
          */
         @JvmStatic
@@ -83,7 +83,7 @@ class WindowInsetsWrapper private constructor(private val windowInsets: WindowIn
          * may appear on devices below Android 9, you need to set the [window] parameter,
          * this parameter usually comes from [Activity.getWindow], otherwise it can be null.
          * @param view the view.
-         * @param window the window, default null.
+         * @param window the window, default is null.
          * @return [WindowInsetsWrapper] or null.
          */
         @JvmStatic

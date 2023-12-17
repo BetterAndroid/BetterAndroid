@@ -102,7 +102,7 @@ object SystemProperties {
      *
      * (case sensitive).
      *
-     * see [here](https://android.googlesource.com/platform/frameworks/base.git/+/refs/heads/main/core/java/android/os/SystemProperties.java#213).
+     * See [here](https://android.googlesource.com/platform/frameworks/base.git/+/refs/heads/main/core/java/android/os/SystemProperties.java#213).
      * @param key the key name.
      * @param default the default value.
      * @return [Boolean]

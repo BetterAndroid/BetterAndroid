@@ -27,7 +27,6 @@ import android.Manifest
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.RequiresPermission
-import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationWrapper
@@ -78,7 +77,7 @@ class NotificationPoster internal constructor(private val notification: Notifica
             else manager.notify(id, it)
             shownId = id
             shownTag = tag
-            /** Compat the [NotificationCompat.Builder.setTimeoutAfter]. */
+            // Compat the [NotificationCompat.Builder.setTimeoutAfter].
             if (SystemVersion.isLowTo(SystemVersion.O))
                 notification.builder.timeoutAfter?.also { timeoutAfter ->
                     Handler(Looper.getMainLooper()).postDelayed({ cancel() }, timeoutAfter)

@@ -120,6 +120,7 @@ fun mixColorOf(@ColorInt color1: Int, @ColorInt color2: Int, ratio: Float = 0.5f
  * Converts to mix color.
  *
  * - This function is deprecated, use [mixColorOf] instead.
+ * @see mixColorOf
  */
 @Deprecated(message = "Use mixColorOf instead.", ReplaceWith("mixColorOf(this, color, ratio)"))
 @JvmOverloads
@@ -172,6 +173,7 @@ object AttrState {
  *     AttrState.NORMAL to Color.TRANSPARENT
  * )
  * ```
+ * @see AttrState
  * @param statesAndColors the state and color [Map].
  * @return [ColorStateList]
  */

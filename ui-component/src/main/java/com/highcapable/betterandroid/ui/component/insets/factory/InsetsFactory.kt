@@ -43,7 +43,7 @@ import com.highcapable.betterandroid.ui.component.insets.WindowInsetsWrapper
  * @see WindowInsetsWrapper.from
  * @see View.handleOnWindowInsetsChanged
  * @receiver [WindowInsetsCompat]
- * @param window the current window, default null.
+ * @param window the current window, default is null.
  * @return [WindowInsetsWrapper]
  */
 @JvmOverloads
@@ -58,7 +58,7 @@ fun WindowInsetsCompat.createWrapper(window: Window? = null) = WindowInsetsWrapp
  * @see WindowInsetsWrapper.from
  * @see View.handleOnWindowInsetsChanged
  * @receiver [View]
- * @param window the current window, default null.
+ * @param window the current window, default is null.
  * @return [WindowInsetsWrapper]
  */
 @JvmOverloads
