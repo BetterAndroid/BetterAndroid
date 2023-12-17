@@ -20,7 +20,7 @@
  * This file is created by fankes on 2022/10/22.
  */
 @file:Suppress("unused")
-@file:JvmName("ColorsUtils")
+@file:JvmName("ColorUtils")
 
 package com.highcapable.betterandroid.ui.extension.graphics
 
