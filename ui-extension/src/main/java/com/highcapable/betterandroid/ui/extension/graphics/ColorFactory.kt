@@ -27,7 +27,6 @@ package com.highcapable.betterandroid.ui.extension.graphics
 import android.content.res.ColorStateList
 import android.graphics.Color
 import androidx.annotation.ColorInt
-import androidx.core.graphics.ColorUtils
 import android.R as Android_R
 
 /**
@@ -65,26 +64,22 @@ fun @receiver:ColorInt Int.toHexColor() = runCatching {
  * @receiver the current color.
  * @param value the transparency (0.0f - 1.0f).
  * @return [Int] modified color.
- * @throws IllegalStateException if the wrong [value] range is passed in.
  */
 @JvmName("convertToAlphaColor")
-fun @receiver:ColorInt Int.toAlphaColor(value: Float) = if (value in 0f..1f)
-    runCatching { (255.coerceAtMost(0.coerceAtLeast((value * 255).toInt())) shl 24) + (0x00ffffff and this) }.getOrNull() ?: this
-else error("Color alpha must be between 0f and 1f.")
+fun @receiver:ColorInt Int.toAlphaColor(value: Float) = runCatching {
+    (255.coerceAtMost(0.coerceAtLeast((value.coerceIn(0f, 1f) * 255).toInt())) shl 24) + (0x00ffffff and this)
+}.getOrNull() ?: this
 
 /**
  * Use (0 - 255) to modify color transparency.
- *
- * Depends on [ColorUtils.setAlphaComponent]
  * @receiver the current color..
  * @param value the transparency (0 - 255).
  * @return [Int] modified color.
- * @throws IllegalStateException if the wrong [value] range is passed in.
  */
 @JvmName("convertToAlphaColor")
-fun @receiver:ColorInt Int.toAlphaColor(value: Int) = if (value in 0..255)
-    runCatching { ColorUtils.setAlphaComponent(this, value) }.getOrNull() ?: this
-else error("Color alpha must be between 0 and 255.")
+fun @receiver:ColorInt Int.toAlphaColor(value: Int) = runCatching {
+    (value.coerceIn(0, 255) shl 24) or (0x00ffffff and this)
+}.getOrNull() ?: this
 
 /**
  * Converts to [AttrState.NORMAL] state of [ColorStateList].
