@@ -71,6 +71,7 @@ class InsetsWrapper private constructor(
 
         /**
          * Create a [InsetsWrapper] from [Insets].
+         * @see Insets.toWrapper
          * @param insets the insets.
          * @param isVisible the visibility state, default true.
          * @return [InsetsWrapper]
