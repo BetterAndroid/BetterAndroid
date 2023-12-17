@@ -58,6 +58,10 @@ import com.highcapable.betterandroid.ui.extension.view.inflateViewBinding
  * - You must use an inherited from [BaseCompatActivity] or [BaseComponentActivity]'s activity or implements
  *   [ISystemBarsController], [IBackPressedController] to use this fragment,
  *   otherwise some functions such as [systemBars], [backPressed] will not work.
+ * @see BaseCompatActivity
+ * @see BaseComponentActivity
+ * @see ISystemBarsController
+ * @see IBackPressedController
  */
 open class AppBindingFragment<VB : ViewBinding> : BaseFragment(), IViewBinding<VB> {
 

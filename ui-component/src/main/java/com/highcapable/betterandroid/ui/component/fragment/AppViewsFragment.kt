@@ -55,5 +55,9 @@ import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
  * - You must use an inherited from [BaseCompatActivity] or [BaseComponentActivity]'s activity or implements
  *   [ISystemBarsController], [IBackPressedController] to use this fragment,
  *   otherwise some functions such as [systemBars], [backPressed] will not work.
+ * @see BaseCompatActivity
+ * @see BaseComponentActivity
+ * @see ISystemBarsController
+ * @see IBackPressedController
  */
 open class AppViewsFragment : BaseFragment()
