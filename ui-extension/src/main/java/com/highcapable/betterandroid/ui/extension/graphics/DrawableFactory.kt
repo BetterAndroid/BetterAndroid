@@ -19,11 +19,12 @@
  *
  * This file is created by fankes on 2022/10/22.
  */
-@file:Suppress("unused")
+@file:Suppress("unused", "USELESS_CAST")
 @file:JvmName("DrawableUtils")
 
 package com.highcapable.betterandroid.ui.extension.graphics
 
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.ShapeDrawable
@@ -31,17 +32,47 @@ import androidx.annotation.Px
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 
 /**
+ * A [GradientDrawable] with padding (compat).
+ * @see GradientDrawable.setPaddingCompat
+ * @see GradientDrawable
+ */
+open class GradientDrawableCompat : GradientDrawable() {
+
+    /** The padding of the drawable. */
+    private var padding: Rect? = null
+
+    override fun getPadding(padding: Rect) =
+        if (this.padding != null && this.padding != padding)
+            this.padding?.let { padding.set(it); true } ?: false
+        else super.getPadding(padding)
+
+    override fun setPadding(left: Int, top: Int, right: Int, bottom: Int) {
+        if (SystemVersion.isLowTo(SystemVersion.Q)) {
+            if (padding == null) padding = Rect()
+            padding?.set(left, top, right, bottom)
+            invalidateSelf()
+        } else super.setPadding(left, top, right, bottom)
+    }
+}
+
+/**
  * Set drawable padding (compat).
  *
- * - Require Android 10 (29).
+ * - If target sdk lower than Android 10 (29),
+ *   you need to use [GradientDrawableCompat] for backward compatibility.
+ * @see GradientDrawableCompat
  * @receiver the current gradient drawable.
  * @param left the left (px).
  * @param top the top (px).
  * @param right the right (px).
  * @param bottom the bottom (px).
  */
-fun GradientDrawable.setPaddingCompat(@Px left: Int, @Px top: Int, @Px right: Int, @Px bottom: Int) =
-    SystemVersion.require(SystemVersion.Q) { setPadding(left, top, right, bottom) }
+fun GradientDrawable.setPaddingCompat(@Px left: Int, @Px top: Int, @Px right: Int, @Px bottom: Int) {
+    when (this) {
+        is GradientDrawableCompat -> (this as GradientDrawableCompat).setPadding(left, top, right, bottom)
+        else -> SystemVersion.require(SystemVersion.Q) { setPadding(left, top, right, bottom) }
+    }
+}
 
 /**
  * Set drawable padding.
