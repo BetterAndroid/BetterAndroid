@@ -34,7 +34,7 @@ import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
 import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
 
 /**
- * App binding fragment.
+ * App views fragment.
  *
  * Inherited from [BaseFragment].
  *
