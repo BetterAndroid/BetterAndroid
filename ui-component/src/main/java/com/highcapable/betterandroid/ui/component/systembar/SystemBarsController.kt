@@ -575,10 +575,10 @@ class SystemBarsController private constructor(private val activity: Activity) {
         val lightApperance = darkContent && backgroundColor == Color.TRANSPARENT || backgroundColor.isBrightColor
         when (type) {
             SystemBars.STATUS_BARS -> {
-                enableDrawSystemBarBackgrounds()
+                enableDrawsSystemBarBackgrounds()
                 /**
                  * Below Android 6.0 will add a translucent mask,
-                 *   as the system does not support inverting colors.
+                 * as the system does not support inverting colors.
                  *
                  * - Some systems, such as MIUI based on Android 5,
                  *   will automatically adapt to their own set of inverse color schemes.
@@ -591,7 +591,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
                 else parentInsetsController?.isAppearanceLightStatusBars = darkContent
             }
             SystemBars.NAVIGATION_BARS -> {
-                enableDrawSystemBarBackgrounds()
+                enableDrawsSystemBarBackgrounds()
                 /**
                  * Below Android 8.0 will add a transparent mask,
                  * because the system does not support inverting colors.
@@ -606,8 +606,8 @@ class SystemBarsController private constructor(private val activity: Activity) {
         }
     }
 
-    /** Enable to draw system bar backgrounds if not. */
-    private fun enableDrawSystemBarBackgrounds() {
+    /** Enable to draws system bar backgrounds if not. */
+    private fun enableDrawsSystemBarBackgrounds() {
         @Suppress("DEPRECATION")
         activity.window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         @Suppress("DEPRECATION")
