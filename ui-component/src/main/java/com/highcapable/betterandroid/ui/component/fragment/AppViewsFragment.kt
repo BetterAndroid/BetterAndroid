@@ -21,6 +21,12 @@
  */
 package com.highcapable.betterandroid.ui.component.fragment
 
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.annotation.CallSuper
+import androidx.annotation.LayoutRes
 import com.highcapable.betterandroid.ui.component.activity.base.BaseCompatActivity
 import com.highcapable.betterandroid.ui.component.activity.base.BaseComponentActivity
 import com.highcapable.betterandroid.ui.component.fragment.base.BaseFragment
@@ -35,12 +41,7 @@ import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
  * Usage:
  *
  * ```kotlin
- * class YourFragment : AppViewsFragment() {
- *
- *     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
- *         val view = inflater.inflate(R.layout.fragment_main, container, false)
- *         return view
- *     }
+ * class YourFragment : AppViewsFragment(R.layout.fragment_main) {
  *
  *     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
  *         super.onViewCreated(view, savedInstanceState)
@@ -59,5 +60,12 @@ import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
  * @see BaseComponentActivity
  * @see ISystemBarsController
  * @see IBackPressedController
+ * @param layoutResId the layout resource ID to be inflated, default is [View.NO_ID].
  */
-open class AppViewsFragment : BaseFragment()
+open class AppViewsFragment(@LayoutRes private val layoutResId: Int = View.NO_ID) : BaseFragment() {
+
+    @CallSuper
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
+        if (layoutResId != View.NO_ID) inflater.inflate(layoutResId, container, false)
+        else super.onCreateView(inflater, container, savedInstanceState)
+}
