@@ -55,9 +55,9 @@ import com.highcapable.betterandroid.ui.component.systembar.compat.SystemBarsCom
 import com.highcapable.betterandroid.ui.component.systembar.style.SystemBarStyle
 import com.highcapable.betterandroid.ui.component.systembar.type.SystemBars
 import com.highcapable.betterandroid.ui.component.systembar.type.SystemBarsBehavior
-import com.highcapable.betterandroid.ui.extension.component.base.isBrightColor
 import com.highcapable.betterandroid.ui.extension.component.base.isUiInNightMode
-import com.highcapable.betterandroid.ui.extension.component.base.toMixColor
+import com.highcapable.betterandroid.ui.extension.graphics.isBrightColor
+import com.highcapable.betterandroid.ui.extension.graphics.mixColorOf
 import android.R as Android_R
 
 /**
@@ -585,7 +585,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
                  */
                 activity.window?.statusBarColor =
                     if (SystemVersion.isLowTo(SystemVersion.M) && !systemBarsCompat.isLegacyMiui && lightApperance)
-                        backgroundColor.toMixColor(Color.BLACK)
+                        mixColorOf(backgroundColor, Color.BLACK)
                     else backgroundColor
                 if (systemBarsCompat.isLegacyMiui) systemBarsCompat.setStatusBarDarkModeForLegacyMiui(darkContent)
                 else parentInsetsController?.isAppearanceLightStatusBars = darkContent
@@ -598,7 +598,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
                  */
                 activity.window?.navigationBarColor =
                     if (SystemVersion.isLowTo(SystemVersion.O) && lightApperance)
-                        backgroundColor.toMixColor(Color.BLACK)
+                        mixColorOf(backgroundColor, Color.BLACK)
                     else backgroundColor
                 parentInsetsController?.isAppearanceLightNavigationBars = darkContent
             }

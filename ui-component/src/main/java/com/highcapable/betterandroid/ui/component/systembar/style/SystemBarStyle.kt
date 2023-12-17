@@ -25,7 +25,7 @@ package com.highcapable.betterandroid.ui.component.systembar.style
 
 import android.graphics.Color
 import androidx.annotation.ColorInt
-import com.highcapable.betterandroid.ui.extension.component.base.isBrightColor
+import com.highcapable.betterandroid.ui.extension.graphics.isBrightColor
 
 /**
  * Defines the style of the system bars.
