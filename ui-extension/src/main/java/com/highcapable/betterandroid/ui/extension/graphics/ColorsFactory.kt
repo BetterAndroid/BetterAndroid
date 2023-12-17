@@ -126,7 +126,6 @@ fun @receiver:ColorInt Int.toNullableColorStateList() = if (this == Color.TRANSP
  * Event state attribute ID list definition.
  */
 object AttrState {
-
     const val NORMAL = 0x0
     const val CHECKED = Android_R.attr.state_checked
     const val ENABLED = Android_R.attr.state_enabled
@@ -179,6 +178,5 @@ fun ColorStateList(vararg statesAndColors: Pair<Int, Int>): ColorStateList {
     statesAndColors.toMap().forEach { (state, color) ->
         if (state == AttrState.NORMAL) states.add(intArrayOf()) else states.add(intArrayOf(state))
         colors.add(color)
-    }
-    return ColorStateList(states.toTypedArray(), colors.toIntArray())
+    }; return ColorStateList(states.toTypedArray(), colors.toIntArray())
 }
