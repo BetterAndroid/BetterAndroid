@@ -119,8 +119,43 @@ inline fun <reified V : View> V.handleOnWindowInsetsChanged(noinline onChange: (
  * @see View.handleOnWindowInsetsChanged
  * @receiver [View]
  * @param insets the insets.
+ * @param left whether set the left padding.
+ * @param top whether set the top padding.
+ * @param right whether set the right padding.
+ * @param bottom whether set the bottom padding.
  */
-fun View.setInsetsPadding(insets: Insets) = setPadding(insets.left, insets.top, insets.right, insets.bottom)
+@JvmOverloads
+fun View.setInsetsPadding(
+    insets: Insets,
+    left: Boolean = true,
+    top: Boolean = true,
+    right: Boolean = true,
+    bottom: Boolean = true
+) = setPadding(
+    if (left) insets.left else 0,
+    if (top) insets.top else 0,
+    if (right) insets.right else 0,
+    if (bottom) insets.bottom else 0
+)
+
+/**
+ * Set this view's padding with [insets].
+ *
+ * You can use [View.handleOnWindowInsetsChanged] to handle the insets change.
+ * @see View.updateInsetsPadding
+ * @see View.handleOnWindowInsetsChanged
+ * @receiver [View]
+ * @param insets the insets.
+ * @param horizontal whether set the horizontal padding.
+ * @param vertical whether set the vertical padding.
+ */
+@JvmOverloads
+@JvmName("setHVInsetsPadding")
+fun View.setInsetsPadding(
+    insets: Insets,
+    horizontal: Boolean = true,
+    vertical: Boolean = true
+) = setInsetsPadding(insets, horizontal, vertical, horizontal, vertical)
 
 /**
  * Set this view's padding with [insets].
@@ -130,8 +165,38 @@ fun View.setInsetsPadding(insets: Insets) = setPadding(insets.left, insets.top, 
  * @see View.handleOnWindowInsetsChanged
  * @receiver [View]
  * @param insets the insets wrapper.
+ * @param left whether set the left padding.
+ * @param top whether set the top padding.
+ * @param right whether set the right padding.
+ * @param bottom whether set the bottom padding.
  */
-fun View.setInsetsPadding(insets: InsetsWrapper) = setInsetsPadding(insets.toInsets())
+@JvmOverloads
+fun View.setInsetsPadding(
+    insets: InsetsWrapper,
+    left: Boolean = true,
+    top: Boolean = true,
+    right: Boolean = true,
+    bottom: Boolean = true
+) = setInsetsPadding(insets.toInsets(), left, top, right, bottom)
+
+/**
+ * Set this view's padding with [insets].
+ *
+ * You can use [View.handleOnWindowInsetsChanged] to handle the insets change.
+ * @see View.updateInsetsPadding
+ * @see View.handleOnWindowInsetsChanged
+ * @receiver [View]
+ * @param insets the insets wrapper.
+ * @param horizontal whether set the horizontal padding.
+ * @param vertical whether set the vertical padding.
+ */
+@JvmOverloads
+@JvmName("setHVInsetsPadding")
+fun View.setInsetsPadding(
+    insets: InsetsWrapper,
+    horizontal: Boolean = true,
+    vertical: Boolean = true
+) = setInsetsPadding(insets.toInsets(), horizontal, vertical)
 
 /**
  * Update this view's padding with [insets].
