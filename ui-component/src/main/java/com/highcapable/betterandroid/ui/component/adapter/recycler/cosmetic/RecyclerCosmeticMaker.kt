@@ -81,9 +81,16 @@ class RecyclerCosmeticMaker private constructor() {
         @JvmOverloads
         @JvmName("fromCustomSpacingGridVertical")
         fun fromGridVertical(
-            context: Context, spanCount: Int = 3, @Px firstLeft: Int = 0, @Px left: Int = 0, @Px firstTop: Int = 0,
-            @Px top: Int = 0, @Px lastRight: Int = 0, @Px right: Int = -1,
-            @Px lastBottom: Int = 0, @Px bottom: Int = -1,
+            context: Context,
+            spanCount: Int = 3,
+            @Px firstLeft: Int = 0,
+            @Px left: Int = 0,
+            @Px firstTop: Int = 0,
+            @Px top: Int = 0,
+            @Px lastRight: Int = 0,
+            @Px right: Int = -1,
+            @Px lastBottom: Int = 0,
+            @Px bottom: Int = -1,
             isReverseLayout: Boolean = false
         ) = RecyclerCosmeticMaker()
 
@@ -113,8 +120,13 @@ class RecyclerCosmeticMaker private constructor() {
         @JvmOverloads
         @JvmName("fromCustomSpacingLinearVertical")
         fun fromLinearVertical(
-            context: Context, @Px left: Int = 0, @Px firstTop: Int = 0, @Px top: Int = 0,
-            @Px right: Int = 0, @Px lastBottom: Int = 0, @Px bottom: Int = -1,
+            context: Context,
+            @Px left: Int = 0,
+            @Px firstTop: Int = 0,
+            @Px top: Int = 0,
+            @Px right: Int = 0,
+            @Px lastBottom: Int = 0,
+            @Px bottom: Int = -1,
             isReverseLayout: Boolean = false
         ) = RecyclerCosmeticMaker()
 
@@ -142,8 +154,13 @@ class RecyclerCosmeticMaker private constructor() {
         @JvmOverloads
         @JvmName("fromCustomSpacingLinearHorizontal")
         fun fromLinearHorizontal(
-            context: Context, @Px firstLeft: Int = 0, @Px left: Int = 0, @Px top: Int = 0, @Px lastRight: Int = 0,
-            @Px right: Int = -1, @Px bottom: Int = 0,
+            context: Context,
+            @Px firstLeft: Int = 0,
+            @Px left: Int = 0,
+            @Px top: Int = 0,
+            @Px lastRight: Int = 0,
+            @Px right: Int = -1,
+            @Px bottom: Int = 0,
             isReverseLayout: Boolean = false
         ) = RecyclerCosmeticMaker()
     }
