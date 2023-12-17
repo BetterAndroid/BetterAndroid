@@ -103,7 +103,7 @@ fun Insets.toWrapper(isVisible: Boolean = true) = InsetsWrapper.of(left, top, ri
  * @receiver [View] of [V].
  * @param onChange the insets change callback.
  */
-inline fun <reified V : View> V.handleOnWindowInsetsChanged(noinline onChange: (V, WindowInsetsWrapper) -> Boolean) {
+inline fun <reified V : View> V.handleOnWindowInsetsChanged(noinline onChange: (V, insetsWrapper: WindowInsetsWrapper) -> Boolean) {
     ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
         val windowFromActivity = (context as? Activity?)?.window
         val consumed = onChange(view as V, insets.createWrapper(windowFromActivity))
