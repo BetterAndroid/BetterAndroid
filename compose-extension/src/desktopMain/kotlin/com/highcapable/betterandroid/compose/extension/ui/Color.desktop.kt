@@ -72,15 +72,15 @@ val AwtColor.isBrightColor get() = toComposeColor().isBrightColor
 fun AwtColor.toHexColor() = toComposeColor().toHexColor()
 
 /**
- * Converts to mix color.
- * @receiver the current color.
- * @param color the color to mix with.
+ * Mix two colors.
+ * @param color1 the first color.
+ * @param color2 the second color.
  * @param ratio the mixing ratio, default 0.5f.
  * @return [AwtColor] mixed color.
  */
 @Stable
-fun AwtColor.toMixColor(color: AwtColor, ratio: Float = 0.5f) =
-    toComposeColor().toMixColor(color.toComposeColor(), ratio).toPlatformColor()
+fun mixColorOf(color1: AwtColor, color2: AwtColor, ratio: Float = 0.5f) =
+    mixColorOf(color1.toComposeColor(), color2.toComposeColor(), ratio).toPlatformColor()
 
 /** Default platform color. */
 private val DefaultPlatformColor = AwtColor(0)

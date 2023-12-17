@@ -63,21 +63,21 @@ fun Color.toHexColor() = runCatching {
 }.getOrNull() ?: "#00000000"
 
 /**
- * Converts to mix color.
- * @receiver the current color.
- * @param color the color to mix with.
+ * Mix two colors.
+ * @param color1 the first color.
+ * @param color2 the second color.
  * @param ratio the mixing ratio, default 0.5f.
  * @return [Color] mixed color.
  */
 @Stable
-fun Color.toMixColor(color: Color, ratio: Float = 0.5f): Color {
-    if (isUnspecified || color.isUnspecified) return Color.Unspecified
+fun mixColorOf(color1: Color, color2: Color, ratio: Float = 0.5f): Color {
+    if (color1.isUnspecified || color2.isUnspecified) return Color.Unspecified
     val inverseRatio = 1 - ratio
     return Color(
-        alpha = alpha * inverseRatio + color.alpha * ratio,
-        red = red * inverseRatio + color.red * ratio,
-        green = green * inverseRatio + color.green * ratio,
-        blue = blue * inverseRatio + color.blue * ratio
+        alpha = color1.alpha * inverseRatio + color2.alpha * ratio,
+        red = color1.red * inverseRatio + color2.red * ratio,
+        green = color1.green * inverseRatio + color2.green * ratio,
+        blue = color1.blue * inverseRatio + color2.blue * ratio
     )
 }
 

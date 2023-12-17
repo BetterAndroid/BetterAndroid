@@ -85,15 +85,15 @@ val UIColor.isBrightColor get() = toComposeColor().isBrightColor
 fun UIColor.toHexColor() = toComposeColor().toHexColor()
 
 /**
- * Converts to mix color.
- * @receiver the current color.
- * @param color the color to mix with.
+ * Mix two colors.
+ * @param color1 the first color.
+ * @param color2 the second color.
  * @param ratio the mixing ratio, default 0.5f.
  * @return [UIColor] mixed color.
  */
 @Stable
-fun UIColor.toMixColor(color: UIColor, ratio: Float = 0.5f) =
-    toComposeColor().toMixColor(color.toComposeColor(), ratio).toPlatformColor()
+fun mixColorOf(color1: UIColor, color2: UIColor, ratio: Float = 0.5f) =
+    mixColorOf(color1.toComposeColor(), color2.toComposeColor(), ratio).toPlatformColor()
 
 /** Default platform color. */
 private val DefaultPlatformColor = UIColor(red = 0.0, green = 0.0, blue = 0.0, alpha = 0.0)
