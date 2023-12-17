@@ -22,7 +22,7 @@
 @file:Suppress("unused")
 @file:JvmName("ColorsUtils")
 
-package com.highcapable.betterandroid.ui.extension.component.base
+package com.highcapable.betterandroid.ui.extension.graphics
 
 import android.content.res.ColorStateList
 import android.graphics.Color
