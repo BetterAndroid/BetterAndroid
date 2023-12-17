@@ -19,6 +19,8 @@
  *
  * This file is created by fankes on 2022/11/8.
  */
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
+
 package com.highcapable.betterandroid.ui.component.adapter.recycler.decoration
 
 import android.graphics.Rect
@@ -46,7 +48,7 @@ class LinearVerticalItemDecoration : BaseRecyclerItemDecoration {
      * @param lastBottom the last bottom spacing (px).
      * @param bottom the each bottom spacing (px).
      */
-    private class RowColumnRect(
+    private data class RowColumnRect(
         @Px val left: Int,
         @Px val firstTop: Int,
         @Px val top: Int,
@@ -72,7 +74,7 @@ class LinearVerticalItemDecoration : BaseRecyclerItemDecoration {
         @Px lastBottom: Int = 0,
         @Px bottom: Int = 0
     ) {
-        rowColumnRect = RowColumnRect(left, firstTop, top, right, lastBottom, bottom)
+        update(left, firstTop, top, right, lastBottom, bottom)
     }
 
     /**
@@ -80,6 +82,35 @@ class LinearVerticalItemDecoration : BaseRecyclerItemDecoration {
      * @param rowSpacing the row spacing (px).
      */
     constructor(@Px rowSpacing: Int) {
+        update(rowSpacing)
+    }
+
+    /**
+     * Update the current item spacing.
+     * @param left the each left spacing (px).
+     * @param firstTop the first top spacing (px).
+     * @param top the each top spacing (px).
+     * @param right the each right spacing (px).
+     * @param lastBottom the last bottom spacing (px).
+     * @param bottom the each bottom spacing (px).
+     */
+    fun update(
+        @Px left: Int = rowColumnRect?.left ?: 0,
+        @Px firstTop: Int = rowColumnRect?.firstTop ?: 0,
+        @Px top: Int = rowColumnRect?.top ?: 0,
+        @Px right: Int = rowColumnRect?.right ?: 0,
+        @Px lastBottom: Int = rowColumnRect?.lastBottom ?: 0,
+        @Px bottom: Int = rowColumnRect?.bottom ?: 0
+    ) {
+        rowColumnRect = RowColumnRect(left, firstTop, top, right, lastBottom, bottom)
+    }
+
+    /**
+     * Update the current item spacing.
+     * @param rowSpacing the row spacing (px).
+     */
+    fun update(@Px rowSpacing: Int = this.rowSpacing) {
+        rowColumnRect = null
         this.rowSpacing = rowSpacing
     }
 

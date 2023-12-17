@@ -19,6 +19,8 @@
  *
  * This file is created by fankes on 2022/11/8.
  */
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
+
 package com.highcapable.betterandroid.ui.component.adapter.recycler.decoration
 
 import android.graphics.Rect
@@ -72,7 +74,7 @@ class LinearHorizontalItemDecoration : BaseRecyclerItemDecoration {
         @Px right: Int = 0,
         @Px bottom: Int = 0
     ) {
-        rowColumnRect = RowColumnRect(firstLeft, left, top, lastRight, right, bottom)
+        update(firstLeft, left, top, lastRight, right, bottom)
     }
 
     /**
@@ -80,6 +82,35 @@ class LinearHorizontalItemDecoration : BaseRecyclerItemDecoration {
      * @param columnSpacing the column spacing (px).
      */
     constructor(@Px columnSpacing: Int) {
+        update(columnSpacing)
+    }
+
+    /**
+     * Update the current item spacing.
+     * @param firstLeft the first left spacing (px).
+     * @param left the each left spacing (px).
+     * @param top the each top spacing (px).
+     * @param lastRight the last right spacing (px).
+     * @param right the each right spacing (px).
+     * @param bottom the each bottom spacing (px).
+     */
+    fun update(
+        @Px firstLeft: Int = rowColumnRect?.firstLeft ?: 0,
+        @Px left: Int = rowColumnRect?.left ?: 0,
+        @Px top: Int = rowColumnRect?.top ?: 0,
+        @Px lastRight: Int = rowColumnRect?.lastRight ?: 0,
+        @Px right: Int = rowColumnRect?.right ?: 0,
+        @Px bottom: Int = rowColumnRect?.bottom ?: 0
+    ) {
+        rowColumnRect = RowColumnRect(firstLeft, left, top, lastRight, right, bottom)
+    }
+
+    /**
+     * Update the current item spacing.
+     * @param columnSpacing the column spacing (px).
+     */
+    fun update(@Px columnSpacing: Int = this.columnSpacing) {
+        rowColumnRect = null
         this.columnSpacing = columnSpacing
     }
 
