@@ -87,24 +87,6 @@ fun @receiver:ColorInt Int.toAlphaColor(value: Int) = if (value in 0..255)
 else error("Color alpha must be between 0 and 255.")
 
 /**
- * Converts to mix color.
- * @receiver the current color.
- * @param color the color to mix with.
- * @param ratio the mixing ratio, default 0.5f.
- * @return [Int] mixed color.
- */
-@JvmOverloads
-@JvmName("convertToMixColor")
-fun @receiver:ColorInt Int.toMixColor(@ColorInt color: Int, ratio: Float = 0.5f): Int {
-    val inverse = 1 - ratio
-    val a = (this ushr 24) * inverse + (color ushr 24) * ratio
-    val r = (this shr 16 and 0xFF) * inverse + (color shr 16 and 0xFF) * ratio
-    val g = (this shr 8 and 0xFF) * inverse + (color shr 8 and 0xFF) * ratio
-    val b = (this and 0xFF) * inverse + (color and 0xFF) * ratio
-    return a.toInt() shl 24 or (r.toInt() shl 16) or (g.toInt() shl 8) or b.toInt()
-}
-
-/**
  * Converts to [AttrState.NORMAL] state of [ColorStateList].
  * @receiver the current color.
  * @return [ColorStateList]
@@ -121,6 +103,33 @@ fun @receiver:ColorInt Int.toNormalColorStateList() = ColorStateList(AttrState.N
  */
 @JvmName("convertToNullableColorStateList")
 fun @receiver:ColorInt Int.toNullableColorStateList() = if (this == Color.TRANSPARENT) null else toNormalColorStateList()
+
+/**
+ * Mix two colors.
+ * @param color1 the first color.
+ * @param color2 the second color.
+ * @param ratio the mixing ratio, default 0.5f.
+ * @return [Int] mixed color.
+ */
+@JvmOverloads
+fun mixColorOf(@ColorInt color1: Int, @ColorInt color2: Int, ratio: Float = 0.5f): Int {
+    val inverse = 1 - ratio
+    val a = (color1 ushr 24) * inverse + (color2 ushr 24) * ratio
+    val r = (color1 shr 16 and 0xFF) * inverse + (color2 shr 16 and 0xFF) * ratio
+    val g = (color1 shr 8 and 0xFF) * inverse + (color2 shr 8 and 0xFF) * ratio
+    val b = (color1 and 0xFF) * inverse + (color2 and 0xFF) * ratio
+    return a.toInt() shl 24 or (r.toInt() shl 16) or (g.toInt() shl 8) or b.toInt()
+}
+
+/**
+ * Converts to mix color.
+ *
+ * - This function is deprecated, use [mixColorOf] instead.
+ */
+@Deprecated(message = "Use mixColorOf instead.", ReplaceWith("mixColorOf(this, color, ratio)"))
+@JvmOverloads
+@JvmName("convertToMixColor")
+fun @receiver:ColorInt Int.toMixColor(@ColorInt color: Int, ratio: Float = 0.5f) = mixColorOf(color1 = this, color, ratio)
 
 /**
  * Event state attribute ID list definition.
