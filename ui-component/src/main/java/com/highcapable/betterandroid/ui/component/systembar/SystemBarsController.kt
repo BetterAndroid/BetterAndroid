@@ -82,8 +82,6 @@ class SystemBarsController private constructor(private val activity: Activity) {
          *
          *     override fun onCreate(savedInstanceState: Bundle?) {
          *         super.onCreate(savedInstanceState)
-         *         // For a better experience, you can hide the system action bar.
-         *         supportActionBar?.hide()
          *         // Create your binding.
          *         val binding = ActivityMainBinding.inflate(layoutInflater)
          *         setContentView(binding.root)
@@ -137,7 +135,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
     }
 
     /**
-     * System bars params definition.
+     * System bar params definition.
      */
     private data class SystemBarParams(
         val statusBarColor: Int,
@@ -479,6 +477,9 @@ class SystemBarsController private constructor(private val activity: Activity) {
      *   your manual modification operations will not work.
      */
     fun removeRootInsetsPadding() {
+        // If the window insets is not applied to the root view,
+        // we should not change the root view's padding.
+        if (rootPaddingCallback == null) return
         rootPaddingCallback = null
         rootView?.setPadding(0)
         rootView?.requestLayout()
@@ -631,9 +632,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
             parentInsetsController?.isAppearanceLightStatusBars = it.isAppearanceLightStatusBars
             parentInsetsController?.isAppearanceLightNavigationBars = it.isAppearanceLightNavigationBars
         }
-        // If the window insets is not applied to the root view,
-        // we should not change the root view's padding.
-        if (rootPaddingCallback != null) removeRootInsetsPadding()
+        removeRootInsetsPadding()
         parentInsetsWrapper = null
         parentInsetsController = null
         rootView = null
