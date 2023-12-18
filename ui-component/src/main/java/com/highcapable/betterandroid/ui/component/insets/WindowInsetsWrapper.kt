@@ -367,7 +367,7 @@ class WindowInsetsWrapper private constructor(private val windowInsets: WindowIn
                         ?.get(window?.attributes)
                         ?.call(0x00010000)
                 safeInsetTop = huaweiRet[1]
-            }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to set display cutout configuration for EMUI/HarmonyOS.", it) }
+            }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to set display cutout configuration for EMUI.", it) }
             SystemKind.FUNTOUCHOS, SystemKind.ORIGINOS -> runCatching {
                 if ("android.util.FtFeature".toClassOrNull()
                         ?.method {
