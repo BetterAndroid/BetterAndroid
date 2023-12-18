@@ -14,7 +14,7 @@
 
 这是一个 Kotlin Multiplatform 依赖，你需要 `org.jetbrains.kotlin.multiplatform` 插件来应用相关依赖。
 
-### SweetDependency 方式
+### SweetDependency (推荐)
 
 在你的项目 `SweetDependency` 配置文件中添加依赖。
 
@@ -67,7 +67,7 @@ kotlin {
 }
 ```
 
-### 传统方式 (不推荐)
+### 传统方式
 
 在你的项目 `build.gradle.kts` 中配置依赖。
 

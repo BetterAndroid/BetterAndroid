@@ -10,7 +10,7 @@
 
 你可以使用如下方式将此模块添加到你的项目中。
 
-### SweetDependency 方式
+### SweetDependency (推荐)
 
 在你的项目 `SweetDependency` 配置文件中添加依赖。
 
@@ -27,7 +27,7 @@ libraries:
 implementation(com.highcapable.betterandroid.ui.extension)
 ```
 
-### 传统方式 (不推荐)
+### 传统方式
 
 在你的项目 `build.gradle.kts` 中配置依赖。
 

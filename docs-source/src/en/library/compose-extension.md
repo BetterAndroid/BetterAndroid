@@ -14,7 +14,7 @@ You can add this module to your project using the following method.
 
 This is a Kotlin Multiplatform dependency, you need the `org.jetbrains.kotlin.multiplatform` plugin to apply the relevant dependencies.
 
-### SweetDependency Method
+### SweetDependency (Recommended)
 
 Add dependencies to your project `SweetDependency` configuration file.
 
@@ -67,7 +67,7 @@ kotlin {
 }
 ```
 
-### Traditional Method (Not Recommended)
+### Traditional Method
 
 Configure dependencies in your project `build.gradle.kts`.
 

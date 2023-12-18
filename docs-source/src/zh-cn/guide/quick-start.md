@@ -18,7 +18,7 @@
 
 我们推荐使用 Kotlin DSL 作为 Gradle 构建脚本语言并推荐使用 [SweetDependency](https://github.com/HighCapable/SweetDependency) 来管理依赖。
 
-#### SweetDependency 方式
+#### SweetDependency (推荐)
 
 在你的项目 `SweetDependency` 配置文件中配置存储库。
 
@@ -34,7 +34,7 @@ repositories:
     url: https://raw.githubusercontent.com/HighCapable/maven-repository/main/repository/releases
 ```
 
-#### 传统方式 (不推荐)
+#### 传统方式
 
 在你的项目 `build.gradle.kts` 中配置存储库。
 

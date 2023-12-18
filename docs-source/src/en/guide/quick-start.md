@@ -21,7 +21,7 @@ you can use the following method to configure repositories.
 We recommend using Kotlin DSL as the Gradle build script language and [SweetDependency](https://github.com/HighCapable/SweetDependency)
 to manage dependencies.
 
-#### SweetDependency Method
+#### SweetDependency (Recommended)
 
 Configure repositories in your project's `SweetDependency` configuration file.
 
@@ -36,7 +36,7 @@ repositories:
     url: https://raw.githubusercontent.com/HighCapable/maven-repository/main/repository/releases
 ```
 
-#### Traditional Method (Not Recommended)
+#### Traditional Method
 
 Configure repositories in your project `build.gradle.kts`.
 

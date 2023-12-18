@@ -10,7 +10,7 @@ This is a dependency for UI (user interface) related extensions.
 
 You can add this module to your project using the following method.
 
-### SweetDependency Method
+### SweetDependency (Recommended)
 
 Add dependency in your project's `SweetDependency` configuration file.
 
@@ -27,7 +27,7 @@ Configure dependency in your project `build.gradle.kts`.
 implementation(com.highcapable.betterandroid.ui.extension)
 ```
 
-### Traditional Method (Not Recommended)
+### Traditional Method
 
 Configure dependency in your project `build.gradle.kts`.
 
