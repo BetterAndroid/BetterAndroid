@@ -986,10 +986,10 @@ Among the library of `1.0.3` and previous versions, `BetterAndroid` encapsulates
 Insets and window insets are a very important concept in Android.
 
 Although this API has existed as early as Android 5.0, it was only officially recommended in Android 10. 
-(Since Android 9, the system has added related APIs for display cutout screens processing)
+(Since Android 9, the system has added related APIs for cutout displays processing)
 
 Insets is a special space, which represents the placeholder area "attached" around the view,
-insets held by the system such as the part blocked by the display cutout screens (notch screens), status bars, navigation bars,
+insets held by the system such as the part blocked by the cutout displays (notch screens), status bars, navigation bars,
 and input method are called window insets.
 
 What `BetterAndroid` mainly does is wrapped this set of APIs to make them easier to use.
@@ -1024,7 +1024,7 @@ val insetsIsVisible = systemBars.isVisible
 ```
 
 `BetterAndroid` has made a compatibility process for the respective private solutions of manufacturers of
-mainstream brands of display cutout screen devices below Android 9.
+mainstream brands of cutout display devices below Android 9.
 
 If you need to be compatible with older devices, you can pass in an optional `Window` object in the method parameter.
 
@@ -1041,7 +1041,7 @@ val window = activity.window
 val insetsWrapper = windowInsets.createWrapper(window)
 // You can also create it through the from method.
 val insetsWrapper = WindowInsetsWrapper.from(windowInsets, window)
-// Get the insets of the display cutout screens.
+// Get the insets of the cutout displays.
 val displayCutout = insetsWrapper.displayCutout
 ```
 
@@ -1171,7 +1171,7 @@ val systemBars = absoluteWrapper.systemBars
 
 The values obtained in this way are for reference only.
 
-We do not recommend obtaining insets in this way, when the current device has a display cutout screen, these values may be inaccurate.
+We do not recommend obtaining insets in this way, when the current device has a cutout display, these values may be inaccurate.
 
 :::
 
@@ -1187,9 +1187,9 @@ Below are all the insets provided in `WindowInsetsWrapper`.
 | `tappableElement`         | Tappable element.                                          |
 | `systemGestures`          | System gestures.                                           |
 | `mandatorySystemGestures` | Mandatory system gestures.                                 |
-| `displayCutout`           | Display cutout screen. (notch screen)                      |
+| `displayCutout`           | cutout display. (notch screen)                             |
 | `waterFall`               | Waterfall screen. (curved screen)                          |
-| `safeContent`             | Safe content. (display cutout screen + system bars)        |
+| `safeContent`             | Safe content. (cutout display + system bars)               |
 
 Below are all the insets provided in `WindowInsetsWrapper.Absolute`.
 
@@ -1334,7 +1334,7 @@ then your root view will default to a window insets `padding` with `safeContent`
 
 If you call `removeRootInsetsPadding` or use `defaultPadding = false` in `init`, then the default window insets will not exist and your root view will fully expand to full screen.
 
-Without any action, your layout will be blocked by system bars or dangerous areas of the system (such as display cutout screens), which will affect the user experience.
+Without any action, your layout will be blocked by system bars or dangerous areas of the system (such as cutout displays), which will affect the user experience.
 
 If you want to maintain and manage the `padding` of the current root view yourself, you must ensure that your interface elements can correctly adapt to the spacing provided by window insets.
 
