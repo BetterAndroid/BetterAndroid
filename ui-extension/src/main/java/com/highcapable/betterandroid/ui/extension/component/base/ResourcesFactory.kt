@@ -412,25 +412,22 @@ fun TypedArray.getIntArray(@StyleableRes index: Int, @ArrayRes defValue: Int = -
     runCatching { resources.getIntArray(getResourceId(index, defValue)).toTypedArray() }.getOrNull() ?: emptyArray()
 
 /**
- * Get dimension and call [asPx].
- * @receiver the current typed array from resource.
- * @param context the current context.
- * @param index the attribute resources ID array.
- * @param defValue the default value (px).
- * @return [Float]
+ * - This function is deprecated and no effect and will be removed in the future.
+ *
+ * - Please use [toPx] or [toDp] and call [TypedArray.getDimension] yourself.
  */
-fun TypedArray.getDimensionPx(context: Context, @StyleableRes index: Int, @Px defValue: Float) =
-    getDimension(index, defValue.asDp(context)).asPx<Float>(context)
+@Suppress("UnusedReceiverParameter", "UNUSED_PARAMETER", "DeprecatedCallableAddReplaceWith")
+@Deprecated(message = "Use toPx or toDp and call getDimension yourself.")
+fun TypedArray.getDimensionPx(context: Context, @StyleableRes index: Int, @Px defValue: Float) = 0f
 
 /**
- * Get dimension and call [asPx].
- * @receiver the current typed array from resource.
- * @param view the current view.
- * @param index the attribute resources ID array.
- * @param defValue the default value (px).
- * @return [Float]
+ * - This function is deprecated and no effect and will be removed in the future.
+ *
+ * - Please use [toPx] or [toDp] and call [TypedArray.getDimension] yourself.
  */
-fun TypedArray.getDimensionPx(view: View, @StyleableRes index: Int, @Px defValue: Float) = getDimensionPx(view.context, index, defValue)
+@Suppress("UnusedReceiverParameter", "UNUSED_PARAMETER", "DeprecatedCallableAddReplaceWith")
+@Deprecated(message = "Use toPx or toDp and call getDimension yourself.")
+fun TypedArray.getDimensionPx(view: View, @StyleableRes index: Int, @Px defValue: Float) = 0f
 
 /**
  * Get color, return null when no default value.
