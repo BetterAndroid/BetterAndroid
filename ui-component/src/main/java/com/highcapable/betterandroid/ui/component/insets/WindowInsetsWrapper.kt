@@ -40,7 +40,7 @@ import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 import com.highcapable.betterandroid.ui.component.generated.BetterAndroidProperties
 import com.highcapable.betterandroid.ui.component.insets.factory.createWrapper
 import com.highcapable.betterandroid.ui.component.insets.factory.toWrapper
-import com.highcapable.betterandroid.ui.extension.component.base.asDp
+import com.highcapable.betterandroid.ui.extension.component.base.toPx
 import com.highcapable.yukireflection.factory.method
 import com.highcapable.yukireflection.factory.toClassOrNull
 import com.highcapable.yukireflection.type.android.WindowClass
@@ -138,7 +138,7 @@ class WindowInsetsWrapper private constructor(private val windowInsets: WindowIn
         private val statusBarHeight
             @Px get() = Rect().also {
                 window.decorView.getWindowVisibleDisplayFrame(it)
-            }.top.takeIf { it > 0 } ?: window.context.resources.getIdentifier("status_bar_height", "dimen", "android").asDp(window.context)
+            }.top.takeIf { it > 0 } ?: window.context.resources.getIdentifier("status_bar_height", "dimen", "android").toPx(window.context)
 
         /**
          * Get the navigation bar height (px).
@@ -374,7 +374,7 @@ class WindowInsetsWrapper private constructor(private val windowInsets: WindowIn
                             name = "isFeatureSupport"
                             param(IntType)
                         }?.ignored()?.get()?.boolean(0x00000020) == true
-                ) safeInsetTop = 27.asDp(context)
+                ) safeInsetTop = 27.toPx(context)
             }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to set display cutout configuration for FuntouchOS/OriginalOS.", it) }
             SystemKind.COLOROS -> runCatching {
                 if (context.packageManager.hasSystemFeature("com.oppo.feature.screen.heteromorphism"))

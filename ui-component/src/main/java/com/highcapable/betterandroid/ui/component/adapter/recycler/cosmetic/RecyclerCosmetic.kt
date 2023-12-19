@@ -32,7 +32,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.highcapable.betterandroid.ui.component.adapter.recycler.decoration.GridVerticalItemDecoration
 import com.highcapable.betterandroid.ui.component.adapter.recycler.decoration.LinearHorizontalItemDecoration
 import com.highcapable.betterandroid.ui.component.adapter.recycler.decoration.LinearVerticalItemDecoration
-import com.highcapable.betterandroid.ui.extension.component.base.asDp
+import com.highcapable.betterandroid.ui.extension.component.base.toPx
 
 /**
  * [RecyclerView] cosmetic.
@@ -54,7 +54,7 @@ class RecyclerCosmetic<RVLM : RecyclerView.LayoutManager, RVID : RecyclerView.It
          * @receiver the current context.
          * @return [Int]
          */
-        private fun Context.defaultSpacingPx() = DEFAULT_SPACING_DP.asDp<Int>(this)
+        private fun Context.defaultSpacingPx() = DEFAULT_SPACING_DP.toPx(this)
 
         /**
          * Create a custom cosmetic.
