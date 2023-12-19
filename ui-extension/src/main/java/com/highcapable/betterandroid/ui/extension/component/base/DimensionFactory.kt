@@ -25,6 +25,7 @@
 package com.highcapable.betterandroid.ui.extension.component.base
 
 import android.content.Context
+import android.content.res.Resources
 import android.view.View
 
 /**
@@ -35,19 +36,19 @@ import android.view.View
  * @param context the current context.
  * @return [N]
  */
-@JvmName("numberAsDp")
-fun <N : Number> Number.asDp(context: Context) = convertToDpDimension<N>(context)
+@JvmName("numberToPx")
+fun <N : Number> N.toPx(context: Context) = toPx(context.resources)
 
 /**
  * Convert dp to px.
  *
  * Looks like: 10dp → 36px (Please refer to the target device).
  * @receiver the original dimension.
- * @param view the current context.
+ * @param resources the current resources.
  * @return [N]
  */
-@JvmName("numberAsDp")
-fun <N : Number> Number.asDp(view: View) = asDp<N>(view.context)
+@JvmName("numberToPx")
+fun <N : Number> N.toPx(resources: Resources) = convertToPx(resources)
 
 /**
  * Convert px to dp.
@@ -57,34 +58,70 @@ fun <N : Number> Number.asDp(view: View) = asDp<N>(view.context)
  * @param context the current context.
  * @return [N]
  */
-@JvmName("numberAsPx")
-fun <N : Number> Number.asPx(context: Context) = convertToPxDimension<N>(context)
+@JvmName("numberToDp")
+fun <N : Number> N.toDp(context: Context) = toDp(context.resources)
 
 /**
  * Convert px to dp.
  *
  * Looks like: 36px → 10dp (Please refer to the target device).
  * @receiver the original dimension.
- * @param view the current context.
+ * @param resources the current resources.
  * @return [N]
  */
+@JvmName("numberToDp")
+fun <N : Number> N.toDp(resources: Resources) = convertToDp(resources)
+
+/**
+ * Convert dp to px.
+ *
+ * - This function is deprecated, use [toPx] instead.
+ */
+@Deprecated(message = "Use toPx instead.", ReplaceWith("toPx(context)"))
+@JvmName("numberAsDp")
+fun <N : Number> N.asDp(context: Context) = toPx(context)
+
+/**
+ * Convert dp to px.
+ *
+ * - This function is deprecated, use [toPx] instead.
+ */
+@Deprecated(message = "Use toPx instead.", ReplaceWith("toPx(view.resources)"))
+@JvmName("numberAsDp")
+fun <N : Number> N.asDp(view: View) = toPx(view.resources)
+
+/**
+ * Convert px to dp.
+ *
+ * - This function is deprecated, use [toDp] instead.
+ */
+@Deprecated(message = "Use toDp instead.", ReplaceWith("toDp(context)"))
 @JvmName("numberAsPx")
-fun <N : Number> Number.asPx(view: View) = asPx<N>(view.context)
+fun <N : Number> N.asPx(context: Context) = toDp(context)
+
+/**
+ * Convert px to dp.
+ *
+ * - This function is deprecated, use [toDp] instead.
+ */
+@Deprecated(message = "Use toDp instead.", ReplaceWith("toDp(view.resources)"))
+@JvmName("numberAsPx")
+fun <N : Number> N.asPx(view: View) = toDp(view.resources)
 
 /**
  * Convert dp to px (base function).
  * @receiver the original dimension.
- * @param context the current context.
+ * @param resources the current resources.
  * @return [N]
  */
-private fun <N : Number> Number.convertToDpDimension(context: Context): N {
+private fun <N : Number> N.convertToPx(resources: Resources): N {
     /**
      * Convert to corresponding type.
      * @receiver the original value.
      * @return [Float]
      * @throws IllegalStateException if the number type is not supported.
      */
-    fun Float.convert() = if (this >= 0f) this * context.resources.displayMetrics.density else this
+    fun Float.convert() = if (this >= 0f) this * resources.displayMetrics.density else this
     return when (this) {
         is Int -> toFloat().convert().toInt() as N
         is Long -> toFloat().convert().toLong() as N
@@ -97,17 +134,17 @@ private fun <N : Number> Number.convertToDpDimension(context: Context): N {
 /**
  * Convert px to dp (base function).
  * @receiver the original dimension.
- * @param context the current context.
+ * @param resources the current resources.
  * @return [N]
  */
-private fun <N : Number> Number.convertToPxDimension(context: Context): N {
+private fun <N : Number> N.convertToDp(resources: Resources): N {
     /**
      * Convert to corresponding type.
      * @receiver the original value.
      * @return [Float]
      * @throws IllegalStateException if the number type is not supported.
      */
-    fun Float.convert() = if (this >= 0f) this / context.resources.displayMetrics.density + 0.5f else this
+    fun Float.convert() = if (this >= 0f) this / resources.displayMetrics.density + 0.5f else this
     return when (this) {
         is Int -> toFloat().convert().toInt() as N
         is Long -> toFloat().convert().toLong() as N
