@@ -78,50 +78,6 @@ class InsetsWrapper private constructor(
          */
         @JvmStatic
         fun of(insets: Insets, isVisible: Boolean = true) = InsetsWrapper(insets.left, insets.top, insets.right, insets.bottom, isVisible)
-
-        /**
-         * Add two Insets.
-         * @see Insets.add
-         * @return [InsetsWrapper]
-         */
-        @JvmStatic
-        fun add(a: InsetsWrapper, b: InsetsWrapper): InsetsWrapper {
-            val isVisible = a.isVisible || b.isVisible
-            return Insets.add(a.toInsets(), b.toInsets()).toWrapper(isVisible)
-        }
-
-        /**
-         * Subtract two Insets.
-         * @see Insets.subtract
-         * @return [InsetsWrapper]
-         */
-        @JvmStatic
-        fun subtract(a: InsetsWrapper, b: InsetsWrapper): InsetsWrapper {
-            val isVisible = a.isVisible && b.isVisible
-            return Insets.subtract(a.toInsets(), b.toInsets()).toWrapper(isVisible)
-        }
-
-        /**
-         * Returns the component-wise maximum of two Insets.
-         * @see Insets.max
-         * @return [InsetsWrapper]
-         */
-        @JvmStatic
-        fun max(a: InsetsWrapper, b: InsetsWrapper): InsetsWrapper {
-            val isVisible = a.isVisible || b.isVisible
-            return Insets.max(a.toInsets(), b.toInsets()).toWrapper(isVisible)
-        }
-
-        /**
-         * Returns the component-wise minimum of two Insets.
-         * @see Insets.min
-         * @return [InsetsWrapper]
-         */
-        @JvmStatic
-        fun min(a: InsetsWrapper, b: InsetsWrapper): InsetsWrapper {
-            val isVisible = a.isVisible && b.isVisible
-            return Insets.min(a.toInsets(), b.toInsets()).toWrapper(isVisible)
-        }
     }
 
     /**
@@ -129,6 +85,50 @@ class InsetsWrapper private constructor(
      * @return [Insets]
      */
     fun toInsets() = Insets.of(left, top, right, bottom)
+
+    /**
+     * Returns the component-wise maximum of two Insets.
+     * @see Insets.max
+     * @param other the other Insets.
+     * @return [InsetsWrapper]
+     */
+    infix fun or(other: InsetsWrapper): InsetsWrapper {
+        val isVisible = isVisible || other.isVisible
+        return Insets.max(toInsets(), other.toInsets()).toWrapper(isVisible)
+    }
+
+    /**
+     * Returns the component-wise minimum of two Insets.
+     * @see Insets.min
+     * @param other the other Insets.
+     * @return [InsetsWrapper]
+     */
+    infix fun and(other: InsetsWrapper): InsetsWrapper {
+        val isVisible = isVisible && other.isVisible
+        return Insets.min(toInsets(), other.toInsets()).toWrapper(isVisible)
+    }
+
+    /**
+     * Add two Insets.
+     * @see Insets.add
+     * @param other the other Insets.
+     * @return [InsetsWrapper]
+     */
+    operator fun plus(other: InsetsWrapper): InsetsWrapper {
+        val isVisible = isVisible || other.isVisible
+        return Insets.add(toInsets(), other.toInsets()).toWrapper(isVisible)
+    }
+
+    /**
+     * Subtract two Insets.
+     * @see Insets.subtract
+     * @param other the other Insets.
+     * @return [InsetsWrapper]
+     */
+    operator fun minus(other: InsetsWrapper): InsetsWrapper {
+        val isVisible = isVisible && other.isVisible
+        return Insets.subtract(toInsets(), other.toInsets()).toWrapper(isVisible)
+    }
 
     override fun equals(other: Any?) = when (other) {
         is InsetsWrapper ->
