@@ -230,7 +230,7 @@ private fun <N : Number> N.convertToPx(resources: Resources): N {
         is Long -> toFloat().convert().toLong() as N
         is Float -> toFloat().convert() as N
         is Double -> toFloat().convert().toDouble() as N
-        else -> error("Number type only support Int, Long, Float and Double.")
+        else -> error("Number type only supports Int, Long, Float and Double.")
     }
 }
 
@@ -253,6 +253,6 @@ private fun <N : Number> N.convertToDp(resources: Resources): N {
         is Long -> toFloat().convert().toLong() as N
         is Float -> toFloat().convert() as N
         is Double -> toFloat().convert().toDouble() as N
-        else -> error("Number type only support Int, Long, Float and Double.")
+        else -> error("Number type only supports Int, Long, Float and Double.")
     }
 }
