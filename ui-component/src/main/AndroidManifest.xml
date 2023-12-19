@@ -31,7 +31,7 @@
             android:name="android.max_aspect"
             android:value="2.4" />
 
-        <!-- Declared to be compatible with Huawei devices (EMUI, HarmonyOS) notch screen. -->
+        <!-- Declared to be compatible with Huawei devices (EMUI) notch screen. -->
         <meta-data
             android:name="android.notch_support"
             android:value="true" />
