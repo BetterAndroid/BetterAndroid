@@ -87,7 +87,7 @@ class InsetsWrapper private constructor(
         @JvmStatic
         fun add(a: InsetsWrapper, b: InsetsWrapper): InsetsWrapper {
             val isVisible = a.isVisible || b.isVisible
-            return Insets.max(a.toInsets(), b.toInsets()).toWrapper(isVisible)
+            return Insets.add(a.toInsets(), b.toInsets()).toWrapper(isVisible)
         }
 
         /**
