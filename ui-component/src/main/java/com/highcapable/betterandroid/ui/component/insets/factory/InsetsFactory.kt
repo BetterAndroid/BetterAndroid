@@ -29,6 +29,8 @@ import android.view.View
 import android.view.Window
 import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsAnimationCompat
+import androidx.core.view.WindowInsetsAnimationCompat.Callback.DISPATCH_MODE_CONTINUE_ON_SUBTREE
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.highcapable.betterandroid.ui.component.insets.InsetsWrapper
@@ -76,7 +78,8 @@ fun Insets.toWrapper(isVisible: Boolean = true) = InsetsWrapper.of(left, top, ri
 /**
  * Handle the window insets change for this view.
  *
- * This function is based on [ViewCompat.setOnApplyWindowInsetsListener].
+ * This function is based on [ViewCompat.setOnApplyWindowInsetsListener]
+ * and [ViewCompat.setWindowInsetsAnimationCallback].
  *
  * You can easy to get the [WindowInsetsWrapper] when the insets change.
  *
@@ -96,17 +99,40 @@ fun Insets.toWrapper(isVisible: Boolean = true) = InsetsWrapper.of(left, top, ri
  *     false // Whether to consume the insets for child views or not.
  * }
  * ```
+ *
+ * If you want to handle the insets change with animation, just set the [animated] to true.
+ *
+ * Usage:
+ *
+ * ```kotlin
+ * imeSpaceLayout.handleOnWindowInsetsChanged(animated = true) { imeSpaceLayout, insetsWrapper ->
+ *    // The other code is same as above.
+ * }
+ * ```
  * @see WindowInsetsWrapper
  * @see View.setInsetsPadding
  * @see View.updateInsetsPadding
  * @see ViewCompat.setOnApplyWindowInsetsListener
+ * @see ViewCompat.setWindowInsetsAnimationCallback
  * @receiver [View] of [V].
+ * @param animated whether handle the insets change with animation, default false.
+ * @param animationDispatchMode the animation dispatch mode, default is [DISPATCH_MODE_CONTINUE_ON_SUBTREE].
  * @param onChange the insets change callback.
  */
-inline fun <reified V : View> V.handleOnWindowInsetsChanged(noinline onChange: (V, insetsWrapper: WindowInsetsWrapper) -> Boolean) {
-    ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
-        val windowFromActivity = (context as? Activity?)?.window
-        val consumed = onChange(view as V, insets.createWrapper(windowFromActivity))
+inline fun <reified V : View> V.handleOnWindowInsetsChanged(
+    animated: Boolean = false,
+    animationDispatchMode: Int = DISPATCH_MODE_CONTINUE_ON_SUBTREE,
+    noinline onChange: (V, insetsWrapper: WindowInsetsWrapper) -> Boolean
+) {
+    val self = this
+    val windowFromActivity = (context as? Activity?)?.window
+    if (animated) ViewCompat.setWindowInsetsAnimationCallback(this, object : WindowInsetsAnimationCompat.Callback(animationDispatchMode) {
+        override fun onProgress(insets: WindowInsetsCompat, runningAnimations: MutableList<WindowInsetsAnimationCompat>): WindowInsetsCompat {
+            val consumed = onChange(self, insets.createWrapper(windowFromActivity))
+            return if (consumed) WindowInsetsCompat.CONSUMED else insets
+        }
+    }) else ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets ->
+        val consumed = onChange(self, insets.createWrapper(windowFromActivity))
         if (consumed) WindowInsetsCompat.CONSUMED else insets
     }
 }
