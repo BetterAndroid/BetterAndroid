@@ -216,7 +216,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
 
     /** Create the default [rootView]'s padding callback. */
     private fun createDefaultRootPaddingCallback() {
-        withRootPadding(autoUpdate = false) { rootView?.setInsetsPadding(it.safeContent) }
+        withRootPadding(autoUpdate = false) { rootView?.setInsetsPadding(it.safeDrawingIgnoringIme) }
     }
 
     /**
@@ -343,9 +343,9 @@ class SystemBarsController private constructor(private val activity: Activity) {
      * Usage:
      *
      * ```kotlin
-     * // Set all padding by safeContent.
-     * systemBars.setRootInsetsPadding(insets = { safeContent })
-     * // Set all padding by systemBars. (status bars and navigation bars)
+     * // Set all padding by safeDrawingIgnoringIme.
+     * systemBars.setRootInsetsPadding(insets = { safeDrawingIgnoringIme })
+     * // Set all padding by systemBars.
      * systemBars.setRootInsetsPadding(insets = { systemBars })
      * ```
      * @see WindowInsetsWrapper
@@ -378,9 +378,9 @@ class SystemBarsController private constructor(private val activity: Activity) {
      * Usage:
      *
      * ```kotlin
-     * // Set all padding by safeContent.
-     * systemBars.setRootInsetsPadding(insets = { safeContent })
-     * // Set all padding by systemBars. (status bars and navigation bars)
+     * // Set all padding by safeDrawingIgnoringIme.
+     * systemBars.setRootInsetsPadding(insets = { safeDrawingIgnoringIme })
+     * // Set all padding by systemBars.
      * systemBars.setRootInsetsPadding(insets = { systemBars })
      * ```
      * @see WindowInsetsWrapper
@@ -388,14 +388,14 @@ class SystemBarsController private constructor(private val activity: Activity) {
      * @see removeRootInsetsPadding
      * @see View.handleOnWindowInsetsChanged
      * @see View.setInsetsPadding
-     * @param insets the insets wrapper callback, default is [WindowInsetsWrapper.safeContent].
+     * @param insets the insets wrapper callback.
      * @param horizontal whether set the horizontal padding.
      * @param vertical whether set the vertical padding.
      */
     @JvmOverloads
     @JvmName("setRootHVInsetsPadding")
     fun setRootInsetsPadding(
-        insets: WindowInsetsWrapper.() -> InsetsWrapper = { safeContent },
+        insets: WindowInsetsWrapper.() -> InsetsWrapper,
         horizontal: Boolean = true,
         vertical: Boolean = true
     ) = withRootPadding { rootView?.setInsetsPadding(insets(it), horizontal, vertical) }
@@ -410,9 +410,9 @@ class SystemBarsController private constructor(private val activity: Activity) {
      * Usage:
      *
      * ```kotlin
-     * // Update top padding by safeContent.
-     * systemBars.updateRootInsetsPadding(insets = { safeContent }, top = true)
-     * // Update bottom padding by systemBars. (status bars and navigation bars)
+     * // Update top padding by safeDrawingIgnoringIme.
+     * systemBars.updateRootInsetsPadding(insets = { safeDrawingIgnoringIme }, top = true)
+     * // Update bottom padding by systemBars.
      * systemBars.updateRootInsetsPadding(insets = { systemBars }, bottom = true)
      * ```
      * @see WindowInsetsWrapper
@@ -420,7 +420,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
      * @see removeRootInsetsPadding
      * @see View.handleOnWindowInsetsChanged
      * @see View.updateInsetsPadding
-     * @param insets the insets wrapper callback, default is [WindowInsetsWrapper.safeContent].
+     * @param insets the insets wrapper callback.
      * @param left whether update the left padding.
      * @param top whether update the top padding.
      * @param right whether update the right padding.
@@ -428,7 +428,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
      */
     @JvmOverloads
     fun updateRootInsetsPadding(
-        insets: WindowInsetsWrapper.() -> InsetsWrapper = { safeContent },
+        insets: WindowInsetsWrapper.() -> InsetsWrapper,
         left: Boolean = false,
         top: Boolean = false,
         right: Boolean = false,
@@ -445,9 +445,9 @@ class SystemBarsController private constructor(private val activity: Activity) {
      * Usage:
      *
      * ```kotlin
-     * // Update horizontal padding by safeContent.
-     * systemBars.updateRootInsetsPadding(insets = { safeContent }, horizontal = true)
-     * // Update vertical padding by systemBars. (status bars and navigation bars)
+     * // Update horizontal padding by safeDrawingIgnoringIme.
+     * systemBars.updateRootInsetsPadding(insets = { safeDrawingIgnoringIme }, horizontal = true)
+     * // Update vertical padding by systemBars.
      * systemBars.updateRootInsetsPadding(insets = { systemBars }, vertical = true)
      * ```
      * @see WindowInsetsWrapper
@@ -455,14 +455,14 @@ class SystemBarsController private constructor(private val activity: Activity) {
      * @see removeRootInsetsPadding
      * @see View.handleOnWindowInsetsChanged
      * @see View.updateInsetsPadding
-     * @param insets the insets wrapper callback, default is [WindowInsetsWrapper.safeContent].
+     * @param insets the insets wrapper callback.
      * @param horizontal whether update the horizontal padding.
      * @param vertical whether update the vertical padding.
      */
     @JvmOverloads
     @JvmName("updateRootHVInsetsPadding")
     fun updateRootInsetsPadding(
-        insets: WindowInsetsWrapper.() -> InsetsWrapper = { safeContent },
+        insets: WindowInsetsWrapper.() -> InsetsWrapper,
         horizontal: Boolean = false,
         vertical: Boolean = false
     ) = withRootPadding { rootView?.updateInsetsPadding(insets(it), horizontal, vertical) }
