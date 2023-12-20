@@ -996,6 +996,14 @@ What `BetterAndroid` mainly does is wrapped this set of APIs to make them easier
 
 Next, you can create a `WindowInsetsWrapper` from an existing `WindowInsets` object.
 
+::: tip
+
+`WindowInsetsWrapper` is designed with reference to the [Window Insets API](https://developer.android.com/jetpack/compose/layouts/insets) officially provided by Jetpack Compose.
+
+You can better use this set at the native level API.
+
+:::
+
 For backward compatibility reasons, the object wrapped by `WindowInsetsWrapper` is `WindowInsetsCompat` and it is recommended to use it instead of `WindowInsets`.
 
 `WindowInsetsWrapper` wrapped `WindowInsetsCompat.getInsets`, `WindowInsetsCompat.getInsetsIgnoringVisibility`, `WindowInsetsCompat.isVisible` and other methods,
@@ -1060,6 +1068,23 @@ val insets = systemBars.toInsets()
 val wrapper = insets.toWrapper(systemBars.isVisible)
 // You can also create it through the of method.
 val wrapper = InsetsWrapper.of(insets, systemBars.isVisible)
+```
+
+Unlike `Insets`, `InsetsWrapper` has overloaded operators, and you can use `+`, `-` and `or`, `and` to operate on it.
+
+> The following example
+
+```kotlin
+val insets1 = InsetsWrapper.of(10, 10, 10, 10)
+val insets2 = InsetsWrapper.of(20, 20, 20, 20)
+// Use "+" operator, equivalent to Insets.add(insets1, insets2).
+val insets3 = insets1 + insets2
+// Use "-" operator, equivalent to Insets.subtract(insets1, insets2).
+val insets3 = insets2 - insets1
+// Use "or" operator, equivalent to Insets.max(insets1, insets2).
+val insets3 = insets1 or insets2
+// Use "and" operator, equivalent to Insets.min(insets1, insets2).
+val insets3 = insets1 and insets2
 ```
 
 After obtaining the insets, the general approach is to set it to the `padding` of the `View`
@@ -1177,27 +1202,30 @@ We do not recommend obtaining insets in this way, when the current device has a 
 
 Below are all the insets provided in `WindowInsetsWrapper`.
 
-| Insets                    | Description                                                |
-| ------------------------- | ---------------------------------------------------------- |
-| `statusBars`              | Status bars.                                               |
-| `navigationBars`          | Navigation bars.                                           |
-| `captionBar`              | Caption bar.                                               |
-| `systemBars`              | System bars. (caption bar + status bars + navigation bars) |
-| `ime`                     | Input method.                                              |
-| `tappableElement`         | Tappable element.                                          |
-| `systemGestures`          | System gestures.                                           |
-| `mandatorySystemGestures` | Mandatory system gestures.                                 |
-| `displayCutout`           | cutout display. (notch screen)                             |
-| `waterFall`               | Waterfall screen. (curved screen)                          |
-| `safeContent`             | Safe content. (cutout display + system bars)               |
+| Insets                    | Description                                                                                     |
+| ------------------------- | ----------------------------------------------------------------------------------------------- |
+| `statusBars`              | Status bars.                                                                                    |
+| `navigationBars`          | Navigation bars.                                                                                |
+| `captionBar`              | Caption bar.                                                                                    |
+| `systemBars`              | System bars. (`captionBar` + `statusBars` + `navigationBars`)                                   |
+| `ime`                     | Input method.                                                                                   |
+| `tappableElement`         | Tappable element.                                                                               |
+| `systemGestures`          | System gestures.                                                                                |
+| `mandatorySystemGestures` | Mandatory system gestures.                                                                      |
+| `displayCutout`           | cutout display. (notch screen)                                                                  |
+| `waterFall`               | Waterfall screen. (curved screen)                                                               |
+| `safeGestures`            | Safe gestures. (`systemGestures` + `mandatorySystemGestures` + `waterFall` + `tappableElement`) |
+| `safeDrawing`             | Safe drawing. (`displayCutout` + `systemBars` + `ime`)                                          |
+| `safeDrawingIgnoringIme`  | Safe drawing. (excluding `ime`) (`displayCutout` + `systemBars`)                                |
+| `safeContent`             | Safe content. (`safeDrawing` + `safeGestures`)                                                  |
 
 Below are all the insets provided in `WindowInsetsWrapper.Absolute`.
 
-| Insets           | Description                                  |
-| ---------------- | -------------------------------------------- |
-| `statusBars`     | Status bars.                                 |
-| `navigationBars` | Navigation bars.                             |
-| `systemBars`     | System bars. (status bars + navigation bars) |
+| Insets           | Description                                    |
+| ---------------- | ---------------------------------------------- |
+| `statusBars`     | Status bars.                                   |
+| `navigationBars` | Navigation bars.                               |
+| `systemBars`     | System bars. (`statusBars` + `navigationBars`) |
 
 ### System Bars (Status Bars, Navigation Bars, etc)
 
@@ -1312,15 +1340,15 @@ systemBars.init(rootView)
 systemBars.init(rootView, defaultPadding = false)
 // Set the window insets padding of the root view.
 // You can manually set a new window insets.
-systemBars.setRootInsetsPadding(insets = { safeContent })
+systemBars.setRootInsetsPadding(insets = { systemBars })
 // Of course, you can also remove the padding on a specified side.
 // For example, we don’t need horizontal (left and right) padding.
 // The setRootInsetsPadding method has the same function as setInsetsPadding.
-systemBars.setRootInsetsPadding(insets = { safeContent }, horizontal = false)
+systemBars.setRootInsetsPadding(insets = { systemBars }, horizontal = false)
 // You can also update the padding on a specific side.
 // For example, we only need vertical (up and down) padding.
 // The updateRootInsetsPadding method has the same function as updateInsetsPadding.
-systemBars.updateRootInsetsPadding(insets = { safeContent }, vertical = true)
+systemBars.updateRootInsetsPadding(insets = { systemBars }, vertical = true)
 // Remove the window insets padding of the root view.
 // If you need to remove the padding automatically set by the root view, you can use this method directly.
 systemBars.removeRootInsetsPadding()
@@ -1330,7 +1358,7 @@ systemBars.removeRootInsetsPadding()
 
 `SystemBarsController` will automatically set `Window.setDecorFitsSystemWindows(false)` (on notch screen devices, `layoutInDisplayCutoutMode` will also be set to `LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES`) when it is initialized,
 you only need to set `defaultPadding = true` in `init` (the default is `true`),
-then your root view will default to a window insets `padding` with `safeContent`, which is why you should be able to maintain your own root view at any time in `Activity`.
+then your root view will default to a window insets `padding` with `safeDrawingIgnoringIme`, which is why you should be able to maintain your own root view at any time in `Activity`.
 
 If you call `removeRootInsetsPadding` or use `defaultPadding = false` in `init`, then the default window insets will not exist and your root view will fully expand to full screen.
 
@@ -1415,7 +1443,7 @@ systemBars.statusBarStyle = SystemBarStyle(
     // Set background color.
     color = Color.WHITE,
     // Set content color.
-    darkContent=true
+    darkContent = true
 )
 // Set the style of the navigation bars.
 systemBars.navigationBarStyle = SystemBarStyle(

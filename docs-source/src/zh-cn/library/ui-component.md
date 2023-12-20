@@ -973,6 +973,12 @@ Insets 是一个特殊的空间，它代表 “附着” 在视图四周的占�
 
 下面，你可以通过一个存在的 `WindowInsets` 对象来创建一个 `WindowInsetsWrapper` 对象。
 
+::: tip
+
+`WindowInsetsWrapper` 是参照 Jetpack Compose 官方提供的 [Window Insets API](https://developer.android.com/jetpack/compose/layouts/insets) 设计的，你能够更加有好的在原生层面上使用这套 API。
+
+:::
+
 出于对向下兼容的考虑，`WindowInsetsWrapper` 封装的对象为 `WindowInsetsCompat` 并建议使用它而不是 `WindowInsets`。
 
 `WindowInsetsWrapper` 封装了 `WindowInsetsCompat.getInsets`、`WindowInsetsCompat.getInsetsIgnoringVisibility`、`WindowInsetsCompat.isVisible` 等方法，
@@ -1033,6 +1039,23 @@ val insets = systemBars.toInsets()
 val wrapper = insets.toWrapper(systemBars.isVisible)
 // 你还可以通过 of 方法来创建
 val wrapper = InsetsWrapper.of(insets, systemBars.isVisible)
+```
+
+与 `Insets` 不同的是，`InsetsWrapper` 重载了运算符，你可以使用 `+`、`-` 以及 `or`、`and` 来对其进行运算。
+
+> 示例如下
+
+```kotlin
+val insets1 = InsetsWrapper.of(10, 10, 10, 10)
+val insets2 = InsetsWrapper.of(20, 20, 20, 20)
+// 使用 "+" 运算符，等同于 Insets.add(insets1, insets2)
+val insets3 = insets1 + insets2
+// 使用 "-" 运算符，等同于 Insets.subtract(insets1, insets2)
+val insets3 = insets2 - insets1
+// 使用 "or" 运算符，等同于 Insets.max(insets1, insets2)
+val insets3 = insets1 or insets2
+// 使用 "and" 运算符，等同于 Insets.min(insets1, insets2)
+val insets3 = insets1 and insets2
 ```
 
 获取到 Insets 对象后，一般做法是设置为 `View` 的 `padding`，让其为系统占位置的地方 “让路”。
@@ -1143,27 +1166,30 @@ val systemBars = absoluteWrapper.systemBars
 
 以下是 `WindowInsetsWrapper` 中提供的全部 Insets。
 
-| Insets                    | 描述                              |
-| ------------------------- | --------------------------------- |
-| `statusBars`              | 状态栏                            |
-| `navigationBars`          | 导航栏                            |
-| `captionBar`              | 标题栏                            |
-| `systemBars`              | 系统栏 (标题栏 + 状态栏 + 导航栏) |
-| `ime`                     | 输入法                            |
-| `tappableElement`         | 可点击元素                        |
-| `systemGestures`          | 系统手势                          |
-| `mandatorySystemGestures` | 强制系统手势                      |
-| `displayCutout`           | 异形屏 (刘海屏)                   |
-| `waterFall`               | 瀑布屏 (曲面屏)                   |
-| `safeContent`             | 安全内容 (异形屏 + 系统栏)        |
+| Insets                    | 描述                                                                                      |
+| ------------------------- | ----------------------------------------------------------------------------------------- |
+| `statusBars`              | 状态栏                                                                                    |
+| `navigationBars`          | 导航栏                                                                                    |
+| `captionBar`              | 标题栏                                                                                    |
+| `systemBars`              | 系统栏 (`captionBar` + `statusBars` + `navigationBars`)                                   |
+| `ime`                     | 输入法                                                                                    |
+| `tappableElement`         | 可点击元素                                                                                |
+| `systemGestures`          | 系统手势                                                                                  |
+| `mandatorySystemGestures` | 强制系统手势                                                                              |
+| `displayCutout`           | 异形屏 (刘海屏)                                                                           |
+| `waterFall`               | 瀑布屏 (曲面屏)                                                                           |
+| `safeGestures`            | 安全手势 (`systemGestures` + `mandatorySystemGestures` + `waterFall` + `tappableElement`) |
+| `safeDrawing`             | 安全绘制 (`displayCutout` + `systemBars` + `ime`)                                         |
+| `safeDrawingIgnoringIme`  | 安全绘制 (不包括 `ime`) (`displayCutout` + `systemBars`)                                  |
+| `safeContent`             | 安全内容 (`safeDrawing` + `safeGestures`)                                                 |
 
 以下是 `WindowInsetsWrapper.Absolute` 中提供的全部 Insets。
 
-| Insets           | 描述                     |
-| ---------------- | ------------------------ |
-| `statusBars`     | 状态栏                   |
-| `navigationBars` | 导航栏                   |
-| `systemBars`     | 系统栏 (状态栏 + 导航栏) |
+| Insets           | 描述                                     |
+| ---------------- | ---------------------------------------- |
+| `statusBars`     | 状态栏                                   |
+| `navigationBars` | 导航栏                                   |
+| `systemBars`     | 系统栏 (`statusBars` + `navigationBars`) |
 
 ### 系统栏 (状态栏、导航栏等)
 
@@ -1272,15 +1298,15 @@ systemBars.init(rootView)
 systemBars.init(rootView, defaultPadding = false)
 // 设置根布局的 Window Insets padding
 // 你可以手动设置一个新的 Window Insets
-systemBars.setRootInsetsPadding(insets = { safeContent })
+systemBars.setRootInsetsPadding(insets = { systemBars })
 // 当然，你还可以移除指定一边的 padding
 // 例如我们不需要横向 (左右) 的 padding
 // setRootInsetsPadding 方法的作用同 setInsetsPadding
-systemBars.setRootInsetsPadding(insets = { safeContent }, horizontal = false)
+systemBars.setRootInsetsPadding(insets = { systemBars }, horizontal = false)
 // 你也可以更新指定一边的 padding
 // 例如我们只需要纵向 (上下) 的 padding
 // updateRootInsetsPadding 方法的作用同 updateInsetsPadding
-systemBars.updateRootInsetsPadding(insets = { safeContent }, vertical = true)
+systemBars.updateRootInsetsPadding(insets = { systemBars }, vertical = true)
 // 移除根布局的 Window Insets padding
 // 如果你需要移除根布局自动设置的 padding，你可以直接使用此方法
 systemBars.removeRootInsetsPadding()
@@ -1290,7 +1316,7 @@ systemBars.removeRootInsetsPadding()
 
 `SystemBarsController` 初始化时会自动设置 `Window.setDecorFitsSystemWindows(false)` (在异形屏设备上会同时设置 `layoutInDisplayCutoutMode` 为 `LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES`)，
 你只要在 `init` 中设置了 `defaultPadding = true` (默认为 `true`)，
-那么你的根布局将会默认设置一个拥有 `safeContent` 的 Window Insets `padding`，这也是为什么你应该做到在 `Activity` 中能够随时维护一个自己的根布局。 
+那么你的根布局将会默认设置一个拥有 `safeDrawingIgnoringIme` 的 Window Insets `padding`，这也是为什么你应该做到在 `Activity` 中能够随时维护一个自己的根布局。 
 
 如果你调用了 `removeRootInsetsPadding` 或者在 `init` 中使用了 `defaultPadding = false`，那么默认的 Window Insets 将不存在，你的根布局将会完全扩展到全屏。
 
