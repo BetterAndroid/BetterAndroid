@@ -211,7 +211,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
     /** Initialize the system bars defaults. */
     private fun initializeDefaults() {
         behavior = SystemBarsBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE
-        setStyle(SystemBarStyle.AutoTransparent, SystemBarStyle.AutoTransparent)
+        setStyle(SystemBarStyle.AutoTransparent)
     }
 
     /** Create the default [rootView]'s padding callback. */

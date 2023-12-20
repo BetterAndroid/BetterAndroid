@@ -144,7 +144,7 @@ class SystemBarsController private constructor(private val controller: UIViewCon
     /** Initialize the system bars defaults. */
     private fun initializeDefaults() {
         behavior = currentBehavior
-        setStyle(SystemBarStyle.AutoTransparent, SystemBarStyle.AutoTransparent)
+        setStyle(SystemBarStyle.AutoTransparent)
     }
 
     /** Refresh the behavior of system bars. */
