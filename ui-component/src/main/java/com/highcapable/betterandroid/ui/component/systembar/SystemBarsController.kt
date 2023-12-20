@@ -564,6 +564,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
      * @param navigationBar the navigation bars style.
      */
     @JvmOverloads
+    @JvmName("setSNStyle")
     fun setStyle(
         statusBar: SystemBarStyle = statusBarStyle,
         navigationBar: SystemBarStyle = navigationBarStyle
