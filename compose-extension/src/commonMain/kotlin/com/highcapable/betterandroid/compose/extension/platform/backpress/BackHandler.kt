@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2023/12/6.
  */
-@file:Suppress("unused", "ComposableNaming")
+@file:Suppress("unused")
 
 package com.highcapable.betterandroid.compose.extension.platform.backpress
 
@@ -57,16 +57,4 @@ import androidx.compose.runtime.Composable
  * @param onBack the action invoked by pressing the system back.
  */
 @Composable
-fun BackHandler(enabled: Boolean = true, onBack: () -> Unit) {
-    _BackHandler(enabled, onBack)
-}
-
-/**
- * An effect for handling presses of the system back button.
- *
- * Only support Android platform.
- * @param enabled if this BackHandler should be enabled.
- * @param onBack the action invoked by pressing the system back.
- */
-@Composable
-internal expect fun _BackHandler(enabled: Boolean, onBack: () -> Unit)
+expect fun BackHandler(enabled: Boolean = true, onBack: () -> Unit)

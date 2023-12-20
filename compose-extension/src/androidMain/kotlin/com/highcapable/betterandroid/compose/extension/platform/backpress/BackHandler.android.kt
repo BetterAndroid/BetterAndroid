@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2023/12/6.
  */
-@file:Suppress("unused", "ComposableNaming")
+@file:Suppress("unused")
 
 package com.highcapable.betterandroid.compose.extension.platform.backpress
 
@@ -33,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import com.highcapable.betterandroid.ui.component.activity.AppComponentActivity
 import com.highcapable.betterandroid.ui.component.backpress.BackPressedController
 import com.highcapable.betterandroid.ui.component.backpress.callback.OnBackPressedCallback
 import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
@@ -41,11 +42,35 @@ import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
  * An effect for handling presses of the system back button.
  *
  * Only support Android platform.
- * @param enabled if this BackHandler should be enabled.
+ *
+ * There is a system global back press event in Android,
+ * by listening to this event, we can know that the user has performed a back operation,
+ * but there is no such event in other systems. For example, in iOS,
+ * "back" is passed through the navigation controller (UINavigationController)
+ * stack operation or the dismiss operation of the modal view controller.
+ *
+ * These operations are managed by specific view controllers or navigation controllers,
+ * rather than by the system globally.
+ *
+ * It is even more impossible to have a "back press" on a desktop platform.
+ *
+ * Platform requirements:
+ *
+ * > Android
+ *
+ * You can use [AppComponentActivity] or implement [IBackPressedController] of your Activity for better,
+ * but you must use an [ComponentActivity] for basic.
+ *
+ * Requires library: `ui-component`, visit [here](https://github.com/BetterAndroid/BetterAndroid).
+ *
+ * > Others
+ *
+ * No-op.
+ * @param enabled if this BackHandler should be enabled, default true.
  * @param onBack the action invoked by pressing the system back.
  */
 @Composable
-internal actual fun _BackHandler(enabled: Boolean, onBack: () -> Unit) {
+actual fun BackHandler(enabled: Boolean, onBack: () -> Unit) {
     val backPressed = rememberBackPressedController()
     val currentOnBack by rememberUpdatedState(onBack)
     val backCallback = remember { OnBackPressedCallback { currentOnBack() } }
