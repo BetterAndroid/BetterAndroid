@@ -19,18 +19,15 @@
  *
  * This file is created by fankes on 2023/12/5.
  */
-@file:Suppress("unused")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
 
 package com.highcapable.betterandroid.compose.extension.platform.systembar
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import com.highcapable.betterandroid.compose.extension.ui.isBrightColor
 
 /**
  * Native system bars controller for each platform.
@@ -50,10 +47,6 @@ expect class PlatformSystemBarsController internal constructor(actual: NativeSys
 
     /** The native controller. */
     internal val actual: NativeSystemBarsController?
-
-    /** The current system bars insets. */
-    @get:Composable
-    val systemBarsInsets: PlatformSystemBarsInsets
 
     /**
      * Get or set the behavior of system bars.
@@ -83,41 +76,60 @@ expect class PlatformSystemBarsController internal constructor(actual: NativeSys
     fun isVisible(type: PlatformSystemBars): Boolean
 
     /**
-     * Set the system bars background color.
-     * @param type the system bars type.
-     * @param color the color to set.
+     * Get or set the style of status bars.
+     * @see PlatformSystemBarStyle
+     * @see setStyle
+     * @return [PlatformSystemBarStyle]
      */
-    fun setColor(type: PlatformSystemBars, color: Color)
+    var statusBarStyle: PlatformSystemBarStyle
 
     /**
-     * Get or set the dark content (light appearance) of status bars.
+     * Get or set the style of navigation bars.
      *
-     * | Value | Behavior                                |
-     * | ----- | --------------------------------------- |
-     * | true  | Background bright, font and icons dark. |
-     * | false | Background dark, font and icons bright. |
-     * @return [Boolean]
+     * - Note: The [PlatformSystemBarStyle.darkContent] will no-op for iOS.
+     * @see PlatformSystemBarStyle
+     * @see setStyle
+     * @return [PlatformSystemBarStyle]
      */
-    var isDarkContentStatusBars: Boolean
+    var navigationBarStyle: PlatformSystemBarStyle
+}
 
-    /**
-     * Get or set the dark content (light appearance) of navigation bars.
-     *
-     * | Value | Behavior                                |
-     * | ----- | --------------------------------------- |
-     * | true  | Background bright, font and icons dark. |
-     * | false | Background dark, font and icons bright. |
-     *
-     * - Note: This will no-op for iOS.
-     * @return [Boolean]
-     */
-    var isDarkContentNavigationBars: Boolean
+/**
+ * Set the style of system bars.
+ *
+ * You can also use the [PlatformSystemBarsController.statusBarStyle]
+ * and [PlatformSystemBarsController.navigationBarStyle].
+ *
+ * - Note: The [PlatformSystemBarStyle.darkContent] of
+ *   [PlatformSystemBarsController.navigationBarStyle] will no-op for iOS.
+ * @see PlatformSystemBarStyle
+ * @see PlatformSystemBarsController.statusBarStyle
+ * @see PlatformSystemBarsController.navigationBarStyle
+ * @param style the system bars style.
+ */
+@Stable
+fun PlatformSystemBarsController.setStyle(style: PlatformSystemBarStyle) = setStyle(style, style)
 
-    /**
-     * Automatically adapts the appearance of system bars based on the given [color].
-     * @param color the current color.
-     */
-    fun adaptiveAppearance(color: Color)
+/**
+ * Set the style of system bars.
+ *
+ * You can also use the [PlatformSystemBarsController.statusBarStyle]
+ * and [PlatformSystemBarsController.navigationBarStyle].
+ *
+ * - Note: The [PlatformSystemBarStyle.darkContent] of [navigationBar] will no-op for iOS.
+ * @see PlatformSystemBarStyle
+ * @see PlatformSystemBarsController.statusBarStyle
+ * @see PlatformSystemBarsController.navigationBarStyle
+ * @param statusBar the status bars style.
+ * @param navigationBar the navigation bars style.
+ */
+@Stable
+fun PlatformSystemBarsController.setStyle(
+    statusBar: PlatformSystemBarStyle = statusBarStyle,
+    navigationBar: PlatformSystemBarStyle = navigationBarStyle
+) {
+    statusBarStyle = statusBar
+    navigationBarStyle = navigationBar
 }
 
 /**
@@ -162,14 +174,106 @@ enum class PlatformSystemBarsBehavior {
 }
 
 /**
+ * Defines the style of the platfom system bars.
+ * @param color the background color.
+ * @param darkContent whether the content color is dark.
+ */
+@Immutable
+data class PlatformSystemBarStyle(val color: Color = Color.Unspecified, val darkContent: Boolean? = null) {
+
+    companion object {
+
+        /**
+         * An auto system bar style.
+         *
+         * Follow the dark mode of the system,
+         * the light mode uses a white background & dark content color,
+         * and the dark mode uses a black background & light content color.
+         */
+        @Stable
+        val Auto = PlatformSystemBarStyle()
+
+        /**
+         * An auto transparent system bar style.
+         *
+         * Follow the dark mode of the system,
+         * the light mode uses a dark content color, and the dark mode uses
+         * a light content color, the both mode uses a transparent background.
+         */
+        @Stable
+        val AutoTransparent = PlatformSystemBarStyle(color = Color.Transparent)
+
+        /**
+         * A light system bar style.
+         *
+         * Uses a white background & dark content color.
+         */
+        @Stable
+        val Light = PlatformSystemBarStyle(color = Color.White, darkContent = true)
+
+        /**
+         * A light scrim system bar style.
+         *
+         * Uses a translucent white mask background & dark content color.
+         */
+        @Stable
+        val LightScrim = PlatformSystemBarStyle(color = Color(0x7FFFFFFF), darkContent = true)
+
+        /**
+         * A light transparent system bar style.
+         *
+         * Uses a dark content color & transparent background.
+         */
+        @Stable
+        val LightTransparent = PlatformSystemBarStyle(color = Color.Transparent, darkContent = true)
+
+        /**
+         * A dark system bar style.
+         *
+         * Uses a black background & light content color.
+         */
+        @Stable
+        val Dark = PlatformSystemBarStyle(color = Color.Black, darkContent = false)
+
+        /**
+         * A dark scrim system bar style.
+         *
+         * Uses a translucent black mask background & light content color.
+         */
+        @Stable
+        val DarkScrim = PlatformSystemBarStyle(color = Color(0x7F000000), darkContent = false)
+
+        /**
+         * A dark transparent system bar style.
+         *
+         * Uses a light content color & transparent background.
+         */
+        @Stable
+        val DarkTransparent = PlatformSystemBarStyle(color = Color.Transparent, darkContent = false)
+
+        /**
+         * Gets the lightness and darkness from the given [detectContent] to detect
+         * the content color, using [color] as the background color.
+         *
+         * If the [color] is unspecified, the background color will be like the [Auto] style.
+         * @param detectContent the tint color.
+         * @param color the background color, default is [Color.Unspecified].
+         * @return [PlatformSystemBarStyle]
+         */
+        @Stable
+        fun auto(detectContent: Color, color: Color = Color.Unspecified) = PlatformSystemBarStyle(color, detectContent.isBrightColor)
+    }
+}
+
+/**
  * Creates and remember a [PlatformSystemBarsController].
  *
  * Platform requirements:
  *
  * > Android
  *
- * You need to use **AppComponentActivity** or implement **ISystemBarsController** of your Activity,
- * and you must use an **ComponentActivity** for basic.
+ * You can use **AppComponentActivity** or implement **ISystemBarsController** of your Activity for better,
+ * but you must use an **ComponentActivity** for basic.
  *
  * Requires library: `ui-component`, visit [here](https://github.com/BetterAndroid/BetterAndroid).
  *
@@ -184,11 +288,7 @@ enum class PlatformSystemBarsBehavior {
  * @return [PlatformSystemBarsController]
  */
 @Composable
-fun rememberSystemBarsController(): PlatformSystemBarsController {
-    var systemBars by remember { mutableStateOf<PlatformSystemBarsController?>(null) }
-    if (systemBars == null) systemBars = resolvePlatformSystemBarsController()
-    return systemBars ?: error("No PlatformSystemBarsController provided of composables.")
-}
+expect fun rememberSystemBarsController(): PlatformSystemBarsController
 
 /**
  * Resolve the [NativeSystemBarsController].
@@ -199,16 +299,11 @@ fun rememberSystemBarsController(): PlatformSystemBarsController {
  */
 expect val PlatformSystemBarsController.nativeController: NativeSystemBarsController?
 
-/**
- * Resolve the [PlatformSystemBarsController].
- * @return [PlatformSystemBarsController]
- */
-@Composable
-@ReadOnlyComposable
-internal expect fun resolvePlatformSystemBarsController(): PlatformSystemBarsController
-
 /** Default platform system bars controller. */
 internal val DefaultPlatformSystemBarsController = PlatformSystemBarsController(actual = null)
 
 /** Default platform system bars behavior. */
 internal val DefaultPlatformSystemBarsBehavior = PlatformSystemBarsBehavior.Immersive
+
+/** Default platform system bars style. */
+internal val DefaultPlatformSystemBarStyle = PlatformSystemBarStyle.Auto

@@ -21,8 +21,10 @@
  */
 @file:Suppress("unused")
 
-package com.highcapable.betterandroid.compose.extension.platform.component.systembar.insets.wrapper
+package com.highcapable.betterandroid.compose.extension.platform.component.insets
 
+import kotlinx.cinterop.CValue
+import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGFloat
 import platform.UIKit.UIEdgeInsets
 
@@ -37,6 +39,13 @@ import platform.UIKit.UIEdgeInsets
 data class UIEdgeInsetsWrapper internal constructor(val left: CGFloat, val top: CGFloat, val right: CGFloat, val bottom: CGFloat) {
 
     companion object {
+
+        /**
+         * Create a new [UIEdgeInsetsWrapper] from [UIEdgeInsets] pointer.
+         * @param insets the insets pointer.
+         * @return [UIEdgeInsetsWrapper]
+         */
+        fun from(insets: CValue<UIEdgeInsets>) = insets.useContents { from(insets = this) }
 
         /**
          * Create a new [UIEdgeInsetsWrapper] from [UIEdgeInsets].

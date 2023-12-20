@@ -19,25 +19,24 @@
  *
  * This file is created by fankes on 2023/12/8.
  */
-@file:Suppress("unused")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
 
 package com.highcapable.betterandroid.compose.extension.platform.component.systembar
 
-import com.highcapable.betterandroid.compose.extension.platform.component.systembar.insets.SystemBarsInsets
-import com.highcapable.betterandroid.compose.extension.platform.component.systembar.insets.wrapper.UIEdgeInsetsWrapper
+import com.highcapable.betterandroid.compose.extension.platform.component.insets.UIEdgeInsetsWrapper
+import com.highcapable.betterandroid.compose.extension.platform.component.systembar.style.SystemBarStyle
 import com.highcapable.betterandroid.compose.extension.platform.component.systembar.type.SystemBars
 import com.highcapable.betterandroid.compose.extension.platform.component.systembar.type.SystemBarsBehavior
 import com.highcapable.betterandroid.compose.extension.platform.component.uiviewcontroller.AppComponentUIViewController
-import com.highcapable.betterandroid.compose.extension.ui.isBrightColor
-import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGFloat
 import platform.UIKit.NSLayoutConstraint
 import platform.UIKit.UIColor
 import platform.UIKit.UIRectEdgeAll
 import platform.UIKit.UIRectEdgeNone
-import platform.UIKit.UIStatusBarStyle
 import platform.UIKit.UIStatusBarStyleDarkContent
+import platform.UIKit.UIStatusBarStyleDefault
 import platform.UIKit.UIStatusBarStyleLightContent
+import platform.UIKit.UIUserInterfaceStyle
 import platform.UIKit.UIView
 import platform.UIKit.UIViewController
 
@@ -47,7 +46,7 @@ import platform.UIKit.UIViewController
  * This is a controller with the ability to globally manage system bars.
  * @param controller the current UI view controller.
  */
-class SystemBarsController private constructor(private val controller: AppComponentUIViewController) {
+class SystemBarsController private constructor(private val controller: UIViewController) {
 
     companion object {
 
@@ -55,31 +54,45 @@ class SystemBarsController private constructor(private val controller: AppCompon
          * Create a new [SystemBarsController] from [AppComponentUIViewController].
          *
          * Creating an [UIViewController] yourself is still in the experimental stage in Kotlin Native,
+         * we recommend that you use [AppComponentUIViewController] directly for now.
+         *
+         * - Note: Currently only [AppComponentUIViewController] is supported as a parameter,
+         *   otherwise an exception will be thrown.
          * @see AppComponentUIViewController
          * @param controller the current UI view controller.
+         * @throws IllegalArgumentException if the [controller] is not [AppComponentUIViewController].
          */
-        fun from(controller: AppComponentUIViewController) = SystemBarsController(controller)
+        fun from(controller: UIViewController): SystemBarsController {
+            if (controller !is AppComponentUIViewController) error("Only AppComponentUIViewController is supported for now.")
+            return SystemBarsController(controller)
+        }
     }
 
     /** Indicates init only once times. */
     private var isInitOnce = false
 
     /**
-     * Get the system bars views. (included status bars, home indicator)
-     * @return [Array]<[SystemBarsView]>
+     * Get the system bar views. (included status bars, home indicator)
+     * @return [Array]<[SystemBarView]>
      */
-    private val systemBarsViews by lazy { arrayOf(SystemBarsView(), SystemBarsView()) }
-
-    /** The system bars insets changes callback sets. */
-    private var onInsetsChangedCallbacks = mutableSetOf<(SystemBarsInsets) -> Unit>()
+    private val systemBarViews by lazy { arrayOf(SystemBarView(), SystemBarView()) }
 
     /** The behavior of system bars. */
     private var currentBehavior = SystemBarsBehavior.SCREEN_EDGES_DEFERRING_SYSTEM_GESTURES
 
     /**
-     * System bars stub view. (a placeholder layout)
+     * Returns the current [AppComponentUIViewController].
+     * @return [AppComponentUIViewController]
      */
-    private class SystemBarsView {
+    private val appController get() = controller as AppComponentUIViewController
+
+    /**
+     * System bar stub view. (a placeholder layout)
+     *
+     * iOS does not have a system bars background color function,
+     * so we use this stub view to simulate background color related functions.
+     */
+    private class SystemBarView {
 
         /** The current view. */
         val current = UIView()
@@ -128,62 +141,61 @@ class SystemBarsController private constructor(private val controller: AppCompon
      */
     private enum class Direction { TOP, BOTTOM }
 
+    /** Initialize the system bars defaults. */
+    private fun initializeDefaults() {
+        behavior = currentBehavior
+        setStyle(SystemBarStyle.AutoTransparent, SystemBarStyle.AutoTransparent)
+    }
+
     /** Refresh the behavior of system bars. */
     private fun refreshBehavior() {
-        controller.screenEdgesDeferringSystemGestures = when (currentBehavior) {
+        appController.screenEdgesDeferringSystemGestures = when (currentBehavior) {
             SystemBarsBehavior.DEFAULT -> UIRectEdgeNone
             SystemBarsBehavior.SCREEN_EDGES_DEFERRING_SYSTEM_GESTURES ->
-                if (controller.isStatusBarHidden) UIRectEdgeAll else UIRectEdgeNone
+                if (appController.isStatusBarHidden) UIRectEdgeAll else UIRectEdgeNone
         }
     }
 
     /**
-     * Update the system bars views height.
+     * Update the system bar views height.
      * @param insets the insets padding.
      */
-    private fun updateSystemBarsViewsHeight(insets: UIEdgeInsetsWrapper?) {
+    private fun updateSystemBarViewsHeight(insets: UIEdgeInsetsWrapper?) {
         insets ?: return
-        systemBarsViews[0].updateHeight(insets.top)
-        systemBarsViews[1].updateHeight(insets.bottom)
+        systemBarViews[0].updateHeight(insets.top)
+        systemBarViews[1].updateHeight(insets.bottom)
     }
 
-    /**
-     * Create the system bars insets from [UIEdgeInsetsWrapper].
-     * @return [SystemBarsInsets]
-     */
-    private fun UIEdgeInsetsWrapper.createSystemBarsInsets() = SystemBarsInsets(safeArea = this)
-
-    /**
-     * Create the [SystemBarsController]'s container layout.
-     *
-     * ```
-     * Parent Layout (UIWindow)
-     * └─ Base Container Layout (UIView)
-     *    ├─ Root View (UIView) ← The content view
-     *    ├─ Status Bars (SystemBarsView (UIView + Constraints))
-     *    └─ Home Indicator (SystemBarsView (UIView + Constraints))
-     * ```
-     */
-    private fun createSystemBarsLayout() {
-        controller.view.addSubview(systemBarsViews[0].current)
-        controller.view.addSubview(systemBarsViews[1].current)
-        NSLayoutConstraint.activateConstraints(systemBarsViews[0].createConstraints(controller.view, Direction.TOP))
-        NSLayoutConstraint.activateConstraints(systemBarsViews[1].createConstraints(controller.view, Direction.BOTTOM))
+    /** Bind the system bar views to the current view controller. */
+    private fun bindSystemBarViews() {
+        controller.view.addSubview(systemBarViews[0].current)
+        controller.view.addSubview(systemBarViews[1].current)
+        NSLayoutConstraint.activateConstraints(systemBarViews[0].createConstraints(controller.view, Direction.TOP))
+        NSLayoutConstraint.activateConstraints(systemBarViews[1].createConstraints(controller.view, Direction.BOTTOM))
     }
-
-    /**
-     * The current system bars insets.
-     *
-     * The first initialization may be null, it is recommended to
-     * use [addOnInsetsChangeListener] to add the system bars insets changes listener.
-     */
-    var systemBarsInsets: SystemBarsInsets? = null
 
     /**
      * Get the current [SystemBarsController]'s status.
      * @return [Boolean]
      */
     val isDestroyed get() = !isInitOnce
+
+    /**
+     * Initialize [SystemBarsController].
+     *
+     * - The initialization operation will not be called repeatedly,
+     *   repeated calls will only be performed once.
+     */
+    fun init() {
+        if (isInitOnce) return
+        isInitOnce = true
+        bindSystemBarViews()
+        initializeDefaults()
+        appController.onViewDidLayoutSubviewsCallback = {
+            val safeAreaInsets = UIEdgeInsetsWrapper.from(controller.view.safeAreaInsets)
+            updateSystemBarViewsHeight(safeAreaInsets)
+        }
+    }
 
     /**
      * Get or set the behavior of system bars.
@@ -199,54 +211,17 @@ class SystemBarsController private constructor(private val controller: AppCompon
         }
 
     /**
-     * Initialize [SystemBarsController].
-     *
-     * - The initialization operation will not be called repeatedly,
-     *   repeated calls will only be performed once.
-     */
-    fun init() {
-        if (isInitOnce) return
-        isInitOnce = true
-        createSystemBarsLayout()
-        controller.onViewDidLayoutSubviewsCallback = {
-            val safeAreaInsets = controller.view.safeAreaInsets.useContents { UIEdgeInsetsWrapper.from(insets = this) }
-            val systemBarsInsets = safeAreaInsets.createSystemBarsInsets()
-            this.systemBarsInsets = systemBarsInsets
-            updateSystemBarsViewsHeight(safeAreaInsets)
-            onInsetsChangedCallbacks.forEach { callback -> callback(systemBarsInsets) }
-        }
-    }
-
-    /**
-     * Get or set the status bar style.
-     * @return [UIStatusBarStyle].
-     */
-    var statusBarStyle
-        get() = controller.statusBarStyle
-        set(value) {
-            controller.statusBarStyle = value
-        }
-
-    /**
-     * Add the system bars insets changes listener.
-     * @param onChange callback [SystemBarsInsets].
-     */
-    fun addOnInsetsChangeListener(onChange: (SystemBarsInsets) -> Unit) {
-        onInsetsChangedCallbacks.add(onChange)
-    }
-
-    /**
      * Show system bars.
      * @param type the system bars type.
      */
     fun show(type: SystemBars) {
         when (type) {
             SystemBars.ALL -> {
-                controller.isStatusBarHidden = false
-                controller.isHomeIndicatorAutoHidden = false
+                appController.isStatusBarHidden = false
+                appController.isHomeIndicatorAutoHidden = false
             }
-            SystemBars.STATUS_BARS -> controller.isStatusBarHidden = false
-            SystemBars.HOME_INDICATOR -> controller.isHomeIndicatorAutoHidden = false
+            SystemBars.STATUS_BARS -> appController.isStatusBarHidden = false
+            SystemBars.HOME_INDICATOR -> appController.isHomeIndicatorAutoHidden = false
         }; refreshBehavior()
     }
 
@@ -257,11 +232,11 @@ class SystemBarsController private constructor(private val controller: AppCompon
     fun hide(type: SystemBars) {
         when (type) {
             SystemBars.ALL -> {
-                controller.isStatusBarHidden = true
-                controller.isHomeIndicatorAutoHidden = true
+                appController.isStatusBarHidden = true
+                appController.isHomeIndicatorAutoHidden = true
             }
-            SystemBars.STATUS_BARS -> controller.isStatusBarHidden = true
-            SystemBars.HOME_INDICATOR -> controller.isHomeIndicatorAutoHidden = true
+            SystemBars.STATUS_BARS -> appController.isStatusBarHidden = true
+            SystemBars.HOME_INDICATOR -> appController.isHomeIndicatorAutoHidden = true
         }; refreshBehavior()
     }
 
@@ -271,33 +246,84 @@ class SystemBarsController private constructor(private val controller: AppCompon
      * @return [Boolean]
      */
     fun isVisible(type: SystemBars) = when (type) {
-        SystemBars.ALL -> !controller.isStatusBarHidden && !controller.isHomeIndicatorAutoHidden
-        SystemBars.STATUS_BARS -> !controller.isStatusBarHidden
-        SystemBars.HOME_INDICATOR -> !controller.isHomeIndicatorAutoHidden
+        SystemBars.ALL -> !appController.isStatusBarHidden && !appController.isHomeIndicatorAutoHidden
+        SystemBars.STATUS_BARS -> !appController.isStatusBarHidden
+        SystemBars.HOME_INDICATOR -> !appController.isHomeIndicatorAutoHidden
     }
 
     /**
-     * Set the system bars background color.
-     * @param type the system bars type.
-     * @param color the color to set.
+     * Get or set the style of status bars.
+     * @see SystemBarStyle
+     * @see setStyle
+     * @return [SystemBarStyle]
      */
-    fun setColor(type: SystemBars, color: UIColor) {
-        when (type) {
-            SystemBars.ALL -> {
-                systemBarsViews[0].setBackgroundColor(color)
-                systemBarsViews[1].setBackgroundColor(color)
-            }
-            SystemBars.STATUS_BARS -> systemBarsViews[0].setBackgroundColor(color)
-            SystemBars.HOME_INDICATOR -> systemBarsViews[1].setBackgroundColor(color)
+    var statusBarStyle = SystemBarStyle.AutoTransparent
+        set(value) {
+            field = value
+            applyStyle(SystemBars.STATUS_BARS, value)
         }
+
+    /**
+     * Get or set the style of home indicator.
+     * @see SystemBarStyle
+     * @see setStyle
+     * @return [SystemBarStyle]
+     */
+    var homeIndicatorStyle = SystemBarStyle.AutoTransparent
+        set(value) {
+            field = value
+            applyStyle(SystemBars.HOME_INDICATOR, value)
+        }
+
+    /**
+     * Set the style of system bars.
+     *
+     * You can also use the [statusBarStyle] and [homeIndicatorStyle].
+     * @see SystemBarStyle
+     * @see statusBarStyle
+     * @see homeIndicatorStyle
+     * @param style the system bars style.
+     */
+    fun setStyle(style: SystemBarStyle) = setStyle(style, style)
+
+    /**
+     * Set the style of system bars.
+     *
+     * You can also use the [statusBarStyle] and [homeIndicatorStyle].
+     * @see SystemBarStyle
+     * @see statusBarStyle
+     * @see homeIndicatorStyle
+     * @param statusBar the status bars style.
+     * @param homeIndicator the home indicator style.
+     */
+    fun setStyle(
+        statusBar: SystemBarStyle = statusBarStyle,
+        homeIndicator: SystemBarStyle = homeIndicatorStyle
+    ) {
+        statusBarStyle = statusBar
+        homeIndicatorStyle = homeIndicator
     }
 
     /**
-     * Automatically adapts the appearance of system bars based on the given [color].
-     * @param color the current color.
+     * Apply the system bars style.
+     * @param type the system bars type.
+     * @param style the system bars style.
      */
-    fun adaptiveAppearance(color: UIColor) {
-        val isBrightColor = color.isBrightColor
-        statusBarStyle = if (isBrightColor) UIStatusBarStyleDarkContent else UIStatusBarStyleLightContent
+    private fun applyStyle(type: SystemBars, style: SystemBarStyle) {
+        val isUiInNightMode = controller.traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark
+        val defaultColor = if (isUiInNightMode) UIColor.blackColor else UIColor.whiteColor
+        val backgroundColor = style.color ?: defaultColor
+        when (type) {
+            SystemBars.STATUS_BARS -> {
+                appController.statusBarStyle = when (style.darkContent) {
+                    null -> UIStatusBarStyleDefault
+                    true -> UIStatusBarStyleDarkContent
+                    else -> UIStatusBarStyleLightContent
+                }; systemBarViews[0].setBackgroundColor(backgroundColor)
+            }
+            // Home indicator is not supported change its content color.
+            SystemBars.HOME_INDICATOR -> systemBarViews[1].setBackgroundColor(backgroundColor)
+            else -> {}
+        }
     }
 }

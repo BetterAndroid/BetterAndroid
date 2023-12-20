@@ -24,17 +24,21 @@
 package com.highcapable.betterandroid.compose.extension.platform.systembar
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.interop.LocalUIViewController
 import com.highcapable.betterandroid.compose.extension.platform.component.systembar.SystemBarsController
+import com.highcapable.betterandroid.compose.extension.platform.component.systembar.style.SystemBarStyle
 import com.highcapable.betterandroid.compose.extension.platform.component.systembar.type.SystemBars
 import com.highcapable.betterandroid.compose.extension.platform.component.systembar.type.SystemBarsBehavior
 import com.highcapable.betterandroid.compose.extension.platform.component.uiviewcontroller.AppComponentUIViewController
+import com.highcapable.betterandroid.compose.extension.ui.toComposeColor
 import com.highcapable.betterandroid.compose.extension.ui.toPlatformColor
-import platform.UIKit.UIStatusBarStyleDarkContent
-import platform.UIKit.UIStatusBarStyleLightContent
 import platform.UIKit.UIViewController
 import platform.UIKit.childViewControllers
 
@@ -53,11 +57,6 @@ actual typealias NativeSystemBarsController = SystemBarsController
  */
 @Stable
 actual class PlatformSystemBarsController internal actual constructor(internal actual val actual: NativeSystemBarsController?) {
-
-    /** The current system bars insets. */
-    actual val systemBarsInsets: PlatformSystemBarsInsets
-        @Composable
-        get() = nativeController?.resolvePlatformSystemBarsInsets() ?: PlatformSystemBarsInsets.Default
 
     /**
      * Get or set the behavior of system bars.
@@ -97,54 +96,66 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
     }
 
     /**
-     * Set the system bars background color.
-     * @param type the system bars type.
-     * @param color the color to set.
+     * Get or set the style of status bars.
+     * @see PlatformSystemBarStyle
+     * @see setStyle
+     * @return [PlatformSystemBarStyle]
      */
-    actual fun setColor(type: PlatformSystemBars, color: Color) {
-        nativeController?.setColor(type.toPlatformActual(), color.toPlatformColor())
-    }
-
-    /**
-     * Get or set the dark content (light appearance) of status bars.
-     *
-     * | Value | Behavior                                |
-     * | ----- | --------------------------------------- |
-     * | true  | Background bright, font and icons dark. |
-     * | false | Background dark, font and icons bright. |
-     * @return [Boolean]
-     */
-    actual var isDarkContentStatusBars: Boolean
-        get() = nativeController?.statusBarStyle == UIStatusBarStyleDarkContent
+    actual var statusBarStyle: PlatformSystemBarStyle
+        get() = nativeController?.statusBarStyle?.toPlatformExpect() ?: DefaultPlatformSystemBarStyle
         set(value) {
-            nativeController?.statusBarStyle = if (value) UIStatusBarStyleDarkContent else UIStatusBarStyleLightContent
+            nativeController?.statusBarStyle = value.toPlatformActual()
         }
 
     /**
-     * Get or set the dark content (light appearance) of navigation bars.
+     * Get or set the style of navigation bars.
      *
-     * | Value | Behavior                                |
-     * | ----- | --------------------------------------- |
-     * | true  | Background bright, font and icons dark. |
-     * | false | Background dark, font and icons bright. |
-     *
-     * - Note: This will no-op for iOS.
-     * @return [Boolean]
+     * - Note: The [PlatformSystemBarStyle.darkContent] will no-op for iOS.
+     * @see PlatformSystemBarStyle
+     * @see setStyle
+     * @return [PlatformSystemBarStyle]
      */
-    @Suppress("UNUSED_PARAMETER")
-    actual var isDarkContentNavigationBars: Boolean
-        get() = false
+    actual var navigationBarStyle: PlatformSystemBarStyle
+        get() = nativeController?.homeIndicatorStyle?.toPlatformExpect() ?: DefaultPlatformSystemBarStyle
         set(value) {
-            // Platform iOS: No-op.
+            nativeController?.homeIndicatorStyle = value.toPlatformActual()
         }
+}
 
-    /**
-     * Automatically adapts the appearance of system bars based on the given [color].
-     * @param color the current color.
-     */
-    actual fun adaptiveAppearance(color: Color) {
-        nativeController?.adaptiveAppearance(color.toPlatformColor())
-    }
+/**
+ * Creates and remember a [PlatformSystemBarsController].
+ *
+ * Platform requirements:
+ *
+ * > Android
+ *
+ * You can use **AppComponentActivity** or implement **ISystemBarsController** of your Activity for better,
+ * but you must use an **ComponentActivity** for basic.
+ *
+ * Requires library: `ui-component`, visit [here](https://github.com/BetterAndroid/BetterAndroid).
+ *
+ * > iOS
+ *
+ * You need to use [AppComponentUIViewController], see the [AppComponentUIViewController]
+ * function for more help.
+ *
+ * > Others
+ *
+ * No-op.
+ * @return [PlatformSystemBarsController]
+ */
+@Composable
+actual fun rememberSystemBarsController(): PlatformSystemBarsController {
+    val controller = LocalUIViewController.current
+    var systemBars by remember { mutableStateOf(DefaultPlatformSystemBarsController) }
+    if (systemBars.actual == null) {
+        val nativeSystemBars = controller.resolveSystemBarsController()
+        SideEffect {
+            // If the controller is not initialized, initialize it.
+            if (nativeSystemBars?.isDestroyed == true) nativeSystemBars.init()
+        }
+        systemBars = PlatformSystemBarsController(nativeSystemBars)
+    }; return systemBars
 }
 
 /**
@@ -155,17 +166,6 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
  * @return [NativeSystemBarsController] or null.
  */
 actual val PlatformSystemBarsController.nativeController get() = if (actual?.isDestroyed == false) actual else null
-
-/**
- * Resolve the [PlatformSystemBarsController].
- * @return [PlatformSystemBarsController]
- */
-@Composable
-@ReadOnlyComposable
-internal actual fun resolvePlatformSystemBarsController(): PlatformSystemBarsController {
-    val controller = LocalUIViewController.current
-    return PlatformSystemBarsController(controller.resolveSystemBarsController())
-}
 
 /**
  * Resolve the [SystemBarsController] from [UIViewController].
@@ -219,3 +219,17 @@ private fun SystemBarsBehavior.toPlatformExpect() = when (this) {
     SystemBarsBehavior.DEFAULT -> PlatformSystemBarsBehavior.Default
     SystemBarsBehavior.SCREEN_EDGES_DEFERRING_SYSTEM_GESTURES -> PlatformSystemBarsBehavior.Immersive
 }
+
+/**
+ * Convert [PlatformSystemBarStyle] to [SystemBarStyle].
+ * @receiver [PlatformSystemBarStyle]
+ * @return [SystemBarStyle]
+ */
+private fun PlatformSystemBarStyle.toPlatformActual() = SystemBarStyle(color.toPlatformColor(), darkContent)
+
+/**
+ * Convert [SystemBarStyle] to [PlatformSystemBarStyle].
+ * @receiver [SystemBarStyle]
+ * @return [PlatformSystemBarStyle]
+ */
+private fun SystemBarStyle.toPlatformExpect() = PlatformSystemBarStyle(color?.toComposeColor() ?: Color.Unspecified, darkContent)
