@@ -1156,6 +1156,25 @@ imeSpaceLayout.handleOnWindowInsetsChanged { imeSpaceLayout, insetsWrapper ->
 }
 ```
 
+If you want to animate window insets when they change as well, you don't need to reset a `View.setWindowInsetsAnimationCallback`.
+
+You just need to set `animated = true` in `View.handleOnWindowInsetsChanged` so that the callback will be triggered every time window insets change.
+
+> The following example
+
+```kotlin
+// Handle view's window insets change listener.
+imeSpaceLayout.handleOnWindowInsetsChanged(animated = true) { imeSpaceLayout, insetsWrapper ->
+    // The content is the same as above.
+}
+```
+
+::: warning
+
+This feature was introduced starting with Android 11, according to the official introduction, animations were simulated in previous versions and may not achieve the best results.
+
+:::
+
 If you want to get window insets directly from the current `View`, then you can also create a `WindowInsetsWrapper` using the following method.
 
 > The following example

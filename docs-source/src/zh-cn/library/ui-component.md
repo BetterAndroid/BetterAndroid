@@ -1122,6 +1122,25 @@ imeSpaceLayout.handleOnWindowInsetsChanged { imeSpaceLayout, insetsWrapper ->
 }
 ```
 
+如果你想同时在 Window Insets 改变时使其拥有动画效果，你无需重新设置一个 `View.setWindowInsetsAnimationCallback`。
+
+你只需要在 `View.handleOnWindowInsetsChanged` 中设置 `animated = true` 即可，这样回调就会在每次 Window Insets 改变中触发。
+
+> 示例如下
+
+```kotlin
+// 处理 View 的 Window Insets 改变监听
+imeSpaceLayout.handleOnWindowInsetsChanged(animated = true) { imeSpaceLayout, insetsWrapper ->
+    // 内容与上述相同
+}
+```
+
+::: warning
+
+这个特性是从 Android 11 开始引入的，根据官方的介绍，在之前的版本中动画是被模拟出来的，可能不会达到最佳效果。
+
+:::
+
 如果你想直接从当前 `View` 中获取 Window Insets，那么你还可以使用以下方式创建一个 `WindowInsetsWrapper` 对象。
 
 > 示例如下
