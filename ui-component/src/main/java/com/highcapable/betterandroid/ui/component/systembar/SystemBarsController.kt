@@ -549,6 +549,17 @@ class SystemBarsController private constructor(private val activity: Activity) {
      * @see SystemBarStyle
      * @see statusBarStyle
      * @see navigationBarStyle
+     * @param style the system bars style.
+     */
+    fun setStyle(style: SystemBarStyle) = setStyle(style, style)
+
+    /**
+     * Set the style of system bars.
+     *
+     * You can also use the [statusBarStyle] and [navigationBarStyle].
+     * @see SystemBarStyle
+     * @see statusBarStyle
+     * @see navigationBarStyle
      * @param statusBar the status bars style.
      * @param navigationBar the navigation bars style.
      */
