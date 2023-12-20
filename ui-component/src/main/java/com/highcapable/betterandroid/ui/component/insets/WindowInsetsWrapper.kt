@@ -232,9 +232,45 @@ class WindowInsetsWrapper private constructor(private val windowInsets: WindowIn
     val waterfall get() = waterfall()
 
     /**
-     * Get the safe content insets. (include [displayCutout] and [systemBars])
-     * @see WindowInsetsCompat.Type.displayCutout
-     * @see WindowInsetsCompat.Type.systemBars
+     * Get the safe gestures insets. (include [systemGestures], [mandatorySystemGestures], [waterfall] and [tappableElement])
+     *
+     * See [here](https://developer.android.com/reference/kotlin/androidx/compose/foundation/layout/package-summary#(androidx.compose.foundation.layout.WindowInsets.Companion).safeGestures())
+     * for more information.
+     * @see systemGestures
+     * @see mandatorySystemGestures
+     * @see waterfall
+     * @see tappableElement
+     * @return [InsetsWrapper]
+     */
+    val safeGestures get() = safeGestures()
+
+    /**
+     * Get the safe drawing insets. (include [displayCutout], [systemBars] and [ime])
+     *
+     * See [here](https://developer.android.com/reference/kotlin/androidx/compose/foundation/layout/package-summary#(androidx.compose.foundation.layout.WindowInsets.Companion).safeDrawing())
+     * for more information.
+     * @see displayCutout
+     * @see systemBars
+     * @see ime
+     * @return [InsetsWrapper]
+     */
+    val safeDrawing get() = safeDrawing()
+
+    /**
+     * Get the safe drawing (ignoring ime) insets. (include [displayCutout], [systemBars])
+     * @see displayCutout
+     * @see systemBars
+     * @return [InsetsWrapper]
+     */
+    val safeDrawingIgnoringIme get() = safeDrawingIgnoringIme()
+
+    /**
+     * Get the safe content insets. (include [safeDrawing] and [safeGestures])
+     *
+     * See [here](https://developer.android.com/reference/kotlin/androidx/compose/foundation/layout/package-summary#(androidx.compose.foundation.layout.WindowInsets.Companion).safeContent())
+     * for more information.
+     * @see safeDrawing
+     * @see safeGestures
      * @return [InsetsWrapper]
      */
     val safeContent get() = safeContent()
@@ -320,13 +356,53 @@ class WindowInsetsWrapper private constructor(private val windowInsets: WindowIn
     fun waterfall() = windowInsets.displayCutout?.waterfallInsets?.toWrapper() ?: InsetsWrapper.NONE
 
     /**
-     * Get the safe content insets. (include [displayCutout] and [systemBars])
-     * @see WindowInsetsCompat.Type.displayCutout
-     * @see WindowInsetsCompat.Type.systemBars
+     * Get the safe gestures insets. (include [systemGestures], [mandatorySystemGestures], [waterfall] and [tappableElement])
+     *
+     * See [here](https://developer.android.com/reference/kotlin/androidx/compose/foundation/layout/package-summary#(androidx.compose.foundation.layout.WindowInsets.Companion).safeGestures())
+     * for more information.
+     * @see systemGestures
+     * @see mandatorySystemGestures
+     * @see waterfall
+     * @see tappableElement
      * @param ignoringVisibility whether ignoring the visibility, default false.
      * @return [InsetsWrapper]
      */
-    fun safeContent(ignoringVisibility: Boolean = false) = InsetsWrapper.max(displayCutout(), systemBars(ignoringVisibility))
+    fun safeGestures(ignoringVisibility: Boolean = false) =
+        systemGestures() or mandatorySystemGestures() or waterfall() or tappableElement(ignoringVisibility)
+
+    /**
+     * Get the safe drawing insets. (include [displayCutout], [systemBars] and [ime])
+     *
+     * See [here](https://developer.android.com/reference/kotlin/androidx/compose/foundation/layout/package-summary#(androidx.compose.foundation.layout.WindowInsets.Companion).safeDrawing())
+     * for more information.
+     * @see displayCutout
+     * @see systemBars
+     * @see ime
+     * @param ignoringVisibility whether ignoring the visibility, default false.
+     * @return [InsetsWrapper]
+     */
+    fun safeDrawing(ignoringVisibility: Boolean = false) = displayCutout() or systemBars(ignoringVisibility) or ime()
+
+    /**
+     * Get the safe drawing (ignoring ime) insets. (include [displayCutout], [systemBars])
+     * @see displayCutout
+     * @see systemBars
+     * @param ignoringVisibility whether ignoring the visibility, default false.
+     * @return [InsetsWrapper]
+     */
+    fun safeDrawingIgnoringIme(ignoringVisibility: Boolean = false) = displayCutout() or systemBars(ignoringVisibility)
+
+    /**
+     * Get the safe content insets. (include [safeDrawing] and [safeGestures])
+     *
+     * See [here](https://developer.android.com/reference/kotlin/androidx/compose/foundation/layout/package-summary#(androidx.compose.foundation.layout.WindowInsets.Companion).safeContent())
+     * for more information.
+     * @see safeDrawing
+     * @see safeGestures
+     * @param ignoringVisibility whether ignoring the visibility, default false.
+     * @return [InsetsWrapper]
+     */
+    fun safeContent(ignoringVisibility: Boolean = false) = safeDrawing(ignoringVisibility) or safeGestures(ignoringVisibility)
 
     /**
      * Get the window insets.
@@ -410,6 +486,10 @@ class WindowInsetsWrapper private constructor(private val windowInsets: WindowIn
             "mandatorySystemGestures=$mandatorySystemGestures, " +
             "displayCutout=$displayCutout, " +
             "waterfall=$waterfall, " +
+            "safeGestures=$safeGestures, " +
+            "safeGesturesIgnoringVisibility=${safeGestures(ignoringVisibility = true)}, " +
+            "safeDrawing=$safeDrawing, " +
+            "safeDrawingIgnoringVisibility=${safeDrawing(ignoringVisibility = true)}, " +
             "safeContent=$safeContent, " +
             "safeContentIgnoringVisibility=${safeContent(ignoringVisibility = true)}" +
             ")"
