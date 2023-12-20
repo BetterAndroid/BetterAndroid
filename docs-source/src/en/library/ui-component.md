@@ -1452,13 +1452,20 @@ systemBars.navigationBarStyle = SystemBarStyle(
     // Set content color.
     darkContent = true
 )
-// You can set the style of the status bars and navigation bars at the same time.
+// You can set the style of the status bars and navigation bars at once.
 systemBars.setStyle(
     statusBar = SystemBarStyle(
         color = Color.WHITE,
         darkContent = true
     ),
     navigationBar = SystemBarStyle(
+        color = Color.WHITE,
+        darkContent = true
+    )
+)
+// You can also set the style of the status bars and navigation bars at the same time.
+systemBars.setStyle(
+    style = SystemBarStyle(
         color = Color.WHITE,
         darkContent = true
     )

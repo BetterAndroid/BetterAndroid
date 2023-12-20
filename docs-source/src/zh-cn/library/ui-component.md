@@ -1404,13 +1404,20 @@ systemBars.navigationBarStyle = SystemBarStyle(
     // 设置内容颜色
     darkContent = true
 )
-// 你可以同时设置状态栏和导航栏的样式
+// 你可以一次性设置状态栏和导航栏的样式
 systemBars.setStyle(
     statusBar = SystemBarStyle(
         color = Color.WHITE,
         darkContent = true
     ),
     navigationBar = SystemBarStyle(
+        color = Color.WHITE,
+        darkContent = true
+    )
+)
+// 你也可以同时设置状态栏和导航栏的样式
+systemBars.setStyle(
+    style = SystemBarStyle(
         color = Color.WHITE,
         darkContent = true
     )
