@@ -194,58 +194,6 @@ fun Fragment.attachToFragment(
 }
 
 /**
- * Batch attach [Fragment] to [FragmentActivity].
- * @param fragments the array of [Fragment] that needs to be bound to.
- * @param viewId the container view id that needs to be bound to.
- * @param view the container that needs to be bound to, default is [Activity.requireRootView].
- * @param beginAnimId the [Fragment] start to enter animation, default is [R.anim.simple_ui_open_in].
- * @param finishAnimId the [Fragment] finished enter animation, default is [R.anim.simple_ui_open_out].
- * @param tag the [Fragment] tag, default is [System.currentTimeMillis].
- * @param runOnCommit the commit [Runnable], default is null.
- * @param allowingStateLoss whether to allow state loss, default true.
- */
-@JvmOverloads
-fun FragmentActivity.attachFragments(
-    vararg fragments: Fragment,
-    @IdRes viewId: Int = View.NO_ID,
-    view: View? = requireRootView(),
-    @AnimRes beginAnimId: Int = R.anim.simple_ui_open_in,
-    @AnimRes finishAnimId: Int = R.anim.simple_ui_open_out,
-    tag: String = System.currentTimeMillis().toString(),
-    runOnCommit: Runnable? = null,
-    allowingStateLoss: Boolean = true
-) {
-    fragments.takeIf { it.isNotEmpty() }
-        ?.forEach { it.attachToActivity(this, viewId, view, beginAnimId, finishAnimId, tag, { runOnCommit?.run() }, allowingStateLoss) }
-}
-
-/**
- * Batch attach child [Fragment] to [Fragment].
- * @param fragments the array of [Fragment] that needs to be bound to.
- * @param viewId the container view id that needs to be bound to.
- * @param view the container that needs to be bound to, default is [Fragment.requireRootView].
- * @param beginAnimId the [Fragment] start to enter animation, default is [R.anim.simple_ui_open_in].
- * @param finishAnimId the [Fragment] finished enter animation, default is [R.anim.simple_ui_open_out].
- * @param tag the [Fragment] tag, default is [System.currentTimeMillis].
- * @param runOnCommit the commit [Runnable], default is null.
- * @param allowingStateLoss whether to allow state loss, default true.
- */
-@JvmOverloads
-fun Fragment.attachFragments(
-    vararg fragments: Fragment,
-    @IdRes viewId: Int = View.NO_ID,
-    view: View? = requireRootView(),
-    @AnimRes beginAnimId: Int = R.anim.simple_ui_open_in,
-    @AnimRes finishAnimId: Int = R.anim.simple_ui_open_out,
-    tag: String = System.currentTimeMillis().toString(),
-    runOnCommit: Runnable? = null,
-    allowingStateLoss: Boolean = true
-) {
-    fragments.takeIf { it.isNotEmpty() }
-        ?.forEach { it.attachToFragment(this, viewId, view, beginAnimId, finishAnimId, tag, { runOnCommit?.run() }, allowingStateLoss) }
-}
-
-/**
  * Use the current [Fragment] from [FragmentActivity] to replace the existing one.
  * @param activity the [FragmentActivity] that needs to be replace to.
  * @param viewId the container view id that needs to be replace to.
@@ -364,114 +312,6 @@ fun Fragment.hide(
 }
 
 /**
- * Batch show [Fragment] from [FragmentActivity].
- * @param fragments the array of [Fragment] that needs to be show.
- * @param beginAnimId the [Fragment] start to enter animation, default is [R.anim.simple_ui_open_in].
- * @param finishAnimId the [Fragment] finished enter animation, default is [R.anim.simple_ui_open_out].
- * @param runOnCommit the commit [Runnable], default is null.
- * @param allowingStateLoss whether to allow state loss, default true.
- */
-@JvmOverloads
-fun FragmentActivity.showFragments(
-    vararg fragments: Fragment,
-    @AnimRes beginAnimId: Int = R.anim.simple_ui_open_in,
-    @AnimRes finishAnimId: Int = R.anim.simple_ui_open_out,
-    runOnCommit: Runnable? = null,
-    allowingStateLoss: Boolean = true
-) {
-    fragments.takeIf { it.isNotEmpty() }?.forEach {
-        it.show(
-            activity = this,
-            beginAnimId = beginAnimId,
-            finishAnimId = finishAnimId,
-            runOnCommit = { runOnCommit?.run() },
-            allowingStateLoss = allowingStateLoss
-        )
-    }
-}
-
-/**
- * Batch show child [Fragment] from [Fragment].
- * @param fragments the array of [Fragment] that needs to be show.
- * @param beginAnimId the [Fragment] start to enter animation, default is [R.anim.simple_ui_open_in].
- * @param finishAnimId the [Fragment] finished enter animation, default is [R.anim.simple_ui_open_out].
- * @param runOnCommit the commit [Runnable], default is null.
- * @param allowingStateLoss whether to allow state loss, default true.
- */
-@JvmOverloads
-fun Fragment.showFragments(
-    vararg fragments: Fragment,
-    @AnimRes beginAnimId: Int = R.anim.simple_ui_open_in,
-    @AnimRes finishAnimId: Int = R.anim.simple_ui_open_out,
-    runOnCommit: Runnable? = null,
-    allowingStateLoss: Boolean = true
-) {
-    fragments.takeIf { it.isNotEmpty() }?.forEach {
-        it.show(
-            fragment = this,
-            beginAnimId = beginAnimId,
-            finishAnimId = finishAnimId,
-            runOnCommit = { runOnCommit?.run() },
-            allowingStateLoss = allowingStateLoss
-        )
-    }
-}
-
-/**
- * Batch hide [Fragment] from [FragmentActivity].
- * @param fragments the array of [Fragment] that needs to be hide.
- * @param beginAnimId the [Fragment] start to exit animation, default is [R.anim.simple_ui_exit_in].
- * @param finishAnimId the [Fragment] finished exit animation, default is [R.anim.simple_ui_exit_out].
- * @param runOnCommit the commit [Runnable], default is null.
- * @param allowingStateLoss whether to allow state loss, default true.
- */
-@JvmOverloads
-fun FragmentActivity.hideFragments(
-    vararg fragments: Fragment,
-    @AnimRes beginAnimId: Int = R.anim.simple_ui_exit_in,
-    @AnimRes finishAnimId: Int = R.anim.simple_ui_exit_out,
-    runOnCommit: Runnable? = null,
-    allowingStateLoss: Boolean = true
-) {
-    fragments.takeIf { it.isNotEmpty() }?.forEach {
-        it.hide(
-            activity = this,
-            beginAnimId = beginAnimId,
-            finishAnimId = finishAnimId,
-            runOnCommit = { runOnCommit?.run() },
-            allowingStateLoss = allowingStateLoss
-        )
-    }
-}
-
-/**
- * Batch hide child [Fragment] from [Fragment].
- * @param fragments the array of [Fragment] that needs to be hide.
- * @param beginAnimId the [Fragment] start to exit animation, default is [R.anim.simple_ui_exit_in].
- * @param finishAnimId the [Fragment] finished exit animation, default is [R.anim.simple_ui_exit_out].
- * @param runOnCommit the commit [Runnable], default is null.
- * @param allowingStateLoss whether to allow state loss, default true.
- */
-@JvmOverloads
-fun Fragment.hideFragments(
-    vararg fragments: Fragment,
-    @AnimRes beginAnimId: Int = R.anim.simple_ui_exit_in,
-    @AnimRes finishAnimId: Int = R.anim.simple_ui_exit_out,
-    runOnCommit: Runnable? = null,
-    allowingStateLoss: Boolean = true
-) {
-    fragments.takeIf { it.isNotEmpty() }?.forEach {
-        it.hide(
-            fragment = this,
-            beginAnimId = beginAnimId,
-            finishAnimId = finishAnimId,
-            runOnCommit = { runOnCommit?.run() },
-            allowingStateLoss = allowingStateLoss
-        )
-    }
-}
-
-/**
  * Detach and remove [Fragment] from [FragmentActivity].
  * @param activity the current [FragmentActivity], default is [Fragment.getActivity].
  * @param beginAnimId the [Fragment] start to exit animation, default is [R.anim.simple_ui_exit_in].
@@ -518,13 +358,118 @@ fun Fragment.detachFromFragment(
 }
 
 /**
- * Batch detach and remove [Fragment] from [FragmentActivity].
- * @param fragments the array of [Fragment] that needs to be detach.
- * @param beginAnimId the [Fragment] start to exit animation, default is [R.anim.simple_ui_exit_in].
- * @param finishAnimId the [Fragment] finished exit animation, default is [R.anim.simple_ui_exit_out].
- * @param runOnCommit the commit [Runnable], default is null.
- * @param allowingStateLoss whether to allow state loss, default true.
+ * Batch attach [Fragment] to [FragmentActivity].
+ *
+ * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
  */
+@Deprecated(message = "No effect and will be removed in the future.")
+@JvmOverloads
+fun FragmentActivity.attachFragments(
+    vararg fragments: Fragment,
+    @IdRes viewId: Int = View.NO_ID,
+    view: View? = requireRootView(),
+    @AnimRes beginAnimId: Int = R.anim.simple_ui_open_in,
+    @AnimRes finishAnimId: Int = R.anim.simple_ui_open_out,
+    tag: String = System.currentTimeMillis().toString(),
+    runOnCommit: Runnable? = null,
+    allowingStateLoss: Boolean = true
+) {
+}
+
+/**
+ * Batch attach child [Fragment] to [Fragment].
+ *
+ * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
+ */
+@Deprecated(message = "No effect and will be removed in the future.")
+@JvmOverloads
+fun Fragment.attachFragments(
+    vararg fragments: Fragment,
+    @IdRes viewId: Int = View.NO_ID,
+    view: View? = requireRootView(),
+    @AnimRes beginAnimId: Int = R.anim.simple_ui_open_in,
+    @AnimRes finishAnimId: Int = R.anim.simple_ui_open_out,
+    tag: String = System.currentTimeMillis().toString(),
+    runOnCommit: Runnable? = null,
+    allowingStateLoss: Boolean = true
+) {
+}
+
+/**
+ * Batch show [Fragment] from [FragmentActivity].
+ *
+ * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
+ */
+@Suppress("UnusedReceiverParameter")
+@Deprecated(message = "No effect and will be removed in the future.")
+@JvmOverloads
+fun FragmentActivity.showFragments(
+    vararg fragments: Fragment,
+    @AnimRes beginAnimId: Int = R.anim.simple_ui_open_in,
+    @AnimRes finishAnimId: Int = R.anim.simple_ui_open_out,
+    runOnCommit: Runnable? = null,
+    allowingStateLoss: Boolean = true
+) {
+}
+
+/**
+ * Batch show child [Fragment] from [Fragment].
+ *
+ * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
+ */
+@Suppress("UnusedReceiverParameter")
+@Deprecated(message = "No effect and will be removed in the future.")
+@JvmOverloads
+fun Fragment.showFragments(
+    vararg fragments: Fragment,
+    @AnimRes beginAnimId: Int = R.anim.simple_ui_open_in,
+    @AnimRes finishAnimId: Int = R.anim.simple_ui_open_out,
+    runOnCommit: Runnable? = null,
+    allowingStateLoss: Boolean = true
+) {
+}
+
+/**
+ * Batch hide [Fragment] from [FragmentActivity].
+ *
+ * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
+ */
+@Suppress("UnusedReceiverParameter")
+@Deprecated(message = "No effect and will be removed in the future.")
+@JvmOverloads
+fun FragmentActivity.hideFragments(
+    vararg fragments: Fragment,
+    @AnimRes beginAnimId: Int = R.anim.simple_ui_exit_in,
+    @AnimRes finishAnimId: Int = R.anim.simple_ui_exit_out,
+    runOnCommit: Runnable? = null,
+    allowingStateLoss: Boolean = true
+) {
+}
+
+/**
+ * Batch hide child [Fragment] from [Fragment].
+ *
+ * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
+ */
+@Suppress("UnusedReceiverParameter")
+@Deprecated(message = "No effect and will be removed in the future.")
+@JvmOverloads
+fun Fragment.hideFragments(
+    vararg fragments: Fragment,
+    @AnimRes beginAnimId: Int = R.anim.simple_ui_exit_in,
+    @AnimRes finishAnimId: Int = R.anim.simple_ui_exit_out,
+    runOnCommit: Runnable? = null,
+    allowingStateLoss: Boolean = true
+) {
+}
+
+/**
+ * Batch detach and remove [Fragment] from [FragmentActivity].
+ *
+ * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
+ */
+@Suppress("UnusedReceiverParameter")
+@Deprecated(message = "No effect and will be removed in the future.")
 @JvmOverloads
 fun FragmentActivity.detachFragments(
     vararg fragments: Fragment,
@@ -533,18 +478,15 @@ fun FragmentActivity.detachFragments(
     runOnCommit: Runnable? = null,
     allowingStateLoss: Boolean = true
 ) {
-    fragments.takeIf { it.isNotEmpty() }
-        ?.forEach { it.detachFromActivity(this, beginAnimId, finishAnimId, { runOnCommit?.run() }, allowingStateLoss) }
 }
 
 /**
  * Batch detach and remove child [Fragment] from [Fragment].
- * @param fragments the array of [Fragment] that needs to be detach.
- * @param beginAnimId the [Fragment] start to exit animation, default is [R.anim.simple_ui_exit_in].
- * @param finishAnimId the [Fragment] finished exit animation, default is [R.anim.simple_ui_exit_out].
- * @param runOnCommit the commit [Runnable], default is null.
- * @param allowingStateLoss whether to allow state loss, default true.
+ *
+ * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
  */
+@Suppress("UnusedReceiverParameter")
+@Deprecated(message = "No effect and will be removed in the future.")
 @JvmOverloads
 fun Fragment.detachFragments(
     vararg fragments: Fragment,
@@ -553,8 +495,6 @@ fun Fragment.detachFragments(
     runOnCommit: Runnable? = null,
     allowingStateLoss: Boolean = true
 ) {
-    fragments.takeIf { it.isNotEmpty() }
-        ?.forEach { it.detachFromFragment(this, beginAnimId, finishAnimId, { runOnCommit?.run() }, allowingStateLoss) }
 }
 
 /**
