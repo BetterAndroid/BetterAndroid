@@ -88,6 +88,10 @@ internal class SystemBarsCompat internal constructor(private val window: Window)
 
     /**
      * Set the legacy Flyme system status bar dark mode.
+     *
+     * The adaptation method is referenced from
+     * [here](https://github.com/gyf-dev/ImmersionBar/blob/master/immersionbar/src/main/java/com/gyf/immersionbar/SpecialBarFontUtils.java#L131)
+     * and thanks for it.
      * @param isDarkMode the current dark mode or bright mode.
      */
     private fun setStatusBarDarkModeForLegacyFlyme(isDarkMode: Boolean) {
