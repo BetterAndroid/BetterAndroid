@@ -1110,7 +1110,7 @@ ViewCompat.setOnApplyWindowInsetsListener(view) { view, insets ->
 
 ```kotlin
 // 假设这就是你的输入法布局
-val imeSpaceLayout = findViewById<FrameLayout>(R.id.ime_space_layout)
+val imeSpaceLayout: FrameLayout
 // 处理 View 的 Window Insets 改变监听
 imeSpaceLayout.handleOnWindowInsetsChanged { imeSpaceLayout, insetsWrapper ->
     // 设置由 ime 提供的 padding
@@ -1140,6 +1140,19 @@ imeSpaceLayout.handleOnWindowInsetsChanged(animated = true) { imeSpaceLayout, in
 这个特性是从 Android 11 开始引入的，根据官方的介绍，在之前的版本中动画是被模拟出来的，可能不会达到最佳效果。
 
 :::
+
+另外，当你设置了 Window Insets 改变的监听后，你不需要关心监听是何时设置的，你可以在任何时候移除它们。
+
+这个操作会移除所有 `View.setOnApplyWindowInsetsListener`、`View.setWindowInsetsAnimationCallback`。
+
+> 示例如下
+
+```kotlin
+// 假设这个就是你当前的 View
+val view: View
+// 移除 View 的 Window Insets 改变监听
+view.removeWindowInsetsListener()
+```
 
 如果你想直接从当前 `View` 中获取 Window Insets，那么你还可以使用以下方式创建一个 `WindowInsetsWrapper` 对象。
 
@@ -1302,7 +1315,7 @@ override fun setContentView(layoutResID: Int) {
 
 下面是 `SystemBarsController` 的详细用法介绍。
 
-初始化 `SystemBarsController` 及设置根布局的 Window Insets `padding`。
+初始化 `SystemBarsController` 及处理根布局的 Window Insets `padding`。
 
 > 示例如下
 
@@ -1312,32 +1325,20 @@ val rootView: ViewGroup
 // 初始化 SystemBarsController
 // 你的根布局必须已经被设置到了一个父布局中，否则将会抛出异常
 systemBars.init(rootView)
-// 如果你不希望 SystemBarsController 接管你的布局 padding，
-// 你可以设置 defaultPadding 为 false
-systemBars.init(rootView, defaultPadding = false)
-// 设置根布局的 Window Insets padding
-// 你可以手动设置一个新的 Window Insets
-systemBars.setRootInsetsPadding(insets = { systemBars })
-// 当然，你还可以移除指定一边的 padding
-// 例如我们不需要横向 (左右) 的 padding
-// setRootInsetsPadding 方法的作用同 setInsetsPadding
-systemBars.setRootInsetsPadding(insets = { systemBars }, horizontal = false)
-// 你也可以更新指定一边的 padding
-// 例如我们只需要纵向 (上下) 的 padding
-// updateRootInsetsPadding 方法的作用同 updateInsetsPadding
-systemBars.updateRootInsetsPadding(insets = { systemBars }, vertical = true)
-// 移除根布局的 Window Insets padding
-// 如果你需要移除根布局自动设置的 padding，你可以直接使用此方法
-systemBars.removeRootInsetsPadding()
+// 你可以自定义处理根布局的 Window Insets
+systemBars.init(rootView, handleWindowInsets = { systemBars })
+// 如果你不希望 SystemBarsController 自动为你处理根布局的 Window Insets，
+// 你可以直接设置 handleWindowInsets 为 null
+systemBars.init(rootView, handleWindowInsets = null)
 ```
 
 ::: warning
 
 `SystemBarsController` 初始化时会自动设置 `Window.setDecorFitsSystemWindows(false)` (在异形屏设备上会同时设置 `layoutInDisplayCutoutMode` 为 `LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES`)，
-你只要在 `init` 中设置了 `defaultPadding = true` (默认为 `true`)，
-那么你的根布局将会默认设置一个拥有 `safeDrawingIgnoringIme` 的 Window Insets `padding`，这也是为什么你应该做到在 `Activity` 中能够随时维护一个自己的根布局。 
+你只要在 `init` 中设置了 `handleWindowInsets` (默认设置)，
+那么你的根布局将会拥有一个 `safeDrawingIgnoringIme` 控制的 Window Insets `padding`，这也是为什么你应该做到在 `Activity` 中能够随时维护一个自己的根布局。 
 
-如果你调用了 `removeRootInsetsPadding` 或者在 `init` 中使用了 `defaultPadding = false`，那么默认的 Window Insets 将不存在，你的根布局将会完全扩展到全屏。
+如果你在 `init` 中将 `handleWindowInsets` 设为了 `null`，那么你的根布局将会完全扩展到全屏。
 
 在不做出任何操作的情况下，你的布局就会被系统栏或系统的危险区域 (例如异形屏的挖空处) 遮挡，这会影响用户体验。
 
@@ -1347,7 +1348,7 @@ systemBars.removeRootInsetsPadding()
 
 ::: tip
 
-在 Jetpack Compose 中，你可以使用 `AppComponentActivity` 来获得一个设置了 `defaultPadding = false` 初始化的 `SystemBarsController`，
+在 Jetpack Compose 中，你可以使用 `AppComponentActivity` 来获得一个设置了 `handleWindowInsets = null` 初始化的 `SystemBarsController`，
 然后使用 Jetpack Compose 的方式去设置 Window Insets，`BetterAndroid` 同样为其提供了扩展支持，更多功能你可以参考 [compose-extension](../library/compose-extension.md)。
 
 :::
@@ -1369,7 +1370,7 @@ systemBars.behavior = SystemBarsBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE
 | `DEFAULT`                       | 由系统控制的默认行为                                                   |
 | *`SHOW_TRANSIENT_BARS_BY_SWIPE` | 在全屏时可由手势滑动弹出并显示为半透明的系统栏，并在一段时间后继续隐藏 |
 
-显示、隐藏系统栏并获取当前系统栏的显示状态。
+显示、隐藏系统栏。
 
 > 示例如下
 
@@ -1386,10 +1387,6 @@ systemBars.show(SystemBars.ALL)
 // 单独控制状态栏和导航栏
 systemBars.show(SystemBars.STATUS_BARS)
 systemBars.show(SystemBars.NAVIGATION_BARS)
-// 你可以随时使用 isVisible 判断当前系统栏的显示状态
-val isStatusBarVisible = systemBars.isVisible(SystemBars.STATUS_BARS)
-val isNavigationBarVisible = systemBars.isVisible(SystemBars.NAVIGATION_BARS)
-val isAllVisible = systemBars.isVisible(SystemBars.ALL)
 ```
 
 设置系统栏的样式。
@@ -1458,7 +1455,7 @@ systemBars.setStyle(
 
 销毁 `SystemBarsController`。
 
-这会还原初始化之前的状态，包括初始化之前的状态栏、导航栏颜色及设置的 Window Insets `padding` 等。
+这会还原初始化之前的状态，包括初始化之前的状态栏、导航栏颜色等。
 
 > 示例如下
 
@@ -1468,3 +1465,11 @@ systemBars.destroy()
 // 你可以随时使用 isDestroyed 判断当前 SystemBarsController 是否已被销毁
 val isDestroyed = systemBars.isDestroyed
 ```
+
+::: warning
+
+在使用 `SystemBarsController` 后，当前根布局 `rootView` 的 `WindowInsetsController` 已被其自动接管，
+请不要手动设置 `WindowInsetsController` 中的 `isAppearanceLightStatusBars`、`isAppearanceLightNavigationBars` 等参数，
+这可能会导致 `statusBarsStyle`、`navigationBarStyle`、`setStyle` 等功能的实际效果显示异常。
+
+:::

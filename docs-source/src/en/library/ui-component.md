@@ -1144,7 +1144,7 @@ At this point you can use `View.handleOnWindowInsetsChanged` to directly get a `
 
 ```kotlin
 // Assume this is your input method layout.
-val imeSpaceLayout = findViewById<FrameLayout>(R.id.ime_space_layout)
+val imeSpaceLayout: FrameLayout
 // Handle view's window insets change listener.
 imeSpaceLayout.handleOnWindowInsetsChanged { imeSpaceLayout, insetsWrapper ->
     // Set the padding provided by ime.
@@ -1174,6 +1174,19 @@ imeSpaceLayout.handleOnWindowInsetsChanged(animated = true) { imeSpaceLayout, in
 This feature was introduced starting with Android 11, according to the official introduction, animations were simulated in previous versions and may not achieve the best results.
 
 :::
+
+In addition, when you set up window insets change listeners, you don't need to care when the listeners were set, you can remove them at any time.
+
+This operation will remove all `View.setOnApplyWindowInsetsListener` and `View.setWindowInsetsAnimationCallback`.
+
+> The following example
+
+```kotlin
+// Assume this is your current view.
+Val view: View
+// Remove view's window insets change listener.
+view.removeWindowInsetsListener()
+```
 
 If you want to get window insets directly from the current `View`, then you can also create a `WindowInsetsWrapper` using the following method.
 
@@ -1235,7 +1248,7 @@ Below are all the insets provided in `WindowInsetsWrapper`.
 | `waterFall`               | Waterfall screen. (curved screen)                                                               |
 | `safeGestures`            | Safe gestures. (`systemGestures` + `mandatorySystemGestures` + `waterFall` + `tappableElement`) |
 | `safeDrawing`             | Safe drawing. (`displayCutout` + `systemBars` + `ime`)                                          |
-| `safeDrawingIgnoringIme`  | Safe drawing. (excluding `ime`) (`displayCutout` + `systemBars`)                                |
+| `safeDrawingIgnoringIme`  | Safe drawing. (ignoring `ime`) (`displayCutout` + `systemBars`)                                 |
 | `safeContent`             | Safe content. (`safeDrawing` + `safeGestures`)                                                  |
 
 Below are all the insets provided in `WindowInsetsWrapper.Absolute`.
@@ -1344,7 +1357,7 @@ override fun setContentView(layoutResID: Int) {
 
 The following is a detailed usage introduction of `SystemBarsController`.
 
-Initialize `SystemBarsController` and set the window insets `padding` of the root view.
+Initialize `SystemBarsController` and handle window insets `padding` of root view.
 
 > The following example
 
@@ -1354,32 +1367,22 @@ val rootView: ViewGroup
 // Initialize SystemBarsController.
 // Your root view must have been set to a parent layout, otherwise an exception will be thrown.
 systemBars.init(rootView)
-// If you don't want SystemBarsController to take over your layout padding,
-// you can set defaultPadding to false.
-systemBars.init(rootView, defaultPadding = false)
-// Set the window insets padding of the root view.
-// You can manually set a new window insets.
-systemBars.setRootInsetsPadding(insets = { systemBars })
-// Of course, you can also remove the padding on a specified side.
-// For example, we don’t need horizontal (left and right) padding.
-// The setRootInsetsPadding method has the same function as setInsetsPadding.
-systemBars.setRootInsetsPadding(insets = { systemBars }, horizontal = false)
-// You can also update the padding on a specific side.
-// For example, we only need vertical (up and down) padding.
-// The updateRootInsetsPadding method has the same function as updateInsetsPadding.
-systemBars.updateRootInsetsPadding(insets = { systemBars }, vertical = true)
-// Remove the window insets padding of the root view.
-// If you need to remove the padding automatically set by the root view, you can use this method directly.
-systemBars.removeRootInsetsPadding()
+// You can customize the window insets that handle the root view.
+systemBars.init(rootView, handleWindowInsets = { systemBars })
+// If you don't want SystemBarsController to automatically handle the root view's window insets for you,
+// you can directly set handleWindowInsets to null.
+systemBars.init(rootView, handleWindowInsets = null)
 ```
 
 ::: warning
 
-`SystemBarsController` will automatically set `Window.setDecorFitsSystemWindows(false)` (on notch screen devices, `layoutInDisplayCutoutMode` will also be set to `LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES`) when it is initialized,
-you only need to set `defaultPadding = true` in `init` (the default is `true`),
-then your root view will default to a window insets `padding` with `safeDrawingIgnoringIme`, which is why you should be able to maintain your own root view at any time in `Activity`.
+`SystemBarsController` will automatically set `Window.setDecorFitsSystemWindows(false)` during initialization
+(on cutout display devices, `layoutInDisplayCutoutMode` will also be set to `LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES`),
+you just need to set `handleWindowInsets` in `init` (the default setting),
+then your root view will have a window insets `padding` controlled by `safeDrawingIgnoringIme`,
+which is why you should be able to maintain your own root view at any time in `Activity`.
 
-If you call `removeRootInsetsPadding` or use `defaultPadding = false` in `init`, then the default window insets will not exist and your root view will fully expand to full screen.
+If you set `handleWindowInsets` to `null` in `init`, your root view will fully expand to full screen.
 
 Without any action, your layout will be blocked by system bars or dangerous areas of the system (such as cutout displays), which will affect the user experience.
 
@@ -1391,7 +1394,7 @@ You can go to the [Insets](#insets) section of the previous section learn more a
 
 ::: tip
 
-In Jetpack Compose, you can use `AppComponentActivity` to get a `SystemBarsController` initialized with `defaultPadding = false`,
+In Jetpack Compose, you can use `AppComponentActivity` to get a `SystemBarsController` initialized with `handleWindowInsets = null`,
 then use Jetpack Compose to set window insets.
 
 `BetterAndroid` also provides extension support for it, for more functions, you can refer to [compose-extension](../library/compose-extension.md).
@@ -1415,7 +1418,7 @@ The following are all behaviors provided in `SystemBarsBehavior`, those marked w
 | `DEFAULT`                       | Default behavior controlled by the system.                                                                                                                    |
 | *`SHOW_TRANSIENT_BARS_BY_SWIPE` | A system bar that can be popped up by gesture sliding in full screen and displayed as a translucent system bar, and continues to hide after a period of time. |
 
-Show, hide system bars and get the visible status of the current system bars.
+Show, hide system bars.
 
 > The following example
 
@@ -1432,10 +1435,6 @@ systemBars.show(SystemBars.ALL)
 // Separately control the status bars and navigation bars.
 systemBars.show(SystemBars.STATUS_BARS)
 systemBars.show(SystemBars.NAVIGATION_BARS)
-// You can use isVisible at any time to determine the display status of the current system bars.
-val isStatusBarVisible = systemBars.isVisible(SystemBars.STATUS_BARS)
-val isNavigationBarVisible = systemBars.isVisible(SystemBars.NAVIGATION_BARS)
-val isAllVisible = systemBars.isVisible(SystemBars.ALL)
 ```
 
 Set the style of the system bars.
@@ -1506,7 +1505,7 @@ The following are the preset styles provided in `SystemBarStyle`, the ones marke
 
 Destroy `SystemBarsController`.
 
-This will restore the state before initialization, including the status bars, navigation bars color and set window insets `padding`, etc.
+This will restore the state before initialization, including the status bars, navigation bars color, etc.
 
 > The following example
 
@@ -1517,3 +1516,12 @@ systemBars.destroy()
 // the current SystemBarsController has been destroyed.
 val isDestroyed = systemBars.isDestroyed
 ```
+
+::: warning
+
+After using `SystemBarsController`, the `WindowInsetsController` of the current root view `rootView` has been automatically taken over by it.
+
+Please do not manually set parameters such as `isAppearanceLightStatusBars` and `isAppearanceLightNavigationBars` in `WindowInsetsController`,
+this may cause the actual effects of `statusBarsStyle`, `navigationBarStyle`, `setStyle` and other functions to display abnormally.
+
+:::
