@@ -37,7 +37,7 @@ import com.highcapable.betterandroid.ui.component.systembar.SystemBarsController
  */
 abstract class BaseCompatActivity internal constructor() : AppCompatActivity(), ISystemBarsController, IBackPressedController {
 
-    override val systemBars by lazy { SystemBarsController.from(activity = this) }
+    override val systemBars by lazy { SystemBarsController.from(window) }
 
     override val backPressed by lazy { BackPressedController.from(activity = this) }
 

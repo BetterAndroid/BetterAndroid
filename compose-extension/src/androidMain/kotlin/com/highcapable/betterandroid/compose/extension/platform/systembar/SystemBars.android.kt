@@ -168,7 +168,7 @@ actual val PlatformSystemBarsController.nativeController get() = if (actual?.isD
  * @return [SystemBarsController]
  */
 private fun ComponentActivity.resolveSystemBarsController() =
-    (this as? ISystemBarsController?)?.systemBars ?: SystemBarsController.from(activity = this)
+    (this as? ISystemBarsController?)?.systemBars ?: SystemBarsController.from(window)
 
 /**
  * Convert [PlatformSystemBars] to [SystemBars].
