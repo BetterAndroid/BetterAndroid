@@ -308,8 +308,7 @@ fun Fragment.replaceFromFragment(
 /**
  * Show the current [Fragment].
  * @param activity the current [FragmentActivity], default is [Fragment.getActivity].
- * @param fragment the current parent [Fragment], if you using [attachToFragment], [replaceFromFragment],
- * please use this parameter.
+ * @param fragment the current parent [Fragment], default is [Fragment.getParentFragment].
  * @param beginAnimId the [Fragment] start to enter animation, default is [R.anim.simple_ui_open_in].
  * @param finishAnimId the [Fragment] finished enter animation, default is [R.anim.simple_ui_open_out].
  * @param runOnCommit the commit [Runnable], default is null.
@@ -318,7 +317,7 @@ fun Fragment.replaceFromFragment(
 @JvmOverloads
 fun Fragment.show(
     activity: FragmentActivity? = getActivity(),
-    fragment: Fragment? = null,
+    fragment: Fragment? = parentFragment,
     @AnimRes beginAnimId: Int = R.anim.simple_ui_open_in,
     @AnimRes finishAnimId: Int = R.anim.simple_ui_open_out,
     runOnCommit: Runnable? = null,
@@ -338,8 +337,7 @@ fun Fragment.show(
 /**
  * Hide the current [Fragment].
  * @param activity the current [FragmentActivity], default is [Fragment.getActivity].
- * @param fragment the current parent [Fragment], if you using [attachToFragment], [replaceFromFragment],
- * please use this parameter.
+ * @param fragment the current parent [Fragment], default is [Fragment.getParentFragment].
  * @param beginAnimId the [Fragment] start to exit animation, default is [R.anim.simple_ui_exit_in].
  * @param finishAnimId the [Fragment] finished exit animation, default is [R.anim.simple_ui_exit_out].
  * @param runOnCommit the commit [Runnable], default is null.
@@ -348,7 +346,7 @@ fun Fragment.show(
 @JvmOverloads
 fun Fragment.hide(
     activity: FragmentActivity? = getActivity(),
-    fragment: Fragment? = null,
+    fragment: Fragment? = parentFragment,
     @AnimRes beginAnimId: Int = R.anim.simple_ui_exit_in,
     @AnimRes finishAnimId: Int = R.anim.simple_ui_exit_out,
     runOnCommit: Runnable? = null,
@@ -360,7 +358,7 @@ fun Fragment.hide(
         hide(this@hide)
         runOnCommit?.also { runOnCommit(it) }
     }
-    fragment?.childFragmentManager?.commitTransaction { begin() }
+    fragment?.childFragmentManager?.commitTransaction(allowingStateLoss) { begin() }
         ?: activity?.supportFragmentManager?.commitTransaction(allowingStateLoss) { begin() }
         ?: Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to hide Fragment $this, FragmentActivity or parent Fragment is null.")
 }
@@ -498,7 +496,7 @@ fun Fragment.detachFromActivity(
 
 /**
  * Detach and remove child [Fragment] from [Fragment].
- * @param fragment the current parent [Fragment].
+ * @param fragment the current parent [Fragment], default is [Fragment.getParentFragment].
  * @param beginAnimId the [Fragment] start to exit animation, default is [R.anim.simple_ui_exit_in].
  * @param finishAnimId the [Fragment] finished exit animation, default is [R.anim.simple_ui_exit_out].
  * @param runOnCommit the commit [Runnable], default is null.
@@ -506,7 +504,7 @@ fun Fragment.detachFromActivity(
  */
 @JvmOverloads
 fun Fragment.detachFromFragment(
-    fragment: Fragment?,
+    fragment: Fragment? = parentFragment,
     @AnimRes beginAnimId: Int = R.anim.simple_ui_exit_in,
     @AnimRes finishAnimId: Int = R.anim.simple_ui_exit_out,
     runOnCommit: Runnable? = null,
