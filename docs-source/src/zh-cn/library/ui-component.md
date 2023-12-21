@@ -1260,7 +1260,7 @@ Android 开发的严重适配问题就在于终端设备没有统一开发规范
 `AppBindingActivity`、`AppViewsActivity`、`AppComponentActivity`、`AppBindingFragment`、`AppViewsFragment`
 已经默认实现了 `ISystemBarsController` 接口，你可以直接使用 `systemBars` 获取 `SystemBarsController`。
 
-但是你依然可以在 `Activity` 中手动创建一个 `SystemBarsController`。
+但是你依然可以在 `Activity` 中使用 `Activity.getWindow` 对象手动创建一个 `SystemBarsController`。
 
 > 示例如下
 
@@ -1268,7 +1268,7 @@ Android 开发的严重适配问题就在于终端设备没有统一开发规范
 class YourActivity : AppCompatActivity() {
 
     // 创建一个懒加载对象
-    val systemBars by lazy { SystemBarsController.from(this) }
+    val systemBars by lazy { SystemBarsController.from(window) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -1395,7 +1395,7 @@ systemBars.show(SystemBars.NAVIGATION_BARS)
 
 ::: warning
 
-在 Android 6.0 以下系统中，状态栏的内容不支持反色，如果你设置了亮色则会自动处理为半透明遮罩，但是对于 MIUI 等自行添加了反色功能的系统将使用其私有方案实现反色效果。
+在 Android 6.0 以下系统中，状态栏的内容不支持反色，如果你设置了亮色则会自动处理为半透明遮罩，但是对于 MIUI、Flyme 自行添加了反色功能的系统将使用其私有方案实现反色效果。
 
 在 Android 8 以下系统中，导航栏的内容不支持反色，处理方式同上。
 

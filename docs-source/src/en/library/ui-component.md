@@ -1301,7 +1301,7 @@ Now, you can call it very conveniently to easily implement a series of solutions
 `AppBindingActivity`, `AppViewsActivity`, `AppComponentActivity`, `AppBindingFragment`, `AppViewsFragment`
 have implemented the `ISystemBarsController` interface by default, you can directly use `systemBars` to obtain `SystemBarsController`.
 
-But you can still manually create a `SystemBarsController` in `Activity`.
+But you can still create a `SystemBarsController` manually using the `Activity.getWindow` object in `Activity`.
 
 > The following example
 
@@ -1309,7 +1309,7 @@ But you can still manually create a `SystemBarsController` in `Activity`.
 class YourActivity : AppCompatActivity() {
 
     // Create a lazy object.
-    val systemBars by lazy { SystemBarsController.from(this) }
+    val systemBars by lazy { SystemBarsController.from(window) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -1445,7 +1445,7 @@ You can customize the appearance of the status bars and navigation bars.
 
 In systems below Android 6.0, the content of the status bars does not support inversion, if you set a bright color, it will be automatically processed as a semi-transparent mask.
 
-However, systems such as MIUI that have added inversion functions will use their own private solutions to achieve inversion and color effect.
+However, for MIUI and Flyme systems that have added the inverse color function themselves, they will use their own private solutions to achieve the inverse color effect.
 
 In systems below Android 8, the content of the navigation bars does not support inversion, and the processing method is the same as above.
 
