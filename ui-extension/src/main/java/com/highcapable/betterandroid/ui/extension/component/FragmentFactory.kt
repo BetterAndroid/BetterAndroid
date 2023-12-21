@@ -46,7 +46,7 @@ inline fun FragmentActivity.commitFragmentTransaction(isAllowingStateLoss: Boole
     supportFragmentManager
         .beginTransaction()
         .apply(initiate)
-        .apply { if (isAllowingStateLoss) commitAllowingStateLoss() else commitNowAllowingStateLoss() }
+        .apply { if (isAllowingStateLoss) commitAllowingStateLoss() else commit() }
 }
 
 /**
@@ -59,7 +59,7 @@ inline fun Fragment.commitFragmentTransaction(isAllowingStateLoss: Boolean = tru
     childFragmentManager
         .beginTransaction()
         .apply(initiate)
-        .apply { if (isAllowingStateLoss) commitAllowingStateLoss() else commitNowAllowingStateLoss() }
+        .apply { if (isAllowingStateLoss) commitAllowingStateLoss() else commit() }
 }
 
 /**
