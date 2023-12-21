@@ -90,7 +90,7 @@ fun Insets.toWrapper(isVisible: Boolean = true) = InsetsWrapper.of(left, top, ri
  *
  * ```kotlin
  * // Assume you are dealing with input method insets.
- * val imeSpaceLayout = findViewById<FrameLayout>(R.id.ime_space_layout)
+ * val imeSpaceLayout: FrameLayout
  * imeSpaceLayout.handleOnWindowInsetsChanged { imeSpaceLayout, insetsWrapper ->
  *     // Set the view insets padding by ime.
  *     imeSpaceLayout.setInsetsPadding(insetsWrapper.ime)
