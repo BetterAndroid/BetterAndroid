@@ -23,15 +23,13 @@ package com.highcapable.betterandroid.ui.component.systembar.compat
 
 import android.util.Log
 import android.view.Window
+import com.highcapable.betterandroid.system.extension.tool.SystemKind
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 import com.highcapable.betterandroid.ui.component.generated.BetterAndroidProperties
 import com.highcapable.yukireflection.factory.current
 import com.highcapable.yukireflection.factory.field
-import com.highcapable.yukireflection.factory.hasClass
-import com.highcapable.yukireflection.factory.hasField
 import com.highcapable.yukireflection.factory.method
 import com.highcapable.yukireflection.factory.toClassOrNull
-import com.highcapable.yukireflection.type.android.WindowManager_LayoutParamsClass
 import com.highcapable.yukireflection.type.java.IntType
 
 /**
@@ -50,14 +48,13 @@ internal class SystemBarsCompat internal constructor(private val window: Window)
      * Returns true if a legacy MIUI system.
      * @return [Boolean]
      */
-    private val isLegacyMiui get() = SystemVersion.isLowTo(SystemVersion.M) && "com.android.internal.policy.impl.MiuiPhoneWindow".hasClass()
+    private val isLegacyMiui get() = SystemVersion.isLowTo(SystemVersion.M) && SystemKind.equals(SystemKind.MIUI)
 
     /**
      * Returns true if a legacy Flyme system.
      * @return [Boolean]
      */
-    private val isLegacyFlyme
-        get() = SystemVersion.isLowTo(SystemVersion.M) && WindowManager_LayoutParamsClass.hasField { name = "MEIZU_FLAG_DARK_STATUS_BAR_ICON" }
+    private val isLegacyFlyme get() = SystemVersion.isLowTo(SystemVersion.M) && SystemKind.equals(SystemKind.FLYME)
 
     /**
      * Set the legacy system status bar dark mode.
