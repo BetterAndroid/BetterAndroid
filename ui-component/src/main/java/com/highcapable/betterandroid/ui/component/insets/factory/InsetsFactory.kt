@@ -122,10 +122,11 @@ fun Insets.toWrapper(isVisible: Boolean = true) = InsetsWrapper.of(left, top, ri
  * @param animationDispatchMode the animation dispatch mode, default is [DISPATCH_MODE_CONTINUE_ON_SUBTREE].
  * @param onChange the insets change callback.
  */
-inline fun <reified V : View> V.handleOnWindowInsetsChanged(
+@JvmOverloads
+fun <V : View> V.handleOnWindowInsetsChanged(
     animated: Boolean = false,
     animationDispatchMode: Int = DISPATCH_MODE_CONTINUE_ON_SUBTREE,
-    noinline onChange: (V, insetsWrapper: WindowInsetsWrapper) -> Boolean
+    onChange: (V, insetsWrapper: WindowInsetsWrapper) -> Boolean
 ) {
     val self = this
     val windowFromActivity = (context as? Activity?)?.window
