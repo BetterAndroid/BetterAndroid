@@ -21,33 +21,60 @@
  */
 package com.highcapable.betterandroid.ui.component.systembar.compat
 
-import android.app.Activity
 import android.util.Log
+import android.view.Window
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 import com.highcapable.betterandroid.ui.component.generated.BetterAndroidProperties
+import com.highcapable.yukireflection.factory.current
 import com.highcapable.yukireflection.factory.field
 import com.highcapable.yukireflection.factory.hasClass
+import com.highcapable.yukireflection.factory.hasField
 import com.highcapable.yukireflection.factory.method
 import com.highcapable.yukireflection.factory.toClassOrNull
+import com.highcapable.yukireflection.type.android.WindowManager_LayoutParamsClass
 import com.highcapable.yukireflection.type.java.IntType
 
 /**
  * System bars compatible adaptation tool for various devices and systems.
- * @param activity the current activity.
+ * @param window the current window.
  */
-internal class SystemBarsCompat internal constructor(private val activity: Activity) {
+internal class SystemBarsCompat internal constructor(private val window: Window) {
+
+    /**
+     * Returns true if a legacy system.
+     * @return [Boolean]
+     */
+    internal val isLegacySystem get() = isLegacyMiui || isLegacyFlyme
 
     /**
      * Returns true if a legacy MIUI system.
      * @return [Boolean]
      */
-    internal val isLegacyMiui get() = SystemVersion.isLowTo(SystemVersion.M) && "com.android.internal.policy.impl.MiuiPhoneWindow".hasClass()
+    private val isLegacyMiui get() = SystemVersion.isLowTo(SystemVersion.M) && "com.android.internal.policy.impl.MiuiPhoneWindow".hasClass()
+
+    /**
+     * Returns true if a legacy Flyme system.
+     * @return [Boolean]
+     */
+    private val isLegacyFlyme
+        get() = SystemVersion.isLowTo(SystemVersion.M) && WindowManager_LayoutParamsClass.hasField { name = "MEIZU_FLAG_DARK_STATUS_BAR_ICON" }
+
+    /**
+     * Set the legacy system status bar dark mode.
+     * @param isDarkMode the current dark mode or bright mode.
+     */
+    internal fun setStatusBarDarkMode(isDarkMode: Boolean) {
+        when {
+            isLegacyMiui -> setStatusBarDarkModeForLegacyMiui(isDarkMode)
+            isLegacyFlyme -> setStatusBarDarkModeForLegacyFlyme(isDarkMode)
+        }
+    }
 
     /**
      * Set the legacy MIUI system status bar dark mode.
      * @param isDarkMode the current dark mode or bright mode.
      */
-    internal fun setStatusBarDarkModeForLegacyMiui(isDarkMode: Boolean) {
+    private fun setStatusBarDarkModeForLegacyMiui(isDarkMode: Boolean) {
         runCatching {
             val darkModeFlag = "android.view.MiuiWindowManager\$LayoutParams".toClassOrNull()
                 ?.field { name = "EXTRA_FLAG_STATUS_BAR_DARK_MODE" }?.ignored()?.get()?.int() ?: 0
@@ -57,8 +84,25 @@ internal class SystemBarsCompat internal constructor(private val activity: Activ
                     param(IntType, IntType)
                     superClass()
                 }?.ignored()
-                ?.get(activity.window)
+                ?.get(window)
                 ?.call(if (isDarkMode) darkModeFlag else 0, darkModeFlag)
         }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Called setStatusBarDarkModeForLegacyMiui function failed.", it) }
+    }
+
+    /**
+     * Set the legacy Flyme system status bar dark mode.
+     * @param isDarkMode the current dark mode or bright mode.
+     */
+    private fun setStatusBarDarkModeForLegacyFlyme(isDarkMode: Boolean) {
+        runCatching {
+            window.attributes?.current(ignored = true) {
+                val flags = field { name = "MEIZU_FLAG_DARK_STATUS_BAR_ICON" }.int()
+                val meizuFlagField = field { name = "meizuFlags" }
+                var meizuFlags = meizuFlagField.int()
+                val oldFlags = meizuFlags
+                meizuFlags = if (isDarkMode) meizuFlags or flags else meizuFlags and flags.inv()
+                if (oldFlags != meizuFlags) meizuFlagField.set(meizuFlags)
+            }
+        }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Called setStatusBarDarkModeForLegacyFlyme function failed.", it) }
     }
 }

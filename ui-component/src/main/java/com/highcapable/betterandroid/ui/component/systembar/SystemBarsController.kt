@@ -165,7 +165,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
      * Get the current system bars compat instance.
      * @return [SystemBarsCompat]
      */
-    private val systemBarsCompat by lazy { SystemBarsCompat(activity) }
+    private val systemBarsCompat by lazy { SystemBarsCompat(activity.window) }
 
     /**
      * Get the system bars behavior type.
@@ -396,10 +396,10 @@ class SystemBarsController private constructor(private val activity: Activity) {
                 // Some systems, such as MIUI based on Android 5,
                 // will automatically adapt to their own set of inverse color schemes.
                 activity.window?.statusBarColor =
-                    if (SystemVersion.isLowTo(SystemVersion.M) && !systemBarsCompat.isLegacyMiui && lightApperance)
+                    if (SystemVersion.isLowTo(SystemVersion.M) && !systemBarsCompat.isLegacySystem && lightApperance)
                         mixColorOf(backgroundColor, Color.BLACK)
                     else backgroundColor
-                if (systemBarsCompat.isLegacyMiui) systemBarsCompat.setStatusBarDarkModeForLegacyMiui(darkContent)
+                if (systemBarsCompat.isLegacySystem) systemBarsCompat.setStatusBarDarkMode(darkContent)
                 else rootInsetsController?.isAppearanceLightStatusBars = darkContent
             }
             SystemBars.NAVIGATION_BARS -> {
