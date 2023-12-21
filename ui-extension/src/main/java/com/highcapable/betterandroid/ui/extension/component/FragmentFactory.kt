@@ -70,70 +70,6 @@ inline fun <reified T : Fragment> FragmentManager.findFragment(@IdRes id: Int) =
 inline fun <reified T : Fragment> FragmentManager.findFragment(tag: String) = findFragmentByTag(tag) as? T?
 
 /**
- * - This function is deprecated, use [FragmentManager.commitTransaction] instead.
- * @see FragmentManager.commitTransaction
- */
-@Deprecated(
-    message = "Use FragmentManager.commitTransaction instead.",
-    replaceWith = ReplaceWith("supportFragmentManager.commitTransaction(isAllowingStateLoss, initiate)")
-)
-inline fun FragmentActivity.commitFragmentTransaction(isAllowingStateLoss: Boolean = true, initiate: FragmentTransaction.() -> Unit) {
-    supportFragmentManager.commitTransaction(isAllowingStateLoss, initiate)
-}
-
-/**
- * - This function is deprecated, use [FragmentManager.commitTransaction] instead.
- * @see FragmentManager.commitTransaction
- */
-@Deprecated(
-    message = "Use FragmentManager.commitTransaction instead.",
-    replaceWith = ReplaceWith("childFragmentManager.commitTransaction(isAllowingStateLoss, initiate)")
-)
-inline fun Fragment.commitFragmentTransaction(isAllowingStateLoss: Boolean = true, initiate: FragmentTransaction.() -> Unit) {
-    childFragmentManager.commitTransaction(isAllowingStateLoss, initiate)
-}
-
-/**
- * - This function is deprecated, use [FragmentManager.findFragment] instead.
- * @see FragmentManager.findFragment
- */
-@Deprecated(
-    message = "Use FragmentManager.findFragment instead.",
-    replaceWith = ReplaceWith("supportFragmentManager.findFragment(id)")
-)
-inline fun <reified T : Fragment> FragmentActivity.findFragment(@IdRes id: Int) = supportFragmentManager.findFragment<T>(id)
-
-/**
- * - This function is deprecated, use [FragmentManager.findFragment] instead.
- * @see FragmentManager.findFragment
- */
-@Deprecated(
-    message = "Use FragmentManager.findFragment instead.",
-    replaceWith = ReplaceWith("supportFragmentManager.findFragment(tag)")
-)
-inline fun <reified T : Fragment> FragmentActivity.findFragment(tag: String) = supportFragmentManager.findFragment<T>(tag)
-
-/**
- * - This function is deprecated, use [FragmentManager.findFragment] instead.
- * @see FragmentManager.findFragment
- */
-@Deprecated(
-    message = "Use FragmentManager.findFragment instead.",
-    replaceWith = ReplaceWith("childFragmentManager.findFragment(id)")
-)
-inline fun <reified T : Fragment> Fragment.findFragment(@IdRes id: Int) = childFragmentManager.findFragment<T>(id)
-
-/**
- * - This function is deprecated, use [FragmentManager.findFragment] instead.
- * @see FragmentManager.findFragment
- */
-@Deprecated(
-    message = "Use FragmentManager.findFragment instead.",
-    replaceWith = ReplaceWith("childFragmentManager.findFragment(tag)")
-)
-inline fun <reified T : Fragment> Fragment.findFragment(tag: String) = childFragmentManager.findFragment<T>(tag)
-
-/**
  * Attach [Fragment] to [FragmentActivity].
  * @param activity the [FragmentActivity] that needs to be bound to.
  * @param viewId the container view id that needs to be bound to.
@@ -358,6 +294,92 @@ fun Fragment.detachFromFragment(
 }
 
 /**
+ * Get the root view from current activity.
+ * @receiver the current activity.
+ * @return [ViewGroup]
+ */
+private fun Activity.requireRootView() = findViewById<ViewGroup>(Android_R.id.content).let {
+    (it.getChildAt(0) as? ViewGroup?)?.apply { if (id == View.NO_ID) id = View.generateViewId() } ?: it
+}
+
+/**
+ * Get the root view from current fragment.
+ *
+ * If the view is no id, it will be add a random id.
+ * @receiver the current fragment.
+ * @return [ViewGroup]
+ * @throws IllegalStateException if the root view is not a [ViewGroup].
+ */
+private fun Fragment.requireRootView() = (requireView() as? ViewGroup?)?.apply { if (id == View.NO_ID) id = View.generateViewId() }
+    ?: error("Fragment require a root view that is a ViewGroup.")
+
+// The following functions are deprecated, you should not use them.
+
+/**
+ * - This function is deprecated, use [FragmentManager.commitTransaction] instead.
+ * @see FragmentManager.commitTransaction
+ */
+@Deprecated(
+    message = "Use FragmentManager.commitTransaction instead.",
+    replaceWith = ReplaceWith("supportFragmentManager.commitTransaction(isAllowingStateLoss, initiate)")
+)
+inline fun FragmentActivity.commitFragmentTransaction(isAllowingStateLoss: Boolean = true, initiate: FragmentTransaction.() -> Unit) {
+    supportFragmentManager.commitTransaction(isAllowingStateLoss, initiate)
+}
+
+/**
+ * - This function is deprecated, use [FragmentManager.commitTransaction] instead.
+ * @see FragmentManager.commitTransaction
+ */
+@Deprecated(
+    message = "Use FragmentManager.commitTransaction instead.",
+    replaceWith = ReplaceWith("childFragmentManager.commitTransaction(isAllowingStateLoss, initiate)")
+)
+inline fun Fragment.commitFragmentTransaction(isAllowingStateLoss: Boolean = true, initiate: FragmentTransaction.() -> Unit) {
+    childFragmentManager.commitTransaction(isAllowingStateLoss, initiate)
+}
+
+/**
+ * - This function is deprecated, use [FragmentManager.findFragment] instead.
+ * @see FragmentManager.findFragment
+ */
+@Deprecated(
+    message = "Use FragmentManager.findFragment instead.",
+    replaceWith = ReplaceWith("supportFragmentManager.findFragment(id)")
+)
+inline fun <reified T : Fragment> FragmentActivity.findFragment(@IdRes id: Int) = supportFragmentManager.findFragment<T>(id)
+
+/**
+ * - This function is deprecated, use [FragmentManager.findFragment] instead.
+ * @see FragmentManager.findFragment
+ */
+@Deprecated(
+    message = "Use FragmentManager.findFragment instead.",
+    replaceWith = ReplaceWith("supportFragmentManager.findFragment(tag)")
+)
+inline fun <reified T : Fragment> FragmentActivity.findFragment(tag: String) = supportFragmentManager.findFragment<T>(tag)
+
+/**
+ * - This function is deprecated, use [FragmentManager.findFragment] instead.
+ * @see FragmentManager.findFragment
+ */
+@Deprecated(
+    message = "Use FragmentManager.findFragment instead.",
+    replaceWith = ReplaceWith("childFragmentManager.findFragment(id)")
+)
+inline fun <reified T : Fragment> Fragment.findFragment(@IdRes id: Int) = childFragmentManager.findFragment<T>(id)
+
+/**
+ * - This function is deprecated, use [FragmentManager.findFragment] instead.
+ * @see FragmentManager.findFragment
+ */
+@Deprecated(
+    message = "Use FragmentManager.findFragment instead.",
+    replaceWith = ReplaceWith("childFragmentManager.findFragment(tag)")
+)
+inline fun <reified T : Fragment> Fragment.findFragment(tag: String) = childFragmentManager.findFragment<T>(tag)
+
+/**
  * Batch attach [Fragment] to [FragmentActivity].
  *
  * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
@@ -496,23 +518,3 @@ fun Fragment.detachFragments(
     allowingStateLoss: Boolean = true
 ) {
 }
-
-/**
- * Get the root view from current activity.
- * @receiver the current activity.
- * @return [ViewGroup]
- */
-private fun Activity.requireRootView() = findViewById<ViewGroup>(Android_R.id.content).let {
-    (it.getChildAt(0) as? ViewGroup?)?.apply { if (id == View.NO_ID) id = View.generateViewId() } ?: it
-}
-
-/**
- * Get the root view from current fragment.
- *
- * If the view is no id, it will be add a random id.
- * @receiver the current fragment.
- * @return [ViewGroup]
- * @throws IllegalStateException if the root view is not a [ViewGroup].
- */
-private fun Fragment.requireRootView() = (requireView() as? ViewGroup?)?.apply { if (id == View.NO_ID) id = View.generateViewId() }
-    ?: error("Fragment require a root view that is a ViewGroup.")
