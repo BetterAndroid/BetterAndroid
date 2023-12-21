@@ -100,7 +100,7 @@ fun Insets.toWrapper(isVisible: Boolean = true) = InsetsWrapper.of(left, top, ri
  * }
  * ```
  *
- * If you want to handle the insets change with animation, just set the [animated] to true.
+ * If you want to handle the window insets change with animation, just set the [animated] to true.
  *
  * Usage:
  *
@@ -109,6 +109,9 @@ fun Insets.toWrapper(isVisible: Boolean = true) = InsetsWrapper.of(left, top, ri
  *    // The other code is same as above.
  * }
  * ```
+ *
+ * If you want to remove the window insets listener after, just call [View.removeWindowInsetsListener].
+ * @see View.removeWindowInsetsListener
  * @see WindowInsetsWrapper
  * @see View.setInsetsPadding
  * @see View.updateInsetsPadding
@@ -135,6 +138,18 @@ inline fun <reified V : View> V.handleOnWindowInsetsChanged(
         val consumed = onChange(self, insets.createWrapper(windowFromActivity))
         if (consumed) WindowInsetsCompat.CONSUMED else insets
     }
+}
+
+/**
+ * Remove the window insets listener for this view.
+ * @see View.handleOnWindowInsetsChanged
+ * @see ViewCompat.setOnApplyWindowInsetsListener
+ * @see ViewCompat.setWindowInsetsAnimationCallback
+ * @receiver [View]
+ */
+fun View.removeWindowInsetsListener() {
+    ViewCompat.setOnApplyWindowInsetsListener(this, null)
+    ViewCompat.setWindowInsetsAnimationCallback(this, null)
 }
 
 /**
