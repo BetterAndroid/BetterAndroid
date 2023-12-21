@@ -27,24 +27,17 @@ import android.app.Activity
 import android.content.res.Configuration
 import android.graphics.Point
 import android.graphics.Rect
-import android.util.Log
 import android.view.View
 import android.view.Window
 import androidx.annotation.Px
 import androidx.core.view.DisplayCutoutCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.highcapable.betterandroid.system.extension.tool.SystemKind
-import com.highcapable.betterandroid.system.extension.tool.SystemProperties
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
-import com.highcapable.betterandroid.ui.component.generated.BetterAndroidProperties
+import com.highcapable.betterandroid.ui.component.insets.compat.WindowInsetsWrapperCompat
 import com.highcapable.betterandroid.ui.component.insets.factory.createWrapper
 import com.highcapable.betterandroid.ui.component.insets.factory.toWrapper
 import com.highcapable.betterandroid.ui.extension.component.base.toPx
-import com.highcapable.yukireflection.factory.method
-import com.highcapable.yukireflection.factory.toClassOrNull
-import com.highcapable.yukireflection.type.android.WindowClass
-import com.highcapable.yukireflection.type.java.IntType
 import kotlin.math.abs
 import android.R as Android_R
 
@@ -157,6 +150,12 @@ class WindowInsetsWrapper private constructor(private val windowInsets: WindowIn
         override fun toString() =
             "WindowInsetsWrapper.Absolute(statusBars=$statusBars, navigationBars=$navigationBars, systemBars=$systemBars)"
     }
+
+    /**
+     * Get the current window insets wrapper compat instance.
+     * @return [WindowInsetsWrapperCompat]
+     */
+    private val wrapperCompat by lazy { WindowInsetsWrapperCompat(window) }
 
     /**
      * Get the status bars insets.
@@ -342,9 +341,10 @@ class WindowInsetsWrapper private constructor(private val windowInsets: WindowIn
      * @see WindowInsetsCompat.Type.displayCutout
      * @return [InsetsWrapper]
      */
-    fun displayCutout() = SystemVersion.require(SystemVersion.P, createLegacyDisplayCutoutInsets()) {
-        getInsets(typeMask = WindowInsetsCompat.Type.displayCutout())
-    }
+    fun displayCutout() =
+        SystemVersion.require(SystemVersion.P, wrapperCompat.createLegacyDisplayCutoutInsets(statusBars(ignoringVisibility = true))) {
+            getInsets(typeMask = WindowInsetsCompat.Type.displayCutout())
+        }
 
     /**
      * Get the waterfall insets.
@@ -414,59 +414,6 @@ class WindowInsetsWrapper private constructor(private val windowInsets: WindowIn
         val isVisible = windowInsets.isVisible(typeMask)
         val insets = if (ignoringVisibility) windowInsets.getInsetsIgnoringVisibility(typeMask) else windowInsets.getInsets(typeMask)
         return insets.toWrapper(isVisible)
-    }
-
-    /**
-     * Create a compatible [InsetsWrapper] to adapt to the
-     * notch size (cutout size) given by custom ROMs and manufacturer in legacy systems.
-     *
-     * - Higher than Android 9 calling this function the safeInsetTop will be set to 0
-     *
-     * - Note: The compatibility of each device and system has not been tested in turn,
-     *   if there are legacy system compatibility issues and the device and system
-     *   are very niche, they will no longer be adapted.
-     * @return [InsetsWrapper]
-     */
-    private fun createLegacyDisplayCutoutInsets(): InsetsWrapper {
-        val context = window?.context ?: return InsetsWrapper.NONE
-        var safeInsetTop = 0
-        if (SystemVersion.isLowAndEqualsTo(SystemVersion.P)) when (SystemKind.get()) {
-            SystemKind.EMUI -> runCatching {
-                val huaweiRet = "com.huawei.android.util.HwNotchSizeUtil".toClassOrNull()
-                    ?.method { name = "getNotchSize" }?.ignored()?.get()?.invoke() ?: intArrayOf(0, 0)
-                if (huaweiRet[1] != 0)
-                    "com.huawei.android.view.LayoutParamsEx".toClassOrNull()
-                        ?.method {
-                            name = "addHwFlags"
-                            param(IntType)
-                        }?.ignored()
-                        ?.get(window?.attributes)
-                        ?.call(0x00010000)
-                safeInsetTop = huaweiRet[1]
-            }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to set display cutout configuration for EMUI.", it) }
-            SystemKind.FUNTOUCHOS, SystemKind.ORIGINOS -> runCatching {
-                if ("android.util.FtFeature".toClassOrNull()
-                        ?.method {
-                            name = "isFeatureSupport"
-                            param(IntType)
-                        }?.ignored()?.get()?.boolean(0x00000020) == true
-                ) safeInsetTop = 27.toPx(context)
-            }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to set display cutout configuration for FuntouchOS/OriginalOS.", it) }
-            SystemKind.COLOROS -> runCatching {
-                if (context.packageManager.hasSystemFeature("com.oppo.feature.screen.heteromorphism"))
-                    safeInsetTop = 80
-            }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to set display cutout configuration for ColorOS.", it) }
-            SystemKind.MIUI -> runCatching {
-                val hasMiuiNotch = SystemProperties.getBoolean("ro.miui.notch")
-                if (hasMiuiNotch) {
-                    safeInsetTop = statusBars(ignoringVisibility = true).top
-                    WindowClass.method {
-                        name = "addExtraFlags"
-                        param(IntType)
-                    }.ignored().get(window).call(0x00000100 or 0x00000200 or 0x00000400)
-                }
-            }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to set display cutout configuration for MIUI.", it) }
-        }; return InsetsWrapper.of(top = safeInsetTop)
     }
 
     override fun toString() =
