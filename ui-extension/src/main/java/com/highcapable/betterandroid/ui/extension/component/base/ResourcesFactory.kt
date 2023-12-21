@@ -24,7 +24,6 @@
 
 package com.highcapable.betterandroid.ui.extension.component.base
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
@@ -58,36 +57,15 @@ import androidx.core.view.isNotEmpty
 import androidx.core.view.size
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 import com.highcapable.yukireflection.factory.classOf
-import com.highcapable.yukireflection.factory.current
 
 /**
  * Whether in non-standard (special) floating window mode.
  *
- * Standard floating window and multi-window modes can be
- * obtained through [Activity.isInMultiWindowMode].
- *
- * Not in [WindowConfiguration](https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/app/WindowConfiguration.java)
- * types defined in will be recognized as non-standard (special) float mode.
- *
- * The types we currently know are as follows:
- *
- * - WINDOWING_MODE_UNDEFINED (0)
- * - WINDOWING_MODE_FULLSCREEN (1)
- * - WINDOWING_MODE_PINNED (2)
- * - WINDOWING_MODE_FREEFORM (5)
- * - WINDOWING_MODE_MULTI_WINDOW (6)
- *
- * This function is used to fix some non-standard ROMs that still provide
- * some insets padding in floating window mode, causing the UI to display abnormally.
- * @receiver the current resources configuration.
- * @return [Boolean]
+ * - This solution was undesirable, so it was deprecated and no effect, don't use it.
  */
-val Configuration.isSpecialWindowingMode
-    get() = (current(ignored = true)
-        .field { name = "windowConfiguration" }
-        .current(ignored = true)
-        ?.method { name = "getWindowingMode" }
-        ?.int() ?: 0) !in 0..6
+@Suppress("UnusedReceiverParameter", "DeprecatedCallableAddReplaceWith")
+@Deprecated(message = "No effect and will be removed in the future.")
+val Configuration.isSpecialWindowingMode get() = false
 
 /**
  * Determine whether the current UI mode is night mode.

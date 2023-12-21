@@ -33,16 +33,17 @@ import android.content.pm.PackageManager
 import com.highcapable.betterandroid.system.extension.component.queryLaunchActivitiesForPackage
 import com.highcapable.betterandroid.system.extension.component.queryLaunchActivitiesForPackageOrNull
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
-import com.highcapable.betterandroid.ui.extension.component.base.isSpecialWindowingMode
 import com.highcapable.yukireflection.factory.classOf
 
 /**
  * Determine whether the current activity is in any special mode,
  * such as mini-window, multi-window, split-screen, etc.
- * @receiver the current activty.
- * @return [Boolean]
+ *
+ * - This solution was undesirable, so it was deprecated, use [Activity.isInMultiWindowModeCompat] instead.
+ * @see Activity.isInMultiWindowModeCompat
  */
-val Activity.isInSpecialWindowMode get() = isInMultiWindowModeCompat || resources.configuration.isSpecialWindowingMode
+@Deprecated(message = "Use isInMultiWindowModeCompat instead.", ReplaceWith("isInMultiWindowModeCompat"))
+val Activity.isInSpecialWindowMode get() = isInMultiWindowModeCompat
 
 /**
  * Whether the activity is currently in multi-window mode (compat).
