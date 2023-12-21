@@ -241,17 +241,6 @@ class SystemBarsController private constructor(private val controller: UIViewCon
     }
 
     /**
-     * Determine whether the system bars is visible.
-     * @param type the system bars type.
-     * @return [Boolean]
-     */
-    fun isVisible(type: SystemBars) = when (type) {
-        SystemBars.ALL -> !appController.isStatusBarHidden && !appController.isHomeIndicatorAutoHidden
-        SystemBars.STATUS_BARS -> !appController.isStatusBarHidden
-        SystemBars.HOME_INDICATOR -> !appController.isHomeIndicatorAutoHidden
-    }
-
-    /**
      * Get or set the style of status bars.
      * @see SystemBarStyle
      * @see setStyle

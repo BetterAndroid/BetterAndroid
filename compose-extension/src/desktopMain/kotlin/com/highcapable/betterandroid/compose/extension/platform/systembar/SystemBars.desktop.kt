@@ -75,16 +75,6 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
     }
 
     /**
-     * Determine whether the system bars is visible.
-     * @param type the system bars type.
-     * @return [Boolean]
-     */
-    actual fun isVisible(type: PlatformSystemBars): Boolean {
-        // Platform desktop: No-op.
-        return false
-    }
-
-    /**
      * Get or set the style of status bars.
      * @see PlatformSystemBarStyle
      * @see setStyle

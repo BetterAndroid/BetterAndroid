@@ -89,15 +89,6 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
     }
 
     /**
-     * Determine whether the system bars is visible.
-     * @param type the system bars type.
-     * @return [Boolean]
-     */
-    actual fun isVisible(type: PlatformSystemBars): Boolean {
-        return nativeController?.isVisible(type.toPlatformActual()) == true
-    }
-
-    /**
      * Get or set the style of status bars.
      * @see PlatformSystemBarStyle
      * @see setStyle
@@ -156,7 +147,7 @@ actual fun rememberSystemBarsController(): PlatformSystemBarsController {
             // Find the current [ComposeView].
             val existingComposeView = activity.findViewById<ViewGroup>(Android_R.id.content)?.getChildAt(0) as? ComposeView?
             // If the controller is not initialized, initialize it with [existingComposeView].
-            if (nativeSystemBars.isDestroyed) nativeSystemBars.init(existingComposeView, defaultPadding = false)
+            if (nativeSystemBars.isDestroyed) nativeSystemBars.init(existingComposeView, handleWindowInsets = null)
         }
         systemBars = PlatformSystemBarsController(nativeSystemBars)
     }; return systemBars

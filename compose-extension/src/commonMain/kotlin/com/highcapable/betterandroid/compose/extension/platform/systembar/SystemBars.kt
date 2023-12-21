@@ -69,13 +69,6 @@ expect class PlatformSystemBarsController internal constructor(actual: NativeSys
     fun hide(type: PlatformSystemBars)
 
     /**
-     * Determine whether the system bars is visible.
-     * @param type the system bars type.
-     * @return [Boolean]
-     */
-    fun isVisible(type: PlatformSystemBars): Boolean
-
-    /**
      * Get or set the style of status bars.
      * @see PlatformSystemBarStyle
      * @see setStyle
