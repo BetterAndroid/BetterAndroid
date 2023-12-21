@@ -481,7 +481,7 @@ viewPager2.adapter = adapter
 // 创建一个线性纵向列表，行间距为 10dp
 val lvCosmetic = RecyclerCosmetic.fromLinearVertical(context, 10.toPx(context))
 // 创建一个九宫格纵向列表，列间距为 10dp，行间距为 10dp
-val gvCosmetic = RecyclerCosmeticMaker.fromGridVertical(context, 10.toPx(context), 10.toPx(context))
+val gvCosmetic = RecyclerCosmetic.fromGridVertical(context, 10.toPx(context), 10.toPx(context))
 // 以 lvCosmetic 举例
 // 使用 bindAdapter 绑定到 recyclerView
 recyclerView.bindAdapter<CustomBean>(lvCosmetic) {
@@ -1050,7 +1050,7 @@ val insets1 = InsetsWrapper.of(10, 10, 10, 10)
 val insets2 = InsetsWrapper.of(20, 20, 20, 20)
 // 使用 "+" 运算符，等同于 Insets.add(insets1, insets2)
 val insets3 = insets1 + insets2
-// 使用 "-" 运算符，等同于 Insets.subtract(insets1, insets2)
+// 使用 "-" 运算符，等同于 Insets.subtract(insets2, insets1)
 val insets3 = insets2 - insets1
 // 使用 "or" 运算符，等同于 Insets.max(insets1, insets2)
 val insets3 = insets1 or insets2

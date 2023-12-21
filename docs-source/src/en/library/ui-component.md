@@ -475,7 +475,7 @@ viewPager2.adapter = adapter
 
 `BetterAndroid` presets several common adapter layout types for `RecyclerView` for developers to use.
 
-You can specify a `RecyclerCosmetic` in the method parameter, which defaults to a linear vertical list cosmetic maker.
+You can specify a `RecyclerCosmetic` in the method parameter, which defaults to a linear vertical cosmetic.
 
 > The following example
 
@@ -483,7 +483,7 @@ You can specify a `RecyclerCosmetic` in the method parameter, which defaults to 
 // Create a linear vertical cosmetic with 10dp row spacing.
 val lvCosmetic = RecyclerCosmetic.fromLinearVertical(context, 10.toPx(context))
 // Create a nine-square grid vertical cosmetic with a column spacing of 10dp and a row spacing of 10dp.
-val gvCosmetic = RecyclerCosmeticMaker.fromGridVertical(context, 10.toPx(context), 10.toPx(context))
+val gvCosmetic = RecyclerCosmetic.fromGridVertical(context, 10.toPx(context), 10.toPx(context))
 // Take lvCosmetic as an example.
 // Use bindAdapter to bind to recyclerView.
 recyclerView.bindAdapter<CustomBean>(lvCosmetic) {
@@ -1079,7 +1079,7 @@ val insets1 = InsetsWrapper.of(10, 10, 10, 10)
 val insets2 = InsetsWrapper.of(20, 20, 20, 20)
 // Use "+" operator, equivalent to Insets.add(insets1, insets2).
 val insets3 = insets1 + insets2
-// Use "-" operator, equivalent to Insets.subtract(insets1, insets2).
+// Use "-" operator, equivalent to Insets.subtract(insets2, insets1).
 val insets3 = insets2 - insets1
 // Use "or" operator, equivalent to Insets.max(insets1, insets2).
 val insets3 = insets1 or insets2
