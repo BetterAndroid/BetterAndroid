@@ -37,7 +37,6 @@ import androidx.annotation.Px
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.core.view.setPadding
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 import com.highcapable.betterandroid.ui.component.activity.AppBindingActivity
 import com.highcapable.betterandroid.ui.component.activity.AppComponentActivity
@@ -47,10 +46,9 @@ import com.highcapable.betterandroid.ui.component.fragment.AppViewsFragment
 import com.highcapable.betterandroid.ui.component.generated.BetterAndroidProperties
 import com.highcapable.betterandroid.ui.component.insets.InsetsWrapper
 import com.highcapable.betterandroid.ui.component.insets.WindowInsetsWrapper
-import com.highcapable.betterandroid.ui.component.insets.factory.createRootWindowInsetsWrapper
 import com.highcapable.betterandroid.ui.component.insets.factory.handleOnWindowInsetsChanged
+import com.highcapable.betterandroid.ui.component.insets.factory.removeWindowInsetsListener
 import com.highcapable.betterandroid.ui.component.insets.factory.setInsetsPadding
-import com.highcapable.betterandroid.ui.component.insets.factory.updateInsetsPadding
 import com.highcapable.betterandroid.ui.component.systembar.compat.SystemBarsCompat
 import com.highcapable.betterandroid.ui.component.systembar.style.SystemBarStyle
 import com.highcapable.betterandroid.ui.component.systembar.type.SystemBars
@@ -155,20 +153,11 @@ class SystemBarsController private constructor(private val activity: Activity) {
     /** The root view. */
     private var rootView: View? = null
 
-    /** The callback of root view padding function. */
-    private var rootPaddingCallback: (() -> Unit)? = null
+    /** The current window insets controller of [rootView]. */
+    private var rootInsetsController: WindowInsetsControllerCompat? = null
 
-    /** The current window insets wrapper of [parentView]. */
-    private var parentInsetsWrapper: WindowInsetsWrapper? = null
-
-    /** The current window insets controller of [parentView]. */
-    private var parentInsetsController: WindowInsetsControllerCompat? = null
-
-    /**
-     * Get the [rootView]'s parent.
-     * @return [View] or null.
-     */
-    private val parentView get() = rootView?.parent as? View?
+    /** Whether to handle the [rootView]'s window insets. */
+    private var isHandleWindowInsets = false
 
     /**
      * Get the current system bars compat instance.
@@ -214,46 +203,6 @@ class SystemBarsController private constructor(private val activity: Activity) {
         setStyle(SystemBarStyle.AutoTransparent)
     }
 
-    /** Create the default [rootView]'s padding callback. */
-    private fun createDefaultRootPaddingCallback() {
-        withRootPadding(autoUpdate = false) { rootView?.setInsetsPadding(it.safeDrawingIgnoringIme) }
-    }
-
-    /**
-     * With the [rootView]'s padding function block.
-     * @param autoUpdate whether to update the padding, default true.
-     * @param callback the callback function.
-     */
-    private fun withRootPadding(autoUpdate: Boolean = true, callback: (WindowInsetsWrapper) -> Unit) {
-        rootPaddingCallback = { parentInsetsWrapper?.also(callback) }
-        if (autoUpdate) updateRootPadding()
-    }
-
-    /** Update the [rootView]'s padding. */
-    private fun updateRootPadding() {
-        rootPaddingCallback?.invoke()
-    }
-
-    /** Handle and make the [parentView] window insets available. */
-    private fun handleOnParentWindowInsetsChanged() {
-        /**
-         * Do on parent window insets changed.
-         * @param insetsWrapper the window insets wrapper.
-         */
-        fun onChange(insetsWrapper: WindowInsetsWrapper?) {
-            insetsWrapper ?: return
-            parentInsetsWrapper = insetsWrapper
-            updateRootPadding()
-        }
-        onChange(parentView?.createRootWindowInsetsWrapper(activity.window))
-        parentView?.handleOnWindowInsetsChanged { _, insetsWrapper ->
-            onChange(insetsWrapper)
-            // In here, we won't consumed the insets for child views,
-            // so you can use the [View.handleOnWindowInsetsChanged] to handle the child views insets.
-            false
-        }
-    }
-
     /**
      * Get the current [SystemBarsController]'s status.
      * @return [Boolean]
@@ -271,10 +220,11 @@ class SystemBarsController private constructor(private val activity: Activity) {
      *   repeated calls will only be performed once.
      * @see destroy
      * @param rootView the root view (must have a parent), default is [Android_R.id.content].
-     * @param defaultPadding whether to initialize the default window insets padding to [rootView], default true.
+     * @param handleWindowInsets handle the [rootView]'s window insets, default is [WindowInsetsWrapper.safeDrawingIgnoringIme],
+     * if you don't want to set that, you can set it to null.
      * @throws IllegalStateException if the [rootView] is not available.
      */
-    fun init(rootView: View? = null, defaultPadding: Boolean = true) {
+    fun init(rootView: View? = null, handleWindowInsets: (WindowInsetsWrapper.() -> InsetsWrapper)? = { safeDrawingIgnoringIme }) {
         if (isInitOnce) return
         var throwable: Throwable? = null
         val absRootView = rootView ?: runCatching { activity.findViewById<ViewGroup>(Android_R.id.content) }.onFailure {
@@ -289,7 +239,8 @@ class SystemBarsController private constructor(private val activity: Activity) {
         requireNotNull(absRootView.parent) { "The rootView $absRootView must have a parent." }
         isInitOnce = true
         this.rootView = absRootView
-        parentInsetsController = parentView?.let { WindowCompat.getInsetsController(activity.window, it) }
+        rootInsetsController = WindowCompat.getInsetsController(activity.window, absRootView)
+        isHandleWindowInsets = handleWindowInsets != null
         var isStatusBarContrastEnforced = false
         var isNavigationBarContrastEnforced = false
         SystemVersion.require(SystemVersion.Q) {
@@ -305,8 +256,8 @@ class SystemBarsController private constructor(private val activity: Activity) {
             navigationBarColor = activity.window?.navigationBarColor ?: Color.TRANSPARENT,
             isStatusBarContrastEnforced = isStatusBarContrastEnforced,
             isNavigationBarContrastEnforced = isNavigationBarContrastEnforced,
-            isAppearanceLightStatusBars = parentInsetsController?.isAppearanceLightStatusBars == true,
-            isAppearanceLightNavigationBars = parentInsetsController?.isAppearanceLightNavigationBars == true
+            isAppearanceLightStatusBars = rootInsetsController?.isAppearanceLightStatusBars == true,
+            isAppearanceLightNavigationBars = rootInsetsController?.isAppearanceLightNavigationBars == true
         )
         // Set the layout overlay to status bars and navigation bars.
         WindowCompat.setDecorFitsSystemWindows(activity.window, false)
@@ -317,8 +268,16 @@ class SystemBarsController private constructor(private val activity: Activity) {
             activity.window?.navigationBarDividerColor = Color.TRANSPARENT
         }
         initializeDefaults()
-        if (defaultPadding) createDefaultRootPaddingCallback()
-        handleOnParentWindowInsetsChanged()
+        // If has [handleWindowInsets],
+        // the controller will handle the root window insets by default.
+        handleWindowInsets?.also {
+            absRootView.handleOnWindowInsetsChanged { rootView, insetsWrapper ->
+                rootView.setInsetsPadding(it(insetsWrapper))
+                // In here, we won't consumed the insets for child views by default,
+                // so you can use the [View.handleOnWindowInsetsChanged] to handle the child views insets.
+                false
+            }
+        }
     }
 
     /**
@@ -328,162 +287,10 @@ class SystemBarsController private constructor(private val activity: Activity) {
      * @return [SystemBarsBehavior]
      */
     var behavior
-        get() = parentInsetsController?.systemBarBehaviorType ?: SystemBarsBehavior.DEFAULT
+        get() = rootInsetsController?.systemBarBehaviorType ?: SystemBarsBehavior.DEFAULT
         set(value) {
-            parentInsetsController?.systemBarsBehavior = value.toBehaviorType()
+            rootInsetsController?.systemBarsBehavior = value.toBehaviorType()
         }
-
-    /**
-     * Set the [rootView]'s padding with window insets.
-     *
-     * This function will be re-called when the window insets changes.
-     *
-     * You can use [removeRootInsetsPadding] to remove the [rootView]'s padding.
-     *
-     * Usage:
-     *
-     * ```kotlin
-     * // Set all padding by safeDrawingIgnoringIme.
-     * systemBars.setRootInsetsPadding(insets = { safeDrawingIgnoringIme })
-     * // Set all padding by systemBars.
-     * systemBars.setRootInsetsPadding(insets = { systemBars })
-     * ```
-     * @see WindowInsetsWrapper
-     * @see updateRootInsetsPadding
-     * @see removeRootInsetsPadding
-     * @see View.handleOnWindowInsetsChanged
-     * @see View.setInsetsPadding
-     * @param insets the insets wrapper callback.
-     * @param left whether set the left padding.
-     * @param top whether set the top padding.
-     * @param right whether set the right padding.
-     * @param bottom whether set the bottom padding.
-     */
-    @JvmOverloads
-    fun setRootInsetsPadding(
-        insets: WindowInsetsWrapper.() -> InsetsWrapper,
-        left: Boolean = true,
-        top: Boolean = true,
-        right: Boolean = true,
-        bottom: Boolean = true
-    ) = withRootPadding { rootView?.setInsetsPadding(insets(it), left, top, right, bottom) }
-
-    /**
-     * Set the [rootView]'s padding with window insets.
-     *
-     * This function will be re-called when the window insets changes.
-     *
-     * You can use [removeRootInsetsPadding] to remove the [rootView]'s padding.
-     *
-     * Usage:
-     *
-     * ```kotlin
-     * // Set all padding by safeDrawingIgnoringIme.
-     * systemBars.setRootInsetsPadding(insets = { safeDrawingIgnoringIme })
-     * // Set all padding by systemBars.
-     * systemBars.setRootInsetsPadding(insets = { systemBars })
-     * ```
-     * @see WindowInsetsWrapper
-     * @see updateRootInsetsPadding
-     * @see removeRootInsetsPadding
-     * @see View.handleOnWindowInsetsChanged
-     * @see View.setInsetsPadding
-     * @param insets the insets wrapper callback.
-     * @param horizontal whether set the horizontal padding.
-     * @param vertical whether set the vertical padding.
-     */
-    @JvmOverloads
-    @JvmName("setRootHVInsetsPadding")
-    fun setRootInsetsPadding(
-        insets: WindowInsetsWrapper.() -> InsetsWrapper,
-        horizontal: Boolean = true,
-        vertical: Boolean = true
-    ) = withRootPadding { rootView?.setInsetsPadding(insets(it), horizontal, vertical) }
-
-    /**
-     * Update the [rootView]'s padding with window insets.
-     *
-     * This function will be re-called when the window insets changes.
-     *
-     * You can use [removeRootInsetsPadding] to remove the [rootView]'s padding.
-     *
-     * Usage:
-     *
-     * ```kotlin
-     * // Update top padding by safeDrawingIgnoringIme.
-     * systemBars.updateRootInsetsPadding(insets = { safeDrawingIgnoringIme }, top = true)
-     * // Update bottom padding by systemBars.
-     * systemBars.updateRootInsetsPadding(insets = { systemBars }, bottom = true)
-     * ```
-     * @see WindowInsetsWrapper
-     * @see setRootInsetsPadding
-     * @see removeRootInsetsPadding
-     * @see View.handleOnWindowInsetsChanged
-     * @see View.updateInsetsPadding
-     * @param insets the insets wrapper callback.
-     * @param left whether update the left padding.
-     * @param top whether update the top padding.
-     * @param right whether update the right padding.
-     * @param bottom whether update the bottom padding.
-     */
-    @JvmOverloads
-    fun updateRootInsetsPadding(
-        insets: WindowInsetsWrapper.() -> InsetsWrapper,
-        left: Boolean = false,
-        top: Boolean = false,
-        right: Boolean = false,
-        bottom: Boolean = false
-    ) = withRootPadding { rootView?.updateInsetsPadding(insets(it), left, top, right, bottom) }
-
-    /**
-     * Update the [rootView]'s padding with window insets.
-     *
-     * This function will be re-called when the window insets changes.
-     *
-     * You can use [removeRootInsetsPadding] to remove the [rootView]'s padding.
-     *
-     * Usage:
-     *
-     * ```kotlin
-     * // Update horizontal padding by safeDrawingIgnoringIme.
-     * systemBars.updateRootInsetsPadding(insets = { safeDrawingIgnoringIme }, horizontal = true)
-     * // Update vertical padding by systemBars.
-     * systemBars.updateRootInsetsPadding(insets = { systemBars }, vertical = true)
-     * ```
-     * @see WindowInsetsWrapper
-     * @see setRootInsetsPadding
-     * @see removeRootInsetsPadding
-     * @see View.handleOnWindowInsetsChanged
-     * @see View.updateInsetsPadding
-     * @param insets the insets wrapper callback.
-     * @param horizontal whether update the horizontal padding.
-     * @param vertical whether update the vertical padding.
-     */
-    @JvmOverloads
-    @JvmName("updateRootHVInsetsPadding")
-    fun updateRootInsetsPadding(
-        insets: WindowInsetsWrapper.() -> InsetsWrapper,
-        horizontal: Boolean = false,
-        vertical: Boolean = false
-    ) = withRootPadding { rootView?.updateInsetsPadding(insets(it), horizontal, vertical) }
-
-    /**
-     * Remove the [rootView]'s padding and callback.
-     *
-     * - Note: If you init your own [rootView] in [init] and set the defaultPadding to true
-     *   or you used [setRootInsetsPadding] or [updateRootInsetsPadding],
-     *   be sure to use this function to remove the padding and callback for it,
-     *   because the padding of [rootView] has been taken over by [SystemBarsController] before,
-     *   your manual modification operations will not work.
-     */
-    fun removeRootInsetsPadding() {
-        // If the window insets is not applied to the root view,
-        // we should not change the root view's padding.
-        if (rootPaddingCallback == null) return
-        rootPaddingCallback = null
-        rootView?.setPadding(0)
-        rootView?.requestLayout()
-    }
 
     /**
      * Show system bars.
@@ -493,7 +300,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
      * @param type the system bars type.
      */
     fun show(type: SystemBars) {
-        parentInsetsController?.show(type.toInsetsType())
+        rootInsetsController?.show(type.toInsetsType())
     }
 
     /**
@@ -504,18 +311,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
      * @param type the system bars type.
      */
     fun hide(type: SystemBars) {
-        parentInsetsController?.hide(type.toInsetsType())
-    }
-
-    /**
-     * Determine whether the system bars is visible.
-     * @param type the system bars type.
-     * @return [Boolean]
-     */
-    fun isVisible(type: SystemBars) = when (type) {
-        SystemBars.ALL -> parentInsetsWrapper?.systemBars?.isVisible == true
-        SystemBars.STATUS_BARS -> parentInsetsWrapper?.statusBars?.isVisible == true
-        SystemBars.NAVIGATION_BARS -> parentInsetsWrapper?.navigationBars?.isVisible == true
+        rootInsetsController?.hide(type.toInsetsType())
     }
 
     /**
@@ -596,7 +392,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
                         mixColorOf(backgroundColor, Color.BLACK)
                     else backgroundColor
                 if (systemBarsCompat.isLegacyMiui) systemBarsCompat.setStatusBarDarkModeForLegacyMiui(darkContent)
-                else parentInsetsController?.isAppearanceLightStatusBars = darkContent
+                else rootInsetsController?.isAppearanceLightStatusBars = darkContent
             }
             SystemBars.NAVIGATION_BARS -> {
                 enableDrawsSystemBarBackgrounds()
@@ -606,7 +402,7 @@ class SystemBarsController private constructor(private val activity: Activity) {
                     if (SystemVersion.isLowTo(SystemVersion.O) && lightApperance)
                         mixColorOf(backgroundColor, Color.BLACK)
                     else backgroundColor
-                parentInsetsController?.isAppearanceLightNavigationBars = darkContent
+                rootInsetsController?.isAppearanceLightNavigationBars = darkContent
             }
             else -> {}
         }
@@ -641,13 +437,13 @@ class SystemBarsController private constructor(private val activity: Activity) {
                 activity.window?.isStatusBarContrastEnforced = it.isStatusBarContrastEnforced
                 activity.window?.isNavigationBarContrastEnforced = it.isNavigationBarContrastEnforced
             }
-            parentInsetsController?.isAppearanceLightStatusBars = it.isAppearanceLightStatusBars
-            parentInsetsController?.isAppearanceLightNavigationBars = it.isAppearanceLightNavigationBars
+            rootInsetsController?.isAppearanceLightStatusBars = it.isAppearanceLightStatusBars
+            rootInsetsController?.isAppearanceLightNavigationBars = it.isAppearanceLightNavigationBars
         }
-        removeRootInsetsPadding()
-        parentInsetsWrapper = null
-        parentInsetsController = null
+        if (isHandleWindowInsets) rootView?.removeWindowInsetsListener()
+        rootInsetsController = null
         rootView = null
+        isHandleWindowInsets = false
         isInitOnce = false
     }
 
@@ -784,13 +580,23 @@ class SystemBarsController private constructor(private val activity: Activity) {
     fun hide(type: SystemBars, removeExtraPaddings: Boolean = false, ignoredCutout: Boolean = false) = hide(type)
 
     /**
+     * Determine whether the system bars is visible.
+     *
+     * - This function is deprecated and no effect, use your own [View.handleOnWindowInsetsChanged] instead.
+     * @see View.handleOnWindowInsetsChanged
+     */
+    @Suppress("UNUSED_PARAMETER", "DeprecatedCallableAddReplaceWith")
+    @Deprecated(message = "Use your own View.handleOnWindowInsetsChanged instead.")
+    fun isVisible(type: SystemBars) = false
+
+    /**
      * Apply the system bars extra paddings.
      *
-     * - This function is deprecated and no effect, use [setRootInsetsPadding] instead.
-     * @see setRootInsetsPadding
+     * - This function is deprecated and no effect, use your own [View.handleOnWindowInsetsChanged] instead.
+     * @see View.handleOnWindowInsetsChanged
      */
     @Suppress("UNUSED_PARAMETER")
-    @Deprecated(message = "Use setRootInsetsPadding instead.")
+    @Deprecated(message = "Use your own View.handleOnWindowInsetsChanged instead.")
     @JvmOverloads
     fun applyExtraPaddings(vararg types: Any, ignoredCutout: Boolean = false) {
     }
@@ -798,11 +604,11 @@ class SystemBarsController private constructor(private val activity: Activity) {
     /**
      * Append the system bars extra paddings.
      *
-     * - This function is deprecated and no effect, use [updateRootInsetsPadding] instead.
-     * @see updateRootInsetsPadding
+     * - This function is deprecated and no effect, use your own [View.handleOnWindowInsetsChanged] instead.
+     * @see View.handleOnWindowInsetsChanged
      */
     @Suppress("UNUSED_PARAMETER")
-    @Deprecated(message = "Use updateRootInsetsPadding instead.")
+    @Deprecated(message = "Use your own View.handleOnWindowInsetsChanged instead.")
     @JvmOverloads
     fun appendExtraPaddings(vararg types: Any, ignoredCutout: Boolean = false) {
     }
@@ -810,34 +616,34 @@ class SystemBarsController private constructor(private val activity: Activity) {
     /**
      * Remove the system bars extra paddings.
      *
-     * - This function is deprecated, use [removeRootInsetsPadding] instead.
-     * @see removeRootInsetsPadding
+     * - This function is deprecated and no effect, use your own [View.handleOnWindowInsetsChanged] instead.
+     * @see View.handleOnWindowInsetsChanged
      */
     @Suppress("UNUSED_PARAMETER")
-    @Deprecated(message = "Use removeRootInsetsPadding instead.", ReplaceWith("removeRootInsetsPadding()"))
+    @Deprecated(message = "Use your own View.handleOnWindowInsetsChanged instead.")
     @JvmOverloads
-    fun removeExtraPaddings(vararg types: Any, ignoredCutout: Boolean = false) = removeRootInsetsPadding()
+    fun removeExtraPaddings(vararg types: Any, ignoredCutout: Boolean = false) {
+    }
 
     /**
      * Show the system bars stub views.
      *
-     * - This function is deprecated and no effect, use [setRootInsetsPadding] or [updateRootInsetsPadding] instead.
-     * @see setRootInsetsPadding
-     * @see updateRootInsetsPadding
+     * - This function is deprecated and no effect, use your own [View.handleOnWindowInsetsChanged] instead.
+     * @see View.handleOnWindowInsetsChanged
      */
     @Suppress("UNUSED_PARAMETER")
-    @Deprecated(message = "Use setRootInsetsPadding or updateRootInsetsPadding instead.")
+    @Deprecated(message = "Use your own View.handleOnWindowInsetsChanged instead.")
     fun showStub(type: SystemBars) {
     }
 
     /**
      * Hide the system bars stub views.
      *
-     * - This function is deprecated and no effect, use [removeRootInsetsPadding] instead.
-     * @see removeRootInsetsPadding
+     * - This function is deprecated and no effect, use your own [View.handleOnWindowInsetsChanged] instead.
+     * @see View.handleOnWindowInsetsChanged
      */
     @Suppress("UNUSED_PARAMETER")
-    @Deprecated(message = "Use removeBaseInsetsPadding instead.")
+    @Deprecated(message = "Use your own View.handleOnWindowInsetsChanged instead.")
     @JvmOverloads
     fun hideStub(type: SystemBars, ignoredCutout: Boolean = false) {
     }
