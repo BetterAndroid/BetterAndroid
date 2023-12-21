@@ -136,8 +136,8 @@ inline fun <reified T : Fragment> Fragment.findFragment(tag: String) = childFrag
 /**
  * Attach [Fragment] to [FragmentActivity].
  * @param activity the [FragmentActivity] that needs to be bound to.
- * @param view the container that needs to be bound to, default is [Activity.requireRootView].
  * @param viewId the container view id that needs to be bound to.
+ * @param view the container that needs to be bound to, default is [Activity.requireRootView].
  * @param enterAnimId the [Fragment] start to enter animation, default is [R.anim.simple_ui_open_in].
  * @param exitAnimId the [Fragment] finished enter animation, default is [R.anim.simple_ui_open_out].
  * @param tag the [Fragment] tag, default is [System.currentTimeMillis].
@@ -148,8 +148,8 @@ inline fun <reified T : Fragment> Fragment.findFragment(tag: String) = childFrag
 @JvmOverloads
 fun Fragment.attachToActivity(
     activity: FragmentActivity,
+    @IdRes viewId: Int = View.NO_ID,
     view: View? = activity.requireRootView(),
-    @IdRes viewId: Int = -1,
     @AnimRes enterAnimId: Int = R.anim.simple_ui_open_in,
     @AnimRes exitAnimId: Int = R.anim.simple_ui_open_out,
     tag: String = System.currentTimeMillis().toString(),
@@ -158,7 +158,7 @@ fun Fragment.attachToActivity(
 ) {
     activity.supportFragmentManager.commitTransaction(allowingStateLoss) {
         setCustomAnimations(enterAnimId, exitAnimId)
-        add(viewId.takeIf { it >= 0 } ?: view?.id ?: error("Fragment need attached to a view."), this@attachToActivity, tag)
+        add(viewId.takeIf { it != View.NO_ID } ?: view?.id ?: error("Fragment need attached to a view."), this@attachToActivity, tag)
         runOnCommit?.also { runOnCommit(it) }
     }
 }
@@ -166,8 +166,8 @@ fun Fragment.attachToActivity(
 /**
  * Attach child [Fragment] to [Fragment].
  * @param fragment the [Fragment] that needs to be bound to.
- * @param view the container that needs to be bound to, default is [Fragment.requireRootView].
  * @param viewId the container view id that needs to be bound to.
+ * @param view the container that needs to be bound to, default is [Fragment.requireRootView].
  * @param enterAnimId the [Fragment] start to enter animation, default is [R.anim.simple_ui_open_in].
  * @param exitAnimId the [Fragment] finished enter animation, default is [R.anim.simple_ui_open_out].
  * @param tag the [Fragment] tag, default is [System.currentTimeMillis].
@@ -178,8 +178,8 @@ fun Fragment.attachToActivity(
 @JvmOverloads
 fun Fragment.attachToFragment(
     fragment: Fragment,
+    @IdRes viewId: Int = View.NO_ID,
     view: View? = fragment.requireRootView(),
-    @IdRes viewId: Int = -1,
     @AnimRes enterAnimId: Int = R.anim.simple_ui_open_in,
     @AnimRes exitAnimId: Int = R.anim.simple_ui_open_out,
     tag: String = System.currentTimeMillis().toString(),
@@ -188,7 +188,7 @@ fun Fragment.attachToFragment(
 ) {
     fragment.childFragmentManager.commitTransaction(allowingStateLoss) {
         setCustomAnimations(enterAnimId, exitAnimId)
-        add(viewId.takeIf { it >= 0 } ?: view?.id ?: error("Fragment need attached to a view."), this@attachToFragment, tag)
+        add(viewId.takeIf { it != View.NO_ID } ?: view?.id ?: error("Fragment need attached to a view."), this@attachToFragment, tag)
         runOnCommit?.also { runOnCommit(it) }
     }
 }
@@ -196,8 +196,8 @@ fun Fragment.attachToFragment(
 /**
  * Batch attach [Fragment] to [FragmentActivity].
  * @param fragments the array of [Fragment] that needs to be bound to.
- * @param view the container that needs to be bound to, default is [Activity.requireRootView].
  * @param viewId the container view id that needs to be bound to.
+ * @param view the container that needs to be bound to, default is [Activity.requireRootView].
  * @param enterAnimId the [Fragment] start to enter animation, default is [R.anim.simple_ui_open_in].
  * @param exitAnimId the [Fragment] finished enter animation, default is [R.anim.simple_ui_open_out].
  * @param tag the [Fragment] tag, default is [System.currentTimeMillis].
@@ -207,8 +207,8 @@ fun Fragment.attachToFragment(
 @JvmOverloads
 fun FragmentActivity.attachFragments(
     vararg fragments: Fragment,
+    @IdRes viewId: Int = View.NO_ID,
     view: View? = requireRootView(),
-    @IdRes viewId: Int = -1,
     @AnimRes enterAnimId: Int = R.anim.simple_ui_open_in,
     @AnimRes exitAnimId: Int = R.anim.simple_ui_open_out,
     tag: String = System.currentTimeMillis().toString(),
@@ -216,14 +216,14 @@ fun FragmentActivity.attachFragments(
     allowingStateLoss: Boolean = true
 ) {
     fragments.takeIf { it.isNotEmpty() }
-        ?.forEach { it.attachToActivity(this, view, viewId, enterAnimId, exitAnimId, tag, { runOnCommit?.run() }, allowingStateLoss) }
+        ?.forEach { it.attachToActivity(this, viewId, view, enterAnimId, exitAnimId, tag, { runOnCommit?.run() }, allowingStateLoss) }
 }
 
 /**
  * Batch attach child [Fragment] to [Fragment].
  * @param fragments the array of [Fragment] that needs to be bound to.
- * @param view the container that needs to be bound to, default is [Fragment.requireRootView].
  * @param viewId the container view id that needs to be bound to.
+ * @param view the container that needs to be bound to, default is [Fragment.requireRootView].
  * @param enterAnimId the [Fragment] start to enter animation, default is [R.anim.simple_ui_open_in].
  * @param exitAnimId the [Fragment] finished enter animation, default is [R.anim.simple_ui_open_out].
  * @param tag the [Fragment] tag, default is [System.currentTimeMillis].
@@ -233,8 +233,8 @@ fun FragmentActivity.attachFragments(
 @JvmOverloads
 fun Fragment.attachFragments(
     vararg fragments: Fragment,
+    @IdRes viewId: Int = View.NO_ID,
     view: View? = requireRootView(),
-    @IdRes viewId: Int = -1,
     @AnimRes enterAnimId: Int = R.anim.simple_ui_open_in,
     @AnimRes exitAnimId: Int = R.anim.simple_ui_open_out,
     tag: String = System.currentTimeMillis().toString(),
@@ -242,14 +242,14 @@ fun Fragment.attachFragments(
     allowingStateLoss: Boolean = true
 ) {
     fragments.takeIf { it.isNotEmpty() }
-        ?.forEach { it.attachToFragment(this, view, viewId, enterAnimId, exitAnimId, tag, { runOnCommit?.run() }, allowingStateLoss) }
+        ?.forEach { it.attachToFragment(this, viewId, view, enterAnimId, exitAnimId, tag, { runOnCommit?.run() }, allowingStateLoss) }
 }
 
 /**
  * Use the current [Fragment] from [FragmentActivity] to replace the existing one.
  * @param activity the [FragmentActivity] that needs to be replace to.
- * @param view the container that needs to be replace to, default is [Activity.requireRootView].
  * @param viewId the container view id that needs to be replace to.
+ * @param view the container that needs to be replace to, default is [Activity.requireRootView].
  * @param enterAnimId the [Fragment] start to enter animation, default is [R.anim.simple_ui_open_in].
  * @param exitAnimId the [Fragment] finished enter animation, default is [R.anim.simple_ui_open_out].
  * @param tag the [Fragment] tag, default is [System.currentTimeMillis].
@@ -260,8 +260,8 @@ fun Fragment.attachFragments(
 @JvmOverloads
 fun Fragment.replaceFromActivity(
     activity: FragmentActivity,
+    @IdRes viewId: Int = View.NO_ID,
     view: View? = activity.requireRootView(),
-    @IdRes viewId: Int = -1,
     @AnimRes enterAnimId: Int = R.anim.simple_ui_open_in,
     @AnimRes exitAnimId: Int = R.anim.simple_ui_open_out,
     tag: String = System.currentTimeMillis().toString(),
@@ -270,7 +270,7 @@ fun Fragment.replaceFromActivity(
 ) {
     activity.supportFragmentManager.commitTransaction(allowingStateLoss) {
         setCustomAnimations(enterAnimId, exitAnimId)
-        replace(viewId.takeIf { it >= 0 } ?: view?.id ?: error("Fragment need attached to a view."), this@replaceFromActivity, tag)
+        replace(viewId.takeIf { it != View.NO_ID } ?: view?.id ?: error("Fragment need attached to a view."), this@replaceFromActivity, tag)
         runOnCommit?.also { runOnCommit(it) }
     }
 }
@@ -278,8 +278,8 @@ fun Fragment.replaceFromActivity(
 /**
  * Use the current child [Fragment] from [Fragment] to replace the existing one.
  * @param fragment the [Fragment] that needs to be replace to.
- * @param view the container that needs to be replace to, default is [Fragment.requireRootView].
  * @param viewId the container view id that needs to be replace to.
+ * @param view the container that needs to be replace to, default is [Fragment.requireRootView].
  * @param enterAnimId the [Fragment] start to enter animation, default is [R.anim.simple_ui_open_in].
  * @param exitAnimId the [Fragment] finished enter animation, default is [R.anim.simple_ui_open_out].
  * @param tag the [Fragment] tag, default is [System.currentTimeMillis].
@@ -290,8 +290,8 @@ fun Fragment.replaceFromActivity(
 @JvmOverloads
 fun Fragment.replaceFromFragment(
     fragment: Fragment,
+    @IdRes viewId: Int = View.NO_ID,
     view: View? = fragment.requireRootView(),
-    @IdRes viewId: Int = -1,
     @AnimRes enterAnimId: Int = R.anim.simple_ui_open_in,
     @AnimRes exitAnimId: Int = R.anim.simple_ui_open_out,
     tag: String = System.currentTimeMillis().toString(),
@@ -300,7 +300,7 @@ fun Fragment.replaceFromFragment(
 ) {
     fragment.childFragmentManager.commitTransaction(allowingStateLoss) {
         setCustomAnimations(enterAnimId, exitAnimId)
-        replace(viewId.takeIf { it >= 0 } ?: view?.id ?: error("Fragment need attached to a view."), this@replaceFromFragment, tag)
+        replace(viewId.takeIf { it != View.NO_ID } ?: view?.id ?: error("Fragment need attached to a view."), this@replaceFromFragment, tag)
         runOnCommit?.also { runOnCommit(it) }
     }
 }
@@ -562,15 +562,19 @@ fun Fragment.detachFragments(
 /**
  * Get the root view from current activity.
  * @receiver the current activity.
- * @return [View]
+ * @return [ViewGroup]
  */
-private fun Activity.requireRootView() = findViewById<ViewGroup>(Android_R.id.content).let { it.getChildAt(0) ?: it }
+private fun Activity.requireRootView() = findViewById<ViewGroup>(Android_R.id.content).let {
+    (it.getChildAt(0) as? ViewGroup?)?.apply { if (id == View.NO_ID) id = View.generateViewId() } ?: it
+}
 
 /**
  * Get the root view from current fragment.
  *
  * If the view is no id, it will be add a random id.
  * @receiver the current fragment.
- * @return [View]
+ * @return [ViewGroup]
+ * @throws IllegalStateException if the root view is not a [ViewGroup].
  */
-private fun Fragment.requireRootView() = requireView().apply { if (id == View.NO_ID) id = (999..99999).random() }
+private fun Fragment.requireRootView() = (requireView() as? ViewGroup?)?.apply { if (id == View.NO_ID) id = View.generateViewId() }
+    ?: error("Fragment require a root view that is a ViewGroup.")
