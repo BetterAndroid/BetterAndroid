@@ -138,10 +138,12 @@ class SystemBarsController private constructor(private val activity: Activity) {
     private data class SystemBarParams(
         val statusBarColor: Int,
         val navigationBarColor: Int,
+        val navigationBarDividerColor: Int,
         val isStatusBarContrastEnforced: Boolean,
         val isNavigationBarContrastEnforced: Boolean,
         val isAppearanceLightStatusBars: Boolean,
-        val isAppearanceLightNavigationBars: Boolean
+        val isAppearanceLightNavigationBars: Boolean,
+        val layoutInDisplayCutoutMode: Int
     )
 
     /** Indicates init only once times. */
@@ -243,6 +245,8 @@ class SystemBarsController private constructor(private val activity: Activity) {
         isHandleWindowInsets = handleWindowInsets != null
         var isStatusBarContrastEnforced = false
         var isNavigationBarContrastEnforced = false
+        var navigationBarDividerColor: Int? = null
+        var layoutInDisplayCutoutMode = 0
         SystemVersion.require(SystemVersion.Q) {
             isStatusBarContrastEnforced = activity.window?.isStatusBarContrastEnforced == true
             isNavigationBarContrastEnforced = activity.window?.isNavigationBarContrastEnforced == true
@@ -250,23 +254,27 @@ class SystemBarsController private constructor(private val activity: Activity) {
             activity.window?.isStatusBarContrastEnforced = false
             activity.window?.isNavigationBarContrastEnforced = false
         }
-        // Save the original system bars params.
-        originalSystemBarParams = SystemBarParams(
-            statusBarColor = activity.window?.statusBarColor ?: Color.TRANSPARENT,
-            navigationBarColor = activity.window?.navigationBarColor ?: Color.TRANSPARENT,
-            isStatusBarContrastEnforced = isStatusBarContrastEnforced,
-            isNavigationBarContrastEnforced = isNavigationBarContrastEnforced,
-            isAppearanceLightStatusBars = rootInsetsController?.isAppearanceLightStatusBars == true,
-            isAppearanceLightNavigationBars = rootInsetsController?.isAppearanceLightNavigationBars == true
-        )
-        // Set the layout overlay to status bars and navigation bars.
-        WindowCompat.setDecorFitsSystemWindows(activity.window, false)
         SystemVersion.require(SystemVersion.P) {
+            navigationBarDividerColor = activity.window?.navigationBarDividerColor
+            layoutInDisplayCutoutMode = activity.window?.attributes?.layoutInDisplayCutoutMode ?: 0
             // Set the notch area not to interfere with the current UI.
             activity.window?.attributes?.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
             // Remove the color of the navigation bars divider.
             activity.window?.navigationBarDividerColor = Color.TRANSPARENT
         }
+        // Save the original system bars params.
+        originalSystemBarParams = SystemBarParams(
+            statusBarColor = activity.window?.statusBarColor ?: Color.TRANSPARENT,
+            navigationBarColor = activity.window?.navigationBarColor ?: Color.TRANSPARENT,
+            navigationBarDividerColor = navigationBarDividerColor ?: Color.TRANSPARENT,
+            isStatusBarContrastEnforced = isStatusBarContrastEnforced,
+            isNavigationBarContrastEnforced = isNavigationBarContrastEnforced,
+            isAppearanceLightStatusBars = rootInsetsController?.isAppearanceLightStatusBars == true,
+            isAppearanceLightNavigationBars = rootInsetsController?.isAppearanceLightNavigationBars == true,
+            layoutInDisplayCutoutMode = layoutInDisplayCutoutMode
+        )
+        // Set the layout overlay to status bars and navigation bars.
+        WindowCompat.setDecorFitsSystemWindows(activity.window, false)
         initializeDefaults()
         // If has [handleWindowInsets],
         // the controller will handle the root window insets by default.
@@ -436,6 +444,10 @@ class SystemBarsController private constructor(private val activity: Activity) {
             SystemVersion.require(SystemVersion.Q) {
                 activity.window?.isStatusBarContrastEnforced = it.isStatusBarContrastEnforced
                 activity.window?.isNavigationBarContrastEnforced = it.isNavigationBarContrastEnforced
+            }
+            SystemVersion.require(SystemVersion.P) {
+                activity.window?.navigationBarDividerColor = it.navigationBarDividerColor
+                activity.window?.attributes?.layoutInDisplayCutoutMode = it.layoutInDisplayCutoutMode
             }
             rootInsetsController?.isAppearanceLightStatusBars = it.isAppearanceLightStatusBars
             rootInsetsController?.isAppearanceLightNavigationBars = it.isAppearanceLightNavigationBars
