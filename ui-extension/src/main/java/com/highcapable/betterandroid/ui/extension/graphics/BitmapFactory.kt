@@ -42,6 +42,7 @@ import com.highcapable.betterandroid.ui.extension.graphics.base.BitmapBlurFactor
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
+import java.io.OutputStream
 import kotlin.math.sqrt
 
 /**
@@ -156,6 +157,7 @@ fun Resources.createBitmapOrNull(@DrawableRes resId: Int, opts: BitmapFactory.Op
 
 /**
  * Save the bitmap to file.
+ * @see OutputStream.compressBitmap
  * @receiver [File]
  * @param bitmap the current bitmap.
  * @param format the bitmap format, defaul is [Bitmap.CompressFormat.PNG].
@@ -164,12 +166,21 @@ fun Resources.createBitmapOrNull(@DrawableRes resId: Int, opts: BitmapFactory.Op
 @JvmOverloads
 fun File.writeBitmap(bitmap: Bitmap, format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG, quality: Int = 100) {
     createNewFile()
-    outputStream().apply {
-        bitmap.compress(format, quality, this)
-        flush()
-        close()
-    }
+    outputStream().use { it.compressBitmap(bitmap, format, quality) }
 }
+
+/**
+ * Compress the bitmap to the output stream.
+ * @see File.writeBitmap
+ * @receiver [OutputStream]
+ * @param bitmap the current bitmap.
+ * @param format the bitmap format, defaul is [Bitmap.CompressFormat.PNG].
+ * @param quality the quality, default is 100.
+ * @return [Boolean] whether the bitmap compress success.
+ */
+@JvmOverloads
+fun OutputStream.compressBitmap(bitmap: Bitmap, format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG, quality: Int = 100) =
+    bitmap.compress(format, quality, this)
 
 /**
  * Blur the bitmap using [BitmapBlurFactory].
