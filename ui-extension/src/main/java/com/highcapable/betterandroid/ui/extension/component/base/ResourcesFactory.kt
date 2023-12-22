@@ -31,6 +31,7 @@ import android.content.res.Resources
 import android.content.res.Resources.Theme
 import android.content.res.TypedArray
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.SparseArray
@@ -46,6 +47,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
+import androidx.annotation.FontRes
 import androidx.annotation.IdRes
 import androidx.annotation.MenuRes
 import androidx.annotation.Px
@@ -136,6 +138,15 @@ fun Resources.getColorCompat(@ColorRes id: Int, theme: Theme? = null) = Resource
  * @throws [Resources.NotFoundException] if the resource is not found.
  */
 fun Resources.getFloatCompat(@DimenRes id: Int) = ResourcesCompat.getFloat(this, id)
+
+/**
+ * Get [Float] from [Context] (compat).
+ * @receiver the current context.
+ * @param id the [Typeface] resources ID.
+ * @return [Typeface]
+ * @throws [Resources.NotFoundException] if the resource is not found.
+ */
+fun Context.getFontCompat(@FontRes id: Int) = ResourcesCompat.getFont(this, id)
 
 /**
  * Get [Drawable] from [Context.getResources] (compat).
