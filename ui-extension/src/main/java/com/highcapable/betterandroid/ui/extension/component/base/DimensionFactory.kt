@@ -41,7 +41,7 @@ import androidx.fragment.app.Fragment
  * Usage:
  *
  * ```kotlin
- * class MainActivity : AppCompatActivity(), DisplayDensity {
+ * class YourActivity : AppCompatActivity(), DisplayDensity {
  *
  *    override fun onCreate(savedInstanceState: Bundle?) {
  *        super.onCreate(savedInstanceState)
