@@ -146,7 +146,7 @@ fun Resources.getFloatCompat(@DimenRes id: Int) = ResourcesCompat.getFloat(this,
  * @return [Typeface]
  * @throws [Resources.NotFoundException] if the resource is not found.
  */
-fun Context.getFontCompat(@FontRes id: Int) = ResourcesCompat.getFont(this, id)
+fun Context.getFontCompat(@FontRes id: Int) = SystemVersion.require(SystemVersion.O, ResourcesCompat.getFont(this, id)) { resources.getFont(id) }
 
 /**
  * Get [Drawable] from [Context.getResources] (compat).
@@ -175,7 +175,8 @@ inline fun <reified T : Drawable> Context.getDrawableCompat(@DrawableRes id: Int
  * @return [ColorStateList]
  * @throws [Resources.NotFoundException] if the resource is not found.
  */
-fun Context.getColorStateListCompat(@ColorRes id: Int) = resources.getColorStateListCompat(id, theme)
+fun Context.getColorStateListCompat(@ColorRes id: Int) =
+    SystemVersion.require(SystemVersion.M, resources.getColorStateListCompat(id, theme)) { getColorStateList(id) }
 
 /**
  * Get color from [Context.getResources] (compat).
@@ -184,7 +185,7 @@ fun Context.getColorStateListCompat(@ColorRes id: Int) = resources.getColorState
  * @return [Int]
  * @throws [Resources.NotFoundException] if the resource is not found.
  */
-fun Context.getColorCompat(@ColorRes id: Int) = resources.getColorCompat(id, theme)
+fun Context.getColorCompat(@ColorRes id: Int) = SystemVersion.require(SystemVersion.M, resources.getColorCompat(id, theme)) { getColor(id) }
 
 /**
  * Get the resource ID of the attribute resource list
