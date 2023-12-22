@@ -22,7 +22,7 @@ the [PureReader](https://github.com/PureReader) project.
 
 ## Usage
 
-`BetterAndroid` was born to simplify Android development, and its original meaning is itself.
+`BetterAndroid` is born for more modern Android development, and its original meaning is itself.
 
 We hope that this library can successfully help developers speed up development,
 improve development quality and experience, and quickly improve the functions required by apps.

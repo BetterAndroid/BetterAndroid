@@ -16,7 +16,7 @@ ROM 和第三方厂商定制的 “Android 系统” 以及 Kotlin 开发语言�
 
 ## 用途
 
-`BetterAndroid` 为简化 Android 开发而生，本意上为 “更好的 Android”。
+`BetterAndroid` 为更现代化的 Android 开发而生，本意上为 “更好的 Android”。
 
 我们希望这套工具库能够顺利地帮助各位开发者们加快开发速度以及提升开发质量和体验，快速地完善应用程序所需的功能。
 
