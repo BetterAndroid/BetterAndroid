@@ -384,6 +384,7 @@ inline fun <reified T : Fragment> Fragment.findFragment(tag: String) = childFrag
  *
  * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
  */
+@Suppress("UNUSED_PARAMETER")
 @Deprecated(message = "No effect and will be removed in the future.")
 @JvmOverloads
 fun FragmentActivity.attachFragments(
@@ -403,6 +404,7 @@ fun FragmentActivity.attachFragments(
  *
  * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
  */
+@Suppress("UNUSED_PARAMETER")
 @Deprecated(message = "No effect and will be removed in the future.")
 @JvmOverloads
 fun Fragment.attachFragments(
@@ -422,7 +424,7 @@ fun Fragment.attachFragments(
  *
  * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
  */
-@Suppress("UnusedReceiverParameter")
+@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
 @Deprecated(message = "No effect and will be removed in the future.")
 @JvmOverloads
 fun FragmentActivity.showFragments(
@@ -439,7 +441,7 @@ fun FragmentActivity.showFragments(
  *
  * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
  */
-@Suppress("UnusedReceiverParameter")
+@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
 @Deprecated(message = "No effect and will be removed in the future.")
 @JvmOverloads
 fun Fragment.showFragments(
@@ -456,7 +458,7 @@ fun Fragment.showFragments(
  *
  * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
  */
-@Suppress("UnusedReceiverParameter")
+@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
 @Deprecated(message = "No effect and will be removed in the future.")
 @JvmOverloads
 fun FragmentActivity.hideFragments(
@@ -473,7 +475,7 @@ fun FragmentActivity.hideFragments(
  *
  * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
  */
-@Suppress("UnusedReceiverParameter")
+@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
 @Deprecated(message = "No effect and will be removed in the future.")
 @JvmOverloads
 fun Fragment.hideFragments(
@@ -490,7 +492,7 @@ fun Fragment.hideFragments(
  *
  * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
  */
-@Suppress("UnusedReceiverParameter")
+@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
 @Deprecated(message = "No effect and will be removed in the future.")
 @JvmOverloads
 fun FragmentActivity.detachFragments(
@@ -507,7 +509,7 @@ fun FragmentActivity.detachFragments(
  *
  * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
  */
-@Suppress("UnusedReceiverParameter")
+@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
 @Deprecated(message = "No effect and will be removed in the future.")
 @JvmOverloads
 fun Fragment.detachFragments(
