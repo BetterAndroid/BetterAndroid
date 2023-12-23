@@ -25,8 +25,11 @@
 package com.highcapable.betterandroid.ui.extension.view
 
 import android.Manifest
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.Window
 import android.widget.Toast
@@ -41,10 +44,18 @@ import androidx.fragment.app.Fragment
  * @param message the message content.
  * @param duration the duration, default is [Toast.LENGTH_SHORT],
  * only can be [Toast.LENGTH_SHORT] or [Toast.LENGTH_LONG].
+ * @param allowBackground whether allow to show a toast from non-main thread, default false.
  */
 @JvmOverloads
 @JvmName("showToast")
-fun Context.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT) = Toast.makeText(this, message, duration).show()
+fun Context.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT, allowBackground: Boolean = false) {
+    val toastable = Runnable { Toast.makeText(this, message, duration).show() }
+    if (Looper.myLooper() != Looper.getMainLooper()) {
+        if (!allowBackground) error("Not allowed to show a toast from non-main thread, if you must do this, please set allowBackground to true.")
+        if (this is Activity) runOnUiThread(toastable)
+        else Handler(Looper.getMainLooper()).post(toastable)
+    } else toastable.run()
+}
 
 /**
  * Show a Toast with [Window].
@@ -55,10 +66,12 @@ fun Context.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT) = T
  * @param message the message content.
  * @param duration the duration, default is [Toast.LENGTH_SHORT],
  * only can be [Toast.LENGTH_SHORT] or [Toast.LENGTH_LONG].
+ * @param allowBackground whether allow to show a toast from non-main thread, default false.
  */
 @JvmOverloads
 @JvmName("showToast")
-fun Window.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT) = context.toast(message, duration)
+fun Window.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT, allowBackground: Boolean = false) =
+    context.toast(message, duration, allowBackground)
 
 /**
  * Show a Toast with [Fragment].
@@ -69,10 +82,12 @@ fun Window.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT) = co
  * @param message the message content.
  * @param duration the duration, default is [Toast.LENGTH_SHORT],
  * only can be [Toast.LENGTH_SHORT] or [Toast.LENGTH_LONG].
+ * @param allowBackground whether allow to show a toast from non-main thread, default false.
  */
 @JvmOverloads
 @JvmName("showToast")
-fun Fragment.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT) = requireContext().toast(message, duration)
+fun Fragment.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT, allowBackground: Boolean = false) =
+    context?.toast(message, duration, allowBackground) ?: Unit
 
 /**
  * Show a Toast with [View].
@@ -83,10 +98,12 @@ fun Fragment.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT) = 
  * @param message the message content.
  * @param duration the duration, default is [Toast.LENGTH_SHORT],
  * only can be [Toast.LENGTH_SHORT] or [Toast.LENGTH_LONG].
+ * @param allowBackground whether allow to show a toast from non-main thread, default false.
  */
 @JvmOverloads
 @JvmName("showToast")
-fun View.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT) = context.toast(message, duration)
+fun View.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT, allowBackground: Boolean = false) =
+    context.toast(message, duration, allowBackground)
 
 /**
  * Show a Toast with [Dialog].
@@ -97,7 +114,9 @@ fun View.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT) = cont
  * @param message the message content.
  * @param duration the duration, default is [Toast.LENGTH_SHORT],
  * only can be [Toast.LENGTH_SHORT] or [Toast.LENGTH_LONG].
+ * @param allowBackground whether allow to show a toast from non-main thread, default false.
  */
 @JvmOverloads
 @JvmName("showToast")
-fun Dialog.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT) = context.toast(message, duration)
+fun Dialog.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT, allowBackground: Boolean = false) =
+    context.toast(message, duration, allowBackground)
