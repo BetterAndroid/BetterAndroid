@@ -25,6 +25,7 @@ package com.highcapable.betterandroid.system.extension.tool
 
 import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
+import com.highcapable.betterandroid.system.extension.tool.SystemVersion.isHighOrEqualsTo
 
 /**
  * Android system sdk version tool.
@@ -110,7 +111,7 @@ object SystemVersion {
      */
     @JvmStatic
     @ChecksSdkIntAtLeast(parameter = 0)
-    fun isLowAndEqualsTo(target: Int) = Build.VERSION.SDK_INT <= target
+    fun isLowOrEqualsTo(target: Int) = Build.VERSION.SDK_INT <= target
 
     /**
      * Higher than target sdk.
@@ -128,7 +129,27 @@ object SystemVersion {
      */
     @JvmStatic
     @ChecksSdkIntAtLeast(parameter = 0)
-    fun isHighAndEqualsTo(target: Int) = Build.VERSION.SDK_INT >= target
+    fun isHighOrEqualsTo(target: Int) = Build.VERSION.SDK_INT >= target
+
+    /**
+     * Lower than or equal to target sdk.
+     *
+     * - This function is deprecated, use [isLowOrEqualsTo] instead.
+     */
+    @Deprecated(message = "Use isLowOrEqualsTo instead.", ReplaceWith("isLowOrEqualsTo(target)"))
+    @JvmStatic
+    @ChecksSdkIntAtLeast(parameter = 0)
+    fun isLowAndEqualsTo(target: Int) = isLowOrEqualsTo(target)
+
+    /**
+     * Higher than or equal to target sdk.
+     *
+     * - This function is deprecated, use [isHighOrEqualsTo] instead.
+     */
+    @Deprecated(message = "Use isHighOrEqualsTo instead.", ReplaceWith("isHighOrEqualsTo(target)"))
+    @JvmStatic
+    @ChecksSdkIntAtLeast(parameter = 0)
+    fun isHighAndEqualsTo(target: Int) = isHighOrEqualsTo(target)
 
     /**
      * The target sdk is required to be [target] or higher than [target] to call [callback].
@@ -138,7 +159,7 @@ object SystemVersion {
     @JvmStatic
     @ChecksSdkIntAtLeast(parameter = 0)
     inline fun require(target: Int, callback: () -> Unit) {
-        if (isHighAndEqualsTo(target)) callback()
+        if (isHighOrEqualsTo(target)) callback()
     }
 
     /**
@@ -156,7 +177,7 @@ object SystemVersion {
     @ChecksSdkIntAtLeast(parameter = 0)
     inline fun <T> require(target: Int, defaultValue: T, callback: () -> T): T =
         if (defaultValue != null)
-            if (isHighAndEqualsTo(target)) (callback() ?: defaultValue) else defaultValue
+            if (isHighOrEqualsTo(target)) (callback() ?: defaultValue) else defaultValue
         else error("The defaultValue is null and not allowed, please use requireOrNull function instead it.")
 
     /**
@@ -169,5 +190,5 @@ object SystemVersion {
     @JvmStatic
     @ChecksSdkIntAtLeast(parameter = 0)
     inline fun <T> requireOrNull(target: Int, defaultValue: T?, callback: () -> T?): T? =
-        if (isHighAndEqualsTo(target)) (callback() ?: defaultValue) else defaultValue
+        if (isHighOrEqualsTo(target)) (callback() ?: defaultValue) else defaultValue
 }
