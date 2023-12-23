@@ -105,3 +105,41 @@ fun Drawable.setPadding(@Px left: Int, @Px top: Int, @Px right: Int, @Px bottom:
  * @param size the size of the top, left, bottom and right (px).
  */
 fun Drawable.setPadding(@Px size: Int) = setPadding(size, size, size, size)
+
+/**
+ * Update drawable padding.
+ * @receiver the current drawable.
+ * @param left the left (px).
+ * @param top the top (px).
+ * @param right the right (px).
+ * @param bottom the bottom (px).
+ */
+@JvmOverloads
+fun Drawable.updatePadding(
+    @Px left: Int = -1,
+    @Px top: Int = -1,
+    @Px right: Int = -1,
+    @Px bottom: Int = -1
+) {
+    val padding = Rect()
+    getPadding(padding)
+    setPadding(
+        left = if (left < 0) padding.left else left,
+        top = if (top < 0) padding.top else top,
+        right = if (right < 0) padding.right else right,
+        bottom = if (bottom < 0) padding.bottom else bottom
+    )
+}
+
+/**
+ * Update drawable padding.
+ * @receiver the current drawable.
+ * @param horizontal the horizontal (px).
+ * @param vertical the vertical (px).
+ */
+@JvmOverloads
+@JvmName("updateHVPadding")
+fun Drawable.updatePadding(
+    horizontal: Int = -1,
+    vertical: Int = -1
+) = updatePadding(horizontal, vertical, horizontal, vertical)
