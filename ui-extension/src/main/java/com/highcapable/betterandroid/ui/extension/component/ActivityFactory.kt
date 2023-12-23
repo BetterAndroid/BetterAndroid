@@ -48,7 +48,7 @@ val Activity.isInSpecialWindowMode get() = isInMultiWindowModeCompat
 /**
  * Whether the activity is currently in multi-window mode (compat).
  *
- * - Note: This function will no-op on system version prior to Android 7.
+ * - Note: This function will always return false on system version prior to Android 7.
  * @receiver the current activty.
  * @return [Boolean]
  */
