@@ -58,7 +58,7 @@ fun Context.registerReceiver(filter: IntentFilter, flags: Int? = null, onReceive
         }
     }
     val receiverFlags = flags ?: Context.RECEIVER_EXPORTED
-    if (SystemVersion.isHighAndEqualsTo(SystemVersion.T))
+    if (SystemVersion.isHighOrEqualsTo(SystemVersion.T))
         registerReceiver(receiver, filter, receiverFlags)
     else registerReceiver(receiver, filter)
 }

@@ -91,7 +91,7 @@ fun View.showIme() {
         context?.getSystemService<InputMethodManager>()?.showSoftInput(this, 0)
     }
     val windowFromActivity = (context as? Activity?)?.window
-    if (SystemVersion.isHighAndEqualsTo(SystemVersion.Q) && windowFromActivity != null)
+    if (SystemVersion.isHighOrEqualsTo(SystemVersion.Q) && windowFromActivity != null)
         WindowCompat.getInsetsController(windowFromActivity, this).show(WindowInsetsCompat.Type.ime())
     else showSoftInput()
 }
@@ -110,7 +110,7 @@ fun View.hideIme() {
             ?.also { if (it.isActive) it.hideSoftInputFromWindow(applicationWindowToken, 0) }
     }
     val windowFromActivity = (context as? Activity?)?.window
-    if (SystemVersion.isHighAndEqualsTo(SystemVersion.Q) && windowFromActivity != null)
+    if (SystemVersion.isHighOrEqualsTo(SystemVersion.Q) && windowFromActivity != null)
         WindowCompat.getInsetsController(windowFromActivity, this).hide(WindowInsetsCompat.Type.ime())
     else hideSoftInput()
 }

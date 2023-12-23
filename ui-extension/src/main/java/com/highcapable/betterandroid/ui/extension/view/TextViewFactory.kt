@@ -87,7 +87,7 @@ fun TextView.setDigits(
 ) {
     @Suppress("DEPRECATION")
     keyListener = when {
-        SystemVersion.isHighAndEqualsTo(SystemVersion.O) ->
+        SystemVersion.isHighOrEqualsTo(SystemVersion.O) ->
             object : DigitsKeyListener(locale) {
                 override fun getInputType() = inputType
                 override fun getAcceptedChars() = acceptedChars.toCharArray()
