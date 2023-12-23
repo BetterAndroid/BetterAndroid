@@ -52,7 +52,7 @@ import androidx.appcompat.widget.ListPopupWindow as AndroidX_ListPopupWindow
  * @param initiate the [CommonAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
-@JvmName("bindAdapter_Generics")
+@JvmName("bindAdapterTyped")
 inline fun <reified E> ListView.bindAdapter(initiate: CommonAdapterBuilder<E>.() -> Unit) =
     CommonAdapter<E>(context, initiate).apply { adapter = this }
 
@@ -70,7 +70,7 @@ inline fun ListView.bindAdapter(initiate: CommonAdapterBuilder<*>.() -> Unit) = 
  * @param initiate the [CommonAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
-@JvmName("bindAdapter_Generics")
+@JvmName("bindAdapterTyped")
 inline fun <reified E> AutoCompleteTextView.bindAdapter(initiate: CommonAdapterBuilder<E>.() -> Unit) =
     CommonAdapter<E>(context, initiate).also { current(ignored = true).method { name = "setAdapter"; paramCount = 1 }.call(it) }
 
@@ -89,7 +89,7 @@ inline fun AutoCompleteTextView.bindAdapter(initiate: CommonAdapterBuilder<*>.()
  * @param initiate the [CommonAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
-@JvmName("bindAdapter_Generics")
+@JvmName("bindAdapterTyped")
 inline fun <reified E> ListPopupWindow.bindAdapter(context: Context, initiate: CommonAdapterBuilder<E>.() -> Unit) =
     CommonAdapter<E>(context, initiate).apply { setAdapter(this) }
 
@@ -109,7 +109,7 @@ inline fun ListPopupWindow.bindAdapter(context: Context, initiate: CommonAdapter
  * @param initiate the [CommonAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
-@JvmName("bindAdapter_Generics")
+@JvmName("bindAdapterTyped")
 inline fun <reified E> AndroidX_ListPopupWindow.bindAdapter(context: Context, initiate: CommonAdapterBuilder<E>.() -> Unit) =
     CommonAdapter<E>(context, initiate).apply { setAdapter(this) }
 
@@ -141,7 +141,7 @@ inline fun AndroidX_ListPopupWindow.bindAdapter(context: Context, initiate: Comm
  * @param initiate the [RecyclerAdapterBuilder] builder body.
  * @return [RecyclerView.Adapter]<[RecyclerAdapterBuilder.BaseRecyclerHolder]>
  */
-@JvmName("bindAdapter_Generics")
+@JvmName("bindAdapterTyped")
 inline fun <reified E> RecyclerView.bindAdapter(
     cosmetic: RecyclerCosmetic<*, *> = RecyclerCosmetic.fromLinearVertical(context),
     initiate: RecyclerAdapterBuilder<E>.() -> Unit
@@ -180,7 +180,7 @@ inline fun RecyclerView.bindAdapter(
  * @param initiate the [PagerAdapterBuilder] builder body.
  * @return [PagerAdapter]
  */
-@JvmName("bindAdapter_Generics")
+@JvmName("bindAdapterTyped")
 inline fun <reified E> ViewPager.bindAdapter(initiate: PagerAdapterBuilder<E>.() -> Unit) =
     PagerAdapter<E>(context, initiate).apply { adapter = this }
 
@@ -232,7 +232,7 @@ inline fun ViewPager.bindFragments(
  * @param initiate the [RecyclerAdapterBuilder] builder body.
  * @return [RecyclerView.Adapter]<[RecyclerAdapterBuilder.BaseRecyclerHolder]>
  */
-@JvmName("bindAdapter_Generics")
+@JvmName("bindAdapterTyped")
 inline fun <reified E> ViewPager2.bindAdapter(initiate: RecyclerAdapterBuilder<E>.() -> Unit) =
     RecyclerAdapter<E>(context, initiate = initiate).apply { adapter = this }
 
@@ -270,7 +270,7 @@ inline fun ViewPager2.bindFragments(fragment: Fragment, initiate: FragmentStateA
  * @param initiate the [CommonAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
-@JvmName("CommonAdapter_Generics")
+@JvmName("CommonAdapterTyped")
 inline fun <reified E> CommonAdapter(context: Context, initiate: CommonAdapterBuilder<E>.() -> Unit) =
     CommonAdapterBuilder.from<E>(context).apply(initiate).build()
 
@@ -288,7 +288,7 @@ inline fun CommonAdapter(context: Context, initiate: CommonAdapterBuilder<*>.() 
  * @param initiate the [RecyclerAdapterBuilder] builder body.
  * @return [RecyclerView.Adapter]<[RecyclerAdapterBuilder.BaseRecyclerHolder]>
  */
-@JvmName("RecyclerAdapter_Generics")
+@JvmName("RecyclerAdapterTyped")
 inline fun <reified E> RecyclerAdapter(context: Context, initiate: RecyclerAdapterBuilder<E>.() -> Unit) =
     RecyclerAdapterBuilder.from<E>(context).apply(initiate).build()
 
@@ -306,7 +306,7 @@ inline fun RecyclerAdapter(context: Context, initiate: RecyclerAdapterBuilder<*>
  * @param initiate the [PagerAdapterBuilder] builder body.
  * @return [PagerAdapter]
  */
-@JvmName("PagerAdapter_Generics")
+@JvmName("PagerAdapterTyped")
 inline fun <reified E> PagerAdapter(context: Context, initiate: PagerAdapterBuilder<E>.() -> Unit) =
     PagerAdapterBuilder.from<E>(context).apply(initiate).build()
 

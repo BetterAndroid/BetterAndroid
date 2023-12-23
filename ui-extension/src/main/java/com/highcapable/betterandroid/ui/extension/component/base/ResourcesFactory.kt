@@ -104,7 +104,7 @@ fun Resources.getDrawableCompat(@DrawableRes id: Int, theme: Theme? = null) = ge
  * @throws [Resources.NotFoundException] if the resource is not found.
  * @throws IllegalStateException if [Drawable] type is not [T].
  */
-@JvmName("getDrawableCompat_Generics")
+@JvmName("getDrawableCompatTyped")
 inline fun <reified T : Drawable> Resources.getDrawableCompat(@DrawableRes id: Int, theme: Theme? = null) =
     ResourcesCompat.getDrawable(this, id, theme) as? T ?: error("Drawable type cannot cast to ${classOf<T>()}.")
 
@@ -165,7 +165,7 @@ fun Context.getDrawableCompat(@DrawableRes id: Int) = resources.getDrawableCompa
  * @throws [Resources.NotFoundException] if the resource is not found.
  * @throws [IllegalStateException] if [Drawable] type is not [T].
  */
-@JvmName("getDrawableCompat_Generics")
+@JvmName("getDrawableCompatTyped")
 inline fun <reified T : Drawable> Context.getDrawableCompat(@DrawableRes id: Int) = resources.getDrawableCompat(id, theme)
 
 /**

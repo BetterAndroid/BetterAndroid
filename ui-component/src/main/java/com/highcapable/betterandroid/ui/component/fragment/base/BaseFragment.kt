@@ -45,6 +45,6 @@ abstract class BaseFragment internal constructor() : Fragment(), ISystemBarsCont
      * Get the current activity through [getActivity] and cast to [T].
      * @return [T] or null.
      */
-    @JvmName("getActivity_Generics")
+    @JvmName("getActivityTyped")
     inline fun <reified T : Activity> activity() = activity as? T?
 }

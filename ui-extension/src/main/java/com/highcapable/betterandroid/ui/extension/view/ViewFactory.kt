@@ -198,7 +198,7 @@ fun Context.inflate(resId: Int, parent: ViewGroup? = null, attachToRoot: Boolean
  * @return [V]
  * @throws IllegalStateException if [resId] is invalid.
  */
-@JvmName("inflate_Generics")
+@JvmName("inflateTyped")
 inline fun <reified V : View> ViewGroup.inflate(resId: Int, attachToRoot: Boolean = false): V =
     inflate(resId, attachToRoot) as? V? ?: error("This view with ID ${resId.toHexResourceId()} is not a type of ${classOf<V>()}")
 
@@ -211,7 +211,7 @@ inline fun <reified V : View> ViewGroup.inflate(resId: Int, attachToRoot: Boolea
  * @return [V]
  * @throws IllegalStateException if [resId] is invalid.
  */
-@JvmName("inflate_Generics")
+@JvmName("inflateTyped")
 inline fun <reified V : View> Context.inflate(resId: Int, parent: ViewGroup? = null, attachToRoot: Boolean = false): V =
     inflate(resId, parent, attachToRoot) as? V? ?: error("This view with ID ${resId.toHexResourceId()} is not a type of ${classOf<V>()}")
 

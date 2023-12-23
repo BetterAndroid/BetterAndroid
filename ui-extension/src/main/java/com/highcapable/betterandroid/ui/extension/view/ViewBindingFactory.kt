@@ -167,7 +167,7 @@ fun <VB : ViewBinding> Fragment.inflateViewBinding(
  * @return [VB]
  */
 @JvmOverloads
-@JvmName("inflateViewBinding_Generics")
+@JvmName("inflateViewBindingTyped")
 fun <VB : ViewBinding> Context.inflateViewBinding(
     bindingClass: Class<*>,
     inflater: LayoutInflater = LayoutInflater.from(this),
