@@ -39,14 +39,18 @@ inline fun Window.updateLayoutParams(initiate: WindowManager.LayoutParams.() -> 
 }
 
 /**
- * Set the [WindowManager.LayoutParams.screenBrightness].
+ * Update the [WindowManager.LayoutParams.screenBrightness].
  * @receiver the current window.
  * @param progress the brightness, must between 0..100.
  */
-fun Window.updateScreenBrightness(progress: Int) {
-    require(progress in 0..100) { "Screen brightness must between 0..100." }
-    updateLayoutParams { screenBrightness = progress / 100f }
-}
+fun Window.updateScreenBrightness(progress: Int) = updateLayoutParams { screenBrightness = progress.coerceIn(0, 100) / 100f }
+
+/**
+ * Update the [WindowManager.LayoutParams.screenBrightness].
+ * @receiver the current window.
+ * @param progress the brightness, must between 0f..1f.
+ */
+fun Window.updateScreenBrightness(progress: Float) = updateLayoutParams { screenBrightness = progress.coerceIn(0f, 1f) }
 
 /**
  * Clear the [WindowManager.LayoutParams.screenBrightness].
