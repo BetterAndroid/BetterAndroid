@@ -28,6 +28,7 @@ import android.Manifest
 import android.app.Dialog
 import android.content.Context
 import android.view.View
+import android.view.Window
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 
@@ -35,6 +36,7 @@ import androidx.fragment.app.Fragment
  * Show a Toast with [Context].
  *
  * - On Android 13 (33) and higher, you may need this permission [Manifest.permission.POST_NOTIFICATIONS].
+ * @see Toast.makeText
  * @receiver the current context.
  * @param message the message content.
  * @param duration the duration, default is [Toast.LENGTH_SHORT],
@@ -45,9 +47,24 @@ import androidx.fragment.app.Fragment
 fun Context.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT) = Toast.makeText(this, message, duration).show()
 
 /**
+ * Show a Toast with [Window].
+ *
+ * - On Android 13 (33) and higher, you may need this permission [Manifest.permission.POST_NOTIFICATIONS].
+ * @see Toast.makeText
+ * @receiver the current fragment.
+ * @param message the message content.
+ * @param duration the duration, default is [Toast.LENGTH_SHORT],
+ * only can be [Toast.LENGTH_SHORT] or [Toast.LENGTH_LONG].
+ */
+@JvmOverloads
+@JvmName("showToast")
+fun Window.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT) = context.toast(message, duration)
+
+/**
  * Show a Toast with [Fragment].
  *
  * - On Android 13 (33) and higher, you may need this permission [Manifest.permission.POST_NOTIFICATIONS].
+ * @see Toast.makeText
  * @receiver the current fragment.
  * @param message the message content.
  * @param duration the duration, default is [Toast.LENGTH_SHORT],
@@ -61,6 +78,7 @@ fun Fragment.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT) = 
  * Show a Toast with [View].
  *
  * - On Android 13 (33) and higher, you may need this permission [Manifest.permission.POST_NOTIFICATIONS].
+ * @see Toast.makeText
  * @receiver the current view.
  * @param message the message content.
  * @param duration the duration, default is [Toast.LENGTH_SHORT],
@@ -74,6 +92,7 @@ fun View.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT) = cont
  * Show a Toast with [Dialog].
  *
  * - On Android 13 (33) and higher, you may need this permission [Manifest.permission.POST_NOTIFICATIONS].
+ * @see Toast.makeText
  * @receiver the current dialog.
  * @param message the message content.
  * @param duration the duration, default is [Toast.LENGTH_SHORT],
