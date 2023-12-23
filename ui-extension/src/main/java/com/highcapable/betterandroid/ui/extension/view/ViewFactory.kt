@@ -38,12 +38,15 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.annotation.Px
 import androidx.core.content.getSystemService
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.marginBottom
 import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
 import androidx.core.view.marginTop
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 import com.highcapable.betterandroid.ui.extension.component.base.toHexResourceId
 import com.highcapable.yukireflection.factory.classOf
 
@@ -76,25 +79,57 @@ fun View.removeSelfInLayout() {
 }
 
 /**
- * Pop up the soft input.
+ * Show the input method.
  *
- * - Note: This function may not succeed every time depending on the usage scenario.
+ * - Note: This function may not work on Android lower than 10
+ *   or when the current [View] is not in [Activity].
  * @receiver [View]
  */
-fun View.showSoftInput() {
-    context?.getSystemService<InputMethodManager>()?.showSoftInput(this, 0)
+fun View.showIme() {
+    /** Whatever try to show the input method. */
+    fun showSoftInput() {
+        context?.getSystemService<InputMethodManager>()?.showSoftInput(this, 0)
+    }
+    val windowFromActivity = (context as? Activity?)?.window
+    if (SystemVersion.isHighAndEqualsTo(SystemVersion.Q) && windowFromActivity != null)
+        WindowCompat.getInsetsController(windowFromActivity, this).show(WindowInsetsCompat.Type.ime())
+    else showSoftInput()
 }
+
+/**
+ * Hide the input method.
+ *
+ * - Note: This function may not work on Android lower than 10
+ *   or when the current [View] is not in [Activity].
+ * @receiver [View]
+ */
+fun View.hideIme() {
+    /** Whatever try to hide the input method. */
+    fun hideSoftInput() {
+        context?.getSystemService<InputMethodManager>()
+            ?.also { if (it.isActive) it.hideSoftInputFromWindow(applicationWindowToken, 0) }
+    }
+    val windowFromActivity = (context as? Activity?)?.window
+    if (SystemVersion.isHighAndEqualsTo(SystemVersion.Q) && windowFromActivity != null)
+        WindowCompat.getInsetsController(windowFromActivity, this).hide(WindowInsetsCompat.Type.ime())
+    else hideSoftInput()
+}
+
+/**
+ * Show the soft input.
+ *
+ * - This function is deprecated, use [View.showIme] instead.
+ */
+@Deprecated(message = "Use View.showIme instead.", ReplaceWith("showIme()"))
+fun View.showSoftInput() = showIme()
 
 /**
  * Disappear the soft input.
  *
- * - Note: This function may not succeed every time depending on the usage scenario.
- * @receiver [View]
+ * - This function is deprecated, use [View.hideIme] instead.
  */
-fun View.hideSoftInput() {
-    context?.getSystemService<InputMethodManager>()
-        ?.also { if (it.isActive) it.hideSoftInputFromWindow(applicationWindowToken, 0) }
-}
+@Deprecated(message = "Use View.hideIme instead.", ReplaceWith("hideIme()"))
+fun View.hideSoftInput() = hideIme()
 
 /**
  * Simulate the key down and up events.
