@@ -27,6 +27,8 @@ package com.highcapable.betterandroid.ui.extension.graphics
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.ShapeDrawable
 import androidx.annotation.Px
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
@@ -77,7 +79,11 @@ fun GradientDrawable.setPaddingCompat(@Px left: Int, @Px top: Int, @Px right: In
 /**
  * Set drawable padding.
  *
- * - Only support [ShapeDrawable] and [GradientDrawable].
+ * - Note: Only listed [Drawable]s are supported.
+ * @see RippleDrawable
+ * @see LayerDrawable
+ * @see ShapeDrawable
+ * @see GradientDrawable
  * @receiver the current drawable.
  * @param left the left (px).
  * @param top the top (px).
@@ -86,6 +92,8 @@ fun GradientDrawable.setPaddingCompat(@Px left: Int, @Px top: Int, @Px right: In
  */
 fun Drawable.setPadding(@Px left: Int, @Px top: Int, @Px right: Int, @Px bottom: Int) {
     when (this) {
+        is RippleDrawable -> setPadding(left, top, right, bottom)
+        is LayerDrawable -> setPadding(left, top, right, bottom)
         is ShapeDrawable -> setPadding(left, top, right, bottom)
         is GradientDrawable -> setPaddingCompat(left, top, right, bottom)
     }
