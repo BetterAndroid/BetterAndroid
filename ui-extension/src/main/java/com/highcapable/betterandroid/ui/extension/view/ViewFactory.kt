@@ -282,20 +282,20 @@ inline fun <reified V : View> ViewGroup.inflate(resId: Int, attachToRoot: Boolea
  * // Create a FrameLayout.LayoutParams with fully MATCH_PARENT.
  * val fraLayoutParams = ViewLayoutParams<FrameLayout.LayoutParams>(matchParent = true)
  * ```
+ * @param width the layout params width (px).
+ * @param height the layout params height (px).
  * @param matchParent set width and height to [LayoutParamsMatchParent], default false.
  * @param widthMatchParent set width to [LayoutParamsMatchParent], default false.
  * @param heightMatchParent set height to [LayoutParamsMatchParent], default false.
- * @param width the layout params width (px).
- * @param height the layout params height (px).
  * @return [VGLP]
  * @throws IllegalStateException if [VGLP] is not supported.
  */
 inline fun <reified VGLP : ViewGroup.LayoutParams> ViewLayoutParams(
+    @Px width: Int = LayoutParamsUnspecified,
+    @Px height: Int = LayoutParamsUnspecified,
     matchParent: Boolean = false,
     widthMatchParent: Boolean = false,
-    heightMatchParent: Boolean = false,
-    @Px width: Int = LayoutParamsUnspecified,
-    @Px height: Int = LayoutParamsUnspecified
+    heightMatchParent: Boolean = false
 ): VGLP {
     val absWidth = when {
         width != LayoutParamsUnspecified -> width
@@ -349,5 +349,5 @@ object ViewLayoutParams {
         heightMatchParent: Boolean = false,
         @Px width: Int = LayoutParamsUnspecified,
         @Px height: Int = LayoutParamsUnspecified
-    ) = ViewLayoutParams<VGLP>(matchParent, widthMatchParent, heightMatchParent, width, height)
+    ) = ViewLayoutParams<VGLP>(width, height, matchParent, widthMatchParent, heightMatchParent)
 }
