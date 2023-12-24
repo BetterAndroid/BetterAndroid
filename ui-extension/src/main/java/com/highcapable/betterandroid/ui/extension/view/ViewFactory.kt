@@ -208,6 +208,23 @@ fun View.updateMargin(
 }
 
 /**
+ * Updates this view's horizontal or vertical margin.
+ *
+ * Same like [View.updatePadding].
+ *
+ * This view layout params need to be a [ViewGroup.MarginLayoutParams].
+ * @receiver [View]
+ * @param horizontal the horizontal margin (px).
+ * @param vertical the vertical margin (px).
+ */
+@JvmOverloads
+@JvmName("updateHVMargin")
+fun View.updateMargin(@Px horizontal: Int = -1, @Px vertical: Int = -1) {
+    if (horizontal >= 0) updateMargin(left = horizontal, right = horizontal)
+    if (vertical >= 0) updateMargin(top = vertical, bottom = vertical)
+}
+
+/**
  * Inflate a view using [resId].
  * @receiver the root view.
  * @param resId the view id.
