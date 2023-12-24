@@ -325,87 +325,87 @@ enum class PackageInfoFlagsWrapper(val original: Int) {
  */
 enum class ApplicationInfoFlagsWrapper(val original: Int) {
     /** @see ApplicationInfo.FLAG_SYSTEM */
-    FLAG_SYSTEM(ApplicationInfo.FLAG_SYSTEM),
+    SYSTEM(ApplicationInfo.FLAG_SYSTEM),
 
     /** @see ApplicationInfo.FLAG_DEBUGGABLE */
-    FLAG_DEBUGGABLE(ApplicationInfo.FLAG_DEBUGGABLE),
+    DEBUGGABLE(ApplicationInfo.FLAG_DEBUGGABLE),
 
     /** @see ApplicationInfo.FLAG_HAS_CODE */
-    FLAG_HAS_CODE(ApplicationInfo.FLAG_HAS_CODE),
+    HAS_CODE(ApplicationInfo.FLAG_HAS_CODE),
 
     /** @see ApplicationInfo.FLAG_PERSISTENT */
-    FLAG_PERSISTENT(ApplicationInfo.FLAG_PERSISTENT),
+    PERSISTENT(ApplicationInfo.FLAG_PERSISTENT),
 
     /** @see ApplicationInfo.FLAG_FACTORY_TEST */
-    FLAG_FACTORY_TEST(ApplicationInfo.FLAG_FACTORY_TEST),
+    FACTORY_TEST(ApplicationInfo.FLAG_FACTORY_TEST),
 
     /** @see ApplicationInfo.FLAG_ALLOW_TASK_REPARENTING */
-    FLAG_ALLOW_TASK_REPARENTING(ApplicationInfo.FLAG_ALLOW_TASK_REPARENTING),
+    ALLOW_TASK_REPARENTING(ApplicationInfo.FLAG_ALLOW_TASK_REPARENTING),
 
     /** @see ApplicationInfo.FLAG_ALLOW_CLEAR_USER_DATA */
-    FLAG_ALLOW_CLEAR_USER_DATA(ApplicationInfo.FLAG_ALLOW_CLEAR_USER_DATA),
+    ALLOW_CLEAR_USER_DATA(ApplicationInfo.FLAG_ALLOW_CLEAR_USER_DATA),
 
     /** @see ApplicationInfo.FLAG_UPDATED_SYSTEM_APP */
-    FLAG_UPDATED_SYSTEM_APP(ApplicationInfo.FLAG_UPDATED_SYSTEM_APP),
+    UPDATED_SYSTEM_APP(ApplicationInfo.FLAG_UPDATED_SYSTEM_APP),
 
     /** @see ApplicationInfo.FLAG_TEST_ONLY */
-    FLAG_TEST_ONLY(ApplicationInfo.FLAG_TEST_ONLY),
+    TEST_ONLY(ApplicationInfo.FLAG_TEST_ONLY),
 
     /** @see ApplicationInfo.FLAG_SUPPORTS_SMALL_SCREENS */
-    FLAG_SUPPORTS_SMALL_SCREENS(ApplicationInfo.FLAG_SUPPORTS_SMALL_SCREENS),
+    SUPPORTS_SMALL_SCREENS(ApplicationInfo.FLAG_SUPPORTS_SMALL_SCREENS),
 
     /** @see ApplicationInfo.FLAG_SUPPORTS_NORMAL_SCREENS */
-    FLAG_SUPPORTS_NORMAL_SCREENS(ApplicationInfo.FLAG_SUPPORTS_NORMAL_SCREENS),
+    SUPPORTS_NORMAL_SCREENS(ApplicationInfo.FLAG_SUPPORTS_NORMAL_SCREENS),
 
     /** @see ApplicationInfo.FLAG_SUPPORTS_LARGE_SCREENS */
-    FLAG_SUPPORTS_LARGE_SCREENS(ApplicationInfo.FLAG_SUPPORTS_LARGE_SCREENS),
+    SUPPORTS_LARGE_SCREENS(ApplicationInfo.FLAG_SUPPORTS_LARGE_SCREENS),
 
     /** @see ApplicationInfo.FLAG_SUPPORTS_XLARGE_SCREENS */
-    FLAG_SUPPORTS_XLARGE_SCREENS(ApplicationInfo.FLAG_SUPPORTS_XLARGE_SCREENS),
+    SUPPORTS_XLARGE_SCREENS(ApplicationInfo.FLAG_SUPPORTS_XLARGE_SCREENS),
 
     /** @see ApplicationInfo.FLAG_RESIZEABLE_FOR_SCREENS */
-    FLAG_RESIZEABLE_FOR_SCREENS(ApplicationInfo.FLAG_RESIZEABLE_FOR_SCREENS),
+    RESIZEABLE_FOR_SCREENS(ApplicationInfo.FLAG_RESIZEABLE_FOR_SCREENS),
 
     /** @see ApplicationInfo.FLAG_SUPPORTS_SCREEN_DENSITIES */
     @Suppress("DEPRECATION")
-    FLAG_SUPPORTS_SCREEN_DENSITIES(ApplicationInfo.FLAG_SUPPORTS_SCREEN_DENSITIES),
+    SUPPORTS_SCREEN_DENSITIES(ApplicationInfo.FLAG_SUPPORTS_SCREEN_DENSITIES),
 
     /** @see ApplicationInfo.FLAG_VM_SAFE_MODE */
-    FLAG_VM_SAFE_MODE(ApplicationInfo.FLAG_VM_SAFE_MODE),
+    VM_SAFE_MODE(ApplicationInfo.FLAG_VM_SAFE_MODE),
 
     /** @see ApplicationInfo.FLAG_ALLOW_BACKUP */
-    FLAG_ALLOW_BACKUP(ApplicationInfo.FLAG_ALLOW_BACKUP),
+    ALLOW_BACKUP(ApplicationInfo.FLAG_ALLOW_BACKUP),
 
     /** @see ApplicationInfo.FLAG_KILL_AFTER_RESTORE */
-    FLAG_KILL_AFTER_RESTORE(ApplicationInfo.FLAG_KILL_AFTER_RESTORE),
+    KILL_AFTER_RESTORE(ApplicationInfo.FLAG_KILL_AFTER_RESTORE),
 
     /** @see ApplicationInfo.FLAG_RESTORE_ANY_VERSION */
-    FLAG_RESTORE_ANY_VERSION(ApplicationInfo.FLAG_RESTORE_ANY_VERSION),
+    RESTORE_ANY_VERSION(ApplicationInfo.FLAG_RESTORE_ANY_VERSION),
 
     /** @see ApplicationInfo.FLAG_EXTERNAL_STORAGE */
-    FLAG_EXTERNAL_STORAGE(ApplicationInfo.FLAG_EXTERNAL_STORAGE),
+    EXTERNAL_STORAGE(ApplicationInfo.FLAG_EXTERNAL_STORAGE),
 
     /** @see ApplicationInfo.FLAG_LARGE_HEAP */
-    FLAG_LARGE_HEAP(ApplicationInfo.FLAG_LARGE_HEAP),
+    LARGE_HEAP(ApplicationInfo.FLAG_LARGE_HEAP),
 
     /** @see ApplicationInfo.FLAG_STOPPED */
-    FLAG_STOPPED(ApplicationInfo.FLAG_STOPPED),
+    STOPPED(ApplicationInfo.FLAG_STOPPED),
 
     /** @see ApplicationInfo.FLAG_SUPPORTS_RTL */
-    FLAG_SUPPORTS_RTL(ApplicationInfo.FLAG_SUPPORTS_RTL),
+    SUPPORTS_RTL(ApplicationInfo.FLAG_SUPPORTS_RTL),
 
     /** @see ApplicationInfo.FLAG_INSTALLED */
-    FLAG_INSTALLED(ApplicationInfo.FLAG_INSTALLED),
+    INSTALLED(ApplicationInfo.FLAG_INSTALLED),
 
     /** @see ApplicationInfo.FLAG_IS_DATA_ONLY */
-    FLAG_IS_DATA_ONLY(ApplicationInfo.FLAG_IS_DATA_ONLY),
+    IS_DATA_ONLY(ApplicationInfo.FLAG_IS_DATA_ONLY),
 
     /** @see ApplicationInfo.FLAG_IS_GAME */
     @Suppress("DEPRECATION")
-    FLAG_IS_GAME(ApplicationInfo.FLAG_IS_GAME),
+    IS_GAME(ApplicationInfo.FLAG_IS_GAME),
 
     /** @see ApplicationInfo.FLAG_FULL_BACKUP_ONLY */
-    FLAG_FULL_BACKUP_ONLY(ApplicationInfo.FLAG_FULL_BACKUP_ONLY)
+    FULL_BACKUP_ONLY(ApplicationInfo.FLAG_FULL_BACKUP_ONLY)
 }
 
 /**
