@@ -247,7 +247,7 @@ val ApplicationInfo.secondaryCpuAbi get() = current(ignored = true).field { name
  * @param flags the application flags wrappers.
  * @return [Boolean]
  */
-fun ApplicationInfo.hasFlags(vararg flags: ApplicationFlagsWrapper) = this.flags == flags.toSystemType()
+fun ApplicationInfo.hasFlags(vararg flags: ApplicationInfoFlagsWrapper) = this.flags == flags.toSystemType()
 
 /**
  * Convert [Array]<[PackageInfoFlagsWrapper]> to [PackageManager] types.
@@ -260,13 +260,13 @@ private fun Array<out PackageInfoFlagsWrapper>.toSystemType() =
     fold(PackageInfoFlagsWrapper.GET_CONFIGURATIONS.original) { flag, wrapper -> flag or wrapper.original }
 
 /**
- * Convert [Array]<[ApplicationFlagsWrapper]> to [ApplicationInfo] types.
+ * Convert [Array]<[ApplicationInfoFlagsWrapper]> to [ApplicationInfo] types.
  *
  * If empty will returns -1.
- * @receiver the [ApplicationFlagsWrapper] type.
+ * @receiver the [ApplicationInfoFlagsWrapper] type.
  * @return [Int]
  */
-private fun Array<out ApplicationFlagsWrapper>.toSystemType() = fold(-1) { flag, wrapper -> flag or wrapper.original }
+private fun Array<out ApplicationInfoFlagsWrapper>.toSystemType() = fold(-1) { flag, wrapper -> flag or wrapper.original }
 
 /**
  * Package info flags wrapper.
@@ -323,7 +323,7 @@ enum class PackageInfoFlagsWrapper(val original: Int) {
  * Application info flags wrapper.
  * @param original the original [ApplicationInfo] type.
  */
-enum class ApplicationFlagsWrapper(val original: Int) {
+enum class ApplicationInfoFlagsWrapper(val original: Int) {
     /** @see ApplicationInfo.FLAG_SYSTEM */
     FLAG_SYSTEM(ApplicationInfo.FLAG_SYSTEM),
 
@@ -407,3 +407,9 @@ enum class ApplicationFlagsWrapper(val original: Int) {
     /** @see ApplicationInfo.FLAG_FULL_BACKUP_ONLY */
     FLAG_FULL_BACKUP_ONLY(ApplicationInfo.FLAG_FULL_BACKUP_ONLY)
 }
+
+/**
+ * Workaround for class name changed for [ApplicationInfoFlagsWrapper].
+ */
+@Deprecated(message = "Use ApplicationInfoFlagsWrapper instead.", ReplaceWith("ApplicationInfoFlagsWrapper"))
+typealias ApplicationFlagsWrapper = ApplicationInfoFlagsWrapper
