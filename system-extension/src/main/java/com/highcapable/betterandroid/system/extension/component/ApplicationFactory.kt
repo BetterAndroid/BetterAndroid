@@ -140,7 +140,7 @@ fun PackageManager.queryLaunchActivitiesForPackageOrNull(packageName: String): L
     runCatching { queryIntentActivities(getLaunchIntentForPackage(packageName)!!, 0) }.getOrNull()
 
 /**
- * Determine whether the [componentName] is enabled.
+ * Determine whether the [componentName] is enabled or default.
  *
  * If you want to get the application self component name,
  * see [Context.getComponentName].
@@ -149,8 +149,16 @@ fun PackageManager.queryLaunchActivitiesForPackageOrNull(packageName: String): L
  * @param componentName the current component name.
  * @return [Boolean]
  */
-fun PackageManager.hasComponentEnabled(componentName: ComponentName) =
+fun PackageManager.isComponentEnabled(componentName: ComponentName) =
     getComponentEnabledSetting(componentName) != PackageManager.COMPONENT_ENABLED_STATE_DISABLED
+
+/**
+ * Determine whether the [componentName] is enabled.
+ *
+ * - This function is deprecated, use [PackageManager.isComponentEnabled] instead.
+ */
+@Deprecated(message = "Use PackageManager.isComponentEnabled instead.", ReplaceWith("isComponentEnabled(componentName)"))
+fun PackageManager.hasComponentEnabled(componentName: ComponentName) = isComponentEnabled(componentName)
 
 /**
  * Enable an [componentName].
