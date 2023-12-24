@@ -226,16 +226,6 @@ fun View.updateMargin(@Px horizontal: Int = -1, @Px vertical: Int = -1) {
 
 /**
  * Inflate a view using [resId].
- * @receiver the root view.
- * @param resId the view id.
- * @param attachToRoot whether to attach to the root view, default false.
- * @return [View]
- */
-@JvmOverloads
-fun ViewGroup.inflate(resId: Int, attachToRoot: Boolean = false): View = LayoutInflater.from(context).inflate(resId, this, attachToRoot)
-
-/**
- * Inflate a view using [resId].
  * @receiver the current context.
  * @param resId the view id.
  * @param parent the root view, default is null.
@@ -245,18 +235,6 @@ fun ViewGroup.inflate(resId: Int, attachToRoot: Boolean = false): View = LayoutI
 @JvmOverloads
 fun Context.inflate(resId: Int, parent: ViewGroup? = null, attachToRoot: Boolean = false): View =
     (if (this is Activity) layoutInflater else LayoutInflater.from(this)).inflate(resId, parent, attachToRoot)
-
-/**
- * Inflate a view using [resId].
- * @receiver the root view.
- * @param resId the view id.
- * @param attachToRoot whether to attach to the root view, default false.
- * @return [V]
- * @throws IllegalStateException if [resId] is invalid.
- */
-@JvmName("inflateTyped")
-inline fun <reified V : View> ViewGroup.inflate(resId: Int, attachToRoot: Boolean = false): V =
-    inflate(resId, attachToRoot) as? V? ?: error("This view with ID ${resId.toHexResourceId()} is not a type of ${classOf<V>()}")
 
 /**
  * Inflate a view using [resId].
@@ -270,6 +248,28 @@ inline fun <reified V : View> ViewGroup.inflate(resId: Int, attachToRoot: Boolea
 @JvmName("inflateTyped")
 inline fun <reified V : View> Context.inflate(resId: Int, parent: ViewGroup? = null, attachToRoot: Boolean = false): V =
     inflate(resId, parent, attachToRoot) as? V? ?: error("This view with ID ${resId.toHexResourceId()} is not a type of ${classOf<V>()}")
+
+/**
+ * Inflate a view using [resId].
+ * @receiver the root view.
+ * @param resId the view id.
+ * @param attachToRoot whether to attach to the root view, default false.
+ * @return [View]
+ */
+@JvmOverloads
+fun ViewGroup.inflate(resId: Int, attachToRoot: Boolean = false): View = context.inflate(resId, parent = this, attachToRoot)
+
+/**
+ * Inflate a view using [resId].
+ * @receiver the root view.
+ * @param resId the view id.
+ * @param attachToRoot whether to attach to the root view, default false.
+ * @return [V]
+ * @throws IllegalStateException if [resId] is invalid.
+ */
+@JvmName("inflateTyped")
+inline fun <reified V : View> ViewGroup.inflate(resId: Int, attachToRoot: Boolean = false): V =
+    inflate(resId, attachToRoot) as? V? ?: error("This view with ID ${resId.toHexResourceId()} is not a type of ${classOf<V>()}")
 
 /**
  * Create a new [ViewGroup.LayoutParams].
