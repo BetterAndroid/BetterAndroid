@@ -27,6 +27,8 @@ package com.highcapable.betterandroid.ui.extension.view
 import android.app.Activity
 import android.content.Context
 import android.graphics.Point
+import android.os.Handler
+import android.os.Looper
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -135,10 +137,12 @@ fun View.hideSoftInput() = hideIme()
  * Simulate the key down and up events.
  * @receiver [View]
  * @param keyCode the key code.
+ * @param duration the key pressing duration time, default is 150.
  */
-fun View.performKeyPressed(keyCode: Int) {
+@JvmOverloads
+fun View.performKeyPressed(keyCode: Int, duration: Long = 150) {
     onKeyDown(keyCode, KeyEvent(KeyEvent.ACTION_DOWN, keyCode))
-    onKeyUp(keyCode, KeyEvent(KeyEvent.ACTION_UP, keyCode))
+    Handler(Looper.getMainLooper()).postDelayed({ onKeyUp(keyCode, KeyEvent(KeyEvent.ACTION_UP, keyCode)) }, duration)
 }
 
 /**
