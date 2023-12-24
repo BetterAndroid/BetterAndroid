@@ -31,7 +31,6 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import androidx.annotation.RequiresApi
-import androidx.core.content.pm.PackageInfoCompat
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 import com.highcapable.yukireflection.factory.classOf
 import com.highcapable.yukireflection.factory.current
@@ -212,11 +211,21 @@ fun PackageManager.resetComponent(componentName: ComponentName, vararg flags: In
 }
 
 /**
- * Get the long version code of package info (compat).
+ * Get the version code of package info (compat).
  * @receiver [PackageInfo]
  * @return [Long]
  */
-val PackageInfo.longVersionCodeCompat get() = PackageInfoCompat.getLongVersionCode(this)
+val PackageInfo.versionCodeCompat
+    @Suppress("DEPRECATION")
+    get() = SystemVersion.require(SystemVersion.P, versionCode.toLong()) { longVersionCode }
+
+/**
+ * Get the long version code of package info (compat).
+ *
+ * - This property is deprecated, use [PackageInfo.versionCodeCompat] instead.
+ */
+@Deprecated(message = "Use PackageInfo.versionCodeCompat instead.", ReplaceWith("versionCodeCompat"))
+val PackageInfo.longVersionCodeCompat get() = versionCodeCompat
 
 /**
  * Get the primary cpu abi for the application.
