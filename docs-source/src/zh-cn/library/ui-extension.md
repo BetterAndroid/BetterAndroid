@@ -41,42 +41,1567 @@ implementation("com.highcapable.betterandroid:ui-extension:<version>")
 
 你可以 [点击这里](kdoc://ui-extension) 查看 KDoc。
 
-<!--------------- 待转移 ---------------
+### Activity 扩展
 
-**功能结构**
+::: tip 本节内容
 
-- [x] 基础功能扩展
-    - ColorsFactory
-        - 系统颜色功能扩展
-    - DimensionFactory
-        - 布局尺寸功能扩展，例如 dp、px
-    - DrawableFactory
-        - 可绘制组件扩展
-    - ResourcesFactory
-        - App 资源扩展
-    - ViewBindingFactory
-        - 布局绑定扩展
-- [x] 系统特性扩展
-    - SystemColors
-        - 系统的动态取色，在 Android 12 添加
-- [x] 界面组件扩展
-    - ActivityFactory
-        - Activity 扩展
-    - FragmentFactory
-        - Fragment 扩展
-    - ToastFactory
-        - Toast 扩展
-    - WindowFactory
-        - Windows 扩展，例如调整指定界面的屏幕亮度
-- [x] 图形功能扩展
-    - BitmapFactory
-        - 处理位图相关功能的扩展
-    - BitmapBlurFactory
-        - 处理位图模糊的扩展
-- [x] 视图组件扩展
-    - ViewFactory
-        - 基础视图组件扩展
-    - TextViewFactory
-        - 文本框相关功能扩展
+[ActivityFactory → startActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/start-activity)
 
---------------- 待转移 --------------->
+[ActivityFactory → startActivityOrElse](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/start-activity-or-else)
+
+[ActivityFactory → isInMultiWindowModeCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/is-in-multi-window-mode-compat)
+
+适用于 `Activity` 的扩展。
+
+:::
+
+我们需要启动另一个 `Activity` 时，需要使用 `Intent` 创建一个 `Intent(this, AnotherActivity::class.java)`，然后调用 `startActivity(intent)` 来启动。
+
+这样写起来大概不太友好，于是 `BetterAndroid` 为 `Activity` 提供了扩展，现在你可以直接使用以下方式来启动另一个 `Activity`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Context
+val context: Context
+// 假设 AnotherActivity 就是你的目标 Activity
+context.startActivity<AnotherActivity>()
+// 你可以使用以下方式创建一个 Intent 对象
+context.startActivity<AnotherActivity> {
+    // 在这里添加一些额外的参数
+    putExtra("key", "value")
+}
+// 如果你需要使用 Intent.FLAG_ACTIVITY_NEW_TASK 来启动另一个 Activity，
+// 你可以直接这样使用
+context.startActivity<AnotherActivity>(newTask = true)
+```
+
+如果你需要启动一个外部应用程序的 `Activity`，你可以使用以下方式。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Context
+val context: Context
+// 假设你需要启动的应用程序包名为 com.example.app
+// 假设你需要启动的 Activity 类名为 com.example.app.MainActivity
+context.startActivity("com.example.app", "com.example.app.MainActivity")
+// 你依然可以使用以下方式创建一个 Intent 对象
+context.startActivity("com.example.app", "com.example.app.MainActivity") {
+    // 在这里添加一些额外的参数
+    putExtra("key", "value")
+}
+// Intent.FLAG_ACTIVITY_NEW_TASK 将会在此方法中默认设置，这是为了避免启动新的应用程序后顶栈重叠，
+// 如果你不需要考虑这个问题，你可以将 newTask 参数设置为 false
+context.startActivity("com.example.app", "com.example.app.MainActivity", newTask = false)
+```
+
+如果你不知道需要启动的应用程序的入口 `Activity` 名称，你可以使用包名直接启动它。
+
+此方法内部将会使用 `getLaunchIntentForPackage` 来获取入口 `Activity`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Context
+val context: Context
+// 假设你需要启动的应用程序包名为 com.example.app
+context.startActivity("com.example.app")
+```
+
+::: warning
+
+如果你需要启动的应用程序没有入口 `Activity`，或者你需要启动的应用没有安装，将会抛出异常，
+此时你可以使用 `startActivityOrElse` 来判断是否能够启动成功，如果失败，此方法返回 `false`。
+
+此操作在 Android 11 及之后需要 `QUERY_ALL_PACKAGES` 权限或明确配置一个 `queries` 属性列表。
+
+请参考 [Package visibility filtering on Android](https://developer.android.com/training/package-visibility)。
+
+:::
+
+针对 Android 7.0 及之后的版本新增的分屏模式，`BetterAndroid` 为其提供了一个兼容扩展。
+
+对于 `isInMultiWindowMode`，你无需考虑版本兼容问题，你只需要在后方加入一个 `Compat` 即可。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Activity
+val activity: Activity
+// 获取当前是否处于分屏模式
+val isInMultiWindowMode = activity.isInMultiWindowModeCompat
+```
+
+### Fragment 扩展
+
+::: tip 本节内容
+
+[FragmentFactory → commitTransaction](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/commit-transaction)
+
+[FragmentFactory → findFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/find-fragment)
+
+[FragmentFactory → attachToActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/attach-to-activity)
+
+[FragmentFactory → attachToFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/attach-to-fragment)
+
+[FragmentFactory → detachFromActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/detach-from-activity)
+
+[FragmentFactory → detachFromFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/detach-from-fragment)
+
+[FragmentFactory → replaceFromActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/replace-from-activity)
+
+[FragmentFactory → replaceFromFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/replace-from-fragment)
+
+[FragmentFactory → hide](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/hide)
+
+[FragmentFactory → show](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/show)
+
+适用于 `Fragment` 的扩展。
+
+:::
+
+`Fragment` 是官方提供的针对 `Activity` 的一个高效片段，但是它的使用方式并不是很友好。
+
+为了对 `Fragment` 相关操作进行简化，`BetterAndroid` 为 `Fragment` 提供了一些实用的扩展功能。
+
+你可以使用 `commitTransaction` 来完成从 `beginTransaction` 到 `commit` 的操作。
+
+此方法帮你执行了 `beginTransaction` 到 `commit` 或 `commitAllowingStateLoss` 的操作，你只需要添加其中的事务即可。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 FragmentActivity
+val activity: FragmentActivity
+// 提交一个事务处理
+actvity.supportFragmentManager.commitTransaction {
+    // 在这里添加一些事务操作
+    // 例如添加一个 Fragment
+    add(R.id.container, YourFragment())
+}
+// 你可以设置 allowingStateLoss 参数来决定是否允许状态丢失
+// 在不设置的情况下，默认为 true
+actvity.supportFragmentManager.commitTransaction(allowingStateLoss = true) {
+    // ...
+    add(R.id.container, YourFragment())
+}
+```
+
+使用泛型的方式来查找一个存在的 `Fragment`。
+
+它可以自动帮你把找到的 `Fragment` 转换为当前类型而不需要再使用 `as` 的形式进行强制转换。
+
+你完全不需要担心找不到或者类型错误的情况，遇到这种情况将会返回 `null`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 FragmentActivity
+val activity: FragmentActivity
+// 通过 ID 查找一个 Fragment
+val fragment = activity.supportFragmentManager.findFragment<YourFragment>(R.id.container)
+// 通过 TAG 查找一个 Fragment
+val fragment = activity.supportFragmentManager.findFragment<YourFragment>("your_fragment_tag")
+```
+
+绑定 `Fragment` 到 `FragmentActivity`。
+
+你可以不需要使用类似 `FragmentManger.beginTransaction`...`commit` 的方式进行，现在完成这个操作将会更加简单。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 FragmentActivity
+val activity: FragmentActivity
+// 假设这就是你的 Fragment
+val fragment = YourFragment()
+// 绑定 Fragment
+fragment.attachToActivity(activity)
+```
+
+是的，这样你就完成了全部的绑定操作，在默认情况下，它会将 `Fragment` 绑定到 `Activity` 通过 `setContentView` 设置的布局中。
+
+如果你需要将其绑定到一个自定义的布局中，你可以使用以下方式。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 FragmentActivity
+val activity: FragmentActivity
+// 假设这就是你的 Fragment
+val fragment = YourFragment()
+// 绑定 Fragment 到 ID 为 R.id.container 的布局中
+fragment.attachToActivity(activity, R.id.container)
+```
+
+如果这个自定义的布局不是通过 ID 得到的，而是一个 `View` 对象，你可以使用以下方式。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 FragmentActivity
+val activity: FragmentActivity
+// 假设这就是你的 View
+val container: View
+// 假设这就是你的 Fragment
+val fragment = YourFragment()
+// 绑定 Fragment 到 container (这个 View 必须有一个 ID)
+fragment.attachToActivity(activity, view = container)
+```
+
+你还可以方便地为 `Fragment` 设置绑定时的入场动画。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 FragmentActivity
+val activity: FragmentActivity
+// 假设这就是你的 Fragment
+val fragment = YourFragment()
+// 绑定 Fragment 并设置入场动画
+fragment.attachToActivity(
+    activity = activity,
+    viewId = R.id.container,
+    beginAnimId = R.anim.slide_in_right, // 开始进入
+    finishAnimId = R.anim.slide_out_left // 结束进入
+)
+```
+
+绑定 `Fragment` 到 `Fragment`。
+
+一个 `Fragment` 也可以绑定到另一个 `Fragment` 中，形成嵌套关系。
+
+此时你只需要把 `attachToActivity` 换成 `attachToFragment` 即可。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的父 Fragment
+val parentFragment = YourParentFragment()
+// 假设这就是你的 Fragment
+val fragment = YourFragment()
+// 绑定 Fragment
+fragment.attachToFragment(parentFragment)
+```
+
+从 `FragmentActivity` 解绑 `Fragment`。
+
+你同样可以非常方便地解绑 `Fragment`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 FragmentActivity
+val activity: FragmentActivity
+// 假设这就是你的 Fragment
+val fragment = YourFragment()
+// 从 FragmentActivity 解绑 Fragment
+fragment.detachFromActivity(activity)
+// 如果你不填写参数，则默认获取当前 Fragment 所在的 Activity
+fragment.detachFromActivity()
+```
+
+从 `Fragment` 解绑 `Fragment`。
+
+此时你只需要把 `detachFromActivity` 换成 `detachFromFragment` 即可。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的父 Fragment
+val parentFragment = YourParentFragment()
+// 假设这就是你的 Fragment
+val fragment = YourFragment()
+// 从父 Fragment 解绑 Fragment
+fragment.detachFromFragment(parentFragment)
+// 如果你不填写参数，则默认获取当前 Fragment 所在的父 Fragment
+fragment.detachFromFragment()
+```
+
+除了绑定，你还能够在同一个绑定的布局中替换掉一个 `Fragment`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 FragmentActivity
+val activity: FragmentActivity
+// 假设这就是你的 Fragment
+val fragment = YourFragment()
+// 替换 Fragment 到 ID 为 R.id.container 的布局中
+fragment.replaceFromActivity(activity, R.id.container)
+```
+
+在 `Fragment` 中替换 `Fragment`。
+
+此时你只需要把 `replaceFromActivity` 换成 `replaceFromFragment` 即可。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的父 Fragment
+val parentFragment = YourParentFragment()
+// 假设这就是你的 Fragment
+val fragment = YourFragment()
+// 替换 Fragment 到 ID 为 R.id.container 的布局中
+fragment.replaceFromFragment(parentFragment, R.id.container)
+```
+
+隐藏当前 `Fragment`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 FragmentActivity
+val activity: FragmentActivity
+// 假设这就是你的父 Fragment
+val parentFragment = YourParentFragment()
+// 假设这就是你的 Fragment
+val fragment = YourFragment()
+// 从 FragmentActivity 隐藏 Fragment
+fragment.hide(activity)
+// 从父 Fragment 隐藏 Fragment
+fragment.hide(fragment = parentFragment)
+// 如果你不填写参数，则默认获取当前 Fragment 所在的父 Fragment 或 Activity
+fragment.hide()
+```
+
+显示当前 `Fragment`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 FragmentActivity
+val activity: FragmentActivity
+// 假设这就是你的父 Fragment
+val parentFragment = YourParentFragment()
+// 假设这就是你的 Fragment
+val fragment = YourFragment()
+// 从 FragmentActivity 显示 Fragment
+fragment.show(activity)
+// 从父 Fragment 显示 Fragment
+fragment.show(fragment = parentFragment)
+// 如果你不填写参数，则默认获取当前 Fragment 所在的父 Fragment 或 Activity
+fragment.show()
+```
+
+::: tip
+
+任何一个绑定、解绑、替换、显示、隐藏操作都可以被设置过渡动画，你可以在这些方法中找到 `beginAnimId` 和 `finishAnimId` 参数，默认的动画已被 `BetterAndroid` 内置，你无需进行任何操作即可在进行这些操作时拥有动画效果。
+
+:::
+
+### 尺寸 (Dimension) 扩展
+
+::: tip 本节内容
+
+[DisplayDensity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/-display-density)
+
+对 Density 的友好处理接口。
+
+[DimensionFactory → toPx](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/to-px)
+
+[DimensionFactory → toDp](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/to-dp)
+
+适用于 Dimension 的扩展。
+
+:::
+
+在 Android 的 UI 中无处不存在着尺寸的问题，例如你需要将一个 `View` 的 `padding` 设置为 10dp，在 XML 布局中能够很方便地设置，
+但是在代码中你需要使用 `TypedValue.applyDimension` 来进行转换，这样的代码看起来并不是很友好。
+
+于是，大家都开始去封装一个形如 `dp2px` 的方法，但是这样的做法依然不是很优雅且存在问题。
+
+`BetterAndroid` 为此提供了一个更加优雅的解决方案。
+
+一般情况下，你只需要传入一个存在的 `Context` 或 `Resources` 即可完成转换。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Context
+val context: Context
+// 假设这就是你的 Resources
+val resources: Resources
+// 将 10dp 转换为 px
+val px = 10.toPx(context)
+// 将 10dp 转换为 px
+val px = 10.toPx(resources)
+// 将 36px 转换为 dp
+val dp = 36.toDp(context)
+// 将 36px 转换为 dp
+val dp = 36.toDp(resources)
+```
+
+如果你当前已经处于一个存在 `Context` 或 `Resources` 的环境中，你可以像下面这样写得更加简便一点。
+
+这个时候你只需要为当前的实例实现一个 `DisplayDensity` 接口即可，你无需重写任何方法。
+
+> 示例如下
+
+```kotlin
+class YourActivity : AppCompatActivity(), DisplayDensity {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // 将 10dp 转换为 px
+        val px = 10.dp
+        // 将 10dp 转换为 px
+        val px = 10.toPx()
+        // 将 36px 转换为 dp
+        val dp = 36.px
+        // 将 36px 转换为 dp
+        val dp = 36.toDp()
+    }
+}
+```
+
+::: warning
+
+`DisplayDensity` 接口仅支持被实现到以下实例或是被其继承的实例中：
+
+`Context`、`Window`、`View`、`Resources`、`Fragment`、`Dialog`
+
+如果在不支持的实例中使用将会抛出异常，如果你愿意，你也可以重写 `DisplayDensity` 接口中的方法手动进行支持。
+
+`dp`、`px`、`toPx`、`toDp` 的命名方式可能会与 Jetpack Compose 中的命名方式冲突，所以不建议在这样的项目中使用。
+
+:::
+
+### 资源 (Resources) 扩展
+
+::: tip 本节内容
+
+[ResourcesFactory → isUiInNightMode](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/is-ui-in-night-mode)
+
+[ResourcesFactory → toHexResourceId](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/to-hex-resource-id)
+
+[ResourcesFactory → getDrawableCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-drawable-compat)
+
+[ResourcesFactory → getColorCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-color-compat)
+
+[ResourcesFactory → getColorStateListCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-color-state-list-compat)
+
+[ResourcesFactory → getFloatCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-float-compat)
+
+[ResourcesFactory → getFontCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-font-compat)
+
+[ResourcesFactory → getThemeAttrsBoolean](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-boolean)
+
+[ResourcesFactory → getThemeAttrsFloat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-float)
+
+[ResourcesFactory → getThemeAttrsInteger](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-integer)
+
+[ResourcesFactory → getThemeAttrsIntArray](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-int-array)
+
+[ResourcesFactory → getThemeAttrsStringArray](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-string-array)
+
+[ResourcesFactory → getThemeAttrsString](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-string)
+
+[ResourcesFactory → getThemeAttrsDimension](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-dimension)
+
+[ResourcesFactory → getThemeAttrsDrawable](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-drawable)
+
+[ResourcesFactory → getThemeAttrsColorStateList](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-color-state-list)
+
+[ResourcesFactory → getThemeAttrsColor](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-color)
+
+[ResourcesFactory → isThemeAttrsIdsValueEquals](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/is-theme-attrs-ids-value-equals)
+
+[ResourcesFactory → hasThemeAttrsId](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/has-theme-attrs-id)
+
+[ResourcesFactory → getThemeAttrsId](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-id)
+
+[ResourcesFactory → getMenuFromResource](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-menu-from-resource)
+
+[ResourcesFactory → getStringArray](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-string-array)
+
+[ResourcesFactory → getIntArray](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-int-array)
+
+[ResourcesFactory → getColorOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-color-or-null)
+
+[ResourcesFactory → obtainStyledAttributes](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/obtain-styled-attributes)
+
+适用于 `Resources` 的扩展。
+
+:::
+
+资源 (Resources) 是 Android 中非常重要的一个部分，它包含了应用程序中需要的布局、图片、字符串等等。
+
+为了能更加方便地使用 `Resources`，`BetterAndroid` 为其提供了一些实用的扩展功能。
+
+针对 `Resources` 中的 attr 属性，通常情况下我们需要创建一个 `TypedValue` 对象，然后使用 `Context.getTheme().resolveAttribute` 来对它填充相应的 ID 以获取到其本身的值内容。
+
+例如我们需要获取 `android.R.attr.windowBackground` 的值，我们需要这样去做。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Context
+val context: Context
+// 创建一个 TypedValue 对象
+val typedValue = TypedValue()
+// 使用 Context.getTheme().resolveAttribute 来填充相应的 ID
+context.theme.resolveAttribute(android.R.attr.windowBackground, typedValue, true)
+// 获取所在资源 ID
+val windowBackgroundId = typedValue.resourceId
+// 获取其本身的值内容
+val windowBackground = context.getDrawable(windowBackgroundId)
+```
+
+整个过程下来可谓是非常繁琐，于是 `BetterAndroid` 为此提供了一个更加简单的方式。
+
+现在，你只需要使用以下方式即可获取其本身的值内容。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Context
+val context: Context
+// 获取其本身的值内容
+val windowBackground = context.getThemeAttrsDrawable(android.R.attr.windowBackground)
+```
+
+如果你只需要获取 attr 所对应的资源 ID，你可以使用以下方式。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Context
+val context: Context
+// 获取所在资源 ID
+val windowBackgroundId = context.getThemeAttrsId(android.R.attr.windowBackground)
+```
+
+你还可以仅判断 attr 所对应的资源 ID 是否存在。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Context
+val context: Context
+// 判断 attr 所对应的资源 ID 是否存在
+val hasWindowBackgroundId = context.hasThemeAttrsId(android.R.attr.windowBackground)
+```
+
+你还能够比较两个 attr 的值内容是否相等。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Context
+val context: Context
+// 比较两个 attr 的值内容是否相等
+val isEquals = context.isThemeAttrsIdsValueEquals(R.attr.first_attr, R.attr.second_attr)
+```
+
+::: tip
+
+`Context.getThemeAttrs*` 系列方法支持 Android 中能够被转换到实际资源对象的常用实例，例如 `getThemeAttrsColor`、`getThemeAttrsInteger`、`getThemeAttrsString` 等。
+
+目前 `Context.getThemeAttrs*`、`Context.isThemeAttrsIdsValueEquals` 支持以下常用资源 ID 的值内容：
+
+`Color`、`ColorStateList`、`Drawable`、`Dimension`、`String`、`StringArray`、`IntArray`、`Float`、`Boolean`
+
+:::
+
+在 Android 中没有提供直接获取 `Menu` 资源 ID 并解析为 `Menu` 对象的方式，为此 `BetterAndroid` 提供了一个可能的获取方式。
+
+`BetterAndroid` 封装了使用 `PopupMenu` 并通过 `MenuInflater` 的形式将获取到的内容转换为一个 `List<MenuItem>` 对象的方法。
+
+现在，你可以非常方便地使用以下方式来获取 `Menu` 资源 ID 的值内容。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Context
+val context: Context
+// 获取 Menu 资源 ID 的值内容
+// 获取到的内容即为一个 List<MenuItem> 对象
+val menuItems = context.getMenuFromResource(R.menu.my_menu)
+```
+
+针对历史版本系统的兼容性处理，`BetterAndroid` 封装了由 `ResourcesCompat` 提供的方法，现在，你不需要考虑一些方法被作废的问题，
+你只需要在每个方法后加上 `Compat` 即可自动为其兼容化处理，并能够像原方法一样进行调用，功能完全一致。
+
+下面是一个针对 `Drawable` 的兼容性处理示例。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Context
+val context: Context
+// 假设这就是你的 Resources
+val resources: Resources
+// 通过 Context 获取 Drawable 对象
+val drawable = context.getDrawableCompat(R.drawable.my_drawable)
+// 通过 Resources 获取 Drawable 对象
+val drawable = resources.getDrawableCompat(R.drawable.my_drawable, context.theme)
+// 你还可以使用泛型的方式将其转换为对应的类型
+val drawable = context.getDrawableCompat<ColorDrawable>(R.drawable.my_background)
+```
+
+以下是原始方法与兼容性处理方法的对照表。
+
+| 原始方法                      | 兼容性处理方法                      |
+| ----------------------------- | ----------------------------------- |
+| `Context.getDrawable`         | `Context.getDrawableCompat`         |
+| `Context.getColor`            | `Context.getColorCompat`            |
+| `Context.getColorStateList`   | `Context.getColorStateListCompat`   |
+| `Context.getFloat`            | `Context.getFloatCompat`            |
+| `Resources.getDrawable`       | `Resources.getDrawableCompat`       |
+| `Resources.getColor`          | `Resources.getColorCompat`          |
+| `Resources.getColorStateList` | `Resources.getColorStateListCompat` |
+| `Resources.getFloat`          | `Resources.getFloatCompat`          |
+| `Resources.getFont`           | `Context.getFontCompat`             |
+
+针对自定义 `View` 的属性相关功能，`BetterAndroid` 提供了一个可自动回收处理的 `TypedArray` 扩展。
+
+你可以直接使用 `obtainStyledAttributes` 方法创建一个 `TypedArray` 对象并无需考虑何时应该调用 `recycle`。
+
+> 示例如下
+
+```kotlin
+class MyView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
+
+    init {
+        obtainStyledAttributes(attrs, R.styleable.MyView) {
+            val myType = it.getInteger(R.styleable.MyView_myType, 0)
+        }
+    }
+}
+```
+
+::: tip
+
+`BetterAndroid` 还为 `TypedArray` 提供了 `getStringArray`、`getIntArray` 以及 `getColorOrNull` 等实用方法，你可以在上方的 **本节内容** 中找到它们。
+
+:::
+
+系统夜间模式 (Dark Mode) 的功能扩展。
+
+系统的夜间模式是使用 `Configuration.UI_MODE_NIGHT_MASK` 进行判断的，为了能让这个功能更加通俗易懂，你无需使用位运算的方式进行判断，
+因为通常情况下我们不需要关心当前系统的夜间模式到底处于哪种托管状态，我们只需要知道当前系统外观是否为深色即可。
+
+所以 `BetterAndroid` 在 `Configuration` 中提供了一个直接使用 `Boolean` 类型进行判断的扩展。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Context
+val context: Context
+// 判断当前系统是否为深色模式
+val isDarkMode = context.resources.configuration.isUiInNightMode
+```
+
+### 系统颜色 (System Colors)
+
+::: tip 本节内容
+
+[SystemColors](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.feature/-system-colors)
+
+适用于系统颜色 (动态主题色) 的扩展。
+
+:::
+
+在 Android 12 中，官方为我们提供了一个新的功能，即动态主题色 (Dynamic Colors)，不同于传统的壁纸取色，Material 3 中的动态主题色是基于壁纸的层级色调进行计算的。
+
+`BetterAndroid` 将系统提供的主题色封装为了 `SystemColors`，你可以在代码层面动态地获取到系统的主题色。
+
+以下是一个创建 `SystemColors` 并使用的示例。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Context
+val context: Context
+// 创建 SystemColors 对象
+val systemColors = SystemColors.from(context)
+// 获取系统提供的 android.R.color.system_accent1_100 的颜色
+val accentColor = systemColors.systemAccentPrimary(100)
+// 获取 Material 提供的 com.google.android.material.R.color.material_dynamic_primary50 的颜色
+val primaryColor = systemColors.materialDynamicPrimary(50)
+```
+
+不是每个搭载了 Android 12 的设备都支持动态主题色，你可以使用以下方式进行判断。
+
+> 示例如下
+
+```kotlin
+// 你可以直接判断当前系统是否支持动态主题色
+val isAvailable = SystemColors.isAvailable
+```
+
+在不支持的情况下在获取颜色时将返回系统提供的默认颜色，但是如果目标设备低于 Android 12，任何从 `SystemColors` 中获取到的颜色都将会是 `Color.TRANSPARENT`。
+
+以下是完整的 `SystemColors` 支持的颜色方法及其可用参数列表。
+
+| 方法名称                        | 可用参数                                                     |
+| ------------------------------- | ------------------------------------------------------------ |
+| `systemAccentPrimary`           | 0、10、50、100、200、300、400、500、600、700、800、900、1000 |
+| `systemAccentSecondary`         | 0、10、50、100、200、300、400、500、600、700、800、900、1000 |
+| `systemAccentTertiary`          | 0、10、50、100、200、300、400、500、600、700、800、900、1000 |
+| `systemNeutralPrimary`          | 0、10、50、100、200、300、400、500、600、700、800、900、1000 |
+| `systemNeutralSecondary`        | 0、10、50、100、200、300、400、500、600、700、800、900、1000 |
+| `materialDynamicPrimary`        | 0、10、20、30、40、50、60、70、80、90、95、99、100           |
+| `materialDynamicSecondary`      | 0、10、20、30、40、50、60、70、80、90、95、99、100           |
+| `materialDynamicTertiary`       | 0、10、20、30、40、50、60、70、80、90、95、99、100           |
+| `materialDynamicNeutral`        | 0、10、20、30、40、50、60、70、80、90、95、99、100           |
+| `materialDynamicNeutralVariant` | 0、10、20、30、40、50、60、70、80、90、95、99、100           |
+
+::: danger
+
+你仅能在给出的方法中传入上述所列出可用参数中的数值，其它数值均不支持，否则将会抛出异常。
+
+:::
+
+### 颜色 (Color) 扩展
+
+::: tip 本节内容
+
+[AttrState](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/-attr-state)
+
+基于 `ColorStateList` 的颜色状态。
+
+[ColorFactory → isBrightColor](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/is-bright-color)
+
+[ColorFactory → toHexColor](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/to-hex-color)
+
+[ColorFactory → toAlphaColor](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/to-alpha-color)
+
+[ColorFactory → mixColorOf](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/mix-color-of)
+
+[ColorFactory → toNormalColorStateList](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/to-normal-color-state-list)
+
+[ColorFactory → toNullableColorStateList](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/to-nullable-color-state-list)
+
+[ColorFactory → ColorStateList](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/-color-state-list)
+
+适用于颜色的扩展。
+
+:::
+
+颜色在 Android 中是以 `Integer` (整型) 的形式存在的，虽然存在一个名为 `Color` 的类对其进行封装，但是很多方法都是在高版本的系统中添加的且 `androidx` 也没有针对其特定的兼容实现，
+在代码上下文中传递的对象通常也是直接使用 `Integer`。
+
+`BetterAndroid` 没有理由且无任何必要重新设计一个封装类来管理颜色，于是 `BetterAndroid` 仅针对 `Integer` 类型提供了相关扩展。
+
+所有在方法中传递的颜色对象都会被标注 `@ColorInt` 注解，请你也遵守 `androidx` 提供的规范。
+
+下面是一些对颜色扩展的相关示例用法。
+
+判断颜色的明亮程度。
+
+这在你需要根据颜色的明亮程度来决定是否使用深色文字时非常有用。
+
+> 示例如下
+
+```kotlin
+// 假设我们有以下颜色
+val color = Color.WHITE
+// 要判断其明亮程度，你只需要使用以下方法
+// 你肯定会得到一个 true，因为这是一个白色
+val isBright = color.isBrightColor
+```
+
+将颜色转换为 HEX 字符串。
+
+> 示例如下
+
+```kotlin
+// 假设我们有以下颜色
+val color = Color.WHITE
+// 要将其转换为 HEX 字符串，你只需要使用以下方法
+// 将会得到一个包含透明度的 "#FFFFFFFF"
+val hexString = color.toHexColor()
+```
+
+设置当前颜色的透明度。
+
+> 示例如下
+
+```kotlin
+// 假设我们有以下颜色
+val color = Color.WHITE
+// 你可以使用 0f-1f 的浮点数来设置透明度
+val alphaColor = color.toAlphaColor(0.5f)
+// 你还可以使用 0-255 的整数来设置透明度
+val alphaColor = color.toAlphaColor(127)
+```
+
+混合两个颜色。
+
+> 示例如下
+
+```kotlin
+// 假设我们有以下颜色
+val color1 = Color.WHITE
+val color2 = Color.BLACK
+// 你可以使用以下方法非常简单地将它们进行混合
+val mixColor = mixColorOf(color1, color2)
+// 你还可以设置混合的比率，默认为 0.5f
+val mixColor = mixColorOf(color1, color2, 0.2f)
+```
+
+`BetterAndroid` 也同样为 `ColorStateList` 提供了一些扩展功能。
+
+你可以使用以下方式快速地将现有颜色转换为一个拥有默认颜色的 `ColorStateList`。
+
+> 示例如下
+
+```kotlin
+// 假设我们有以下颜色
+val color = Color.WHITE
+// 使用以下方法将其转换为一个拥有默认颜色的 ColorStateList
+val colorStateList = color.toNormalColorStateList()
+// 你还可以转换为一个在颜色为透明时返回 null 的 ColorStateList
+val colorStateList = color.toNullableColorStateList()
+```
+
+你还可以通过 `AttrState` 手动创建一个 `ColorStateList`。
+
+> 示例如下
+
+```kotlin
+val colorStateList = ColorStateList(
+    AttrState.CHECKED to Color.WHITE,
+    AttrState.PRESSED to Color.BLACK,
+    AttrState.NORMAL to Color.TRANSPARENT
+)
+```
+
+### 位图 (Bitmap) 扩展
+
+::: tip 本节内容
+
+[BitmapFactory → decodeToBitmap](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/decode-to-bitmap)
+
+[BitmapFactory → decodeToBitmapOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/decode-to-bitmap-or-null)
+
+[BitmapFactory → createBitmap](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/create-bitmap)
+
+[BitmapFactory → createBitmapOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/create-bitmap-or-null)
+
+[BitmapFactory → writeBitmap](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/write-bitmap)
+
+[BitmapFactory → compressBitmap](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/compress-bitmap)
+
+[BitmapFactory → blur](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/blur)
+
+[BitmapFactory → round](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/round)
+
+[BitmapFactory → compress](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/compress)
+
+[BitmapFactory → reduce](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/reduce)
+
+[BitmapFactory → zoom](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/zoom)
+
+适用于位图的扩展。
+
+[BitmapBlurFactory](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics.base/-bitmap-blur-factory)
+
+适用于位图模糊的扩展。
+
+:::
+
+在 Android 中，位图能够用到各种地方，它是用来显示图片的重要对象。
+
+`BetterAndroid` 为位图提供了从装载到对其进行转换、缩放、压缩以及模糊等一系列扩展功能。
+
+在装载位图时，你可以不再需要使用 `BitmapFactory`，现在有以下方式可以帮助你更加方便地完成这个操作。
+
+通过文件 `File` 对象或输入流 `InputStream` 对象装载位图。
+
+> 示例如下
+
+```kotlin
+// 假设你的图片位于这个路径
+// 注意这个路径仅用于演示，实际情况下需要访问内置存储中的文件
+// 你需要申请各种各样不同的权限且应当使用 Environment.getExternalStorageDirectory() 方法来获取路径
+val imageFile = File("/storage/emulated/0/DCIM/Camera/IMG_20210901_000000.jpg")
+// 通过文件路径创建文件输入流
+val inputStream = FileInputStream("/storage/emulated/0/DCIM/Camera/IMG_20210901_000000.jpg")
+// 通过文件对象装载位图
+val bitmap = imageFile.decodeToBitmap()
+// 你可以在方法参数中传入 BitmapFactory.Options 对象来对其进行配置
+val bitmap = imageFile.decodeToBitmap(BitmapFactory.Options().apply {
+    // ...
+})
+// 通过输入流装载位图
+val bitmap = inputStream.decodeToBitmap()
+```
+
+通过字节数组 `ByteArray` 装载位图。
+
+如果你有一个通过 Base64 加密的图片，你可以将其转换为字节数组并使用以下方式装载位图。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Base64 字符串
+val base64String = "iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAA..."
+// 将 Base64 字符串转换为字节数组
+val byteArray = Base64.decode(base64String, Base64.DEFAULT)
+// 通过字节数组装载位图
+val bitmap = byteArray.decodeToBitmap()
+```
+
+通过 `Resources` 对象装载位图。
+
+此操作实际上是通过已知的 `Drawable` 资源 ID 创建一个新的 `Bitmap` 对象。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Resources
+val resources: Resources
+// 通过资源 ID 装载位图
+val bitmap = resources.createBitmap(R.drawable.my_image)
+```
+
+::: tip
+
+在不确定位图能否装载成功时，你可以将装载的方法替换为 `decodeToBitmapOrNull` 及 `createBitmapOrNull`，这样在装载失败时将会返回 `null` 而不是抛出异常。
+
+:::
+
+位图装载到内存后或是内存中存在的位图对象，你可以将其重新保存到文件。
+
+针对 `File` 对象 Kotlin 的 stdlib 已经给出了一个 `File.writeText` 的方法，所以 `BetterAndroid` 仿照其提供了一个 `File.writeBitmap` 方法。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的位图对象
+val bitmap: Bitmap
+// 假设这就是你要保存到的文件
+// 注意这个路径仅用于演示，实际情况下需要访问内置存储中的文件
+// 你需要申请各种各样不同的权限且应当使用 Environment.getExternalStorageDirectory() 方法来获取路径
+val imageFile = File("/storage/emulated/0/DCIM/Camera/IMG_20210901_000000_modified.jpg")
+// 将位图保存到文件
+imageFile.writeBitmap(bitmap)
+// 你可以调整 format 和 quality 参数来对其进行配置
+// 默认为 PNG 格式，质量为 100
+imageFile.writeBitmap(bitmap, format = Bitmap.CompressFormat.JPEG, quality = 80)
+```
+
+如果你能实际得到一个 `OutputStream` 对象，你可以使用以下方式将位图写入到输出流中。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的位图对象
+val bitmap: Bitmap
+// 假设这就是你的输出流对象
+val outputStream: OutputStream
+// 使用 use 方法来自动关闭输出流
+outputStream.use {
+    // 将位图写入到输出流中
+    it.compressBitmap(bitmap)
+    // 你可以调整 format 和 quality 参数来对其进行配置
+    // 默认为 PNG 格式，质量为 100
+    it.compressBitmap(bitmap, format = Bitmap.CompressFormat.JPEG, quality = 80)
+}
+```
+
+下面是针对位图的缩放、压缩以及模糊等扩展功能。
+
+缩放位图。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的位图对象
+val bitmap: Bitmap
+// 将位图缩放为 100x100 的大小
+val zoomBitmap = bitmap.zoom(100, 100)
+// 以倍数缩放，默认为 2 倍
+val zoomBitmap = bitmap.reduce(3)
+```
+
+压缩位图。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的位图对象
+val bitmap: Bitmap
+// 将位图压缩为 100 KB 的大小
+val compressBitmap = bitmap.compress(maxSize = 100)
+// 你可以调整 format 和 quality 参数来对其进行配置
+// 默认为 PNG 格式，质量为 100
+val compressBitmap = bitmap.compress(maxSize = 100, format = Bitmap.CompressFormat.JPEG, quality = 80)
+```
+
+圆角化位图。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的位图对象
+val bitmap: Bitmap
+// 将位图设置以 10dp 为半径的圆角
+val roundBitmap = bitmap.round(10.toPx(context))
+```
+
+模糊位图，你也可以使用 `BitmapBlurFactory` 来完成。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的位图对象
+val bitmap: Bitmap
+// 将位图以 25 模糊度进行模糊
+val blurBitmap = bitmap.blur(25)
+```
+
+::: warning
+
+这里提供的模糊只是一个通用算法，它能够快速实现模糊效果，但在速度和性能上可能会存在问题，且无法用于动态模糊效果。
+
+在 Android 中的位图模糊效果你可以参考并使用其它可能的第三方库，目前并没有一个通用且完善的解决方案，这是 Android 中的历史遗留问题，`BetterAndroid` 没有理由且无任何必要特意封装针对位图模糊的相关功能。
+
+如果你的应用程序目标为 Android 12 及以上版本，我们建议使用官方提供的 `RenderEffect` 来进行模糊操作，在以下版本中使用 `RenderScript` 的替代品 [renderscript-intrinsics-replacement-toolkit](https://github.com/android/renderscript-intrinsics-replacement-toolkit) (但是已经超过两年没有维护)。
+
+:::
+
+### 可绘制 (Drawable) 扩展
+
+::: tip 本节内容
+
+[GradientDrawableCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/-gradient-drawable-compat)
+
+`GradientDrawable` 的兼容处理类。
+
+[DrawableFactory → setPaddingCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/set-padding-compat)
+
+[DrawableFactory → setPadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/set-padding)
+
+[DrawableFactory → updatePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/update-padding)
+
+适用于 `Drawable` 的扩展。
+
+:::
+
+在一些情况下，我们可能需要用到直接操作 `Drawable` 对象的场景，`BetterAndroid` 为此提供了一些可能用到的扩展功能。
+
+为支持的 `Drawable` 设置 `padding`。
+
+你可以在任何类型的 `Drawable` 上使用以下方式设置 `padding`，但是仅对以下类型的 `Drawable` 有效：
+
+`RippleDrawable`、`LayerDrawable`、`ShapeDrawable`、`GradientDrawable`
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Drawable 对象
+val drawable: Drawable
+// 为支持的 Drawable 设置 padding
+drawable.setPadding(10.toPx(context))
+// 或者更新指定边的 padding
+drawable.updatePadding(horizontal = 10.toPx(context))
+```
+
+为 `GradientDrawable` 设置 `padding` 并进行兼容处理。
+
+支持在代码层面设置 `padding` 的 `GradientDrawable` 仅在 Android 10 及以上版本中可用。
+
+你可以使用以下兼容方式为 `GradientDrawable` 设置 `padding`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 GradientDrawable 对象
+val drawable: GradientDrawable
+// 设置 padding
+drawable.setPaddingCompat(10.toPx(context), 10.toPx(context), 10.toPx(context), 10.toPx(context))
+// 或者使用上述提到的设置方法一次性设置所有边的 padding
+// 这个方法会自动为你对接到 setPaddingCompat
+drawable.setPadding(10.toPx(context))
+```
+
+但是请注意，在 Android 10 及以下版本中，你需要使用 `GradientDrawableCompat` 来创建 `GradientDrawable` 才能使 `padding` 生效。
+
+你还可以继承 `GradientDrawableCompat` 来实现自己的 `GradientDrawable`。
+
+### Toast 扩展
+
+::: tip 本节内容
+
+[ToastFactory → toast](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/toast)
+
+适用于 `Toast` 的扩展。
+
+:::
+
+Android 中的 `Toast` 使用场景非常广泛，但是其存在各种各样的使用问题。
+
+在早些时候 `androidx` 的 `ktx` 为 `Toast` 提供了一个 `Context.toast` 的扩展方法，但是后期因为通知权限的问题被移除，
+有关此问题的讨论可以参考 [Toast extensions on Context](https://github.com/android/android-ktx/issues/143)。
+
+在 Kotlin 中简化一个 `Toast` 的使用方式应该是非常有必要的，因为有时候显示信息最快的方式还是弹出一个 `Toast`。
+
+所以 `BetterAndroid` 重新为此提供了一个 `toast` 的扩展方法，你可以在以下实例或是被其继承的实例中使用它：
+
+`Context`、`Window`、`Fragment`、`View`、`Dialog`
+
+你可以非常简单地使用以下方式弹出一个 `Toast`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Context
+val context: Context
+// 弹出一个 Toast
+context.toast("Hello World!")
+// 你可以在方法参数中传入 Toast.LENGTH_SHORT 或 Toast.LENGTH_LONG 来设置显示时长
+// 默认为 Toast.LENGTH_SHORT
+context.toast("Hello World!", Toast.LENGTH_SHORT)
+```
+
+以上就是它的全部使用方式，`BetterAndroid` 没有继续对其做出自定义操作，因为自定义功能在后期也被 Android 进行了限制，
+请参考 [Custom toasts from the background are blocked](https://developer.android.com/about/versions/11/behavior-changes-11#custom-toasts-bg-blocked)。
+
+`Toast` 仅能在主线程中使用，如果要在任何线程中弹出一个 `Toast`，你只需要像下面这样简单地对其进行配置。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Context
+val context: Context
+// 创建一个新的线程
+Thread {
+    // 延迟 1 秒
+    Thread.sleep(1000)
+    // 弹出一个 Toast 并设置 allowBackground 为 true
+    context.toast("Hello World!", allowBackground = true)
+}.start() // 启动它
+```
+
+这样，你就能在任何线程的情况下弹出一个 `Toast`，需要注意的是，这个参数在默认情况下是 `false`，你需要手动设置它。
+
+你应该尽量避免在非主线程中弹出 `Toast`，因为这样可能会导致一些可能的 “黑盒问题” 以及未知的隐患。
+
+::: warning
+
+正如上面所说，在 Android 13 及以上系统中，你需要为 `Toast` 与通知一样定义并添加运行时权限。
+
+类似 MIUI 等一些第三方 ROM 可能会允许在没有权限的情况下在应用程序内部弹出 `Toast`。
+
+如果没有悬浮窗需求，一个好的建议是使用一些其它类似行为的方式来替代 `Toast`，例如使用 Material 组件提供的 `Snackbar`。
+
+请参考 [Notification runtime permission](https://developer.android.com/develop/ui/views/notifications/notification-permission)。
+
+:::
+
+### Window 扩展
+
+::: tip 本节内容
+
+[WindowFactory → updateLayoutParams](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-layout-params)
+
+[WindowFactory → updateScreenBrightness](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-screen-brightness)
+
+[WindowFactory → clearScreenBrightness](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/clear-screen-brightness)
+
+适用于 `Window` 的扩展。
+
+:::
+
+`BetterAndroid` 为 `Window` 提供了一些可能用到的扩展功能。
+
+你可以像使用 `androidx` 中的 `View.updateLayoutParams` 一样使用以下方式修改 `Window.attributes`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Window 对象
+val window: Window
+// 修改 Window.attributes 中的参数
+window.updateLayoutParams {
+    gravity = Gravity.CENTER
+    // ...
+}
+```
+
+`BetterAndroid` 还封装了为 `Window` 单独设置屏幕亮度的方法。
+
+你可以使用以下方式更方便地修改 `Window.attributes.screenBrightness`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Window 对象
+val window: Window
+// 为当前 Window 设置屏幕亮度 (0-100)
+window.updateScreenBrightness(50)
+// 你也可以使用 Float 类型的参数来设置屏幕亮度
+window.updateScreenBrightness(0.5f)
+```
+
+如果你需要还原系统提供的默认屏幕亮度，你可以使用以下方式。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Window 对象
+val window: Window
+// 清除已设置的屏幕亮度
+window.clearScreenBrightness()
+```
+
+### View 扩展
+
+::: tip 本节内容
+
+[ViewFactory → location](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/location)
+
+[ViewFactory → removeSelf](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/remove-self)
+
+[ViewFactory → removeSelfInLayout](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/remove-self-in-layout)
+
+[ViewFactory → showIme](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/show-ime)
+
+[ViewFactory → hideIme](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/hide-ime)
+
+[ViewFactory → performKeyPressed](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/perform-key-pressed)
+
+[ViewFactory → performTouch](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/perform-touch)
+
+[ViewFactory → updatePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-padding)
+
+[ViewFactory → updateMargin](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-margin)
+
+[ViewFactory → inflate](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/inflate)
+
+[ViewFactory → ViewLayoutParams](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-view-layout-params.html)
+
+[ViewFactory → LayoutParamsMatchParent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-layout-params-match-parent)
+
+[ViewFactory → LayoutParamsWrapContent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-layout-params-wrap-content)
+
+适用于 `View` 的扩展。
+
+:::
+
+`View` 是用户界面中的重要组成部分，在使用 Kotlin 时，`androidx` 为我们提供了关于 `View` 的扩展功能，但是依然不够完善。
+
+`BetterAndroid` 在 `androidx` 的相关扩展功能基础上进行了完善和丰富，下面是你能够用到的一些扩展功能。
+
+获取 `View` 在屏幕中的坐标。
+
+你可以通过以下方式获取到一个 `Point` 对象，它包含了 `View` 在屏幕中的坐标。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 View 对象
+val view: View
+// 获取 View 在屏幕中的坐标
+val location = view.location
+// X 坐标
+val x = location.x
+// Y 坐标
+val y = location.y
+```
+
+从父布局 (容器) 中移除自身。
+
+通常情况下，我们从父布局中移除 `View` 自身需要使用 `View.getParent` 获取到父布局对象，然后转换为 `ViewGroup`，最后调用 `ViewGroup.removeView` 方法。
+
+现在，你可以使用以下方式更加简单地从父布局中移除其自身，如果不存在父布局或是父布局不是 `ViewGroup` (这种情况一般是不存在的)，此方法将无任何作用且不需要担心会产生任何负面效果。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 View 对象
+val view: View
+// 从父布局中移除自身
+view.removeSelf()
+// 使用 ViewGroup.removeViewInLayout 方法移除自身
+view.removeSelfInLayout()
+```
+
+显示或隐藏输入法 (IME)。
+
+通常情况下控制输入法的显示和隐藏可以通过输入框的焦点来自动完成，但是一些情况下我们希望能够手动控制输入法的显示和隐藏。
+
+如果当前 `View` 在 `Activity` 中，你可以使用以下方式显示或隐藏输入法。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 View 对象
+val view: View
+// 显示输入法
+view.showIme()
+// 隐藏输入法
+view.hideIme()
+```
+
+在 Android 10 及以上版本中，以上方法会使用 `WindowInsetsController` 来控制输入法的显示和隐藏，
+在 `View` 不处于 `Activity` 中或当前 Android 版本低于 Android 10 时，将会使用 `InputMethodManager` 来控制输入法的显示和隐藏。
+
+::: tip
+
+如果你需要使用拖拽来控制输入法的显示或隐藏 (Window Insets 动画效果)，目前 `BetterAndroid` 暂时没有提供相关的扩展功能，
+你可以参考 [WindowInsetsAnimationController](https://developer.android.com/reference/android/view/WindowInsetsAnimationController) 自己实现。
+
+:::
+
+::: warning
+
+在 Android 10 及以上版本中，建议将 `Activity` 的 `android:windowSoftInputMode` 参数设置为 `adjustResize` 以便于更好地控制输入法的显示和隐藏。
+
+如果你的 `View` 不处于 `Activity` 中或当前 Android 版本低于 Android 10，以上方案可能在一定条件下会无效。
+
+在 `Activity` 首次启动时，建议为显示或隐藏输入法事件进行延迟处理，否则可能会无效，且显示和隐藏事件的间隔不应过短。
+
+:::
+
+模拟触摸事件 (Touch)。
+
+`View` 提供的 `performClick` 方法仅能模拟点击事件，如果你需要模拟触摸事件，你可以使用 `BetterAndroid` 提供的 `View.performTouch` 方法。
+
+这个方法所接受的参数如下表所示。
+
+| 参数名称   | 参数类型 | 参数说明                                          |
+| ---------- | -------- | ------------------------------------------------- |
+| `downX`    | `Float`  | 模拟触摸事件的按下 X 坐标                         |
+| `downY`    | `Float`  | 模拟触摸事件的按下 Y 坐标                         |
+| `upX`      | `Float`  | 模拟触摸事件的抬起 X 坐标                         |
+| `upY`      | `Float`  | 模拟触摸事件的抬起 Y 坐标                         |
+| `duration` | `Long`   | 模拟触摸事件的持续时间 (从按下到抬起)，单位为毫秒 |
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 View 对象
+val view: View
+// 模拟从 (15, 30) 到 (105, 130) 的触摸事件，持续 500 毫秒
+view.performTouch(15f, 30f, 105f, 130f, 500)
+```
+
+模拟按键事件。
+
+你可以模拟物理键盘或输入法 (IME) 发送给当前 `View` 的按键事件，例如在 `EditText` 中，你可以模拟按下退格键来删除文本。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 View 对象
+val view: EditText
+// 模拟按下退格键
+view.performKeyPressed(KeyEvent.KEYCODE_DEL)
+// 你可以在后方加入 duration 参数来设置持续时间 (从按下到抬起)，单位为毫秒
+// 默认为 150 毫秒
+view.performKeyPressed(KeyEvent.KEYCODE_DEL, duration = 500)
+```
+
+更新 `View` 的 `padding` 和 `margin`。
+
+`androidx` 提供了一个 `View.updatePadding` 方法，`BetterAndroid` 在此基础上提供了可更新横向和纵向方向的方法，如果你只需要更新这两个方向的 `padding`，你可以无需写两遍重复数值。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 View 对象
+val view: View
+// 更新横向方向的 padding
+view.updatePadding(horizontal = 10.toPx(context))
+// 更新纵向方向的 padding
+view.updatePadding(vertical = 10.toPx(context))
+```
+
+`BetterAndroid` 同样提供了一个 `View.updateMargin` 方法，它的使用方式与 `View.updatePadding` 相同。
+
+这个方法仅会在 `View` 的 `LayoutParams` 为 `MarginLayoutParams` 时生效，其它情况下均不会有任何作用。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 View 对象
+val view: View
+// 更新横向方向的 margin
+view.updateMargin(horizontal = 10.toPx(context))
+// 更新纵向方向的 margin
+view.updateMargin(vertical = 10.toPx(context))
+// 更新左侧的 margin
+view.updateMargin(left = 10.toPx(context))
+```
+
+装载布局 (Inflate Layout)。
+
+通常情况下我们可以在 `Activity` 中使用 `getLayoutInflater` 或使用 `LayoutInflater.from(context)` 来创建一个 `LayoutInflater` 对象，然后使用 `inflate` 方法来装载布局。
+
+`BetterAndroid` 为你简化了这一步骤，现在，你能够在 `ViewGroup`、`Context` 中使用 `inflate` 方法来装载布局。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 ViewGroup 对象
+val view: ViewGroup
+// 假设这就是你的 Context 对象
+val context: Context
+// 你可以在 ViewGroup 中使用以下方式装载布局
+val myView = view.inflate(R.layout.my_layout)
+// 你可以设置 attachToRoot 参数来决定是否同时将其添加到 ViewGroup 中
+val myView = view.inflate(R.layout.my_layout, attachToRoot = true)
+// 在存在 Context 的情况下，你可以使用以下方式装载布局
+val myView = context.inflate(R.layout.my_layout)
+// 你可以为其指定一个父布局，如果需要立即添加到父布局中，你可以设置 attachToRoot 参数为 true
+val myView = context.inflate(R.layout.my_layout, view, attachToRoot = true)
+```
+
+手动创建一个 `LayoutParams` 对象。
+
+`LayoutParams` 是 `View` 的布局参数，它的类型取决于 `View` 的父布局，例如 `LinearLayout` 的 `LayoutParams` 为 `LinearLayout.LayoutParams`。
+
+有时候，你可能需要有手动创建这个对象并设置到 `View` 中的需求，此时 `BetterAndroid` 提供了 `ViewLayoutParams` 方法，
+现在，你可以省去使用超级长的 `ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)` 创建对象的步骤。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 View 对象
+val view: View
+// 创建一个 LinearLayout.LayoutParams 对象，默认情况下 width 和 height 均为 WRAP_CONTENT
+val layoutParams = ViewLayoutParams<LinearLayout.LayoutParams>()
+// 同时设置 width 和 height 为 MATCH_PARENT
+val layoutParams = ViewLayoutParams<LinearLayout.LayoutParams>(marchParent = true)
+// 仅设置 width 为 MATCH_PARENT
+val layoutParams = ViewLayoutParams<LinearLayout.LayoutParams>(widthMatchParent = true)
+// 手动设置 width 和 height
+val layoutParams = ViewLayoutParams<LinearLayout.LayoutParams>(50.toPx(context), 30.toPx(context))
+// 设置到 View 中
+view.layoutParams = layoutParams
+```
+
+### TextView 扩展
+
+::: tip 本节内容
+
+[TextViewFactory → isEllipsize](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/is-ellipsize)
+
+[TextViewFactory → isUnderline](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/is-underline)
+
+[TextViewFactory → isStrikeThrough](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/is-strike-through)
+
+[TextViewFactory → textColor](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/text-color)
+
+[TextViewFactory → setDigits](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/set-digits)
+
+适用于 `TextView` 的扩展。
+
+:::
+
+`TextView` 是 Android 中最常用的组件之一，`BetterAndroid` 为 `TextView` 提供了一些能在 Kotlin 中使用更加方便的扩展功能。
+
+判断 `TextView` 是否存在省略号。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 TextView 对象
+val textView: TextView
+// 判断 TextView 是否存在省略号
+val isEllipsize = textView.isEllipsize
+```
+
+获取、设置 `TextView` 的下划线效果。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 TextView 对象
+val textView: TextView
+// 获取 TextView 是否存在下划线效果
+val isUnderline = textView.isUnderline
+// 设置 TextView 的下划线效果
+textView.isUnderline = true
+```
+
+获取、设置 `TextView` 的删除线效果。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 TextView 对象
+val textView: TextView
+// 获取 TextView 是否存在删除线效果
+val isStrikeThrough = textView.isStrikeThrough
+// 设置 TextView 的删除线效果
+textView.isStrikeThrough = true
+```
+
+::: warning
+
+在设置下划线或删除线效果时，你可能需要手动对 `TextView` 使用 `paint.isAntiAlias = true` 启用抗锯齿以达到更好的效果，这是 Android 中对于绘制性能的一个历史遗留问题。
+
+:::
+
+获取、设置 `TextView` 的文本颜色。
+
+虽然说，你能够使用 `TextView.setTextColor` 方法来设置文本颜色，但是它不能很好地被识别为 Kotlin 中的 Getter、Setter 方法，因为对应的 `TextView.getTextColors` 是一个 `ColorStateList` 对象。
+
+所以 `BetterAndroid` 添加了针对这个功能的扩展，现在，你可以使用以下方式获取、设置 `TextView` 的文本颜色。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 TextView 对象
+val textView: TextView
+// 获取 TextView 的文本颜色
+val textColor = textView.textColor
+// 设置 TextView 的文本颜色
+textView.textColor = Color.RED
+```
+
+设置 `TextView` 的输入限制 (Digits)。
+
+这个属性仅在 XML 中能够方便地使用 `digits` 属性来设置，但是如果你需要动态修改它，就需要 `TextView.setKeyListener` 方法。
+
+为此，`BetterAndroid` 为 `TextView` 提供了一个 `setDigits` 方法，你可以使用以下方式设置 `TextView` 的输入限制。
+
+由于输入功能是由 `EditText` 完成的，而 `EditText` 继承自 `TextView`，所以一般情况下此方法仅在 `EditText` 中使用。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 EditText 对象
+val editText: EditText
+// 设置输入框仅能输入数字
+editText.setDigits("0123456789")
+// 设置输入框仅能输入小写字母
+editText.setDigits("abcdefghijklmnopqrstuvwxyz")
+// 第二位参数为 inputType，你可以在此处限制输入框的显示行为
+// 例如仅能输入数字且显示为密码
+editText.setDigits("0123456789", InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD)
+// 第三位参数为 locale，你可以在此处设置输入框的国家区域 (仅在 Android 8 及以上版本中可用)
+// 例如设置为中国大陆地区
+editText.setDigits("0123456789", locale = Locale.CHINA)
+```
+
+### 布局绑定 (ViewBinding) 扩展
+
+::: tip 本节内容
+
+[ViewBindingFactory → inflateViewBinding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/inflate-view-binding)
+
+适用于 `ViewBinding` 的扩展。
+
+:::
+
+`ViewBinding` 是 Android 中的一个新特性，它能够帮助我们更加方便地操作布局中的组件。
+
+但是显然官方没有开放对它的使用方法，能够获取到生成类的接口 `ViewBinding` 也不存在 `inflate` 等方法的实现，你仅能使用类似 `ActivityMainBinding.inflate(layoutInflater)` 的方式来装载布局。
+
+于是 `BetterAndroid` 对其进行了反射处理来获得其中的 `inflate` 方法并通过泛型来提取对象的类型。
+
+::: warning
+
+我们不建议你手动使用此方法来自行操作 `ViewBinding`，这套 API 可能无法稳定工作于任何特殊场景，它们现在仅用于提供给 [ui-component](../library/ui-component.md) 使用，且仅测试了有限的使用场景。
+
+所以这里也不会提供详细的使用方法，如果你依然想要使用这套 API 来装载 `ViewBinding`，你可以在 **本节内容** 中找到 `inflateViewBinding` 方法中的注释用法进行阅读。
+
+:::
