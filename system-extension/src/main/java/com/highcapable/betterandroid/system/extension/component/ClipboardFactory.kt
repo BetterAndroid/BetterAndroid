@@ -35,7 +35,6 @@ import android.net.Uri
 import android.view.View
 import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
-import com.highcapable.yukireflection.factory.current
 
 /**
  * Clip data item's builder.
@@ -155,14 +154,14 @@ fun ClipboardManager.copy(intent: Intent, label: CharSequence? = null) =
  * Copy uri to clipboard.
  * @receiver [ClipboardManager]
  * @param uri the uri to copy.
+ * @param resolver the content resolver, use it to get the [uri]'s mime type, default is null.
  * @param label the clip data visible label, default is null.
  */
 @JvmOverloads
-fun ClipboardManager.copy(uri: Uri, label: CharSequence? = null) {
-    val resolverFromManager = current(ignored = true)
-        .field { name = "mContext" }
-        .cast<Context>()?.contentResolver
-    copy(ClipData.newUri(resolverFromManager, label, uri))
+fun ClipboardManager.copy(uri: Uri, resolver: ContentResolver? = null, label: CharSequence? = null) {
+    val clipData = resolver?.let { ClipData.newUri(it, label, uri) }
+        ?: ClipData(label, arrayOf(ClipDescription.MIMETYPE_TEXT_URILIST), ClipData.Item(uri))
+    copy(clipData)
 }
 
 /**
