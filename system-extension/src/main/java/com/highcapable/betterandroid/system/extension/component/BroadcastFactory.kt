@@ -46,20 +46,31 @@ import com.highcapable.betterandroid.system.extension.tool.SystemVersion
  * ```
  * @receiver the current context.
  * @param filter the [IntentFilter].
- * @param flags the flags, default is [Context.RECEIVER_EXPORTED].
- * @param onReceive callback the receiver event function body.
+ * @param flags the flags.
+ * @param exported whether to add the [Context.RECEIVER_EXPORTED] flag, default true.
+ * @param handleReceive callback the receiver event function body.
  */
 @JvmOverloads
-fun Context.registerReceiver(filter: IntentFilter, flags: Int? = null, onReceive: (context: Context, intent: Intent) -> Unit) {
+fun Context.registerReceiver(
+    filter: IntentFilter,
+    flags: Int? = null,
+    exported: Boolean = true,
+    handleReceive: BroadcastReceiver.(context: Context, intent: Intent) -> Unit
+) {
     val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (context == null || intent == null) return
-            onReceive(context, intent)
+            handleReceive(context, intent)
         }
     }
-    val receiverFlags = flags ?: Context.RECEIVER_EXPORTED
-    if (SystemVersion.isHighOrEqualsTo(SystemVersion.T))
-        registerReceiver(receiver, filter, receiverFlags)
+    var receiverFlags = flags
+    if (exported)
+        receiverFlags = if (receiverFlags == null) Context.RECEIVER_EXPORTED
+        else receiverFlags or Context.RECEIVER_EXPORTED
+    if (SystemVersion.isHighOrEqualsTo(SystemVersion.O))
+        if (receiverFlags != null)
+            registerReceiver(receiver, filter, receiverFlags)
+        else registerReceiver(receiver, filter)
     else registerReceiver(receiver, filter)
 }
 
@@ -70,22 +81,38 @@ fun Context.registerReceiver(filter: IntentFilter, flags: Int? = null, onReceive
  *
  * ```kotlin
  * // Send a broadcast to "com.example.app".
- * sendBroadcast("com.example.app", "com.example.app.action.KNOCK") {
+ * sendBroadcast("com.example.app") {
+ *     action = "com.example.app.action.KNOCK"
  *     putExtra("greetings", "Hey you!")
  * }
  * // If you don't want to specific a package name.
- * sendBroadcast(action = arrayOf("com.example.app.action.KNOCK")) {
+ * sendBroadcast {
+ *     action = "com.example.app.action.KNOCK"
  *     putExtra("greetings", "Hey there!")
+ * }
+ * // If you want to request a permission for the receiverd apps.
+ * sendBroadcast("com.example.app", "com.example.app.permission.KNOCK") {
+ *    action = "com.example.app.action.KNOCK"
+ *    putExtra("greetings", "Hey Pro!")
  * }
  * ```
  * @receiver the current context.
  * @param packageName the receiverd app's package name, default is empty.
- * @param action the actions you want to send, default is empty.
+ * @param receiverPermission the receiverd app's permission, default is null.
  * @param initiate the [Intent] builder body.
  */
 @JvmOverloads
-fun Context.sendBroadcast(packageName: String = "", vararg action: String, initiate: Intent.() -> Unit = {}) =
-    sendBroadcast(Intent().apply {
-        if (packageName.isNotBlank()) setPackage(packageName)
-        action.forEach { setAction(it) }
-    }.apply(initiate))
+fun Context.sendBroadcast(packageName: String = "", receiverPermission: String? = null, initiate: Intent.() -> Unit = {}) =
+    sendBroadcast(Intent().apply { if (packageName.isNotBlank()) setPackage(packageName) }.apply(initiate), receiverPermission)
+
+/**
+ * Send a broadcast.
+ *
+ * - This function is deprecated and no effect, use [sendBroadcast] instead.
+ * @see sendBroadcast
+ */
+@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
+@Deprecated(message = "Use sendBroadcast instead.")
+@JvmOverloads
+fun Context.sendBroadcast(packageName: String = "", vararg action: String, initiate: Intent.() -> Unit = {}) {
+}
