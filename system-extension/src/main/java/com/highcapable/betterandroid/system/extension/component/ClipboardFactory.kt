@@ -28,6 +28,7 @@ import android.app.Dialog
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.ClipboardManager
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -78,9 +79,15 @@ class ClipDataItemBuilder internal constructor() {
     /**
      * Add a uri item to clip data.
      * @param uri the uri to add.
+     * @param resolver the content resolver, use it to get the [uri]'s mime type, default is null.
      */
-    fun addUri(uri: Uri) {
-        mimeTypes.add(ClipDescription.MIMETYPE_TEXT_URILIST)
+    fun addUri(uri: Uri, resolver: ContentResolver? = null) {
+        // Use ClipData.newUri to make a new clip data for getting the uri's mime type.
+        val description = resolver?.let { ClipData.newUri(it, null, uri).description }
+        if (description != null && description.mimeTypeCount > 0)
+            for (i in 0 until description.mimeTypeCount)
+                mimeTypes.add(description.getMimeType(i))
+        else mimeTypes.add(ClipDescription.MIMETYPE_TEXT_URILIST)
         dataItems.add(ClipData.Item(uri))
     }
 
