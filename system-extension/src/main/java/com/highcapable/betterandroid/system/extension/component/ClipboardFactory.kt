@@ -26,6 +26,7 @@ package com.highcapable.betterandroid.system.extension.component
 
 import android.app.Dialog
 import android.content.ClipData
+import android.content.ClipDescription
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
@@ -40,6 +41,9 @@ import com.highcapable.yukireflection.factory.current
  */
 class ClipDataItemBuilder internal constructor() {
 
+    /** The mime types of clip data. */
+    private val mimeTypes = mutableSetOf<String>()
+
     /** The items of clip data. */
     private val dataItems = mutableListOf<ClipData.Item>()
 
@@ -48,6 +52,7 @@ class ClipDataItemBuilder internal constructor() {
      * @param text the text to add.
      */
     fun addText(text: CharSequence) {
+        mimeTypes.add(ClipDescription.MIMETYPE_TEXT_PLAIN)
         dataItems.add(ClipData.Item(text))
     }
 
@@ -57,6 +62,7 @@ class ClipDataItemBuilder internal constructor() {
      * @param htmlText the html text to add.
      */
     fun addHtmlText(text: CharSequence, htmlText: String) {
+        mimeTypes.add(ClipDescription.MIMETYPE_TEXT_HTML)
         dataItems.add(ClipData.Item(text, htmlText))
     }
 
@@ -65,6 +71,7 @@ class ClipDataItemBuilder internal constructor() {
      * @param intent the intent to add.
      */
     fun addIntent(intent: Intent) {
+        mimeTypes.add(ClipDescription.MIMETYPE_TEXT_INTENT)
         dataItems.add(ClipData.Item(intent))
     }
 
@@ -73,32 +80,28 @@ class ClipDataItemBuilder internal constructor() {
      * @param uri the uri to add.
      */
     fun addUri(uri: Uri) {
+        mimeTypes.add(ClipDescription.MIMETYPE_TEXT_URILIST)
         dataItems.add(ClipData.Item(uri))
     }
 
     /**
-     * Build clip data items.
-     * @return [MutableList]<[ClipData.Item]>
+     * Get the clip data item result.
+     * @return [Pair]<[Array]<[String]>, [MutableList]<[ClipData.Item]>>
      */
-    internal fun build() = dataItems
+    internal fun build() = mimeTypes.toTypedArray() to dataItems
 }
 
 /**
  * Create a clip data.
- * @param mimeTypes the mime types of clip data.
  * @param label the clip data visible label, default is null.
  * @param initiate the [ClipDataItemBuilder] builder body.
  * @throws IllegalStateException if no clip data item provided.
  */
 @JvmOverloads
-fun ClipData(
-    vararg mimeTypes: String,
-    label: CharSequence? = null,
-    initiate: ClipDataItemBuilder.() -> Unit
-): ClipData {
-    val dataItems = ClipDataItemBuilder().apply(initiate).build()
-    require(dataItems.isNotEmpty()) { "ClipData must have at least one item." }
-    return ClipData(label, mimeTypes, dataItems[0]).apply { dataItems.drop(1).forEach { addItem(it) } }
+fun ClipData(label: CharSequence? = null, initiate: ClipDataItemBuilder.() -> Unit): ClipData {
+    val data = ClipDataItemBuilder().apply(initiate).build()
+    require(data.second.isEmpty()) { "ClipData must have at least one item." }
+    return ClipData(label, data.first, data.second[0]).apply { data.second.drop(1).forEach { addItem(it) } }
 }
 
 /**
