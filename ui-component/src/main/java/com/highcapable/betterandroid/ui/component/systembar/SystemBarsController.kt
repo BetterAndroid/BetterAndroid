@@ -227,6 +227,7 @@ class SystemBarsController private constructor(private val window: Window) {
      * if you don't want to set that, you can set it to null.
      * @throws IllegalStateException if the [rootView] is not available.
      */
+    @JvmOverloads
     fun init(rootView: View? = null, handleWindowInsets: (WindowInsetsWrapper.() -> InsetsWrapper)? = { safeDrawingIgnoringIme }) {
         if (isInitOnce) return
         var throwable: Throwable? = null
