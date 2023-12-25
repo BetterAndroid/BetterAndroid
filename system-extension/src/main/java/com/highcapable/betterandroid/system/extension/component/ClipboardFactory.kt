@@ -102,6 +102,15 @@ fun ClipData(
 }
 
 /**
+ * Get the clip data item list.
+ * @receiver [ClipData]
+ * @return [List]<[ClipData.Item]>
+ */
+fun ClipData.listOfItems() = if (itemCount > 0)
+    (0 until itemCount).map { getItemAt(it) }
+else emptyList()
+
+/**
  * Copy text to clipboard.
  * @receiver [ClipboardManager]
  * @param text the text to copy.
