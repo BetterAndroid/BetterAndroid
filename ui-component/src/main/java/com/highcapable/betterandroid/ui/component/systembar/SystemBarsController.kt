@@ -283,9 +283,6 @@ class SystemBarsController private constructor(private val window: Window) {
         handleWindowInsets?.also {
             absRootView.handleOnWindowInsetsChanged { rootView, insetsWrapper ->
                 rootView.setInsetsPadding(it(insetsWrapper))
-                // In here, we won't consumed the insets for child views by default,
-                // so you can use the [View.handleOnWindowInsetsChanged] to handle the child views insets.
-                false
             }
         }
     }
