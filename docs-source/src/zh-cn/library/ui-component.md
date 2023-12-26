@@ -1024,6 +1024,14 @@ val insetsWrapper = WindowInsetsWrapper.from(windowInsets, window)
 val displayCutout = insetsWrapper.displayCutout
 ```
 
+::: warning
+
+如果你的应用程序需要在 Android 10 或以下设备上运行，我们建议始终传入一个 `Window` 对象以保证 `BetterAndroid` 能正确为你处理兼容问题。
+
+目前已知兼容问题为 `androidx` 提供的兼容处理方法无法对 Android 11 以下设备的 `statusBars`、`navigationBars`、`systemBars` 的 `isVisible` 和其内容给出正确的值，`BetterAndroid` 为此进行了修复。
+
+:::
+
 你从 `WindowInsetsWrapper` 获取到的任何 Insets 对象即 `InsetsWrapper`，它封装了 `Insets` 对象并实现了可控的 `isVisible` 状态。
 
 `InsetsWrapper` 可以轻松地转换为原始的 `Insets` 对象，同时也可以重新转换为 `InsetsWrapper`。
@@ -1041,7 +1049,7 @@ val wrapper = insets.toWrapper(systemBars.isVisible)
 val wrapper = InsetsWrapper.of(insets, systemBars.isVisible)
 ```
 
-与 `Insets` 不同的是，`InsetsWrapper` 重载了运算符，你可以使用 `+`、`-` 以及 `or`、`and` 来对其进行运算。
+与 `Insets` 不同的是，`InsetsWrapper` 重载了运算符，你可以使用 `+`、`-` 以及 `or`、`and` 来对其进行运算或是对其进行比较。
 
 > 示例如下
 
@@ -1056,6 +1064,10 @@ val insets3 = insets2 - insets1
 val insets3 = insets1 or insets2
 // 使用 "and" 运算符，等同于 Insets.min(insets1, insets2)
 val insets3 = insets1 and insets2
+// 使用 ">" 运算符进行比较
+val isUpperTo = insets1 > insets2
+// 使用 "<" 运算符进行比较
+val isLowerTo = insets1 < insets2
 ```
 
 获取到 Insets 对象后，一般做法是设置为 `View` 的 `padding`，让其为系统占位置的地方 “让路”。
@@ -1117,14 +1129,23 @@ imeSpaceLayout.handleOnWindowInsetsChanged { imeSpaceLayout, insetsWrapper ->
     imeSpaceLayout.setInsetsPadding(insetsWrapper.ime)
     // 或者使用 ime 更新底部的 padding
     imeSpaceLayout.updateInsetsPadding(insetsWrapper.ime, bottom = true)
-    // 使当前 Window Insets 可继续向下传递
-    false // 设置为 true 将会消费掉当前的 Window Insets
+}
+```
+
+如果你想对子视图消费掉 Window Insets 使其不再向下传递，你只需要在方法参数中设置 `consumed = true` 即可。
+
+> 示例如下
+
+```kotlin
+// 处理 View 的 Window Insets 改变监听
+imeSpaceLayout.handleOnWindowInsetsChanged(consumed = true) { imeSpaceLayout, insetsWrapper ->
+    // 内容与上述相同
 }
 ```
 
 如果你想同时在 Window Insets 改变时使其拥有动画效果，你无需重新设置一个 `View.setWindowInsetsAnimationCallback`。
 
-你只需要在 `View.handleOnWindowInsetsChanged` 中设置 `animated = true` 即可，这样回调就会在每次 Window Insets 改变中触发。
+你只需要在方法参数中设置 `animated = true` 即可，这样回调就会在每次 Window Insets 改变中触发。
 
 > 示例如下
 
@@ -1137,7 +1158,7 @@ imeSpaceLayout.handleOnWindowInsetsChanged(animated = true) { imeSpaceLayout, in
 
 ::: warning
 
-这个特性是从 Android 11 开始引入的，根据官方的介绍，在之前的版本中动画是被模拟出来的，可能不会达到最佳效果。
+这个特性是从 Android 11 开始引入的，在这之前的系统中回调依然会被立即触发，所以将不会产生任何动画效果。
 
 :::
 
@@ -1153,6 +1174,12 @@ val view: View
 // 移除 View 的 Window Insets 改变监听
 view.removeWindowInsetsListener()
 ```
+
+::: warning
+
+你只能为一个 `View` 设置一个 Window Insets 监听，重复设置的监听会被最后一次覆盖掉。
+
+:::
 
 如果你想直接从当前 `View` 中获取 Window Insets，那么你还可以使用以下方式创建一个 `WindowInsetsWrapper` 对象。
 

@@ -1053,6 +1053,15 @@ val insetsWrapper = WindowInsetsWrapper.from(windowInsets, window)
 val displayCutout = insetsWrapper.displayCutout
 ```
 
+::: warning
+
+If your app needs to run on Android 10 or below devices, we recommend always passing in a `Window` object to ensure that `BetterAndroid` can correctly handle compatibility issues for you.
+
+Currently known compatibility issues are that the compatibility processing method provided by `androidx` cannot give correct values ​​to the `isVisible` and their contents of
+`statusBars`, `navigationBars`, `systemBars` of devices below Android 11, for this reason, `BetterAndroid` repairs were made.
+
+:::
+
 Any insets you get from `WindowInsetsWrapper` is `InsetsWrapper`, which wrapped `Insets` and implements controllable `isVisible` state.
 
 `InsetsWrapper` can be easily converted to an original `Insets` object, and can also be converted back to an `InsetsWrapper`.
@@ -1070,7 +1079,7 @@ val wrapper = insets.toWrapper(systemBars.isVisible)
 val wrapper = InsetsWrapper.of(insets, systemBars.isVisible)
 ```
 
-Unlike `Insets`, `InsetsWrapper` has overloaded operators, and you can use `+`, `-` and `or`, `and` to operate on it.
+Unlike `Insets`, `InsetsWrapper` has overloaded operators, and you can use `+`, `-` and `or`, `and` to operate or compare on it.
 
 > The following example
 
@@ -1085,6 +1094,10 @@ val insets3 = insets2 - insets1
 val insets3 = insets1 or insets2
 // Use "and" operator, equivalent to Insets.min(insets1, insets2).
 val insets3 = insets1 and insets2
+// Use the ">" operator to compare
+val isUpperTo = insets1 > insets2
+// Use the "<" operator to compare
+val isLowerTo = insets1 < insets2
 ```
 
 After obtaining the insets, the general approach is to set it to the `padding` of the `View`
@@ -1151,14 +1164,23 @@ imeSpaceLayout.handleOnWindowInsetsChanged { imeSpaceLayout, insetsWrapper ->
     imeSpaceLayout.setInsetsPadding(insetsWrapper.ime)
     // Or use ime to update the padding at the bottom.
     imeSpaceLayout.updateInsetsPadding(insetsWrapper.ime, bottom = true)
-    // Allow the current window insets to continue to be passed down.
-    false // Set to true will consume the current window insets.
+}
+```
+
+If you want to consume window insets from the subview so that they are no longer passed down, you just need to set `consumed = true` in the method parameters.
+
+> The following example
+
+```kotlin
+// Handle view's window insets change listener.
+imeSpaceLayout.handleOnWindowInsetsChanged(consumed = true) { imeSpaceLayout, insetsWrapper ->
+    // The content is the same as above.
 }
 ```
 
 If you want to animate window insets when they change as well, you don't need to reset a `View.setWindowInsetsAnimationCallback`.
 
-You just need to set `animated = true` in `View.handleOnWindowInsetsChanged` so that the callback will be triggered every time window insets change.
+You just need to set `animated = true` in the method parameters so that the callback will be triggered every time window insets change.
 
 > The following example
 
@@ -1171,7 +1193,7 @@ imeSpaceLayout.handleOnWindowInsetsChanged(animated = true) { imeSpaceLayout, in
 
 ::: warning
 
-This feature was introduced starting with Android 11, according to the official introduction, animations were simulated in previous versions and may not achieve the best results.
+This feature was introduced starting with Android 11, in previous systems, callbacks were still triggered immediately, so no animation effects would be produced.
 
 :::
 
@@ -1187,6 +1209,12 @@ Val view: View
 // Remove view's window insets change listener.
 view.removeWindowInsetsListener()
 ```
+
+::: warning
+
+You can only set one window insets listener for a `View`, repeatedly set listeners will be overwritten by the last one.
+
+:::
 
 If you want to get window insets directly from the current `View`, then you can also create a `WindowInsetsWrapper` using the following method.
 
