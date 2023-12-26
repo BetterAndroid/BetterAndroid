@@ -1380,9 +1380,9 @@ view.showIme()
 view.hideIme()
 ```
 
-In Android 10 and above, the above method will use `WindowInsetsController` to control the showing and hiding of the input method.
+In Android 11 and above, the above method will use `WindowInsetsController` to control the showing and hiding of the input method.
 
-When `View` is not in `Activity` or the current Android version is lower than Android 10, `InputMethodManager` will be used to control the showing and hiding of the input method.
+When `View` is not in `Activity` or the current Android version is lower than Android 11, `InputMethodManager` will be used to control the showing and hiding of the input method.
 
 ::: tip
 
@@ -1394,9 +1394,9 @@ You can refer to [WindowInsetsAnimationController](https://developer.android.com
 
 ::: warning
 
-In Android 10 and above, it is recommended to set the `android:windowSoftInputMode` parameter of `Activity` to `adjustResize` to better control the showing and hiding of the input method.
+In Android 11 and above, it is recommended to set the `android:windowSoftInputMode` parameter of `Activity` to `adjustResize` to better control the showing and hiding of the input method.
 
-If your `View` is not in `Activity` or the current Android version is lower than Android 10, the above solution may not be effective under certain conditions.
+If your `View` is not in `Activity` or the current Android version is lower than 11, the above solution may not be effective under certain conditions.
 
 When `Activity` is first started, it is recommended to delay processing of show or hide input method events, otherwise it may be ineffective,
 and the interval between show and hide events should not be too short.

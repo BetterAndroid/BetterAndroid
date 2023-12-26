@@ -1339,8 +1339,8 @@ view.showIme()
 view.hideIme()
 ```
 
-在 Android 10 及以上版本中，以上方法会使用 `WindowInsetsController` 来控制输入法的显示和隐藏，
-在 `View` 不处于 `Activity` 中或当前 Android 版本低于 Android 10 时，将会使用 `InputMethodManager` 来控制输入法的显示和隐藏。
+在 Android 11 及以上版本中，以上方法会使用 `WindowInsetsController` 来控制输入法的显示和隐藏，
+在 `View` 不处于 `Activity` 中或当前 Android 版本低于 Android 11 时，将会使用 `InputMethodManager` 来控制输入法的显示和隐藏。
 
 ::: tip
 
@@ -1351,9 +1351,9 @@ view.hideIme()
 
 ::: warning
 
-在 Android 10 及以上版本中，建议将 `Activity` 的 `android:windowSoftInputMode` 参数设置为 `adjustResize` 以便于更好地控制输入法的显示和隐藏。
+在 Android 11 及以上版本中，建议将 `Activity` 的 `android:windowSoftInputMode` 参数设置为 `adjustResize` 以便于更好地控制输入法的显示和隐藏。
 
-如果你的 `View` 不处于 `Activity` 中或当前 Android 版本低于 Android 10，以上方案可能在一定条件下会无效。
+如果你的 `View` 不处于 `Activity` 中或当前 Android 版本低于 11，以上方案可能在一定条件下会无效。
 
 在 `Activity` 首次启动时，建议为显示或隐藏输入法事件进行延迟处理，否则可能会无效，且显示和隐藏事件的间隔不应过短。
 
