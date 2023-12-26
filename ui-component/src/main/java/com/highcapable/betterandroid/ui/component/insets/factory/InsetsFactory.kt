@@ -128,6 +128,8 @@ fun <V : View> V.handleOnWindowInsetsChanged(
     animationDispatchMode: Int = DISPATCH_MODE_CONTINUE_ON_SUBTREE,
     onChange: (V, insetsWrapper: WindowInsetsWrapper) -> Boolean
 ) {
+    // To avoid redundant listening, so remove them before adding.
+    removeWindowInsetsListener()
     val self = this
     val windowFromActivity = (context as? Activity?)?.window
     if (animated) ViewCompat.setWindowInsetsAnimationCallback(this, object : WindowInsetsAnimationCompat.Callback(animationDispatchMode) {
