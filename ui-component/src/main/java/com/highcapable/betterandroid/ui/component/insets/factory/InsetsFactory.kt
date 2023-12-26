@@ -83,8 +83,8 @@ fun Insets.toWrapper(isVisible: Boolean = true) = InsetsWrapper.of(left, top, ri
  *
  * You can easy to get the [WindowInsetsWrapper] when the insets change.
  *
- * For the [onChange] callback, return true if you want to consume the insets for child views,
- * this will pass the [WindowInsetsCompat.CONSUMED], otherwise return false.
+ * For the [consumed] parameter, set to true if you want to consume the insets for child views,
+ * this will pass the [WindowInsetsCompat.CONSUMED], otherwise or default is false.
  *
  * Usage:
  *
@@ -96,11 +96,12 @@ fun Insets.toWrapper(isVisible: Boolean = true) = InsetsWrapper.of(left, top, ri
  *     imeSpaceLayout.setInsetsPadding(insetsWrapper.ime)
  *     // Or update the view insets bottom padding by ime.
  *     imeSpaceLayout.updateInsetsPadding(insetsWrapper.ime, bottom = true)
- *     false // Whether to consume the insets for child views or not.
  * }
  * ```
  *
  * If you want to handle the window insets change with animation, just set the [animated] to true.
+ *
+ * - Note: The animation only works on Android 11 and above.
  *
  * Usage:
  *
@@ -118,15 +119,17 @@ fun Insets.toWrapper(isVisible: Boolean = true) = InsetsWrapper.of(left, top, ri
  * @see ViewCompat.setOnApplyWindowInsetsListener
  * @see ViewCompat.setWindowInsetsAnimationCallback
  * @receiver [View] of [V].
+ * @param consumed whether consume the insets for child views, default false.
  * @param animated whether handle the insets change with animation, default false.
  * @param animationDispatchMode the animation dispatch mode, default is [DISPATCH_MODE_CONTINUE_ON_SUBTREE].
  * @param onChange the insets change callback.
  */
 @JvmOverloads
 fun <V : View> V.handleOnWindowInsetsChanged(
+    consumed: Boolean = false,
     animated: Boolean = false,
     animationDispatchMode: Int = DISPATCH_MODE_CONTINUE_ON_SUBTREE,
-    onChange: (V, insetsWrapper: WindowInsetsWrapper) -> Boolean
+    onChange: (V, insetsWrapper: WindowInsetsWrapper) -> Unit
 ) {
     // To avoid redundant listening, so remove them before adding.
     removeWindowInsetsListener()
@@ -135,8 +138,7 @@ fun <V : View> V.handleOnWindowInsetsChanged(
     var isAnimating = false
     ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets ->
         // Ignored when the animation is running.
-        if (animated && isAnimating) return@setOnApplyWindowInsetsListener insets
-        val consumed = onChange(self, insets.createWrapper(windowFromActivity))
+        if (!isAnimating) onChange(self, insets.createWrapper(windowFromActivity))
         if (consumed) WindowInsetsCompat.CONSUMED else insets
     }
     if (animated) ViewCompat.setWindowInsetsAnimationCallback(this, object : WindowInsetsAnimationCompat.Callback(animationDispatchMode) {
@@ -152,7 +154,7 @@ fun <V : View> V.handleOnWindowInsetsChanged(
             insets: WindowInsetsCompat,
             runningAnimations: MutableList<WindowInsetsAnimationCompat>
         ): WindowInsetsCompat {
-            val consumed = onChange(self, insets.createWrapper(windowFromActivity))
+            onChange(self, insets.createWrapper(windowFromActivity))
             return if (consumed) WindowInsetsCompat.CONSUMED else insets
         }
     })
