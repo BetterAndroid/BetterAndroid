@@ -30,6 +30,7 @@ import android.graphics.Rect
 import android.view.View
 import android.view.Window
 import androidx.annotation.Px
+import androidx.core.graphics.Insets
 import androidx.core.view.DisplayCutoutCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -58,6 +59,8 @@ class WindowInsetsWrapper private constructor(private val windowInsets: WindowIn
          * If your app needs to be compatible with the notch screen that
          * may appear on devices below Android 9, you need to set the [window] parameter,
          * this parameter usually comes from [Activity.getWindow], otherwise it can be null.
+         *
+         * If your app is targeting Android 10 and below, we recommend to set the [window] parameter at all times.
          * @see WindowInsetsCompat.createWrapper
          * @param windowInsets the window insets.
          * @param window the window, default is null.
@@ -75,6 +78,8 @@ class WindowInsetsWrapper private constructor(private val windowInsets: WindowIn
          * If your app needs to be compatible with the notch screen that
          * may appear on devices below Android 9, you need to set the [window] parameter,
          * this parameter usually comes from [Activity.getWindow], otherwise it can be null.
+         *
+         * If your app is targeting Android 10 and below, we recommend to set the [window] parameter at all times.
          * @param view the view.
          * @param window the window, default is null.
          * @return [WindowInsetsWrapper] or null.
@@ -411,8 +416,24 @@ class WindowInsetsWrapper private constructor(private val windowInsets: WindowIn
      * @return [InsetsWrapper]
      */
     private fun getInsets(ignoringVisibility: Boolean = false, typeMask: Int): InsetsWrapper {
-        val isVisible = windowInsets.isVisible(typeMask)
-        val insets = if (ignoringVisibility) windowInsets.getInsetsIgnoringVisibility(typeMask) else windowInsets.getInsets(typeMask)
+        var isVisible = windowInsets.isVisible(typeMask)
+        var insets = if (ignoringVisibility) windowInsets.getInsetsIgnoringVisibility(typeMask) else windowInsets.getInsets(typeMask)
+        // Workaround for the visible state of the system bars below Android 11.
+        if (!ignoringVisibility && SystemVersion.isLowTo(SystemVersion.R) && window != null)
+            when (typeMask) {
+                WindowInsetsCompat.Type.systemBars() -> {
+                    isVisible = wrapperCompat.isStatusBarShowing && wrapperCompat.isNavigationBarShowing
+                    if (!isVisible) insets = Insets.NONE
+                }
+                WindowInsetsCompat.Type.statusBars() -> {
+                    isVisible = wrapperCompat.isStatusBarShowing
+                    if (!isVisible) insets = Insets.NONE
+                }
+                WindowInsetsCompat.Type.navigationBars() -> {
+                    isVisible = wrapperCompat.isNavigationBarShowing
+                    if (!isVisible) insets = Insets.NONE
+                }
+            }
         return insets.toWrapper(isVisible)
     }
 

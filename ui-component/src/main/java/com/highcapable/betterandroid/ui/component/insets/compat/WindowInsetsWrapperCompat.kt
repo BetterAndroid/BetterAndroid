@@ -19,9 +19,12 @@
  *
  * This file is created by fankes on 2023/12/21.
  */
+@file:Suppress("DEPRECATION")
+
 package com.highcapable.betterandroid.ui.component.insets.compat
 
 import android.util.Log
+import android.view.View
 import android.view.Window
 import com.highcapable.betterandroid.system.extension.tool.SystemKind
 import com.highcapable.betterandroid.system.extension.tool.SystemProperties
@@ -39,6 +42,30 @@ import com.highcapable.yukireflection.type.java.IntType
  * @param window the current window.
  */
 internal class WindowInsetsWrapperCompat internal constructor(private val window: Window?) {
+
+    /**
+     * Get the status bar visibility.
+     * @return [Boolean]
+     */
+    internal val isStatusBarShowing: Boolean
+        get() {
+            // We need to keep default value still to true because the default behavior is show.
+            val decorView = window?.decorView ?: return true
+            val uiOptions = decorView.systemUiVisibility
+            return (uiOptions or View.SYSTEM_UI_FLAG_FULLSCREEN) != uiOptions
+        }
+
+    /**
+     * Get the navigation bar visibility.
+     * @return [Boolean]
+     */
+    internal val isNavigationBarShowing: Boolean
+        get() {
+            // We need to keep default value still to true because the default behavior is show.
+            val decorView = window?.decorView ?: return false
+            val uiOptions = decorView.systemUiVisibility
+            return (uiOptions or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != uiOptions
+        }
 
     /**
      * Create a compatible [InsetsWrapper] to adapt to the
