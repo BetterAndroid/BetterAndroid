@@ -130,6 +130,18 @@ class InsetsWrapper private constructor(
         return Insets.subtract(toInsets(), other.toInsets()).toWrapper(isVisible)
     }
 
+    /**
+     * Compare two Insets.
+     * @param other the other Insets.
+     * @return [Int]
+     */
+    operator fun compareTo(other: InsetsWrapper) = when {
+        left != other.left -> left - other.left
+        top != other.top -> top - other.top
+        right != other.right -> right - other.right
+        else -> bottom - other.bottom
+    }
+
     override fun equals(other: Any?) = when (other) {
         is InsetsWrapper ->
             left == other.left &&
