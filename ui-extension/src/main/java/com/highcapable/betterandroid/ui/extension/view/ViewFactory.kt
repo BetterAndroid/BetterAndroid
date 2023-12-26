@@ -83,17 +83,19 @@ fun View.removeSelfInLayout() {
 /**
  * Show the input method.
  *
- * - Note: This function may not work on Android lower than 10
+ * - Note: This function may not work on Android lower than 11
  *   or when the current [View] is not in [Activity].
  * @receiver [View]
  */
 fun View.showIme() {
     /** Whatever try to show the input method. */
     fun showSoftInput() {
-        context?.getSystemService<InputMethodManager>()?.showSoftInput(this, 0)
+        @Suppress("DEPRECATION")
+        context?.getSystemService<InputMethodManager>()
+            ?.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
     }
     val windowFromActivity = (context as? Activity?)?.window
-    if (SystemVersion.isHighOrEqualsTo(SystemVersion.Q) && windowFromActivity != null)
+    if (SystemVersion.isHighOrEqualsTo(SystemVersion.R) && windowFromActivity != null)
         WindowCompat.getInsetsController(windowFromActivity, this).show(WindowInsetsCompat.Type.ime())
     else showSoftInput()
 }
@@ -101,7 +103,7 @@ fun View.showIme() {
 /**
  * Hide the input method.
  *
- * - Note: This function may not work on Android lower than 10
+ * - Note: This function may not work on Android lower than 11
  *   or when the current [View] is not in [Activity].
  * @receiver [View]
  */
@@ -112,7 +114,7 @@ fun View.hideIme() {
             ?.also { if (it.isActive) it.hideSoftInputFromWindow(applicationWindowToken, 0) }
     }
     val windowFromActivity = (context as? Activity?)?.window
-    if (SystemVersion.isHighOrEqualsTo(SystemVersion.Q) && windowFromActivity != null)
+    if (SystemVersion.isHighOrEqualsTo(SystemVersion.R) && windowFromActivity != null)
         WindowCompat.getInsetsController(windowFromActivity, this).hide(WindowInsetsCompat.Type.ime())
     else hideSoftInput()
 }
