@@ -458,6 +458,8 @@ class WindowInsetsWrapper private constructor(private val windowInsets: WindowIn
             "safeGesturesIgnoringVisibility=${safeGestures(ignoringVisibility = true)}, " +
             "safeDrawing=$safeDrawing, " +
             "safeDrawingIgnoringVisibility=${safeDrawing(ignoringVisibility = true)}, " +
+            "safeDrawingIgnoringIme=$safeDrawingIgnoringIme, " +
+            "safeDrawingIgnoringImeIgnoringVisibility=${safeDrawingIgnoringIme(ignoringVisibility = true)}, " +
             "safeContent=$safeContent, " +
             "safeContentIgnoringVisibility=${safeContent(ignoringVisibility = true)}" +
             ")"
