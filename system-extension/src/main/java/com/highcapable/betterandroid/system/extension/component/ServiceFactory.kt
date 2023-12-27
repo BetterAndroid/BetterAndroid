@@ -123,3 +123,12 @@ inline fun Context.startForegroundServiceOrElse(packageName: String, serviceClas
  * @return [Boolean] whether succeed.
  */
 fun Context.startServiceOrElse(intent: Intent) = runCatching { startService(intent) }.isSuccess
+
+/**
+ * Start a foreground [Service]
+ * @receiver the current context.
+ * @param intent the intent to start.
+ * @return [Boolean] whether succeed.
+ */
+@RequiresApi(SystemVersion.O)
+fun Context.startForegroundServiceOrElse(intent: Intent) = runCatching { startForegroundService(intent) }.isSuccess
