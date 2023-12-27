@@ -56,6 +56,7 @@ val Activity.isInMultiWindowModeCompat get() = SystemVersion.require(SystemVersi
 
 /**
  * Start an [Activity] instance [T].
+ * @see Context.startActivityOrElse
  * @receiver the current context.
  * @param newTask whether to start with a new task, default false.
  * @param initiate the [Intent] builder body, default is empty.
@@ -65,6 +66,7 @@ inline fun <reified T : Activity> Context.startActivity(newTask: Boolean = false
 
 /**
  * Start an [Activity] using [ComponentName].
+ * @see Context.startActivityOrElse
  * @receiver the current context.
  * @param packageName the target package name.
  * @param activityClass the target app [Activity] class name.
@@ -100,6 +102,29 @@ inline fun Context.startActivity(packageName: String, newTask: Boolean = true, i
         ?: error("No launch activities found for package \"$packageName\".")
     startActivity(packageName, className, newTask, initiate)
 }
+
+/**
+ * Start an [Activity] instance [T].
+ * @receiver the current context.
+ * @param newTask whether to start with a new task, default false.
+ * @param initiate the [Intent] builder body, default is empty.
+ * @return [Boolean] whether succeed.
+ */
+inline fun <reified T : Activity> Context.startActivityOrElse(newTask: Boolean = false, initiate: Intent.() -> Unit = {}) =
+    runCatching { startActivity<T>(newTask, initiate) }.isSuccess
+
+/**
+ * Start an [Activity] using [ComponentName].
+ * @receiver the current context.
+ * @param packageName the target package name.
+ * @param activityClass the target app [Activity] class name.
+ * @param newTask whether to start with a new task, default true,
+ * if not it will cause the top stack to overlap.
+ * @param initiate the [Intent] builder body, default is empty.
+ * @return [Boolean] whether succeed.
+ */
+inline fun Context.startActivityOrElse(packageName: String, activityClass: String, newTask: Boolean = true, initiate: Intent.() -> Unit = {}) =
+    runCatching { startActivity(packageName, activityClass, newTask, initiate) }.isSuccess
 
 /**
  * Start an [Activity] using [ComponentName].
