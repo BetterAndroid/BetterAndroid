@@ -59,8 +59,7 @@ inline fun <reified T : Service> Context.startForegroundService(initiate: Intent
  * @param initiate the [Intent] builder body, default is empty.
  * @return [ComponentName] or null.
  */
-@JvmOverloads
-fun Context.startService(packageName: String, serviceClass: String, initiate: Intent.() -> Unit = {}) =
+inline fun Context.startService(packageName: String, serviceClass: String, initiate: Intent.() -> Unit = {}) =
     startService(Intent().apply { component = ComponentName(packageName, serviceClass) }.apply(initiate))
 
 /**
@@ -72,6 +71,5 @@ fun Context.startService(packageName: String, serviceClass: String, initiate: In
  * @return [ComponentName] or null.
  */
 @RequiresApi(SystemVersion.O)
-@JvmOverloads
-fun Context.startForegroundService(packageName: String, serviceClass: String, initiate: Intent.() -> Unit = {}) =
+inline fun Context.startForegroundService(packageName: String, serviceClass: String, initiate: Intent.() -> Unit = {}) =
     startForegroundService(Intent().apply { component = ComponentName(packageName, serviceClass) }.apply(initiate))

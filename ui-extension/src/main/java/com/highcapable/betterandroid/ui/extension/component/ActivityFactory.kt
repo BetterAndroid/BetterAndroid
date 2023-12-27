@@ -72,8 +72,7 @@ inline fun <reified T : Activity> Context.startActivity(newTask: Boolean = false
  * if not it will cause the top stack to overlap.
  * @param initiate the [Intent] builder body, default is empty.
  */
-@JvmOverloads
-fun Context.startActivity(packageName: String, activityClass: String, newTask: Boolean = true, initiate: Intent.() -> Unit = {}) =
+inline fun Context.startActivity(packageName: String, activityClass: String, newTask: Boolean = true, initiate: Intent.() -> Unit = {}) =
     startActivity(Intent().apply {
         if (newTask) flags = flags or Intent.FLAG_ACTIVITY_NEW_TASK
         component = ComponentName(packageName, activityClass)
@@ -96,8 +95,7 @@ fun Context.startActivity(packageName: String, activityClass: String, newTask: B
  * @throws IllegalStateException if the [Activity] class name that needs to be
  * started by the target app cannot be found.
  */
-@JvmOverloads
-fun Context.startActivity(packageName: String, newTask: Boolean = true, initiate: Intent.() -> Unit = {}) {
+inline fun Context.startActivity(packageName: String, newTask: Boolean = true, initiate: Intent.() -> Unit = {}) {
     val className = packageManager?.queryLaunchActivitiesForPackage(packageName)?.firstOrNull()?.activityInfo?.name
         ?: error("No launch activities found for package \"$packageName\".")
     startActivity(packageName, className, newTask, initiate)
@@ -118,8 +116,7 @@ fun Context.startActivity(packageName: String, newTask: Boolean = true, initiate
  * @param initiate the [Intent] builder body, default is empty.
  * @return [Boolean] whether succeed.
  */
-@JvmOverloads
-fun Context.startActivityOrElse(packageName: String, newTask: Boolean = true, initiate: Intent.() -> Unit = {}): Boolean {
+inline fun Context.startActivityOrElse(packageName: String, newTask: Boolean = true, initiate: Intent.() -> Unit = {}): Boolean {
     val className = packageManager?.queryLaunchActivitiesForPackageOrNull(packageName)?.firstOrNull()?.activityInfo?.name ?: return false
     startActivity(packageName, className, newTask, initiate)
     return true
