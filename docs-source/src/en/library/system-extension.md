@@ -811,7 +811,7 @@ val abis = SystemProperties.get("ro.system.product.cpu.abilist")
 > The following example
 
 ```kotlin
-// Determine whether the attribute key value exists.
+// Determine whether the properties key exists.
 // For example, some unique key values in ROM.
-val isExists = SystemProperty.contains("ro.miui.ui.version.name")
+val isExists = SystemProperties.contains("ro.miui.ui.version.name")
 ```

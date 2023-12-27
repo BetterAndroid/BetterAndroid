@@ -786,5 +786,5 @@ val abis = SystemProperties.get("ro.system.product.cpu.abilist")
 ```kotlin
 // 判断属性键值是否存在
 // 例如一些 ROM 中特有的键值
-val isExists = SystemProperty.contains("ro.miui.ui.version.name")
+val isExists = SystemProperties.contains("ro.miui.ui.version.name")
 ```
