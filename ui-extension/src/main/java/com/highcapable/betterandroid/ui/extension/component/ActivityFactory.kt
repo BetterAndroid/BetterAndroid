@@ -143,6 +143,13 @@ inline fun Context.startActivityOrElse(packageName: String, activityClass: Strin
  */
 inline fun Context.startActivityOrElse(packageName: String, newTask: Boolean = true, initiate: Intent.() -> Unit = {}): Boolean {
     val className = packageManager?.queryLaunchActivitiesForPackageOrNull(packageName)?.firstOrNull()?.activityInfo?.name ?: return false
-    startActivity(packageName, className, newTask, initiate)
-    return true
+    return runCatching { startActivity(packageName, className, newTask, initiate) }.isSuccess
 }
+
+/**
+ * Start an [Activity].
+ * @receiver the current context.
+ * @param intent the intent to start.
+ * @return [Boolean] whether succeed.
+ */
+fun Context.startActivityOrElse(intent: Intent) = runCatching { startActivity(intent) }.isSuccess
