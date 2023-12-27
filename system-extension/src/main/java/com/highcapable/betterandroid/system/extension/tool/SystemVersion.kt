@@ -86,14 +86,24 @@ object SystemVersion {
      * Usage:
      *
      * ```kotlin
-     * val isBetweenQAndS = SystemVersion.isIn(SystemVersion.Q..SystemVersion.S)
+     * val isBetweenQAndS = SystemVersion.isBetween(SystemVersion.Q..SystemVersion.S)
      * ```
      * @param target the target sdk.
      * @return [Boolean]
      */
     @JvmStatic
     @ChecksSdkIntAtLeast(parameter = 0)
-    fun isIn(target: IntRange) = Build.VERSION.SDK_INT in target
+    fun isBetween(target: IntRange) = Build.VERSION.SDK_INT in target
+
+    /**
+     * Between the target sdk.
+     *
+     * - This function is deprecated, use [isBetween] instead.
+     */
+    @Deprecated(message = "Use isBetween instead.", ReplaceWith("isBetween(target)"))
+    @JvmStatic
+    @ChecksSdkIntAtLeast(parameter = 0)
+    fun isIn(target: IntRange) = isBetween(target)
 
     /**
      * Lower than target sdk.
