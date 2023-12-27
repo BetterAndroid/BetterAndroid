@@ -62,7 +62,7 @@ internal class WindowInsetsWrapperCompat internal constructor(private val window
     internal val isNavigationBarShowing: Boolean
         get() {
             // We need to keep default value still to true because the default behavior is show.
-            val decorView = window?.decorView ?: return false
+            val decorView = window?.decorView ?: return true
             val uiOptions = decorView.systemUiVisibility
             return (uiOptions or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != uiOptions
         }
