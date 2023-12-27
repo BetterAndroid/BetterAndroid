@@ -174,21 +174,16 @@ object SystemVersion {
 
     /**
      * The target sdk is required to be [target] or higher than [target] to call [callback].
-     *
-     * - Note: This function required [defaultValue] non-null, otherwise please use [requireOrNull] instead it.
      * @see requireOrNull
      * @param target the target sdk.
      * @param defaultValue the default value when the above conditions are not met.
      * @param callback callback when the above conditions are met.
      * @return [T]
-     * @throws IllegalStateException if [defaultValue] is null.
      */
     @JvmStatic
     @ChecksSdkIntAtLeast(parameter = 0)
-    inline fun <T> require(target: Int, defaultValue: T, callback: () -> T): T =
-        if (defaultValue != null)
-            if (isHighOrEqualsTo(target)) (callback() ?: defaultValue) else defaultValue
-        else error("The defaultValue is null and not allowed, please use requireOrNull function instead it.")
+    inline fun <T : Any> require(target: Int, defaultValue: T, callback: () -> T): T =
+        if (isHighOrEqualsTo(target)) callback() else defaultValue
 
     /**
      * The target sdk is required to be [target] or higher than [target] to call [callback].
@@ -199,6 +194,6 @@ object SystemVersion {
      */
     @JvmStatic
     @ChecksSdkIntAtLeast(parameter = 0)
-    inline fun <T> requireOrNull(target: Int, defaultValue: T?, callback: () -> T?): T? =
+    inline fun <T : Any?> requireOrNull(target: Int, defaultValue: T?, callback: () -> T?): T? =
         if (isHighOrEqualsTo(target)) (callback() ?: defaultValue) else defaultValue
 }
