@@ -112,13 +112,17 @@ context.startActivity("com.example.app")
 
 ::: warning
 
-If the app you need to start does not have an entry `Activity`, or the app you need to start is not installed, an exception will be thrown.
-
-At this time you can use `startActivityOrElse` to determine whether it can be started successfully, if it fails, this method returns `false`.
-
 This operation requires the `QUERY_ALL_PACKAGES` permission or explicitly configuring a `queries` property list on Android 11 and later.
 
 Please refer to [Package visibility filtering on Android](https://developer.android.com/training/package-visibility).
+
+:::
+
+::: tip
+
+You can use `startActivityOrElse` instead of `startActivity` to determine whether the `Activity` can be started successfully.
+
+If the startup fails, this method will not throw an exception but return `false`.
 
 :::
 

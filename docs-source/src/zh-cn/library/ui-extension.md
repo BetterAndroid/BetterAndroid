@@ -111,12 +111,15 @@ context.startActivity("com.example.app")
 
 ::: warning
 
-如果你需要启动的应用程序没有入口 `Activity`，或者你需要启动的应用没有安装，将会抛出异常，
-此时你可以使用 `startActivityOrElse` 来判断是否能够启动成功，如果失败，此方法返回 `false`。
-
 此操作在 Android 11 及之后需要 `QUERY_ALL_PACKAGES` 权限或明确配置一个 `queries` 属性列表。
 
 请参考 [Package visibility filtering on Android](https://developer.android.com/training/package-visibility)。
+
+:::
+
+::: tip
+
+你可以使用 `startActivityOrElse` 来代替 `startActivity` 以判断 `Activity` 是否能够启动成功，启动失败时此方法不会抛出异常，而是返回 `false`。
 
 :::
 
