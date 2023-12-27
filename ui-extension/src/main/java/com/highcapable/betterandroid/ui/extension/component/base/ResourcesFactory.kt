@@ -143,10 +143,11 @@ fun Resources.getFloatCompat(@DimenRes id: Int) = ResourcesCompat.getFloat(this,
  * Get [Float] from [Context] (compat).
  * @receiver the current context.
  * @param id the [Typeface] resources ID.
- * @return [Typeface]
+ * @return [Typeface] or null.
  * @throws [Resources.NotFoundException] if the resource is not found.
  */
-fun Context.getFontCompat(@FontRes id: Int) = SystemVersion.require(SystemVersion.O, ResourcesCompat.getFont(this, id)) { resources.getFont(id) }
+fun Context.getFontCompat(@FontRes id: Int) =
+    SystemVersion.requireOrNull(SystemVersion.O, ResourcesCompat.getFont(this, id)) { resources.getFont(id) }
 
 /**
  * Get [Drawable] from [Context.getResources] (compat).
