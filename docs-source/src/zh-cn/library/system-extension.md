@@ -704,6 +704,17 @@ if (SystemVersion.isBetween(SystemVersion.O..SystemVersion.Q)) {
 | 33       | `T`                  | `TIRAMISU`                 | 13                |
 | 34       | `U`                  | `UPSIDE_DOWN_CAKE`         | 14                |
 
+除了对 API 等级的判断，你还可以使用以下方式来获取当前 Android 的版本名称。
+
+> 示例如下
+
+```kotlin
+// 获取当前 Android 的版本名称
+// 它的作用等效于 Build.VERSION.RELEASE
+// 例如，Android 10 的版本名称为字符串 "10"
+val versionName = SystemVersion.name
+```
+
 随着各个厂商相继发布的自家品牌 Android 手机深度定制的 Android 系统越来越多，有时候我们非常有必要针对各个定制版本系统不同的功能去进行定向适配，但是如何判断这些系统的种类就是一个很大的问题。
 
 通常情况下大家的解决方案都是去判断设备的型号从而确定是哪种定制系统，但是如果当前设备运行的不是你所判断的那种定制系统，例如用户自行刷机的案例，那么这种方案就会失效。

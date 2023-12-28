@@ -727,6 +727,17 @@ The following is the constant mapping comparison table for each API, after Andro
 | 33        | `T`                  | `TIRAMISU`                 | 13                           |
 | 34        | `U`                  | `UPSIDE_DOWN_CAKE`         | 14                           |
 
+In addition to judging the API level, you can also use the following method to get the current Android version name.
+
+> The following example
+
+```kotlin
+// Get the current Android version name.
+// It is equivalent to Build.VERSION.RELEASE.
+// For example, the version name of Android 10 is the string "10".
+val versionName = SystemVersion.name
+```
+
 As various manufacturers have successively released more and more deeply customized Android systems for their own brand Android mobile phones,
 sometimes it is very necessary for us to make targeted adaptations for the different functions of each customized version of the system,
 but how to judge the type of these systems is a big question.
