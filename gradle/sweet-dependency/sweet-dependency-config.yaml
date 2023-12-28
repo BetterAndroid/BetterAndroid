@@ -29,7 +29,7 @@ plugins:
     version: 1.9.10
   com.vanniktech.maven.publish:
     alias: maven-publish
-    version: 0.25.3
+    version: 0.26.0
 
 libraries:
   com.highcapable.yukireflection:
@@ -40,13 +40,13 @@ libraries:
       version: 1.12.0
   androidx.activity:
     activity:
-      version: 1.8.1
+      version: 1.8.2
   androidx.appcompat:
     appcompat:
       version: 1.6.1
   com.google.android.material:
     material:
-      version: 1.10.0
+      version: 1.11.0
   androidx.constraintlayout:
     constraintlayout:
       version: 2.1.4
