@@ -1562,7 +1562,7 @@ textView.textColor = Color.RED
 
 设置 `TextView` 的输入限制 (Digits)。
 
-这个属性仅在 XML 中能够方便地使用 `digits` 属性来设置，但是如果你需要动态修改它，就需要 `TextView.setKeyListener` 方法。
+这个属性仅能在 XML 中方便地使用 `digits` 来设置，但是如果你需要动态修改它，就需要 `TextView.setKeyListener` 方法。
 
 为此，`BetterAndroid` 为 `TextView` 提供了一个 `setDigits` 方法，你可以使用以下方式设置 `TextView` 的输入限制。
 

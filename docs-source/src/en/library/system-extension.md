@@ -163,7 +163,7 @@ val packageInfo = context.packageManager
 ::: tip
 
 When you are not sure whether `PackageInfo` can be obtained successfully, you can replace the obtaining method with `getPackageInfoOrNull`,
-so that if the acquisition fails, null will be returned instead of throwing an exception.
+so that if the acquisition fails, `null` will be returned instead of throwing an exception.
 
 :::
 

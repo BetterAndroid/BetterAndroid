@@ -1612,7 +1612,7 @@ textView.textColor = Color.RED
 
 Set the input limits (digits) of the `TextView`.
 
-This property is conveniently set in XML only using the `digits` attribute, but if you need to modify it dynamically, you will need the `TextView.setKeyListener` method.
+This attribute can only be conveniently set in XML using `digits`, but if you need to modify it dynamically, you will need the `TextView.setKeyListener` method.
 
 For this purpose, `BetterAndroid` provides a `setDigits` method for `TextView`, you can use the following method to set the input limit of `TextView`.
 

@@ -1497,6 +1497,6 @@ val isDestroyed = systemBars.isDestroyed
 
 在使用 `SystemBarsController` 后，当前根布局 `rootView` 的 `WindowInsetsController` 已被其自动接管，
 请不要手动设置 `WindowInsetsController` 中的 `isAppearanceLightStatusBars`、`isAppearanceLightNavigationBars` 等参数，
-这可能会导致 `statusBarsStyle`、`navigationBarStyle`、`setStyle` 等功能的实际效果显示异常。
+这可能会导致 `statusBarStyle`、`navigationBarStyle`、`setStyle` 等功能的实际效果显示异常。
 
 :::

@@ -159,7 +159,7 @@ val packageInfo = context.packageManager
 
 ::: tip
 
-在不确定 `PackageInfo` 能否获取成功时，你可以将获取的方法替换为 `getPackageInfoOrNull`，这样在获取失败时将会返回 null 而不是抛出异常。
+在不确定 `PackageInfo` 能否获取成功时，你可以将获取的方法替换为 `getPackageInfoOrNull`，这样在获取失败时将会返回 `null` 而不是抛出异常。
 
 :::
 

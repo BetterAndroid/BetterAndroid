@@ -1550,6 +1550,6 @@ val isDestroyed = systemBars.isDestroyed
 After using `SystemBarsController`, the `WindowInsetsController` of the current root view `rootView` has been automatically taken over by it.
 
 Please do not manually set parameters such as `isAppearanceLightStatusBars` and `isAppearanceLightNavigationBars` in `WindowInsetsController`,
-this may cause the actual effects of `statusBarsStyle`, `navigationBarStyle`, `setStyle` and other functions to display abnormally.
+this may cause the actual effects of `statusBarStyle`, `navigationBarStyle`, `setStyle` and other functions to display abnormally.
 
 :::
