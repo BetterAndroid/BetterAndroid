@@ -98,7 +98,7 @@ object SystemKind {
      * Usage:
      *
      * ```kotlin
-     * val kind = SystemKind.get()
+     * val kind = SystemKind.current
      * when (kind) {
      *     SystemKind.MIUI -> {
      *         // Do something.
@@ -108,7 +108,7 @@ object SystemKind {
      * @return [Int]
      */
     @JvmStatic
-    fun get(): Int {
+    val current by lazy {
         val harmonyOSKind = "ohos.system.version.SystemVersion".hasClass() && SystemProperties.contains("ro.build.ohos.devicetype") &&
             (SystemProperties.contains("ro.build.hide.matchers") || SystemProperties.contains("ro.build.hide.replacements"))
         val emuiKind = !harmonyOSKind && ("androidhwext.R".hasClass() || "com.huawei.android.app.HwActivityManager".hasClass())
@@ -136,7 +136,7 @@ object SystemKind {
         val visionOSKind = "com.hmct.epd.EpdManager".hasClass() || "com.hmct.facelock.IDetectedCallback".hasClass() ||
             "com.hmct.ThemeUtils.ConfigNotifier".hasClass() || "com.hmct.ThemeUtils.FontUtil".hasClass() ||
             "com.hmct.ThemeUtils.FontUtilException".hasClass() || "com.hmct.ThemeUtils.ThemeUtil".hasClass()
-        return when {
+        when {
             harmonyOSKind -> HARMONYOS
             emuiKind -> EMUI
             miuiKind -> MIUI
@@ -156,6 +156,15 @@ object SystemKind {
     }
 
     /**
+     * Get the current system kind.
+     *
+     * - This function is deprecated, use [current] instead.
+     */
+    @Deprecated(message = "Use current instead.", ReplaceWith("current"))
+    @JvmStatic
+    fun get() = current
+
+    /**
      * Determine whether the current system is of the specific kind.
      *
      * If [kind] is filled with a system kind that exceeds the preset range,
@@ -170,5 +179,5 @@ object SystemKind {
      * @return [Boolean]
      */
     @JvmStatic
-    fun equals(kind: Int) = get() == kind
+    fun equals(kind: Int) = current == kind
 }
