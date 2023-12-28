@@ -764,7 +764,7 @@ Yes, it's that simple, if you need to judge multiple system types at the same ti
 
 ```kotlin
 // Get the current system kind.
-val kind = SystemKind.get()
+val kind = SystemKind.current
 // Determine the current system kind in batches.
 when (kind) {
     SystemKind.MIUI -> {

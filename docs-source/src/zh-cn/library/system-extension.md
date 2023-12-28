@@ -738,7 +738,7 @@ if (SystemKind.equals(SystemKind.MIUI)) {
 
 ```kotlin
 // 获取当前系统种类
-val kind = SystemKind.get()
+val kind = SystemKind.current
 // 批量判断当前系统种类
 when (kind) {
     SystemKind.MIUI -> {
