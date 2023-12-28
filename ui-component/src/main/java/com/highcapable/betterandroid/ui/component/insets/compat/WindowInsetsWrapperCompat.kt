@@ -82,7 +82,7 @@ internal class WindowInsetsWrapperCompat internal constructor(private val window
     internal fun createLegacyDisplayCutoutInsets(statusBars: InsetsWrapper): InsetsWrapper {
         val context = window?.context ?: return InsetsWrapper.NONE
         var safeInsetTop = 0
-        if (SystemVersion.isLowOrEqualsTo(SystemVersion.P)) when (SystemKind.get()) {
+        if (SystemVersion.isLowOrEqualsTo(SystemVersion.P)) when (SystemKind.current) {
             SystemKind.EMUI -> runCatching {
                 val huaweiRet = "com.huawei.android.util.HwNotchSizeUtil".toClassOrNull()
                     ?.method { name = "getNotchSize" }?.ignored()?.get()?.invoke() ?: intArrayOf(0, 0)
