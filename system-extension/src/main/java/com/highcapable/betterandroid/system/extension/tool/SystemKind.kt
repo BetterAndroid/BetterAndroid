@@ -159,6 +159,7 @@ object SystemKind {
      * Get the current system kind.
      *
      * - This function is deprecated, use [current] instead.
+     * @see current
      */
     @Deprecated(message = "Use current instead.", ReplaceWith("current"))
     @JvmStatic
