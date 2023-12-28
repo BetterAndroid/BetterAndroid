@@ -1531,6 +1531,29 @@ The following are the preset styles provided in `SystemBarStyle`, the ones marke
 | `DarkScrim`        | Translucent solid black background + light content color.                                                                                     |
 | `DarkTransparent`  | Transparent background + light content color.                                                                                                 |
 
+::: tip
+
+When the app is first cold-launched, the color of the system bars will be determined by the attributes you set in `styles.xml`.
+
+In order to provide a better user experience during cold launch, you can refer to the following examples.
+
+> The following example
+
+```xml
+<style name="Theme.MyApp.Demo" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <!-- Set the status bar color. -->
+    <item name="android:statusBarColor">@color/colorPrimary</item>
+    <!-- Set the navigation bar color. -->
+    <item name="android:navigationBarColor">@color/colorPrimary</item>
+    <!-- Set the status bar content color. -->
+    <item name="android:windowLightStatusBar">true</item>
+    <!-- Set the navigation bar content color. -->
+    <item name="android:windowLightNavigationBar">true</item>
+</style>
+```
+
+:::
+
 Destroy `SystemBarsController`.
 
 This will restore the state before initialization, including the status bars, navigation bars color, etc.

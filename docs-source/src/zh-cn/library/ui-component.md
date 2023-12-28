@@ -1480,6 +1480,29 @@ systemBars.setStyle(
 | `DarkScrim`        | 半透明纯黑背景 + 浅色内容颜色                                                |
 | `DarkTransparent`  | 透明背景 + 浅色内容颜色                                                      |
 
+::: tip
+
+在应用程序首次冷启动时，系统栏的颜色将跟随你在 `styles.xml` 中设置的属性而决定。
+
+为了能在冷启动时带来更好的用户体验，你可以参考以下示例。
+
+> 示例如下
+
+```xml
+<style name="Theme.MyApp.Demo" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <!-- 设置状态栏颜色 -->
+    <item name="android:statusBarColor">@color/colorPrimary</item>
+    <!-- 设置导航栏颜色 -->
+    <item name="android:navigationBarColor">@color/colorPrimary</item>
+    <!-- 设置状态栏内容颜色 -->
+    <item name="android:windowLightStatusBar">true</item>
+    <!-- 设置导航栏内容颜色 -->
+    <item name="android:windowLightNavigationBar">true</item>
+</style>
+```
+
+:::
+
 销毁 `SystemBarsController`。
 
 这会还原初始化之前的状态，包括初始化之前的状态栏、导航栏颜色等。
