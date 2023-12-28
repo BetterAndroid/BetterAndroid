@@ -87,6 +87,7 @@ object SystemVersion {
      * @see Build.VERSION.RELEASE
      * @return [String]
      */
+    @JvmStatic
     val name by lazy { Build.VERSION.RELEASE ?: "" }
 
     /**
