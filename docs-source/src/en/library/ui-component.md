@@ -953,6 +953,8 @@ Objects created through `Notification`, `NotificationChannel`, `NotificationChan
 
 You can use `instance` to get the actual object to perform some of your own operations.
 
+You can also get the `NotificationManagerCompat` object through `Context.notificationManager` to perform some of your own operations.
+
 :::
 
 ### Insets

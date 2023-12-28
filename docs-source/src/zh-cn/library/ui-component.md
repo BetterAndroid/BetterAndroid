@@ -929,6 +929,8 @@ val isCanceled = poster.isCanceled
 通过 `Notification`、`NotificationChannel`、`NotificationChannelGroup` 创建的对象是对
 `NotificationCompat`、`NotificationChannelCompat`、`NotificationChannelGroupCompat` 的一个包装，你可以使用 `instance` 来得到其中的实际对象以进行一些你自己的操作。
 
+你还可以通过 `Context.notificationManager` 来获取到 `NotificationManagerCompat` 对象以进行一些你自己的操作。
+
 :::
 
 ### 边衬区 (Insets)
