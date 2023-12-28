@@ -30,6 +30,7 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.ShapeDrawable
+import androidx.annotation.CallSuper
 import androidx.annotation.Px
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 
@@ -43,11 +44,13 @@ open class GradientDrawableCompat : GradientDrawable() {
     /** The padding of the drawable. */
     private var padding: Rect? = null
 
+    @CallSuper
     override fun getPadding(padding: Rect) =
         if (this.padding != null && this.padding != padding)
             this.padding?.let { padding.set(it); true } ?: false
         else super.getPadding(padding)
 
+    @CallSuper
     override fun setPadding(left: Int, top: Int, right: Int, bottom: Int) {
         if (SystemVersion.isLowTo(SystemVersion.Q)) {
             if (padding == null) padding = Rect()
