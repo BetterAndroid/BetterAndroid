@@ -1,3 +1,8 @@
+import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.KotlinMultiplatform
+import com.vanniktech.maven.publish.MavenPublishBaseExtension
+
 plugins {
     autowire(libs.plugins.kotlin.multiplatform) apply false
     autowire(libs.plugins.kotlin.android) apply false
@@ -25,6 +30,11 @@ libraryProjects {
                 }
             }
         }
+        configure<MavenPublishBaseExtension> {
+            if (name == Libraries.COMPOSE_EXTENSION)
+                configure(KotlinMultiplatform(javadocJar = JavadocJar.None()))
+            else configure(AndroidSingleVariantLibrary(publishJavadocJar = false))
+        }
     }
     tasks.register("publishKDoc") {
         group = "documentation"
@@ -42,6 +52,18 @@ libraryProjects {
 }
 
 fun libraryProjects(action: Action<in Project>) {
-    val libraries = listOf("ui-component", "ui-extension", "system-extension", "compose-extension")
+    val libraries = listOf(
+        Libraries.UI_COMPONENT,
+        Libraries.UI_EXTENSION,
+        Libraries.SYSTEM_EXTENSION,
+        Libraries.COMPOSE_EXTENSION
+    )
     allprojects { if (libraries.contains(name)) action.execute(this) }
+}
+
+object Libraries {
+    const val UI_COMPONENT = "ui-component"
+    const val UI_EXTENSION = "ui-extension"
+    const val SYSTEM_EXTENSION = "system-extension"
+    const val COMPOSE_EXTENSION = "compose-extension"
 }

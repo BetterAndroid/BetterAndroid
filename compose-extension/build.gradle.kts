@@ -6,7 +6,8 @@ plugins {
     autowire(libs.plugins.maven.publish)
 }
 
-group = property.project.compose.extension.groupName
+group = property.project.groupName
+version = property.project.compose.extension.version
 
 kotlin {
     androidTarget {
@@ -71,7 +72,7 @@ kotlin {
 }
 
 android {
-    namespace = property.project.compose.extension.groupName
+    namespace = property.project.compose.extension.namespace
     compileSdk = property.project.android.compileSdk
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
@@ -90,34 +91,4 @@ android {
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
-}
-
-mavenPublishing {
-    coordinates(property.project.groupName, property.project.compose.extension.moduleName, property.project.compose.extension.version)
-    pom {
-        name = property.project.name
-        description = property.project.description
-        url = property.project.url
-        licenses {
-            license {
-                name = property.project.licence.name
-                url = property.project.licence.url
-                distribution = property.project.licence.url
-            }
-        }
-        developers {
-            developer {
-                id = property.project.developer.id
-                name = property.project.developer.name
-                email = property.project.developer.email
-            }
-        }
-        scm {
-            url = property.maven.publish.scm.url
-            connection = property.maven.publish.scm.connection
-            developerConnection = property.maven.publish.scm.developerConnection
-        }
-    }
-    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.S01)
-    signAllPublications()
 }

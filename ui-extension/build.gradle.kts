@@ -5,8 +5,11 @@ plugins {
     autowire(libs.plugins.maven.publish)
 }
 
+group = property.project.groupName
+version = property.project.ui.extension.version
+
 android {
-    namespace = property.project.ui.extension.groupName
+    namespace = property.project.ui.extension.namespace
     compileSdk = property.project.android.compileSdk
 
     defaultConfig {
@@ -44,34 +47,4 @@ dependencies {
     testImplementation(junit.junit)
     androidTestImplementation(androidx.test.ext.junit)
     androidTestImplementation(androidx.test.espresso.espresso.core)
-}
-
-mavenPublishing {
-    coordinates(property.project.groupName, property.project.ui.extension.moduleName, property.project.ui.extension.version)
-    pom {
-        name = property.project.name
-        description = property.project.description
-        url = property.project.url
-        licenses {
-            license {
-                name = property.project.licence.name
-                url = property.project.licence.url
-                distribution = property.project.licence.url
-            }
-        }
-        developers {
-            developer {
-                id = property.project.developer.id
-                name = property.project.developer.name
-                email = property.project.developer.email
-            }
-        }
-        scm {
-            url = property.maven.publish.scm.url
-            connection = property.maven.publish.scm.connection
-            developerConnection = property.maven.publish.scm.developerConnection
-        }
-    }
-    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.S01)
-    signAllPublications()
 }
