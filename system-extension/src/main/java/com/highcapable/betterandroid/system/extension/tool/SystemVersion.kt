@@ -81,6 +81,15 @@ object SystemVersion {
     const val U = Build.VERSION_CODES.UPSIDE_DOWN_CAKE
 
     /**
+     * Get the current Android version name.
+     *
+     * For example Android 12, it will return a string "12".
+     * @see Build.VERSION.RELEASE
+     * @return [String]
+     */
+    val name by lazy { Build.VERSION.RELEASE ?: "" }
+
+    /**
      * Between the target sdk.
      *
      * Usage:
