@@ -521,7 +521,7 @@ class SystemBarsController private constructor(private val window: Window) {
      */
     @Suppress("UNUSED_PARAMETER")
     @Deprecated(message = "Use init instead.")
-    fun init(defaultPaddings: Boolean = true) {
+    fun init(defaultPaddings: Boolean) {
     }
 
     /**
