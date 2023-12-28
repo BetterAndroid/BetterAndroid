@@ -29,6 +29,7 @@ import android.os.Looper
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationManagerCompat
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
+import com.highcapable.betterandroid.ui.component.notification.factory.notificationManager
 import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationWrapper
 
 /**
@@ -49,7 +50,7 @@ class NotificationPoster internal constructor(private val notification: Notifica
      * Get the system notification manager.
      * @return [NotificationManagerCompat]
      */
-    private val manager by lazy { NotificationManagerCompat.from(notification.builder.context) }
+    private val manager by lazy { notification.builder.context.notificationManager }
 
     /**
      * Determine whether the current notification has been canceled.

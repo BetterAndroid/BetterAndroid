@@ -25,6 +25,7 @@
 package com.highcapable.betterandroid.ui.component.notification.factory
 
 import android.content.Context
+import androidx.core.app.NotificationManagerCompat
 import com.highcapable.betterandroid.ui.component.notification.NotificationBuilder
 import com.highcapable.betterandroid.ui.component.notification.NotificationChannelBuilder
 import com.highcapable.betterandroid.ui.component.notification.NotificationChannelGroupBuilder
@@ -33,6 +34,13 @@ import com.highcapable.betterandroid.ui.component.notification.type.Notification
 import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationChannelGroupWrapper
 import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationChannelWrapper
 import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationWrapper
+
+/**
+ * Get notification manager.
+ * @receiver the current context.
+ * @return [NotificationManagerCompat]
+ */
+val Context.notificationManager get() = NotificationManagerCompat.from(this)
 
 /**
  * Create the [NotificationPoster] from [NotificationWrapper].
