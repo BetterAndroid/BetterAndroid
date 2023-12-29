@@ -57,6 +57,7 @@ import com.highcapable.betterandroid.ui.component.systembar.type.SystemBarsBehav
 import com.highcapable.betterandroid.ui.extension.component.base.isUiInNightMode
 import com.highcapable.betterandroid.ui.extension.graphics.isBrightColor
 import com.highcapable.betterandroid.ui.extension.graphics.mixColorOf
+import com.highcapable.betterandroid.ui.extension.view.updateLayoutParams
 import android.R as Android_R
 
 /**
@@ -260,7 +261,9 @@ class SystemBarsController private constructor(private val window: Window) {
             navigationBarDividerColor = window.navigationBarDividerColor
             layoutInDisplayCutoutMode = window.attributes?.layoutInDisplayCutoutMode ?: 0
             // Set the notch area not to interfere with the current UI.
-            window.attributes?.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            window.updateLayoutParams {
+                this.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            }
             // Remove the color of the navigation bars divider.
             window.navigationBarDividerColor = Color.TRANSPARENT
         }
@@ -446,7 +449,7 @@ class SystemBarsController private constructor(private val window: Window) {
             }
             SystemVersion.require(SystemVersion.P) {
                 window.navigationBarDividerColor = it.navigationBarDividerColor
-                window.attributes?.layoutInDisplayCutoutMode = it.layoutInDisplayCutoutMode
+                window.updateLayoutParams { layoutInDisplayCutoutMode = it.layoutInDisplayCutoutMode }
             }
             rootInsetsController?.isAppearanceLightStatusBars = it.isAppearanceLightStatusBars
             rootInsetsController?.isAppearanceLightNavigationBars = it.isAppearanceLightNavigationBars
