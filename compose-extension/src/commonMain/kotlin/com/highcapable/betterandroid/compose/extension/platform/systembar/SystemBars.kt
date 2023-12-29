@@ -299,4 +299,4 @@ internal val DefaultPlatformSystemBarsController = PlatformSystemBarsController(
 internal val DefaultPlatformSystemBarsBehavior = PlatformSystemBarsBehavior.Immersive
 
 /** Default platform system bars style. */
-internal val DefaultPlatformSystemBarStyle = PlatformSystemBarStyle.Auto
+internal val DefaultPlatformSystemBarStyle = PlatformSystemBarStyle.AutoTransparent
