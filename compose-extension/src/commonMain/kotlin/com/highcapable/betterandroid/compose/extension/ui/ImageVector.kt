@@ -23,6 +23,7 @@
 
 package com.highcapable.betterandroid.compose.extension.ui
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.DefaultGroupName
@@ -30,7 +31,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 
 /**
- * Build an [ImageVector] with [ImageVector.Builder].
+ * Create an [ImageVector] with [ImageVector.Builder].
  * @param name the name of the image vector, default is [DefaultGroupName].
  * @param defaultWidth the default width of the image vector.
  * @param defaultHeight the default height of the image vector.
@@ -42,7 +43,8 @@ import androidx.compose.ui.unit.Dp
  * @param builder the builder instance.
  * @return [ImageVector]
  */
-inline fun buildImageVector(
+@Stable
+inline fun ImageVector(
     name: String = DefaultGroupName,
     defaultWidth: Dp,
     defaultHeight: Dp,
