@@ -83,7 +83,7 @@ enum class SecureFlagPolicyWrapper {
  */
 @Composable
 expect fun Dialog(
-    onDismissRequest: () -> Unit,
+    onDismissRequest: (() -> Unit)? = null,
     properties: DialogPropertiesWrapper = DialogPropertiesWrapper(),
     content: @Composable () -> Unit
 )

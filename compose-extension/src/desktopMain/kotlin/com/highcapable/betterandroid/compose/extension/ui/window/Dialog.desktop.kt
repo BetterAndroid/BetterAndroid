@@ -35,12 +35,12 @@ import androidx.compose.ui.window.Dialog as ComposeDialog
  */
 @Composable
 actual fun Dialog(
-    onDismissRequest: () -> Unit,
+    onDismissRequest: (() -> Unit)?,
     properties: DialogPropertiesWrapper,
     content: @Composable () -> Unit
 ) {
     ComposeDialog(
-        onDismissRequest = onDismissRequest,
+        onDismissRequest = { onDismissRequest?.invoke() },
         properties = DialogProperties(
             dismissOnBackPress = properties.dismissOnBackPress,
             dismissOnClickOutside = properties.dismissOnClickOutside,
