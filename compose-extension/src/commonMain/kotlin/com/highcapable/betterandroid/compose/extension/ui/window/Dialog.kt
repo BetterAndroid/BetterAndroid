@@ -52,6 +52,7 @@ data class DialogPropertiesWrapper(
      * - Note: This properties only available on Android platform.
      * @see DialogProperties
      */
+    @Immutable
     data class AndroidProperties(
         val securePolicy: SecureFlagPolicyWrapper = SecureFlagPolicyWrapper.Inherit,
         val decorFitsSystemWindows: Boolean = true
