@@ -38,22 +38,22 @@ import androidx.compose.foundation.selection.selectable as foundationSelectable
 import androidx.compose.foundation.selection.toggleable as foundationToggleable
 
 /**
- * Draw content with [disableAlpha] if [enabled] is false.
+ * Draw content with [disabledAlpha] if [enabled] is false.
  * @param enabled whether the content is enabled.
- * @param disableAlpha the alpha value when the content is disabled, default is 0.5f.
+ * @param disabledAlpha the alpha value when the content is disabled, default is 0.5f.
  * @return [Modifier]
  */
 @Stable
 fun Modifier.componentState(
     enabled: Boolean,
-    disableAlpha: Float = 0.5f
+    disabledAlpha: Float = 0.5f
 ) = composed(
     inspectorInfo = debugInspectorInfo {
         name = "componentState"
         properties["enabled"] = enabled
-        properties["disableAlpha"] = disableAlpha
+        properties["disabledAlpha"] = disabledAlpha
     }
-) { if (enabled) this else alpha(disableAlpha) }
+) { if (enabled) this else alpha(disabledAlpha) }
 
 /**
  * Extension for [foundationClickable].
