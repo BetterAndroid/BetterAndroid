@@ -147,7 +147,7 @@ actual fun rememberSystemBarsController(): PlatformSystemBarsController {
             // Find the current [ComposeView].
             val existingComposeView = activity.findViewById<ViewGroup>(Android_R.id.content)?.getChildAt(0) as? ComposeView?
             // If the controller is not initialized, initialize it with [existingComposeView].
-            if (nativeSystemBars.isDestroyed) nativeSystemBars.init(existingComposeView, handleWindowInsets = null)
+            if (nativeSystemBars.isDestroyed) nativeSystemBars.init(existingComposeView, edgeToEdgeInsets = null)
         }
         systemBars = PlatformSystemBarsController(nativeSystemBars)
     }; return systemBars

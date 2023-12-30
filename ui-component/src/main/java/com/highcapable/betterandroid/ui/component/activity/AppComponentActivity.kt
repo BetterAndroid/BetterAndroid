@@ -44,18 +44,18 @@ open class AppComponentActivity : BaseComponentActivity() {
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)
         val rootView = findViewById<ViewGroup>(Android_R.id.content).getChildAt(0)
-        systemBars.init(rootView, handleWindowInsets = null)
+        systemBars.init(rootView, edgeToEdgeInsets = null)
     }
 
     @CallSuper
     override fun setContentView(view: View?) {
         super.setContentView(view)
-        systemBars.init(view, handleWindowInsets = null)
+        systemBars.init(view, edgeToEdgeInsets = null)
     }
 
     @CallSuper
     override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
         super.setContentView(view, params)
-        systemBars.init(view, handleWindowInsets = null)
+        systemBars.init(view, edgeToEdgeInsets = null)
     }
 }
