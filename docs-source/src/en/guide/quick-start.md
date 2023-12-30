@@ -82,6 +82,13 @@ You can click on the corresponding modules below to view detailed function intro
 - [permission-extension](../library/permission-extension.md)
 - [compose-extension](../library/compose-extension.md)
 
+## Project Template
+
+You can use the project template we provide to quickly create a project that integrates `BetterAndroid` dependencies.
+
+- [android-app-template](https://github.com/BetterAndroid/android-app-template)
+- [compose-multiplatform-template](https://github.com/BetterAndroid/compose-multiplatform-template)
+
 ## Demo
 
 You can find some samples [here](repo://tree/main/samples) view the corresponding demo project to better understand how these functions work and quickly
