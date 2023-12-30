@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2023/12/9.
  */
-@file:Suppress("unused")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
 
 package com.highcapable.betterandroid.compose.extension.platform.component.insets
 
