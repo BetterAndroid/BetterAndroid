@@ -160,8 +160,8 @@ class SystemBarsController private constructor(private val window: Window) {
     /** The current window insets controller of [rootView]. */
     private var rootInsetsController: WindowInsetsControllerCompat? = null
 
-    /** Whether to handle the [rootView]'s window insets. */
-    private var isHandleWindowInsets = false
+    /** Whether to handle the [rootView]'s window insets for edge-to-edge. */
+    private var hasEdgeToEdgeInsets = false
 
     /**
      * Get the current system bars compat instance.
@@ -224,12 +224,12 @@ class SystemBarsController private constructor(private val window: Window) {
      *   repeated calls will only be performed once.
      * @see destroy
      * @param rootView the root view (must have a parent), default is [Android_R.id.content].
-     * @param handleWindowInsets handle the [rootView]'s window insets, default is [WindowInsetsWrapper.safeDrawingIgnoringIme],
+     * @param edgeToEdgeInsets handle the [rootView]'s window insets for edge-to-edge, default is [WindowInsetsWrapper.safeDrawingIgnoringIme],
      * if you don't want to set that, you can set it to null.
      * @throws IllegalStateException if the [rootView] is not available.
      */
     @JvmOverloads
-    fun init(rootView: View? = null, handleWindowInsets: (WindowInsetsWrapper.() -> InsetsWrapper)? = { safeDrawingIgnoringIme }) {
+    fun init(rootView: View? = null, edgeToEdgeInsets: (WindowInsetsWrapper.() -> InsetsWrapper)? = { safeDrawingIgnoringIme }) {
         if (isInitOnce) return
         var throwable: Throwable? = null
         val absRootView = rootView ?: runCatching { window.findViewById<ViewGroup>(Android_R.id.content) }.onFailure {
@@ -245,7 +245,7 @@ class SystemBarsController private constructor(private val window: Window) {
         isInitOnce = true
         this.rootView = absRootView
         rootInsetsController = WindowCompat.getInsetsController(window, absRootView)
-        isHandleWindowInsets = handleWindowInsets != null
+        hasEdgeToEdgeInsets = edgeToEdgeInsets != null
         var isStatusBarContrastEnforced = false
         var isNavigationBarContrastEnforced = false
         var navigationBarDividerColor = Color.TRANSPARENT
@@ -281,9 +281,9 @@ class SystemBarsController private constructor(private val window: Window) {
         // Set the layout overlay to status bars and navigation bars.
         WindowCompat.setDecorFitsSystemWindows(window, false)
         initializeDefaults()
-        // If has [handleWindowInsets],
+        // If has [edgeToEdgeInsets],
         // the controller will handle the root window insets by default.
-        handleWindowInsets?.also {
+        edgeToEdgeInsets?.also {
             absRootView.handleOnWindowInsetsChanged(animated = true) { rootView, insetsWrapper ->
                 rootView.setInsetsPadding(it(insetsWrapper))
             }
@@ -454,10 +454,10 @@ class SystemBarsController private constructor(private val window: Window) {
             rootInsetsController?.isAppearanceLightStatusBars = it.isAppearanceLightStatusBars
             rootInsetsController?.isAppearanceLightNavigationBars = it.isAppearanceLightNavigationBars
         }
-        if (isHandleWindowInsets) rootView?.removeWindowInsetsListener()
+        if (hasEdgeToEdgeInsets) rootView?.removeWindowInsetsListener()
         rootInsetsController = null
         rootView = null
-        isHandleWindowInsets = false
+        hasEdgeToEdgeInsets = false
         isInitOnce = false
     }
 
