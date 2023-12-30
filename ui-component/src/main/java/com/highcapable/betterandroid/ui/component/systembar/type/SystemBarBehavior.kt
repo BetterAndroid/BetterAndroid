@@ -17,28 +17,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file is created by fankes on 2023/11/24.
+ * This file is created by fankes on 2022/11/4.
  */
-@file:Suppress("unused")
-
 package com.highcapable.betterandroid.ui.component.systembar.type
 
 /**
- * Custom system insets type definition.
- *
- * - This enum class is deprecated and no effect.
+ * System bars behavior type definition.
  */
-@Deprecated(message = "No effect and will be removed in the future.")
-enum class SystemInsetsType {
-    /** The top, usually the status bar. */
-    TOP,
+enum class SystemBarBehavior {
+    /** The default mode selected by the system. */
+    DEFAULT,
 
-    /** The left. */
-    LEFT,
-
-    /** The right. */
-    RIGHT,
-
-    /** The bottom, usually the navigation bar. */
-    BOTTOM
+    /**
+     * Appears as a semi-transparent system bars that slides out of the full screen
+     * and continues to hide after a period of time.
+     */
+    SHOW_TRANSIENT_BARS_BY_SWIPE
 }

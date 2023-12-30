@@ -40,8 +40,8 @@ import com.highcapable.betterandroid.ui.component.activity.AppComponentActivity
 import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
 import com.highcapable.betterandroid.ui.component.systembar.SystemBarsController
 import com.highcapable.betterandroid.ui.component.systembar.style.SystemBarStyle
+import com.highcapable.betterandroid.ui.component.systembar.type.SystemBarBehavior
 import com.highcapable.betterandroid.ui.component.systembar.type.SystemBars
-import com.highcapable.betterandroid.ui.component.systembar.type.SystemBarsBehavior
 import android.R as Android_R
 
 /**
@@ -63,11 +63,11 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
     /**
      * Get or set the behavior of system bars.
      *
-     * The default behavior type is [PlatformSystemBarsBehavior.Immersive].
-     * @return [PlatformSystemBarsBehavior]
+     * The default behavior type is [PlatformSystemBarBehavior.Immersive].
+     * @return [PlatformSystemBarBehavior]
      */
-    actual var behavior: PlatformSystemBarsBehavior
-        get() = nativeController?.behavior?.toPlatformExpect() ?: DefaultPlatformSystemBarsBehavior
+    actual var behavior: PlatformSystemBarBehavior
+        get() = nativeController?.behavior?.toPlatformExpect() ?: DefaultPlatformSystemBarBehavior
         set(value) {
             nativeController?.behavior = value.toPlatformActual()
         }
@@ -182,23 +182,23 @@ private fun PlatformSystemBars.toPlatformActual() = when (this) {
 }
 
 /**
- * Convert [PlatformSystemBarsBehavior] to [SystemBarsBehavior].
- * @receiver [PlatformSystemBarsBehavior]
- * @return [SystemBarsBehavior]
+ * Convert [PlatformSystemBarBehavior] to [SystemBarBehavior].
+ * @receiver [PlatformSystemBarBehavior]
+ * @return [SystemBarBehavior]
  */
-private fun PlatformSystemBarsBehavior.toPlatformActual() = when (this) {
-    PlatformSystemBarsBehavior.Default -> SystemBarsBehavior.DEFAULT
-    PlatformSystemBarsBehavior.Immersive -> SystemBarsBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE
+private fun PlatformSystemBarBehavior.toPlatformActual() = when (this) {
+    PlatformSystemBarBehavior.Default -> SystemBarBehavior.DEFAULT
+    PlatformSystemBarBehavior.Immersive -> SystemBarBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE
 }
 
 /**
- * Convert [SystemBarsBehavior] to [PlatformSystemBarsBehavior].
- * @receiver [SystemBarsBehavior]
- * @return [PlatformSystemBarsBehavior]
+ * Convert [SystemBarBehavior] to [PlatformSystemBarBehavior].
+ * @receiver [SystemBarBehavior]
+ * @return [PlatformSystemBarBehavior]
  */
-private fun SystemBarsBehavior.toPlatformExpect() = when (this) {
-    SystemBarsBehavior.DEFAULT -> PlatformSystemBarsBehavior.Default
-    SystemBarsBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE -> PlatformSystemBarsBehavior.Immersive
+private fun SystemBarBehavior.toPlatformExpect() = when (this) {
+    SystemBarBehavior.DEFAULT -> PlatformSystemBarBehavior.Default
+    SystemBarBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE -> PlatformSystemBarBehavior.Immersive
 }
 
 /**

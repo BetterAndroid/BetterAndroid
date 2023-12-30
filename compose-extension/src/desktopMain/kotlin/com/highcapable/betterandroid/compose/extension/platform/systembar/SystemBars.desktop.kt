@@ -48,12 +48,12 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
     /**
      * Get or set the behavior of system bars.
      *
-     * The default behavior type is [PlatformSystemBarsBehavior.Immersive].
-     * @return [PlatformSystemBarsBehavior]
+     * The default behavior type is [PlatformSystemBarBehavior.Immersive].
+     * @return [PlatformSystemBarBehavior]
      */
     @Suppress("UNUSED_PARAMETER")
-    actual var behavior: PlatformSystemBarsBehavior
-        get() = DefaultPlatformSystemBarsBehavior
+    actual var behavior: PlatformSystemBarBehavior
+        get() = DefaultPlatformSystemBarBehavior
         set(value) {
             // Platform desktop: No-op.
         }

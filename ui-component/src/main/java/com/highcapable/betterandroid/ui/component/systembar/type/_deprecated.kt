@@ -17,20 +17,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file is created by fankes on 2022/12/9.
+ * This file is created by fankes on 2023/12/30.
  */
-package com.highcapable.betterandroid.compose.extension.platform.component.systembar.type
+@file:Suppress("unused")
+
+package com.highcapable.betterandroid.ui.component.systembar.type
 
 /**
- * System bars behavior type definition.
+ * Workaround for class name typo of [SystemBarBehavior].
  */
-enum class SystemBarsBehavior {
-    /** The default mode selected by the system. */
-    DEFAULT,
+@Deprecated(message = "Use SystemBarBehavior instead.", ReplaceWith("SystemBarBehavior"))
+typealias SystemBarsBehavior = SystemBarBehavior
 
-    /**
-     * The system bars can be revealed temporarily with system gestures
-     * when the status bars hide, but disappears after a period of time.
-     */
-    SCREEN_EDGES_DEFERRING_SYSTEM_GESTURES
+/**
+ * Custom system insets type definition.
+ *
+ * - This enum class is deprecated and no effect.
+ */
+@Deprecated(message = "No effect and will be removed in the future.")
+enum class SystemInsetsType {
+    /** The top, usually the status bar. */
+    TOP,
+
+    /** The left. */
+    LEFT,
+
+    /** The right. */
+    RIGHT,
+
+    /** The bottom, usually the navigation bar. */
+    BOTTOM
 }

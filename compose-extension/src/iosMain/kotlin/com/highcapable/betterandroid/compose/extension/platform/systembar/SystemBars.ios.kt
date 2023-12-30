@@ -34,8 +34,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.interop.LocalUIViewController
 import com.highcapable.betterandroid.compose.extension.platform.component.systembar.SystemBarsController
 import com.highcapable.betterandroid.compose.extension.platform.component.systembar.style.SystemBarStyle
+import com.highcapable.betterandroid.compose.extension.platform.component.systembar.type.SystemBarBehavior
 import com.highcapable.betterandroid.compose.extension.platform.component.systembar.type.SystemBars
-import com.highcapable.betterandroid.compose.extension.platform.component.systembar.type.SystemBarsBehavior
 import com.highcapable.betterandroid.compose.extension.platform.component.uiviewcontroller.AppComponentUIViewController
 import com.highcapable.betterandroid.compose.extension.ui.toComposeColor
 import com.highcapable.betterandroid.compose.extension.ui.toPlatformColor
@@ -61,11 +61,11 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
     /**
      * Get or set the behavior of system bars.
      *
-     * The default behavior type is [PlatformSystemBarsBehavior.Immersive].
-     * @return [PlatformSystemBarsBehavior]
+     * The default behavior type is [PlatformSystemBarBehavior.Immersive].
+     * @return [PlatformSystemBarBehavior]
      */
-    actual var behavior: PlatformSystemBarsBehavior
-        get() = nativeController?.behavior?.toPlatformExpect() ?: DefaultPlatformSystemBarsBehavior
+    actual var behavior: PlatformSystemBarBehavior
+        get() = nativeController?.behavior?.toPlatformExpect() ?: DefaultPlatformSystemBarBehavior
         set(value) {
             nativeController?.behavior = value.toPlatformActual()
         }
@@ -192,23 +192,23 @@ private fun PlatformSystemBars.toPlatformActual() = when (this) {
 }
 
 /**
- * Convert [PlatformSystemBars] to [SystemBarsBehavior].
- * @receiver [PlatformSystemBarsBehavior]
- * @return [SystemBarsBehavior]
+ * Convert [PlatformSystemBars] to [SystemBarBehavior].
+ * @receiver [PlatformSystemBarBehavior]
+ * @return [SystemBarBehavior]
  */
-private fun PlatformSystemBarsBehavior.toPlatformActual() = when (this) {
-    PlatformSystemBarsBehavior.Default -> SystemBarsBehavior.DEFAULT
-    PlatformSystemBarsBehavior.Immersive -> SystemBarsBehavior.SCREEN_EDGES_DEFERRING_SYSTEM_GESTURES
+private fun PlatformSystemBarBehavior.toPlatformActual() = when (this) {
+    PlatformSystemBarBehavior.Default -> SystemBarBehavior.DEFAULT
+    PlatformSystemBarBehavior.Immersive -> SystemBarBehavior.SCREEN_EDGES_DEFERRING_SYSTEM_GESTURES
 }
 
 /**
- * Convert [SystemBarsBehavior] to [PlatformSystemBarsBehavior].
- * @receiver [SystemBarsBehavior]
- * @return [PlatformSystemBarsBehavior]
+ * Convert [SystemBarBehavior] to [PlatformSystemBarBehavior].
+ * @receiver [SystemBarBehavior]
+ * @return [PlatformSystemBarBehavior]
  */
-private fun SystemBarsBehavior.toPlatformExpect() = when (this) {
-    SystemBarsBehavior.DEFAULT -> PlatformSystemBarsBehavior.Default
-    SystemBarsBehavior.SCREEN_EDGES_DEFERRING_SYSTEM_GESTURES -> PlatformSystemBarsBehavior.Immersive
+private fun SystemBarBehavior.toPlatformExpect() = when (this) {
+    SystemBarBehavior.DEFAULT -> PlatformSystemBarBehavior.Default
+    SystemBarBehavior.SCREEN_EDGES_DEFERRING_SYSTEM_GESTURES -> PlatformSystemBarBehavior.Immersive
 }
 
 /**

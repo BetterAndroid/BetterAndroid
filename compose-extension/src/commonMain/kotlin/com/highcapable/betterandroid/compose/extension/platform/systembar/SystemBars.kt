@@ -51,10 +51,10 @@ expect class PlatformSystemBarsController internal constructor(actual: NativeSys
     /**
      * Get or set the behavior of system bars.
      *
-     * The default behavior type is [PlatformSystemBarsBehavior.Immersive].
-     * @return [PlatformSystemBarsBehavior]
+     * The default behavior type is [PlatformSystemBarBehavior.Immersive].
+     * @return [PlatformSystemBarBehavior]
      */
-    var behavior: PlatformSystemBarsBehavior
+    var behavior: PlatformSystemBarBehavior
 
     /**
      * Show system bars.
@@ -145,10 +145,10 @@ enum class PlatformSystemBars {
 }
 
 /**
- * Platform system bars behavior type definition.
+ * Platform system bar behavior type definition.
  */
 @Stable
-enum class PlatformSystemBarsBehavior {
+enum class PlatformSystemBarBehavior {
     /** The default mode selected by the system. */
     Default,
 
@@ -296,7 +296,7 @@ expect val PlatformSystemBarsController.nativeController: NativeSystemBarsContro
 internal val DefaultPlatformSystemBarsController = PlatformSystemBarsController(actual = null)
 
 /** Default platform system bars behavior. */
-internal val DefaultPlatformSystemBarsBehavior = PlatformSystemBarsBehavior.Immersive
+internal val DefaultPlatformSystemBarBehavior = PlatformSystemBarBehavior.Immersive
 
 /** Default platform system bars style. */
 internal val DefaultPlatformSystemBarStyle = PlatformSystemBarStyle.AutoTransparent

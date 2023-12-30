@@ -53,7 +53,7 @@ import com.highcapable.betterandroid.ui.component.insets.factory.setInsetsPaddin
 import com.highcapable.betterandroid.ui.component.systembar.compat.SystemBarsCompat
 import com.highcapable.betterandroid.ui.component.systembar.style.SystemBarStyle
 import com.highcapable.betterandroid.ui.component.systembar.type.SystemBars
-import com.highcapable.betterandroid.ui.component.systembar.type.SystemBarsBehavior
+import com.highcapable.betterandroid.ui.component.systembar.type.SystemBarBehavior
 import com.highcapable.betterandroid.ui.extension.component.base.isUiInNightMode
 import com.highcapable.betterandroid.ui.extension.graphics.isBrightColor
 import com.highcapable.betterandroid.ui.extension.graphics.mixColorOf
@@ -172,22 +172,22 @@ class SystemBarsController private constructor(private val window: Window) {
     /**
      * Get the system bars behavior type.
      * @receiver [WindowInsetsControllerCompat]
-     * @return [SystemBarsBehavior]
+     * @return [SystemBarBehavior]
      */
     private val WindowInsetsControllerCompat.systemBarBehaviorType get() = when (systemBarsBehavior) {
-        WindowInsetsControllerCompat.BEHAVIOR_DEFAULT -> SystemBarsBehavior.DEFAULT
-        WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE -> SystemBarsBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE
-        else -> SystemBarsBehavior.DEFAULT
+        WindowInsetsControllerCompat.BEHAVIOR_DEFAULT -> SystemBarBehavior.DEFAULT
+        WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE -> SystemBarBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE
+        else -> SystemBarBehavior.DEFAULT
     }
 
     /**
      * Convert to [WindowInsetsControllerCompat] types.
-     * @receiver the [SystemBarsBehavior] type.
+     * @receiver the [SystemBarBehavior] type.
      * @return [Int]
      */
-    private fun SystemBarsBehavior.toBehaviorType() = when (this) {
-        SystemBarsBehavior.DEFAULT -> WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
-        SystemBarsBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE -> WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    private fun SystemBarBehavior.toBehaviorType() = when (this) {
+        SystemBarBehavior.DEFAULT -> WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
+        SystemBarBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE -> WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     }
 
     /**
@@ -203,7 +203,7 @@ class SystemBarsController private constructor(private val window: Window) {
 
     /** Initialize the system bars defaults. */
     private fun initializeDefaults() {
-        behavior = SystemBarsBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE
+        behavior = SystemBarBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE
         setStyle(SystemBarStyle.AutoTransparent)
     }
 
@@ -293,11 +293,11 @@ class SystemBarsController private constructor(private val window: Window) {
     /**
      * Get or set the behavior of system bars.
      *
-     * The default behavior type is [SystemBarsBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE].
-     * @return [SystemBarsBehavior]
+     * The default behavior type is [SystemBarBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE].
+     * @return [SystemBarBehavior]
      */
     var behavior
-        get() = rootInsetsController?.systemBarBehaviorType ?: SystemBarsBehavior.DEFAULT
+        get() = rootInsetsController?.systemBarBehaviorType ?: SystemBarBehavior.DEFAULT
         set(value) {
             rootInsetsController?.systemBarsBehavior = value.toBehaviorType()
         }

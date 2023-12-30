@@ -26,7 +26,7 @@ package com.highcapable.betterandroid.compose.extension.platform.component.syste
 import com.highcapable.betterandroid.compose.extension.platform.component.insets.UIEdgeInsetsWrapper
 import com.highcapable.betterandroid.compose.extension.platform.component.systembar.style.SystemBarStyle
 import com.highcapable.betterandroid.compose.extension.platform.component.systembar.type.SystemBars
-import com.highcapable.betterandroid.compose.extension.platform.component.systembar.type.SystemBarsBehavior
+import com.highcapable.betterandroid.compose.extension.platform.component.systembar.type.SystemBarBehavior
 import com.highcapable.betterandroid.compose.extension.platform.component.uiviewcontroller.AppComponentUIViewController
 import platform.CoreGraphics.CGFloat
 import platform.UIKit.NSLayoutConstraint
@@ -78,7 +78,7 @@ class SystemBarsController private constructor(private val controller: UIViewCon
     private val systemBarViews by lazy { arrayOf(SystemBarView(), SystemBarView()) }
 
     /** The behavior of system bars. */
-    private var currentBehavior = SystemBarsBehavior.SCREEN_EDGES_DEFERRING_SYSTEM_GESTURES
+    private var currentBehavior = SystemBarBehavior.SCREEN_EDGES_DEFERRING_SYSTEM_GESTURES
 
     /**
      * Returns the current [AppComponentUIViewController].
@@ -150,8 +150,8 @@ class SystemBarsController private constructor(private val controller: UIViewCon
     /** Refresh the behavior of system bars. */
     private fun refreshBehavior() {
         appController.screenEdgesDeferringSystemGestures = when (currentBehavior) {
-            SystemBarsBehavior.DEFAULT -> UIRectEdgeNone
-            SystemBarsBehavior.SCREEN_EDGES_DEFERRING_SYSTEM_GESTURES ->
+            SystemBarBehavior.DEFAULT -> UIRectEdgeNone
+            SystemBarBehavior.SCREEN_EDGES_DEFERRING_SYSTEM_GESTURES ->
                 if (appController.isStatusBarHidden) UIRectEdgeAll else UIRectEdgeNone
         }
     }
@@ -200,8 +200,8 @@ class SystemBarsController private constructor(private val controller: UIViewCon
     /**
      * Get or set the behavior of system bars.
      *
-     * The default behavior type is [SystemBarsBehavior.SCREEN_EDGES_DEFERRING_SYSTEM_GESTURES].
-     * @return [SystemBarsBehavior]
+     * The default behavior type is [SystemBarBehavior.SCREEN_EDGES_DEFERRING_SYSTEM_GESTURES].
+     * @return [SystemBarBehavior]
      */
     var behavior
         get() = currentBehavior

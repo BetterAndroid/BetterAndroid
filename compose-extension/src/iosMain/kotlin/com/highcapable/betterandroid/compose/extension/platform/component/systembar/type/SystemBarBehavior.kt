@@ -17,20 +17,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file is created by fankes on 2022/11/4.
+ * This file is created by fankes on 2022/12/9.
  */
-package com.highcapable.betterandroid.ui.component.systembar.type
+package com.highcapable.betterandroid.compose.extension.platform.component.systembar.type
 
 /**
  * System bars behavior type definition.
  */
-enum class SystemBarsBehavior {
+enum class SystemBarBehavior {
     /** The default mode selected by the system. */
     DEFAULT,
 
     /**
-     * Appears as a semi-transparent system bars that slides out of the full screen
-     * and continues to hide after a period of time.
+     * The system bars can be revealed temporarily with system gestures
+     * when the status bars hide, but disappears after a period of time.
      */
-    SHOW_TRANSIENT_BARS_BY_SWIPE
+    SCREEN_EDGES_DEFERRING_SYSTEM_GESTURES
 }
