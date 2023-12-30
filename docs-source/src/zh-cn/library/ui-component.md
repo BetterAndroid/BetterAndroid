@@ -1272,7 +1272,7 @@ val systemBars = absoluteWrapper.systemBars
 
 系统栏的类型。
 
-[SystemBarsBehavior](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.systembar.type/-system-bars-behavior)
+[SystemBarBehavior](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.systembar.type/-system-bar-behavior)
 
 系统栏的行为。
 
@@ -1393,10 +1393,10 @@ systemBars.init(rootView, edgeToEdgeInsets = null)
 > 示例如下
 
 ```kotlin
-systemBars.behavior = SystemBarsBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE
+systemBars.behavior = SystemBarBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE
 ```
 
-以下是 `SystemBarsBehavior` 中提供的全部行为，标有 `*` 的为默认行为。
+以下是 `SystemBarBehavior` 中提供的全部行为，标有 `*` 的为默认行为。
 
 | 行为                            | 描述                                                                   |
 | ------------------------------- | ---------------------------------------------------------------------- |

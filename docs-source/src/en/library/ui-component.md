@@ -1309,7 +1309,7 @@ System bar style.
 
 System bars type.
 
-[SystemBarsBehavior](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.systembar.type/-system-bars-behavior)
+[SystemBarBehavior](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.systembar.type/-system-bar-behavior)
 
 System bars behavior.
 
@@ -1443,10 +1443,10 @@ This determines the system-controlled behavior when showing or hiding system bar
 > The following example
 
 ```kotlin
-systemBars.behavior = SystemBarsBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE
+systemBars.behavior = SystemBarBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE
 ```
 
-The following are all behaviors provided in `SystemBarsBehavior`, those marked with `*` are the default behaviors.
+The following are all behaviors provided in `SystemBarBehavior`, those marked with `*` are the default behaviors.
 
 | Behavior                        | Description                                                                                                                                                   |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
