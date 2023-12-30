@@ -1398,21 +1398,23 @@ val rootView: ViewGroup
 // Your root view must have been set to a parent layout, otherwise an exception will be thrown.
 systemBars.init(rootView)
 // You can customize the window insets that handle the root view.
-systemBars.init(rootView, handleWindowInsets = { systemBars })
+systemBars.init(rootView, edgeToEdgeInsets = { systemBars })
 // If you don't want SystemBarsController to automatically handle the root view's window insets for you,
-// you can directly set handleWindowInsets to null.
-systemBars.init(rootView, handleWindowInsets = null)
+// you can directly set edgeToEdgeInsets to null.
+systemBars.init(rootView, edgeToEdgeInsets = null)
 ```
 
 ::: warning
 
 `SystemBarsController` will automatically set `Window.setDecorFitsSystemWindows(false)` during initialization
 (on cutout display devices, `layoutInDisplayCutoutMode` will also be set to `LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES`),
-you just need to set `handleWindowInsets` in `init` (the default setting),
+you just need to set `edgeToEdgeInsets` in `init` (the default setting),
 then your root view will have a window insets `padding` controlled by `safeDrawingIgnoringIme`,
 which is why you should be able to maintain your own root view at any time in `Activity`.
 
-If you set `handleWindowInsets` to `null` in `init`, your root view will fully expand to full screen.
+If you set `edgeToEdgeInsets` to `null` in `init`, your root view will fully expand to full screen.
+
+The above effect is equivalent to `enableEdgeToEdge` provided in `androidx.activity:activity`.
 
 Without any action, your layout will be blocked by system bars or dangerous areas of the system (such as cutout displays), which will affect the user experience.
 
@@ -1420,11 +1422,14 @@ If you want to maintain and manage the `padding` of the current root view yourse
 
 You can go to the [Insets](#insets) section of the previous section learn more about window insets.
 
+You no longer need to use `enableEdgeToEdge`, `SystemBarsController` will hold this effect by default after initialization,
+you should use `edgeToEdgeInsets` to control the window insets `padding` of the root view.
+
 :::
 
 ::: tip
 
-In Jetpack Compose, you can use `AppComponentActivity` to get a `SystemBarsController` initialized with `handleWindowInsets = null`,
+In Jetpack Compose, you can use `AppComponentActivity` to get a `SystemBarsController` initialized with `edgeToEdgeInsets = null`,
 then use Jetpack Compose to set window insets.
 
 `BetterAndroid` also provides extension support for it, for more functions, you can refer to [compose-extension](../library/compose-extension.md).

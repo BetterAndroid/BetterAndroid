@@ -1355,29 +1355,33 @@ val rootView: ViewGroup
 // 你的根布局必须已经被设置到了一个父布局中，否则将会抛出异常
 systemBars.init(rootView)
 // 你可以自定义处理根布局的 Window Insets
-systemBars.init(rootView, handleWindowInsets = { systemBars })
+systemBars.init(rootView, edgeToEdgeInsets = { systemBars })
 // 如果你不希望 SystemBarsController 自动为你处理根布局的 Window Insets，
-// 你可以直接设置 handleWindowInsets 为 null
-systemBars.init(rootView, handleWindowInsets = null)
+// 你可以直接设置 edgeToEdgeInsets 为 null
+systemBars.init(rootView, edgeToEdgeInsets = null)
 ```
 
 ::: warning
 
 `SystemBarsController` 初始化时会自动设置 `Window.setDecorFitsSystemWindows(false)` (在异形屏设备上会同时设置 `layoutInDisplayCutoutMode` 为 `LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES`)，
-你只要在 `init` 中设置了 `handleWindowInsets` (默认设置)，
+你只要在 `init` 中设置了 `edgeToEdgeInsets` (默认设置)，
 那么你的根布局将会拥有一个 `safeDrawingIgnoringIme` 控制的 Window Insets `padding`，这也是为什么你应该做到在 `Activity` 中能够随时维护一个自己的根布局。 
 
-如果你在 `init` 中将 `handleWindowInsets` 设为了 `null`，那么你的根布局将会完全扩展到全屏。
+如果你在 `init` 中将 `edgeToEdgeInsets` 设为了 `null`，那么你的根布局将会完全扩展到全屏。
+
+以上效果等同于 `androidx.activity:activity` 中提供的 `enableEdgeToEdge`。
 
 在不做出任何操作的情况下，你的布局就会被系统栏或系统的危险区域 (例如异形屏的挖空处) 遮挡，这会影响用户体验。
 
 如果你想自己维护并管理当前根布局的 `padding`，你必须确保你的界面元素能够正确适应 Window Insets 提供的间距，你可以前往上一节的 [边衬区 (Insets)](#边衬区-insets) 了解更多关于 Window Insets 的内容。
 
+你不再需要使用 `enableEdgeToEdge`，`SystemBarsController` 初始化后默认将持有此效果，你应该使用 `edgeToEdgeInsets` 来控制根布局的 Window Insets `padding`。
+
 :::
 
 ::: tip
 
-在 Jetpack Compose 中，你可以使用 `AppComponentActivity` 来获得一个设置了 `handleWindowInsets = null` 初始化的 `SystemBarsController`，
+在 Jetpack Compose 中，你可以使用 `AppComponentActivity` 来获得一个设置了 `edgeToEdgeInsets = null` 初始化的 `SystemBarsController`，
 然后使用 Jetpack Compose 的方式去设置 Window Insets，`BetterAndroid` 同样为其提供了扩展支持，更多功能你可以参考 [compose-extension](../library/compose-extension.md)。
 
 :::
