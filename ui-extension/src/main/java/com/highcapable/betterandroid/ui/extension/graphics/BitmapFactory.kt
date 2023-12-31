@@ -31,6 +31,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Paint
+import android.graphics.Path
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
@@ -195,24 +196,56 @@ fun Bitmap.blur(radius: Int) = BitmapBlurFactory.process(this, radius)
 /**
  * Convert the bitmap to a round corner bitmap.
  * @receiver [Bitmap]
+ * @param radii the radius of the 4 corners (px).
+ * @return [Bitmap]
+ * @throws IllegalArgumentException if the length of the radii array is not 8 or throws by [Bitmap.createBitmap].
+ */
+@JvmOverloads
+fun Bitmap.round(@Px radii: FloatArray, config: Bitmap.Config = Bitmap.Config.ARGB_8888): Bitmap {
+    require(radii.size == 8) { "The length of the radii array must be 8." }
+    return Bitmap.createBitmap(width, height, config).also { outBitmap ->
+        val canvas = Canvas(outBitmap)
+        val paint = Paint()
+        paint.isAntiAlias = true
+        canvas.drawARGB(0, 0, 0, 0)
+        paint.color = Color.WHITE
+        val path = Path()
+        path.addRoundRect(RectF(Rect(0, 0, width, height)), radii, Path.Direction.CW)
+        canvas.drawPath(path, paint)
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+        canvas.drawBitmap(this, Rect(0, 0, width, height), Rect(0, 0, width, height), paint)
+    }
+}
+
+/**
+ * Convert the bitmap to a round corner bitmap.
+ * @receiver [Bitmap]
+ * @param topLeft the radius of the top-left corner (px).
+ * @param topRight the radius of the top-right corner (px).
+ * @param bottomLeft the radius of the bottom-right corner (px).
+ * @param bottomRight the radius of the bottom-left corner (px).
+ * @param config the config, default is [Bitmap.Config.ARGB_8888].
+ * @return [Bitmap]
+ */
+@JvmOverloads
+@JvmName("roundRadii")
+fun Bitmap.round(
+    @Px topLeft: Float = 0f,
+    @Px topRight: Float = 0f,
+    @Px bottomLeft: Float = 0f,
+    @Px bottomRight: Float = 0f,
+    config: Bitmap.Config = Bitmap.Config.ARGB_8888
+) = round(floatArrayOf(topLeft, topLeft, topRight, topRight, bottomRight, bottomRight, bottomLeft, bottomLeft), config)
+
+/**
+ * Convert the bitmap to a round corner bitmap.
+ * @receiver [Bitmap]
  * @param radius the round corner (px).
  * @param config the config, default is [Bitmap.Config.ARGB_8888].
  * @return [Bitmap]
  */
 @JvmOverloads
-fun Bitmap.round(@Px radius: Float, config: Bitmap.Config = Bitmap.Config.ARGB_8888) =
-    runCatching {
-        Bitmap.createBitmap(width, height, config).also { outBitmap ->
-            val canvas = Canvas(outBitmap)
-            val paint = Paint()
-            paint.isAntiAlias = true
-            canvas.drawARGB(0, 0, 0, 0)
-            paint.color = Color.WHITE
-            canvas.drawRoundRect(RectF(Rect(0, 0, width, height)), radius, radius, paint)
-            paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
-            canvas.drawBitmap(this, Rect(0, 0, width, height), Rect(0, 0, width, height), paint)
-        }
-    }.getOrNull() ?: this
+fun Bitmap.round(@Px radius: Float, config: Bitmap.Config = Bitmap.Config.ARGB_8888) = round(radius, radius, radius, radius, config)
 
 /**
  * Compress the bitmap to reduce its size.
