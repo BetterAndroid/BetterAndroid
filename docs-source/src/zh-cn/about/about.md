@@ -2,7 +2,7 @@
 
 > 此文档由 [VuePress](https://v2.vuepress.vuejs.org/zh) 强力驱动。
 
-## License
+## 许可证
 
 [Apache-2.0](repo://blob/main/LICENSE)
 
