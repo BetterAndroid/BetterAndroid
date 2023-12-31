@@ -119,7 +119,9 @@ class MainActivity : AppComponentActivity() {
 
 ::: tip
 
-For more functions, you can refer to [compose-extension](../library/compose-extension.md).
+For related extensions of Jetpack Compose, you can refer to [compose-extension](../library/compose-extension.md).
+
+`BetterAndroid` also provides related extensions for `Activity`, you can refer to [ui-extension → Activity Extension](../library/ui-extension.md#activity-extension).
 
 :::
 
@@ -179,6 +181,12 @@ class MainFragment : AppViewsFragment(R.layout.fragment_main) {
     }
 }
 ```
+
+::: tip
+
+`BetterAndroid` also provides related extensions for `Fragment`, you can refer to [ui-extension → Fragment Extension](../library/ui-extension.md#fragment-extension).
+
+:::
 
 ### Adapter
 
@@ -1471,6 +1479,12 @@ systemBars.show(SystemBars.ALL)
 systemBars.show(SystemBars.STATUS_BARS)
 systemBars.show(SystemBars.NAVIGATION_BARS)
 ```
+
+::: tip
+
+If you need to control the showing and hiding of the input method (IME), you can refer to [ui-extension → View Extension](../library/ui-extension.md#view-extension).
+
+:::
 
 Set the style of the system bars.
 

@@ -119,7 +119,9 @@ class MainActivity : AppComponentActivity() {
 
 ::: tip
 
-更多功能你可以参考 [compose-extension](../library/compose-extension.md)。
+有关 Jetpack Compose 的相关扩展你可以参考 [compose-extension](../library/compose-extension.md)。
+
+`BetterAndroid` 同样为 `Activity` 提供了相关扩展，你可以参考 [ui-extension → Activity 扩展](../library/ui-extension.md#activity-扩展)。
 
 :::
 
@@ -179,6 +181,12 @@ class MainFragment : AppViewsFragment(R.layout.fragment_main) {
     }
 }
 ```
+
+::: tip
+
+`BetterAndroid` 同样为 `Fragment` 提供了相关扩展，你可以参考 [ui-extension → Fragment 扩展](../library/ui-extension.md#fragment-扩展)。
+
+:::
 
 ### 适配器 (Adapter)
 
@@ -1421,6 +1429,12 @@ systemBars.show(SystemBars.ALL)
 systemBars.show(SystemBars.STATUS_BARS)
 systemBars.show(SystemBars.NAVIGATION_BARS)
 ```
+
+::: tip
+
+如果你需要控制输入法 (IME) 的显示与隐藏，你可以参考 [ui-extension → View 扩展](../library/ui-extension.md#view-扩展)。
+
+:::
 
 设置系统栏的样式。
 
