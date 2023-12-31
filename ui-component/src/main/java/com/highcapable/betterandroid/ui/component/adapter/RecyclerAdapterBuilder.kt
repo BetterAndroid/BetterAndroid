@@ -1,6 +1,6 @@
 /*
  * Better Android - Create more useful tool extensions for Android.
- * Copyright (C) 2019-2023 HighCapable
+ * Copyright (C) 2019-2024 HighCapable
  * https://github.com/BetterAndroid/BetterAndroid
  *
  * Apache License Version 2.0

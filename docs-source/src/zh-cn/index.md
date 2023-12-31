@@ -9,5 +9,5 @@ actions:
   - text: 更新日志
     link: /zh-cn/about/changelog
     type: secondary
-footer: Apache-2.0 License | Copyright (C) 2019-2023 HighCapable
+footer: Apache-2.0 License | Copyright (C) 2019-2024 HighCapable
 ---
