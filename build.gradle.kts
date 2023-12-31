@@ -2,6 +2,7 @@ import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
+import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
     autowire(libs.plugins.kotlin.multiplatform) apply false
@@ -35,6 +36,10 @@ libraryProjects {
                 configure(KotlinMultiplatform(javadocJar = JavadocJar.None()))
             else configure(AndroidSingleVariantLibrary(publishJavadocJar = false))
         }
+    }
+    tasks.withType<DokkaTask>().configureEach {
+        val configuration = """{ "footerMessage": "BetterAndroid | Apache-2.0 License | Copyright (C) 2019-2024 HighCapable" }"""
+        pluginsMapConfiguration.set(mapOf("org.jetbrains.dokka.base.DokkaBase" to configuration))
     }
     tasks.register("publishKDoc") {
         group = "documentation"
