@@ -1045,6 +1045,13 @@ val compressBitmap = bitmap.compress(maxSize = 100, format = Bitmap.CompressForm
 val bitmap: Bitmap
 // 将位图设置以 10dp 为半径的圆角
 val roundBitmap = bitmap.round(10.toPx(context))
+// 你还可以设置每个角的圆角半径
+val roundBitmap = bitmap.round(
+    topLeft = 12.toPx(context),
+    topRight = 15.toPx(context),
+    bottomLeft = 10.toPx(context),
+    bottomRight = 9.toPx(context)
+)
 ```
 
 模糊位图，你也可以使用 `BitmapBlurFactory` 来完成。

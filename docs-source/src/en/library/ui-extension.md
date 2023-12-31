@@ -1076,6 +1076,13 @@ Rounded bitmap.
 val bitmap: Bitmap
 // Set the bitmap to a rounded corner with a radius of 10dp.
 val roundBitmap = bitmap.round(10.toPx(context))
+// You can also set the fillet radius for each corner.
+val roundBitmap = bitmap.round(
+    topLeft = 12.toPx(context),
+    topRight = 15.toPx(context),
+    bottomLeft = 10.toPx(context),
+    bottomRight = 9.toPx(context)
+)
 ```
 
 To blur bitmaps, you can also use `BitmapBlurFactory` to accomplish this.
