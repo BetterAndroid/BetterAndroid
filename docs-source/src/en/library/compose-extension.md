@@ -711,14 +711,15 @@ When using it for the first time, you need to configure platform-specific config
 
 **Android Platform**
 
+Whether it is automatic or manual configuration, you need to import the [ui-component](../library/ui-component.md) module in the corresponding Android project first.
+
 **1. Automatic Configuration**
 
 Please refer to [ui-component → Activity](../library/ui-component.md#activity) and use `AppComponentActivty` as the drawing portals of Compose.
 
 **2. Manual Configuration**
 
-First you need to import the [ui-component](../library/ui-component.md) module in the corresponding Android project,
-then you need to use `ComponentActivity` as your `Activity` and implement `ISystemBarsController` on it interface.
+You need to use `ComponentActivity` as your `Activity` and implement `ISystemBarsController` on it interface.
 
 > The following example
 

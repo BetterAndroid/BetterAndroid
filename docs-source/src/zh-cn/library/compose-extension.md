@@ -702,13 +702,15 @@ Android、iOS 对应的原生系统栏控制器。
 
 **Android 平台**
 
+无论是自动还是手动配置，你都需要先在对应的 Android 项目中导入 [ui-component](../library/ui-component.md) 模块。
+
 **1. 自动配置**
 
 请参考 [ui-component → Activity](../library/ui-component.md#activity) 使用 `AppComponentActivty` 作为 Compose 的绘制对象即可。
 
 **2. 手动配置**
 
-首先你需要在对应的 Android 项目中导入 [ui-component](../library/ui-component.md) 模块，然后你需要使用 `ComponentActivity` 作为你的 `Activity`，并对其实现 `ISystemBarsController` 接口。
+你需要使用 `ComponentActivity` 作为你的 `Activity`，并对其实现 `ISystemBarsController` 接口。
 
 > 示例如下
 

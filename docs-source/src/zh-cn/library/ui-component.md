@@ -758,7 +758,7 @@ backPressed.destroy()
 
 所以你不需要再考虑类似通知渠道这样 Android 8 及以下系统的兼容性问题，`BetterAndroid` 已经为你处理了这些问题。
 
-在 Kotlin 中你能够更加方便地创建一个系统通知。
+在 Kotlin 中你能够更加方便地创建一条系统通知。
 
 > 示例如下
 
