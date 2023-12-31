@@ -419,19 +419,19 @@ class WindowInsetsWrapper private constructor(private val windowInsets: WindowIn
         var isVisible = windowInsets.isVisible(typeMask)
         var insets = if (ignoringVisibility) windowInsets.getInsetsIgnoringVisibility(typeMask) else windowInsets.getInsets(typeMask)
         // Workaround for the visible state of the system bars below Android 11.
-        if (!ignoringVisibility && SystemVersion.isLowTo(SystemVersion.R) && window != null)
+        if (SystemVersion.isLowTo(SystemVersion.R) && window != null)
             when (typeMask) {
                 WindowInsetsCompat.Type.systemBars() -> {
                     isVisible = wrapperCompat.isStatusBarShowing && wrapperCompat.isNavigationBarShowing
-                    if (!isVisible) insets = Insets.NONE
+                    if (!isVisible && !ignoringVisibility) insets = Insets.NONE
                 }
                 WindowInsetsCompat.Type.statusBars() -> {
                     isVisible = wrapperCompat.isStatusBarShowing
-                    if (!isVisible) insets = Insets.NONE
+                    if (!isVisible && !ignoringVisibility) insets = Insets.NONE
                 }
                 WindowInsetsCompat.Type.navigationBars() -> {
                     isVisible = wrapperCompat.isNavigationBarShowing
-                    if (!isVisible) insets = Insets.NONE
+                    if (!isVisible && !ignoringVisibility) insets = Insets.NONE
                 }
             }
         return insets.toWrapper(isVisible)
