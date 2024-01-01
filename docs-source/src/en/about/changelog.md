@@ -37,7 +37,7 @@ Time zone of version release date: **UTC+8**
 
 ### 1.0.1 | 2023.11.18 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
-- Fix the loading exception catching problem in SystemBarsController
+- Fix the loading exception catching problem in `SystemBarsController`
 
 ### 1.0.0 | 2023.11.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 

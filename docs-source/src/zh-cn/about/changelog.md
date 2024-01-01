@@ -26,7 +26,7 @@
 
 ### 1.0.1 | 2023.11.18 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
-- 修复 SystemBarsController 中存在的装载异常捕获问题
+- 修复 `SystemBarsController` 中存在的装载异常捕获问题
 
 ### 1.0.0 | 2023.11.02 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
