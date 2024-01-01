@@ -44,7 +44,20 @@
 
 ## system-extension
 
-### 1.0.0 | 2023.11.02 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.1 | 2024.01.02 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 更名 `SystemVersion` 中的部分命名不正确方法
+- `SystemVersion` 中新增 `name` 属性
+- 缓存 `SystemKind` 的检测结果防止重复创建反射对象
+- 作废了 `SystemKind` 中的 `get`，现在请使用 `current` 属性获取当前系统类型
+- 更名 `ApplicationFactoy` 中的部分命名不正确方法和类
+- 移除了 `AplicationInfoFlagsWrapper` 中的 `FLAG` 前缀
+- 修改了 `BroadcastFactory` 中的相关用法，现在请参考文档使用新用法创建运行时广播
+- 修改了 `ClipboardFactory` 中的相关用法，现在请参考文档使用新用法使用剪贴板功能
+- 对 `ServiceFactory` 中的方法进行了 `inline` 处理
+- `ServiceFactory` 中新增 `startServiceOrElse`、`startForegroundServiceOrElse` 方法
+
+### 1.0.0 | 2023.11.02 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 首个版本提交至 Maven
 

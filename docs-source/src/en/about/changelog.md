@@ -55,7 +55,20 @@ Time zone of version release date: **UTC+8**
 
 ## system-extension
 
-### 1.0.0 | 2023.11.02 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.1 | 2024.01.02 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Renamed some incorrectly named methods in `SystemVersion`
+- Added `name` attribute in `SystemVersion`
+- Caching `SystemKind` detection results to prevent repeated creation of reflection objects
+- Deprecated `get` in `SystemKind`, now please use the `current` property to get the current system type.
+- Renamed some incorrectly named methods and classes in `ApplicationFactoy`
+- Removed `FLAG` prefix in `AplicationInfoFlagsWrapper`
+- Modified the related usage in `BroadcastFactory`, now please refer to the documentation to use the new usage to create runtime broadcasts
+- Modified the relevant usage in `ClipboardFactory`, now please refer to the document to use the new usage to use the clipboard function
+- Methods in `ServiceFactory` were `inline` processed
+- Added `startServiceOrElse` and `startForegroundServiceOrElse` methods in `ServiceFactory`
+
+### 1.0.0 | 2023.11.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - The first version is submitted to Maven
 
