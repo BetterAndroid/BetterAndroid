@@ -8,12 +8,6 @@
 
 目前支持的平台：Android、iOS、Desktop (JVM)。
 
-::: warning
-
-此模块尚在开发与测试，在 `1.0.0` 版本正式发布前 API 可能会发生变化，欢迎前往 [GitHub Issues](repo://issues) 向我们提出建议。
-
-:::
-
 ## 配置依赖
 
 你可以使用如下方式将此模块添加到你的项目中。
@@ -111,6 +105,8 @@ kotlin {
 
 ::: tip 本节内容
 
+> commonMain
+
 [Color → isBrightColor](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/is-bright-color)
 
 [Color → toHexColor](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/to-hex-color)
@@ -119,11 +115,15 @@ kotlin {
 
 [Color → orNull](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/or-null)
 
-[Color → toPlatformColor (desktop)](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/[desktop]to-platform-color)
-
-[Color → toPlatformColor (ios)](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/[ios]to-platform-color)
-
 [Color → toComposeColor](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/to-compose-color)
+
+> desktopMain
+
+[Color → toPlatformColor](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/[desktop]to-platform-color)
+
+> iosMain
+
+[Color → toPlatformColor](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/[ios]to-platform-color)
 
 适用于 `Color` 的扩展。
 
@@ -280,6 +280,8 @@ val color = border.solidColor(Color.Black)
 
 ::: tip 本节内容
 
+> commonMain
+
 [ComponentPadding](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/-component-padding)
 
 组件化 `padding`，继承于 `PaddingValues`。
@@ -352,6 +354,8 @@ val paddingValues = padding.toPaddingValues()
 
 ::: tip 本节内容
 
+> commonMain
+
 [Foundation → componentState](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/component-state)
 
 [Foundation → clickable](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/clickable)
@@ -413,6 +417,8 @@ Box(
 
 ::: tip 本节内容
 
+> commonMain
+
 [ImageVector → ImageVector](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/-image-vector)
 
 适用于 `ImageVector` 的扩展。
@@ -454,6 +460,8 @@ val myVector = ImageVector(
 
 ::: tip 本节内容
 
+> commonMain
+
 [Unit → orNull](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/or-null)
 
 适用于 `Unit` 的扩展。
@@ -485,6 +493,8 @@ val spValue = sp.orNull() ?: 10.sp
 ### Dialog、Popup 组件扩展
 
 ::: tip 本节内容
+
+> commonMain
 
 [DialogPropertiesWrapper](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui.window/-dialog-properties-wrapper)
 
@@ -578,351 +588,5 @@ Popup(
 ::: warning
 
 你需要将上述 `Dialog`、`Popup` 引用的包名由 `androidx.compose.ui.window` 更换为 `com.highcapable.betterandroid.compose.extension.ui.window`。
-
-:::
-
-## 多平台支持
-
-为了能让适应了原生 Android 开发的开发者们能够更快地对各种平台进行适配，借助于 Kotlin Multiplatform 与 Jetpack Compose 的跨平台特性，`BetterAndroid` 无缝地提供了多平台支持。
-
-对于不同平台差异性的扩展支持虽然同样属于 [compose-extension](#compose-extension)，但是它们将独立于 [功能介绍](#功能介绍) 中的内容单独进行介绍。
-
-多平台支持的相关功能将继续在 [compose-extension](#compose-extension) 中开发，以下是目前正在开发、开发完成的功能。
-
-我们欢迎更多的开发者参与到开发中来，如果可能，欢迎提交 PR 为此项目贡献或通过 [GitHub Issues](repo://issues) 向我们提出建议。
-
-标识为 “✅” 的功能表示可用，“❎” 表示平台不支持，“🚧” 表示准备或正在开发中 (WIP)，“🔨” 表示计划开发。
-
-| 功能名称                       | 描述                                         | Android |  iOS  | Desktop |
-| ------------------------------ | -------------------------------------------- | :-----: | :---: | :-----: |
-| `BackHandler`                  | 为 Android 提供系统返回事件的支持            |    ✅    |   ❎   |    ❎    |
-| `PlatformWindowInsets`         | 为移动平台提供对 Window Insets 的支持        |    🚧    |   🚧   |    ❎    |
-| `PlatformNotificationManager`  | 为系统提供对发送通知、通知管理的支持         |    🔨    |   🔨   |    🔨    |
-| `PlatformSystemBarsController` | 为移动平台提供对系统栏相关功能控制的支持     |    ✅    |   ✅   |    ❎    |
-| `PlatformDisplayController`    | 为移动平台提供对屏幕旋转、屏幕亮度控制的支持 |    🚧    |   🚧   |    ❎    |
-| `PlatformHwSensorController`   | 为移动平台提供对硬件传感器的支持 (例如振动)  |    🔨    |   🔨   |    ❎    |
-
-已经开发完成的功能将在下方对使用方法进行详细介绍。
-
-### 系统事件
-
-::: tip 本节内容
-
-[BackHandler → BackHandler](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.backpress/-back-handler)
-
-适用于系统返回事件的扩展。
-
-:::
-
-虽然 `androidx.activity:activity-compose` 提供了 `BackHandler`，但是它只能在 Android 中使用。
-
-`BetterAndroid` 提供了 `BackHandler` 的多平台分发支持，你可以直接在 `commonMain` 中使用它，但是它仅会在 Android 平台中生效。
-
-`BackHandler` 在 Android 中使用 [ui-component → 系统事件](../library/ui-component.md#系统事件) 中的 `BackPressedController` 实现，
-你可以参考 [ui-component → Activity](../library/ui-component.md#activity) 使用 `AppComponentActivty` 作为 Compose 的绘制对象以获得更好的体验。
-
-下面是一个使用示例，它与 `androidx.activity:activity-compose` 中提供的 `BackHandler` 用法完全相同。
-
-> 示例如下
-
-```kotlin
-// 创建启用状态
-var enabled by remember { mutableStateOf(true) }
-// 创建 BackHandler
-BackHandler(enabled) {
-    // 处理返回事件
-}
-```
-
-### 系统栏 (状态栏、导航栏、Home Indicator 等)
-
-::: tip 本节内容
-
-[PlatformSystemBarsController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/-platform-system-bars-controller)
-
-Android、iOS 的系统栏控制器。
-
-[NativeSystemBarsController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/-native-system-bars-controller)
-
-Android、iOS 对应的原生系统栏控制器。
-
-[PlatformSystemBarStyle](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/-platform-system-bar-style)
-
-系统栏的样式。
-
-[PlatformSystemBars](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/-platform-system-bars)
-
-系统栏的类型。
-
-[PlatformSystemBarBehavior](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/-platform-system-bar-behavior)
-
-系统栏的行为。
-
-[SystemBars → rememberSystemBarsController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/remember-system-bars-controller)
-
-[SystemBars → nativeController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/native-controller)
-
-适用于系统栏的扩展。
-
-> iOS 平台特殊组件
-
-[SystemBarsController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.component.systembar/-system-bars-controller)
-
-系统栏控制器。
-
-[SystemBarStyle](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.component.systembar.style/-system-bar-style)
-
-系统栏的样式。
-
-[SystemBars](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.component.systembar.type/-system-bars)
-
-系统栏的类型。
-
-[SystemBarBehavior](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.component.systembar.type/-system-bar-behavior)
-
-系统栏的行为。
-
-[AppComponentUIViewController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.component.uiviewcontroller/-app-component-u-i-view-controller)
-
-实现了系统栏控制器的 `UIViewController`。
-
-[UIViewController → AppComponentUIViewController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.uiviewcontroller/-app-component-u-i-view-controller)
-
-适用于创建 Compose 绘制入口的 `UIViewController` 扩展。
-
-:::
-
-在 Android、iOS 中，你都需要对系统提供的状态栏、导航栏 (Home Indicator) 进行控制和调整以便给用户带来更好的体验。
-
-为此 `BetterAndroid` 为你提供了 `PlatformSystemBarsController`，它能够通过通用 API 来轻松实现对每个平台系统栏的控制。
-
-`PlatformSystemBarsController` 的工作原理是通过 `NativeSystemBarsController` 根据平台的不同而分发到对应的原生控制器。
-
-在首次使用时，你需要对 `PlatformSystemBarsController` 进行平台特殊化配置。
-
-**Android 平台**
-
-无论是自动还是手动配置，你都需要先在对应的 Android 项目中导入 [ui-component](../library/ui-component.md) 模块。
-
-**1. 自动配置**
-
-请参考 [ui-component → Activity](../library/ui-component.md#activity) 使用 `AppComponentActivty` 作为 Compose 的绘制对象即可。
-
-**2. 手动配置**
-
-你需要使用 `ComponentActivity` 作为你的 `Activity`，并对其实现 `ISystemBarsController` 接口。
-
-> 示例如下
-
-```kotlin
-class MainActivity : ComponentActivity(), ISystemBarsController {
-
-    override val systemBars by lazy { SystemBarsController.from(window) }
-}
-```
-
-上述步骤完成后，你可以参考 [ui-component → 系统栏 (状态栏、导航栏等)](../library/ui-component.md#系统栏-状态栏、导航栏等) 中的初始化方式手动对其进行初始化。
-
-`PlatformSystemBarsController` 将会自动识别使用了 `ISystemBarsController` 接口的 `Activity`。
-
-**3. 不进行配置**
-
-你可以不进行任何配置直接使用 `PlatformSystemBarsController`，它会在被调用时等待 Composition 结束后为当前 `Activity` 创建并初始化新的 `SystemBarsController`。
-
-::: warning
-
-这种行为是实验性的且不可控，它可能会影响 Compose 的生命周期，我们不建议你使用这种方式。
-
-:::
-
-**iOS 平台**
-
-在 iOS 项目中，你必须手动对 Compose 的绘制入口进行配置。
-
-首先，请在 `iosMain` 中的 `App.ios.kt` 文件中使用以下方式创建一个 `AppComponentUIViewController`。
-
-> 示例如下
-
-```kotlin
-fun createUIViewController() = AppComponentUIViewController {
-    // 你的 Compose 绘制入口
-}
-```
-
-然后，请使用 UIKit 创建 iOS 项目并对 `AppDelegate.swift` 文件进行以下配置。
-
-> 示例如下
-
-```swift
-import UIKit
-import shared // 这里为你的 Kotlin Multiplatform 共享模块名称
-
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
-
-    var window: UIWindow?
-
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions:
-        [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // 创建一个新的 UIWindow
-        window = UIWindow(frame: UIScreen.main.bounds)
-        // 设置根视图的控制器
-        window?.rootViewController = App_iosKt.createUIViewController()
-        // 使其可见
-        window?.makeKeyAndVisible()
-        return true
-    }
-}
-```
-
-::: warning
-
-不要使用 `UIViewControllerRepresentable` 为 Swift UI 创建 `UIViewController`，这会导致系统栏控制器相关功能失效，
-因为 Swift UI 会接管整个视图的状态，此时，你只能在 Swift UI 中控制系统栏。
-
-:::
-
-::: tip
-
-如果你觉得上述配置过程过于繁琐，你可以参考 [快速开始 → 项目模版](../guide/quick-start.md#项目模版) 来创建项目。
-
-:::
-
-上述配置完成后，要在 Compose 中使用 `PlatformSystemBarsController`，你可以非常方便地使用以下方式来创建、获取它。
-
-> 示例如下
-
-```kotlin
-// 通过状态管理获取 PlatformSystemBarsController
-val systemBars = rememberSystemBarsController()
-```
-
-::: warning
-
-在使用 `rememberSystemBarsController` 时，如果原生的 `SystemBarsController` 未被初始化，它将会自动调用 `init` 进行初始化，
-为了避免界面效果出现问题，你应该确保在平台特殊化配置阶段就已经完成了初始化操作，否则你应该确保 `rememberSystemBarsController` 在所有内容开始绘制前进行调用。
-
-:::
-
-下面是 `PlatformSystemBarsController` 的详细用法介绍。
-
-这里的大部分用法将与 [ui-component → 系统栏 (状态栏、导航栏等)](../library/ui-component.md#系统栏-状态栏、导航栏等) 中保持一致。
-
-设置系统栏的行为。
-
-这决定了显示或隐藏系统栏时由系统控制的行为。
-
-> 示例如下
-
-```kotlin
-systemBars.behavior = PlatformSystemBarBehavior.Immersive
-```
-
-以下是 `PlatformSystemBarBehavior` 中提供的全部行为，标有 `*` 的为默认行为。
-
-| 行为         |  平台   | 描述                                                                         |
-| ------------ | :-----: | ---------------------------------------------------------------------------- |
-| `Default`    |  全部   | 由系统控制的默认行为                                                         |
-| *`Immersive` | Android | 在全屏时可由手势滑动弹出并显示为半透明的系统栏，并在一段时间后继续隐藏       |
-|              |   iOS   | 当状态栏隐藏时，可以通过系统手势暂时显示系统栏，但一段时间后系统栏会继续隐藏 |
-
-显示、隐藏系统栏。
-
-> 示例如下
-
-```kotlin
-// 进入沉浸模式 (全屏模式)
-// 同时隐藏状态栏和导航栏、Home Indicator
-systemBars.hide(PlatformSystemBars.All)
-// 单独控制状态栏和导航栏
-systemBars.hide(PlatformSystemBars.StatusBars)
-systemBars.hide(PlatformSystemBars.NavigationBars)
-// 退出沉浸模式 (全屏模式)
-// 同时显示状态栏和导航栏、Home Indicator
-systemBars.show(PlatformSystemBars.All)
-// 单独控制状态栏和导航栏、Home Indicator
-systemBars.show(PlatformSystemBars.StatusBars)
-systemBars.show(PlatformSystemBars.NavigationBars)
-```
-
-设置系统栏的样式。
-
-你可以自定义状态栏、导航栏、Home Indicator 的外观。
-
-::: warning
-
-在 Android 6.0 以下系统中，状态栏的内容不支持反色，如果你设置了亮色则会自动处理为半透明遮罩，但是对于 MIUI、Flyme 自行添加了反色功能的系统将使用其私有方案实现反色效果。
-
-在 Android 8 以下系统中，导航栏的内容不支持反色，处理方式同上。
-
-在 iOS 中，Home Indicator 不支持设置 `darkContent`，它的颜色是由系统控制的，但是你可以为其设置背景颜色。
-
-:::
-
-> 示例如下
-
-```kotlin
-// 设置状态栏的样式
-systemBars.statusBarStyle = PlatformSystemBarStyle(
-    // 设置背景颜色
-    color = Color.White,
-    // 设置内容颜色
-    darkContent = true
-)
-// 设置导航栏、Home Indicator 的样式
-systemBars.navigationBarStyle = PlatformSystemBarStyle(
-    // 设置背景颜色
-    color = Color.White,
-    // 设置内容颜色
-    darkContent = true
-)
-// 你可以一次性设置状态栏和导航栏、Home Indicator 的样式
-systemBars.setStyle(
-    statusBar = PlatformSystemBarStyle(
-        color = Color.White,
-        darkContent = true
-    ),
-    navigationBar = PlatformSystemBarStyle(
-        color = Color.White,
-        darkContent = true
-    )
-)
-// 你也可以同时设置状态栏和导航栏、Home Indicator 的样式
-systemBars.setStyle(
-    style = PlatformSystemBarStyle(
-        color = Color.White,
-        darkContent = true
-    )
-)
-```
-
-以下是 `PlatformSystemBarStyle` 中提供的预置样式，标有 `*` 的为默认样式。
-
-| 样式               | 描述                                                                         |
-| ------------------ | ---------------------------------------------------------------------------- |
-| `Auto`             | 系统深色模式下为纯黑背景 + 浅色内容颜色，浅色模式下为纯白背景 + 深色内容颜色 |
-| *`AutoTransparent` | 系统深色模式下为浅色内容颜色，浅色模式下为深色内容颜色，背景透明             |
-| `Light`            | 纯白背景 + 深色内容颜色                                                      |
-| `LightScrim`       | 半透明纯白背景 + 深色内容颜色                                                |
-| `LightTransparent` | 透明背景 + 深色内容颜色                                                      |
-| `Dark`             | 纯黑背景 + 浅色内容颜色                                                      |
-| `DarkScrim`        | 半透明纯黑背景 + 浅色内容颜色                                                |
-| `DarkTransparent`  | 透明背景 + 浅色内容颜色                                                      |
-
-获取原生控制器。
-
-你可以通过以下方式在对应的平台中获取原生控制器，在 `commonMain` 或不支持的平台中使用将始终返回 `null`。
-
-> 示例如下
-
-```kotlin
-// 获取原生控制器
-val nativeController = systemBars.nativeController
-```
-
-::: tip
-
-`BetterAndroid` 同样为 iOS 提供了一个原生的 `SystemBarsController`，
-它的用法与 [ui-component → 系统栏 (状态栏、导航栏等)](../library/ui-component.md#系统栏-状态栏、导航栏等) 除了初始化功能外基本保持一致，通常情况下你应该不需要直接使用它，这里也不再进行详细的介绍。
 
 :::

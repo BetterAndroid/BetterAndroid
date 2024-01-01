@@ -106,23 +106,8 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
 /**
  * Creates and remember a [PlatformSystemBarsController].
  *
- * Platform requirements:
- *
- * > Android
- *
- * You can use **AppComponentActivity** or implement **ISystemBarsController** of your Activity for better,
- * but you must use an **ComponentActivity** for basic.
- *
- * Requires library: `ui-component`, visit [here](https://github.com/BetterAndroid/BetterAndroid).
- *
- * > iOS
- *
- * You need to use **AppComponentUIViewController**, see the **AppComponentUIViewController**
- * function for more help.
- *
- * > Others
- *
- * No-op.
+ * Please visit the [compose-multiplatform](https://betterandroid.github.io/BetterAndroid/en/library/compose-multiplatform#system-bars-status-bars-navigation-bars-home-indicator-etc)
+ * documentation for usage.
  * @return [PlatformSystemBarsController]
  */
 @Composable

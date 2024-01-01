@@ -41,18 +41,8 @@ import androidx.compose.runtime.Composable
  *
  * It is even more impossible to have a "back press" on a desktop platform.
  *
- * Platform requirements:
- *
- * > Android
- *
- * You can use **AppComponentActivity** or implement **IBackPressedController** of your Activity for better,
- * but you must use an **ComponentActivity** for basic.
- *
- * Requires library: `ui-component`, visit [here](https://github.com/BetterAndroid/BetterAndroid).
- *
- * > Others
- *
- * No-op.
+ * Please visit the [compose-multiplatform](https://betterandroid.github.io/BetterAndroid/en/library/compose-multiplatform#system-event)
+ * documentation for usage.
  * @param enabled if this BackHandler should be enabled, default true.
  * @param onBack the action invoked by pressing the system back.
  */

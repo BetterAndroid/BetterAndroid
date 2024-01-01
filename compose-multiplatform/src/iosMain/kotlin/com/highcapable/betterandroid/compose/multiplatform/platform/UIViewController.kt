@@ -25,49 +25,19 @@ package com.highcapable.betterandroid.compose.multiplatform.platform
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.window.ComposeUIViewController
+import com.highcapable.betterandroid.compose.multiplatform.platform.systembar.SystemBarsController
 import com.highcapable.betterandroid.compose.multiplatform.platform.uiviewcontroller.AppComponentUIViewController
 
 /**
  * Create a new [AppComponentUIViewController] for composables.
  *
- * - Note: Don't use an UIViewControllerRepresentable to create an UIViewController for Swift UI,
- *   that will cause the system bars controller related functions to become invalid,
+ * - Note: Don't use an **UIViewControllerRepresentable** to create an **UIViewController** for Swift UI,
+ *   that will cause the [SystemBarsController] related functions to become invalid,
  *   because Swift UI will take over the state of the entire view, at this time,
  *   you can only control system bars in Swift UI.
  *
- * You can use the AppDelegate to create a standard project that you want to create an **Compose UI Only** project.
- *
- * Usage (In Kotlin file "App.ios.kt"):
- *
- * ```kotlin
- * fun createUIViewController() = AppComponentUIViewController {
- *     // Your composable content here.
- * }
- * ```
- *
- * Usage (In the iOS App with Swift file "AppDelegate.swift"):
- *
- * ```swift
- * import UIKit
- * import shared // Here is your shared module name.
- *
- * @UIApplicationMain
- * class AppDelegate: UIResponder, UIApplicationDelegate {
- *
- *     var window: UIWindow?
- *
- *     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions:
- *         [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
- *         // Create a new UI window.
- *         window = UIWindow(frame: UIScreen.main.bounds)
- *         // Set the root view controller.
- *         window?.rootViewController = App_iosKt.createUIViewController()
- *         // Make the window visible.
- *         window?.makeKeyAndVisible()
- *         return true
- *     }
- * }
- * ```
+ * Please visit the [compose-multiplatform](https://betterandroid.github.io/BetterAndroid/en/library/compose-multiplatform#initial-configuration)
+ * documentation for usage.
  * @param content the content.
  * @return [AppComponentUIViewController]
  */

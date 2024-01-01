@@ -15,7 +15,8 @@ const navigationLinks = {
         '/library/ui-extension',
         '/library/system-extension',
         '/library/permission-extension',
-        '/library/compose-extension'
+        '/library/compose-extension',
+        '/library/compose-multiplatform'
     ],
     config: [
         '/config/basic',

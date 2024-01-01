@@ -1,0 +1,515 @@
+# compose-multiplatform
+
+![GitHub release](https://img.shields.io/github/v/release/BetterAndroid/BetterAndroid?display_name=release&logo=github&color=green&filter=compose-multiplatform-*)
+<span style="margin-left: 5px"/>
+![Android Min SDK](https://img.shields.io/badge/Min%20SDK-21-orange?logo=android)
+
+这是针对 Jetpack Compose 多平台功能的一个依赖。
+
+目前支持的平台：Android、iOS、Desktop (JVM)。
+
+::: warning
+
+此模块尚在开发与测试，在 `1.0.0` 版本正式发布前 API 可能会发生变化，欢迎前往 [GitHub Issues](repo://issues) 向我们提出建议。
+
+:::
+
+## 配置依赖
+
+你可以使用如下方式将此模块添加到你的项目中。
+
+这是一个 Kotlin Multiplatform 依赖，你需要 `org.jetbrains.kotlin.multiplatform` 插件来应用相关依赖。
+
+### SweetDependency (推荐)
+
+在你的项目 `SweetDependency` 配置文件中添加依赖。
+
+```yaml
+libraries:
+  com.highcapable.betterandroid:
+    # commonMain
+    compose-multiplatform:
+      version: +
+    # androidMain
+    compose-multiplatform-android:
+      version-ref: <this>::compose-multiplatform
+    # iosArm64Main
+    compose-multiplatform-iosarm64:
+      version-ref: <this>::compose-multiplatform
+    # iosX64Main
+    compose-multiplatform-iosx64:
+      version-ref: <this>::compose-multiplatform
+    # iosSimulatorArm64Main
+    compose-multiplatform-iossimulatorarm64:
+      version-ref: <this>::compose-multiplatform
+    # desktopMain
+    compose-multiplatform-desktop:
+      version-ref: <this>::compose-multiplatform
+```
+
+在你的项目 `build.gradle.kts` 中配置依赖。
+
+如果你在普通的项目中使用多平台依赖，你只需要按需部署对应平台后缀的依赖即可。
+
+```kotlin
+implementation(com.highcapable.betterandroid.compose.multiplatform.android)
+implementation(com.highcapable.betterandroid.compose.multiplatform.iosarm64)
+implementation(com.highcapable.betterandroid.compose.multiplatform.iosx64)
+implementation(com.highcapable.betterandroid.compose.multiplatform.iossimulatorarm64)
+implementation(com.highcapable.betterandroid.compose.multiplatform.desktop)
+```
+
+如果你在多平台项目中使用多平台依赖，你需要在 `commonMain` 中添加 `compose-multiplatform` 依赖。
+
+```kotlin
+kotlin {
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(com.highcapable.betterandroid.compose.extension)
+            }
+        }
+    }
+}
+```
+
+### 传统方式
+
+在你的项目 `build.gradle.kts` 中配置依赖。
+
+如果你在普通的项目中使用多平台依赖，你只需要按需部署对应平台后缀的依赖即可。
+
+```kotlin
+implementation("com.highcapable.betterandroid:compose-multiplatform-android:<version>")
+implementation("com.highcapable.betterandroid:compose-multiplatform-iosarm64:<version>")
+implementation("com.highcapable.betterandroid:compose-multiplatform-iosx64:<version>")
+implementation("com.highcapable.betterandroid:compose-multiplatform-iossimulatorarm64:<version>")
+implementation("com.highcapable.betterandroid:compose-multiplatform-desktop:<version>")
+```
+
+如果你在多平台项目中使用多平台依赖，你需要在 `commonMain` 中添加 `compose-multiplatform` 依赖。
+
+```kotlin
+kotlin {
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation("com.highcapable.betterandroid:compose-multiplatform:<version>")
+            }
+        }
+    }
+}
+```
+
+请将 `<version>` 修改为此文档顶部显示的版本。
+
+## 功能介绍
+
+你可以 [点击这里](kdoc://compose-multiplatform) 查看 KDoc。
+
+为了能让适应了原生 Android 开发的开发者们能够更快地对各种平台进行适配，借助于 Kotlin Multiplatform 与 Jetpack Compose 的跨平台特性，`BetterAndroid` 无缝地提供了多平台支持。
+
+以下是目前正在开发、开发完成的功能。
+
+我们欢迎更多的开发者参与到开发中来，如果可能，欢迎提交 PR 为此项目贡献或通过 [GitHub Issues](repo://issues) 向我们提出建议。
+
+标识为 “✅” 的功能表示可用，“❎” 表示平台不支持，“🚧” 表示准备或正在开发中 (WIP)，“🔨” 表示计划开发。
+
+| 功能名称                       | 描述                                         | Android |  iOS  | Desktop |
+| ------------------------------ | -------------------------------------------- | :-----: | :---: | :-----: |
+| `BackHandler`                  | 为 Android 提供系统返回事件的支持            |    ✅    |   ❎   |    ❎    |
+| `PlatformWindowInsets`         | 为移动平台提供对 Window Insets 的支持        |    🚧    |   🚧   |    ❎    |
+| `PlatformNotificationManager`  | 为系统提供对发送通知、通知管理的支持         |    🔨    |   🔨   |    🔨    |
+| `PlatformSystemBarsController` | 为移动平台提供对系统栏相关功能控制的支持     |    ✅    |   ✅   |    ❎    |
+| `PlatformDisplayController`    | 为移动平台提供对屏幕旋转、屏幕亮度控制的支持 |    🚧    |   🚧   |    ❎    |
+| `PlatformHwSensorController`   | 为移动平台提供对硬件传感器的支持 (例如振动)  |    🔨    |   🔨   |    ❎    |
+
+已经开发完成的功能将在下方对使用方法进行详细介绍。
+
+### 初始化配置
+
+::: tip 本节内容
+
+> iosMain
+
+[AppComponentUIViewController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.component.uiviewcontroller/-app-component-u-i-view-controller)
+
+基础组件 `UIViewController`。
+
+[UIViewController → AppComponentUIViewController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.uiviewcontroller/-app-component-u-i-view-controller)
+
+适用于创建 Compose 起始点的 `UIViewController` 扩展。
+
+:::
+
+在开始之前，我们建议你按照以下方式对项目结构进行配置。
+
+::: tip
+
+我们建议并参考 [快速开始 → 项目模版](../guide/quick-start.md#项目模版) 来创建项目以免去手动配置。
+
+你也可以使用 [Kotlin Multiplatform Wizard](https://kmp.jetbrains.com) 以自动帮你完成 iOS 项目部分的 Gradle 脚本编译配置。
+
+:::
+
+#### 通用部分
+
+请在 `commonMain` 中创建一个 `App.kt`，它将作为 Compose 的起始点。
+
+> 示例如下
+
+```kotlin
+@Composable
+fun App() {
+    // 你的 Compose 内容
+}
+```
+
+#### Android 平台
+
+首先，请在 `androidMain` 中的 `App.android.kt` 创建共享代码的入口。
+
+> 示例如下
+
+```kotlin
+@Composable
+fun MainView() = App()
+```
+
+然后，请在对应的 Android 项目中导入 [ui-component](../library/ui-component.md) 模块。
+
+接下来，请参考 [ui-component → Activity](../library/ui-component.md#activity) 使用 `AppComponentActivty` 作为 Compose 的起始点。
+
+> 示例如下
+
+```kotlin
+class MainActivity : AppComponentActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MainView()
+        }
+    }
+}
+```
+
+#### iOS 平台
+
+::: warning
+
+你需要有一台能够运行 macOS 并正确配置 Xcode 环境的电脑或虚拟机。
+
+:::
+
+首先，你需要手动创建一个 iOS App 的 Xcode 项目，语言请选择 Swift，并在 `Interface` 一栏选择 `Storyboard`。
+
+然后，请在 `iosMain` 中的 `App.ios.kt` 文件中使用以下方式创建一个 `AppComponentUIViewController`。
+
+> 示例如下
+
+```kotlin
+fun createUIViewController() = AppComponentUIViewController {
+    App()
+}
+```
+
+接下来，请在 iOS 项目中对 `AppDelegate.swift` 文件进行以下配置。
+
+如果你的 iOS 项目是使用 Swift UI 创建的，请手动创建这个文件并移除使用 Swift UI 创建的 `App.swift` 相关文件。
+
+> 示例如下
+
+```swift
+import UIKit
+import shared // 这里为你的 Kotlin Multiplatform 共享模块名称
+
+@UIApplicationMain
+class AppDelegate: UIResponder, UIApplicationDelegate {
+
+    var window: UIWindow?
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions:
+        [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        // 创建一个新的 UIWindow
+        window = UIWindow(frame: UIScreen.main.bounds)
+        // 设置根视图的控制器
+        // App_iosKt 是 shared.h 中自动生成的 Kotlin 代码
+        window?.rootViewController = App_iosKt.createUIViewController()
+        // 使其可见
+        window?.makeKeyAndVisible()
+        return true
+    }
+}
+```
+
+::: warning
+
+不要使用 `UIViewControllerRepresentable` 为 Swift UI 创建 `UIViewController`，虽然这是目前 Kotlin Multiplatform Wizard 自动为你生成的代码，
+但是这会导致 [系统栏 (状态栏、导航栏、Home Indicator 等)](#系统栏-状态栏、导航栏、home-indicator-等) 相关功能失效，
+因为 Swift UI 会接管整个视图的状态，此时，你只能在 Swift UI 中控制系统栏。
+
+:::
+
+#### Desktop 平台
+
+首先，请在 `desktopMain` 中的 `App.desktop.kt` 创建共享代码的入口。
+
+> 示例如下
+
+```kotlin
+@Composable
+fun MainView() = App()
+```
+
+然后，请在对应的 Java 项目 `Main.kt` 中使用以下方式创建 Compose 的起始点。
+
+> 示例如下
+
+```kotlin
+fun main() = application {
+    Window(
+        onCloseRequest = ::exitApplication,
+        // 设置窗口标题
+        title = "My App",
+        // 设置窗口大小
+        state = rememberWindowState(width = 300.dp, height = 500.dp)
+    ) { 
+        MainView()
+    }
+}
+```
+
+### 系统事件
+
+::: tip 本节内容
+
+> commonMain
+
+[BackHandler → BackHandler](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.backpress/-back-handler)
+
+适用于系统返回事件的扩展。
+
+:::
+
+虽然 `androidx.activity:activity-compose` 提供了 `BackHandler`，但是它只能在 Android 中使用。
+
+`BetterAndroid` 提供了 `BackHandler` 的多平台分发支持，你可以直接在 `commonMain` 中使用它，但是它仅会在 Android 平台中生效。
+
+`BackHandler` 在 Android 中使用 [ui-component → 系统事件](../library/ui-component.md#系统事件) 中的 `BackPressedController` 实现，
+你可以参考 [ui-component → Activity](../library/ui-component.md#activity) 使用 `AppComponentActivty` 或为你的 `Activity` 手动实现 `IBackPressedController` 接口。
+
+下面是一个使用示例，它与 `androidx.activity:activity-compose` 中提供的 `BackHandler` 用法完全相同。
+
+> 示例如下
+
+```kotlin
+// 创建启用状态
+var enabled by remember { mutableStateOf(true) }
+// 创建 BackHandler
+BackHandler(enabled) {
+    // 处理返回事件
+}
+```
+
+### 系统栏 (状态栏、导航栏、Home Indicator 等)
+
+::: tip 本节内容
+
+> commonMain
+
+[PlatformSystemBarsController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/-platform-system-bars-controller)
+
+Android、iOS 的系统栏控制器。
+
+[NativeSystemBarsController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/-native-system-bars-controller)
+
+Android、iOS 对应的原生系统栏控制器。
+
+[PlatformSystemBarStyle](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/-platform-system-bar-style)
+
+系统栏的样式。
+
+[PlatformSystemBars](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/-platform-system-bars)
+
+系统栏的类型。
+
+[PlatformSystemBarBehavior](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/-platform-system-bar-behavior)
+
+系统栏的行为。
+
+[SystemBars → rememberSystemBarsController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/remember-system-bars-controller)
+
+[SystemBars → nativeController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/native-controller)
+
+适用于系统栏的扩展。
+
+> iosMain
+
+[SystemBarsController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.component.systembar/-system-bars-controller)
+
+系统栏控制器。
+
+[SystemBarStyle](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.component.systembar.style/-system-bar-style)
+
+系统栏的样式。
+
+[SystemBars](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.component.systembar.type/-system-bars)
+
+系统栏的类型。
+
+[SystemBarBehavior](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.component.systembar.type/-system-bar-behavior)
+
+系统栏的行为。
+
+:::
+
+在 Android、iOS 中，你都需要对系统提供的状态栏、导航栏 (Home Indicator) 进行控制和调整以便给用户带来更好的体验。
+
+为此 `BetterAndroid` 为你提供了 `PlatformSystemBarsController`，它能够通过通用 API 来轻松实现对每个平台系统栏的控制。
+
+`PlatformSystemBarsController` 的工作原理是通过 `NativeSystemBarsController` 根据平台的不同而分发到对应的原生控制器。
+
+在开始使用前，确保你已经阅读了 [初始化配置](#初始化配置) 并对当前项目完成了相关配置。
+
+`PlatformSystemBarsController` 在 Android 中使用 [ui-component → 系统栏 (状态栏、导航栏等)](../library/ui-component.md#系统栏-状态栏、导航栏等) 中的 `SystemBarsController` 实现，
+你可以参考 [ui-component → Activity](../library/ui-component.md#activity) 使用 `AppComponentActivty` 或为你的 `Activity` 手动实现 `ISystemBarsController` 接口。
+
+你可以通过以下方式来在 Compose 中全局得到 `PlatformSystemBarsController` 对象。
+
+> 示例如下
+
+```kotlin
+// 通过状态管理获取 PlatformSystemBarsController
+val systemBars = rememberSystemBarsController()
+```
+
+::: warning
+
+在使用 `rememberSystemBarsController` 时，如果原生的 `SystemBarsController` 未被初始化，它将会自动调用 `init` 进行初始化，
+为了避免界面效果出现问题，你应该确保在每个平台的配置阶段就已经完成了初始化操作，否则你应该确保 `rememberSystemBarsController` 在所有内容开始绘制前进行调用。
+
+:::
+
+下面是 `PlatformSystemBarsController` 的详细用法介绍。
+
+这里的大部分用法将与 [ui-component → 系统栏 (状态栏、导航栏等)](../library/ui-component.md#系统栏-状态栏、导航栏等) 中保持一致。
+
+设置系统栏的行为。
+
+这决定了显示或隐藏系统栏时由系统控制的行为。
+
+> 示例如下
+
+```kotlin
+systemBars.behavior = PlatformSystemBarBehavior.Immersive
+```
+
+以下是 `PlatformSystemBarBehavior` 中提供的全部行为，标有 `*` 的为默认行为。
+
+| 行为         |  平台   | 描述                                                                         |
+| ------------ | :-----: | ---------------------------------------------------------------------------- |
+| `Default`    |  全部   | 由系统控制的默认行为                                                         |
+| *`Immersive` | Android | 在全屏时可由手势滑动弹出并显示为半透明的系统栏，并在一段时间后继续隐藏       |
+|              |   iOS   | 当状态栏隐藏时，可以通过系统手势暂时显示系统栏，但一段时间后系统栏会继续隐藏 |
+
+显示、隐藏系统栏。
+
+> 示例如下
+
+```kotlin
+// 进入沉浸模式 (全屏模式)
+// 同时隐藏状态栏和导航栏、Home Indicator
+systemBars.hide(PlatformSystemBars.All)
+// 单独控制状态栏和导航栏
+systemBars.hide(PlatformSystemBars.StatusBars)
+systemBars.hide(PlatformSystemBars.NavigationBars)
+// 退出沉浸模式 (全屏模式)
+// 同时显示状态栏和导航栏、Home Indicator
+systemBars.show(PlatformSystemBars.All)
+// 单独控制状态栏和导航栏、Home Indicator
+systemBars.show(PlatformSystemBars.StatusBars)
+systemBars.show(PlatformSystemBars.NavigationBars)
+```
+
+设置系统栏的样式。
+
+你可以自定义状态栏、导航栏、Home Indicator 的外观。
+
+::: warning
+
+在 Android 6.0 以下系统中，状态栏的内容不支持反色，如果你设置了亮色则会自动处理为半透明遮罩，但是对于 MIUI、Flyme 自行添加了反色功能的系统将使用其私有方案实现反色效果。
+
+在 Android 8 以下系统中，导航栏的内容不支持反色，处理方式同上。
+
+在 iOS 中，Home Indicator 不支持设置 `darkContent`，它的颜色是由系统控制的，但是你可以为其设置背景颜色。
+
+:::
+
+> 示例如下
+
+```kotlin
+// 设置状态栏的样式
+systemBars.statusBarStyle = PlatformSystemBarStyle(
+    // 设置背景颜色
+    color = Color.White,
+    // 设置内容颜色
+    darkContent = true
+)
+// 设置导航栏、Home Indicator 的样式
+systemBars.navigationBarStyle = PlatformSystemBarStyle(
+    // 设置背景颜色
+    color = Color.White,
+    // 设置内容颜色
+    darkContent = true
+)
+// 你可以一次性设置状态栏和导航栏、Home Indicator 的样式
+systemBars.setStyle(
+    statusBar = PlatformSystemBarStyle(
+        color = Color.White,
+        darkContent = true
+    ),
+    navigationBar = PlatformSystemBarStyle(
+        color = Color.White,
+        darkContent = true
+    )
+)
+// 你也可以同时设置状态栏和导航栏、Home Indicator 的样式
+systemBars.setStyle(
+    style = PlatformSystemBarStyle(
+        color = Color.White,
+        darkContent = true
+    )
+)
+```
+
+以下是 `PlatformSystemBarStyle` 中提供的预置样式，标有 `*` 的为默认样式。
+
+| 样式               | 描述                                                                         |
+| ------------------ | ---------------------------------------------------------------------------- |
+| `Auto`             | 系统深色模式下为纯黑背景 + 浅色内容颜色，浅色模式下为纯白背景 + 深色内容颜色 |
+| *`AutoTransparent` | 系统深色模式下为浅色内容颜色，浅色模式下为深色内容颜色，背景透明             |
+| `Light`            | 纯白背景 + 深色内容颜色                                                      |
+| `LightScrim`       | 半透明纯白背景 + 深色内容颜色                                                |
+| `LightTransparent` | 透明背景 + 深色内容颜色                                                      |
+| `Dark`             | 纯黑背景 + 浅色内容颜色                                                      |
+| `DarkScrim`        | 半透明纯黑背景 + 浅色内容颜色                                                |
+| `DarkTransparent`  | 透明背景 + 浅色内容颜色                                                      |
+
+获取原生控制器。
+
+你可以通过以下方式在对应的平台中获取原生控制器，在 `commonMain` 或不支持的平台中使用将始终返回 `null`。
+
+> 示例如下
+
+```kotlin
+// 获取原生控制器
+val nativeController = systemBars.nativeController
+```
+
+::: tip
+
+`BetterAndroid` 同样为 iOS 提供了一个原生的 `SystemBarsController`，
+它的用法与 [ui-component → 系统栏 (状态栏、导航栏等)](../library/ui-component.md#系统栏-状态栏、导航栏等) 除了初始化功能外基本保持一致，通常情况下你应该不需要直接使用它，这里也不再进行详细的介绍。
+
+:::

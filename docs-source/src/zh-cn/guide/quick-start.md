@@ -77,7 +77,8 @@ android {
 - [system-extension](../library/system-extension.md)
 - [permission-extension](../library/permission-extension.md)
 - [compose-extension](../library/compose-extension.md)
-  
+- [compose-multiplatform](../library/compose-multiplatform.md)
+
 ## 项目模版
 
 你可以使用我们提供的项目模版来快速创建一个集成了 `BetterAndroid` 依赖的项目。

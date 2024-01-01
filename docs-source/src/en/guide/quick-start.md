@@ -81,6 +81,7 @@ You can click on the corresponding modules below to view detailed function intro
 - [system-extension](../library/system-extension.md)
 - [permission-extension](../library/permission-extension.md)
 - [compose-extension](../library/compose-extension.md)
+- [compose-multiplatform](../library/compose-multiplatform.md)
 
 ## Project Template
 
