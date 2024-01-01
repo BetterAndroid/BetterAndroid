@@ -7,7 +7,7 @@ plugins {
 }
 
 group = property.project.groupName
-version = property.project.compose.extension.version
+version = property.project.compose.multiplatform.version
 
 kotlin {
     androidTarget {
@@ -20,8 +20,14 @@ kotlin {
         iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = property.project.compose.extension.iosModuleName
+            baseName = property.project.compose.multiplatform.iosModuleName
             isStatic = true
+        }
+        iosTarget.compilations.getByName("main") {
+            cinterops {
+                //  Workaround to override uikit classes
+                val uikit by cinterops.creating
+            }
         }
     }
     jvmToolchain(17)
@@ -38,9 +44,16 @@ kotlin {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
+                implementation(projects.composeExtension)
             }
         }
-        val androidMain by getting
+        val androidMain by getting {
+            dependencies {
+                implementation(androidx.core.core.ktx)
+                implementation(androidx.activity.activity)
+                implementation(projects.uiComponent)
+            }
+        }
         val desktopMain by getting
         val iosX64Main by getting
         val iosArm64Main by getting
@@ -52,10 +65,15 @@ kotlin {
             iosSimulatorArm64Main.dependsOn(this)
         }
     }
+    @Suppress("OPT_IN_USAGE")
+    compilerOptions {
+        // Workaround for https://youtrack.jetbrains.com/issue/KT-61573
+        freeCompilerArgs = listOf("-Xexpect-actual-classes")
+    }
 }
 
 android {
-    namespace = property.project.compose.extension.namespace
+    namespace = property.project.compose.multiplatform.namespace
     compileSdk = property.project.android.compileSdk
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
