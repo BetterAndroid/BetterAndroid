@@ -34,7 +34,38 @@
 
 ## ui-extension
 
-### 1.0.1 | 2023.11.18 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.2 | 2024.01.02 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 移动了部分不规范分类的包名，如遇到报错，请重新对这些调用的方法进行 `import` 操作
+- 修改了针对 Java 调用的相关名称
+- `ViewFactory` 中新增可设置横向纵向的 `updatePadding` 方法
+- `ViewFactory` 中的 `inflate` 方法将自动使用 `Activity.getLayoutInflater`
+- 更名 `ColorsFactory` 为 `ColorFactory`
+- 更名 `ColorFactory` 中的 `toMixColor` 为 `mixColorOf`
+- `ColorFactory` 中的部分方法现在将不会再抛出异常
+- 新增 `GradientDrawableCompat`，你可以使用其创建 Android 10 以下版本的 `GradientDrawable`
+- `DrawableFactory` 中新增可设置横向纵向的 `updatePadding` 方法
+- 作废了 `DimensionFactory` 中的 `asDp`、`asPx` 及其用法因为它设计错误，现已对接到新用法 `toDp`、`toPx`
+- 新增 `DisplayDensity`，你可以方便地使用 `dp`、`px` 来转换单位
+- 作废了 `ResourcesFactory` 中的 `getDimensionPx`，请手动使用 `toPx` 进行计算
+- 作废了 `ResourcesFactory` 及 `ActivityFactory` 中的 `isSpecialWindowingMode`，请不要再使用
+- `ResourcesFactory` 中新增 `getFontCompat` 方法
+- 修复了 `FragmentFactory` 中的 `commt` 相关功能用法错误
+- 大量修改了 `FragmentFactory` 中的相关用法，现在请参考文档开始使用新用法
+- `BitmapFactory` 中新增 `compressBitmap` 方法
+- `ToastFactory` 中新增 `Window.toast` 方法
+- `ToastFactory` 中的 `toast` 方法新增 `allowBackgroud` 参数，你现在可以允许在非主线程中弹出 `Toast`
+- `WindowFactory` 中的部分方法现在将不会再抛出异常
+- `WindowFactory` 中新增可使用 `Float` 类型设置屏幕亮度的方法
+- `ViewFactory` 中使用 `WindowInsetsController` 来显示或隐藏输入法并更名方法为 `showIme`、`hideIme`
+- 作废了 `ViewLayoutParam` 类，现在请使用 `ViewLayoutParams` 方法代替
+- `ViewFactory` 中的 `performKeyPressed` 新增 `duration` 参数
+- `ViewFactory` 中新增可设置横向纵向的 `updateMargin` 方法
+- 对 `ActivityFactory` 中的方法进行了 `inline` 处理
+- `ActivityFactory` 中新增每个 `startActivityOrElse` 方法
+- `BimapFactory` 中的 `round` 方法新增支持设置每个方向的圆角半径大小
+
+### 1.0.1 | 2023.11.18 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 修复 ResourcesFactory 中 `getColor` 与 `getColorStateList` 方法返回值错误问题
 

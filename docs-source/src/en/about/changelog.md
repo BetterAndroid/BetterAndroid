@@ -45,7 +45,38 @@ Time zone of version release date: **UTC+8**
 
 ## ui-extension
 
-### 1.0.1 | 2023.11.18 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.2 | 2024.01.02 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Some package names that are not classified according to the standard have been moved, if you encounter an error, please re-import these calling methods
+- Modified related names for Java calls
+- Added `updatePadding` method in `ViewFactory` that can set horizontal and vertical directions
+- The `inflate` method in `ViewFactory` will automatically use `Activity.getLayoutInflater`
+- Renamed `ColorsFactory` to `ColorFactory`
+- Renamed `toMixColor` in `ColorFactory` to `mixColorOf`
+- Some methods in `ColorFactory` will now no longer throw exceptions
+- Added `GradientDrawableCompat`, you can use it to create `GradientDrawable` for versions below Android 10
+- Added `updatePadding` method in `DrawableFactory` that can set horizontal and vertical directions
+- `asDp`, `asPx` and its usage in `DimensionFactory` are obsolete because of its design error, and are now connected to the new usage `toDp`, `toPx`
+- Added `DisplayDensity`, you can easily use `dp`, `px` to convert units
+- Deprecated `getDimensionPx` in `ResourcesFactory`, please use `toPx` to calculate manually
+- Deprecated `isSpecialWindowingMode` in `ResourcesFactory` and `ActivityFactory`, please do not use it again
+- Added `getFontCompat` method in `ResourcesFactory`
+- Fix the usage error of `commt` related functions in `FragmentFactory`
+- A large number of related usages in `FragmentFactory` have been modified, now please refer to the documentation to start using the new usages
+- Added `compressBitmap` method in `BitmapFactory`
+- Added `Window.toast` method in `ToastFactory`
+- The `toast` method in `ToastFactory` has a new `allowBackgroud` parameter, you can now allow `Toast` to show in non-main threads
+- Some methods in `WindowFactory` will now no longer throw exceptions
+- A new method in `WindowFactory` can be used to set the screen brightness using the `Float` type
+- Use `WindowInsetsController` in `ViewFactory` to show or hide the input method and rename the methods to `showIme`, `hideIme`
+- Deprecated `ViewLayoutParam` class, please use the `ViewLayoutParams` method instead
+- Added `duration` parameter to `performKeyPressed` in `ViewFactory`
+- Added `updateMargin` method in `ViewFactory` that can set horizontal and vertical directions
+- Methods in `ActivityFactory` were `inline` processed
+- Added each `startActivityOrElse` method in `ActivityFactory`
+- The `round` method in `BimapFactory` now supports setting the corner radius in each direction
+
+### 1.0.1 | 2023.11.18 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Fix the problem of incorrect return value of `getColor` and `getColorStateList` methods in ResourcesFactory
 
