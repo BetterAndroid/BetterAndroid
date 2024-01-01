@@ -65,4 +65,12 @@ Not yet released.
 
 ## compose-extension
 
-Not yet released.
+### 1.0.0 | 2024.01.02 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- The first version is submitted to Maven
+
+## compose-multiplatform
+
+### 0.1.0 | 2024.01.02 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- The first version is submitted to Maven

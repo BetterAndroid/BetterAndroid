@@ -10,8 +10,6 @@
 
 ## ui-component
 
-<!-- SystemBarsController 已完全迁移到 Window Insets API -->
-
 ### 1.0.3 | 2023.12.03 &ensp;<Badge type="tip" text="最新" vertical="middle" />
 
 - `SystemBarsController` 的 `init` 方法新增 `defaultPaddings` 参数，可以配置初始化时是否自动添加对应的系统栏边距
@@ -56,4 +54,12 @@
 
 ## compose-extension
 
-暂未发布。
+### 1.0.0 | 2024.01.02 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 首个版本提交至 Maven
+
+## compose-multiplatform
+
+### 0.1.0 | 2024.01.02 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 首个版本提交至 Maven
