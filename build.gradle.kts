@@ -33,7 +33,7 @@ libraryProjects {
         }
         configure<MavenPublishBaseExtension> {
             if (name == Libraries.COMPOSE_EXTENSION || name == Libraries.COMPOSE_MULTIPLATFORM)
-                configure(KotlinMultiplatform(javadocJar = JavadocJar.None()))
+                configure(KotlinMultiplatform(javadocJar = JavadocJar.Empty()))
             else configure(AndroidSingleVariantLibrary(publishJavadocJar = false))
         }
     }
