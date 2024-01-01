@@ -135,11 +135,11 @@ The features that have been developed will be described in detail below.
 
 > iosMain
 
-[AppComponentUIViewController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.component.uiviewcontroller/-app-component-u-i-view-controller)
+[AppComponentUIViewController](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.platform.uiviewcontroller/-app-component-u-i-view-controller)
 
 Basic component `UIViewController`.
 
-[UIViewController → AppComponentUIViewController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.uiviewcontroller/-app-component-u-i-view-controller)
+[UIViewController → AppComponentUIViewController](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.platform/-app-component-u-i-view-controller)
 
 Extensions for `UIViewController` to creating a starting point for Compose.
 
@@ -290,7 +290,7 @@ fun main() = application {
 
 > commonMain
 
-[BackHandler → BackHandler](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.backpress/-back-handler)
+[BackHandler → BackHandler](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.backpress/-back-handler)
 
 Extensions for system back pressed event.
 
@@ -322,47 +322,47 @@ BackHandler(enabled) {
 
 > commonMain
 
-[PlatformSystemBarsController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/-platform-system-bars-controller)
+[PlatformSystemBarsController](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.systembar/-platform-system-bars-controller)
 
 System bars controller for Android and iOS.
 
-[NativeSystemBarsController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/-native-system-bars-controller)
+[NativeSystemBarsController](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.systembar/-native-system-bars-controller)
 
-The native system bars controller corresponding to Android and iOS.
+Native system bars controller corresponding to Android and iOS.
 
-[PlatformSystemBarStyle](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/-platform-system-bar-style)
+[PlatformSystemBarStyle](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.systembar/-platform-system-bar-style)
 
 System bars style.
 
-[PlatformSystemBars](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/-platform-system-bars)
+[PlatformSystemBars](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.systembar/-platform-system-bars)
 
 System bars type.
 
-[PlatformSystemBarBehavior](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/-platform-system-bar-behavior)
+[PlatformSystemBarBehavior](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.systembar/-platform-system-bar-behavior)
 
 System bars behavior.
 
-[SystemBars → rememberSystemBarsController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/remember-system-bars-controller)
+[SystemBars → rememberSystemBarsController](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.systembar/remember-system-bars-controller)
 
-[SystemBars → nativeController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/native-controller)
+[SystemBars → nativeController](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.systembar/native-controller)
 
 Extensions for system bars.
 
 > iosMain
 
-[SystemBarsController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.component.systembar/-system-bars-controller)
+[SystemBarsController](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.platform.systembar/-system-bars-controller)
 
 System bars controller.
 
-[SystemBarStyle](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.component.systembar.style/-system-bar-style)
+[SystemBarStyle](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.platform.systembar.style/-system-bar-style)
 
 System bars style.
 
-[SystemBars](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.component.systembar.type/-system-bars)
+[SystemBars](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.platform.systembar.type/-system-bars)
 
 System bars type.
 
-[SystemBarBehavior](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.component.systembar.type/-system-bar-behavior)
+[SystemBarBehavior](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.platform.systembar.type/-system-bar-behavior)
 
 System bars behavior.
 

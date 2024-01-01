@@ -132,11 +132,11 @@ kotlin {
 
 > iosMain
 
-[AppComponentUIViewController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.component.uiviewcontroller/-app-component-u-i-view-controller)
+[AppComponentUIViewController](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.platform.uiviewcontroller/-app-component-u-i-view-controller)
 
 基础组件 `UIViewController`。
 
-[UIViewController → AppComponentUIViewController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.uiviewcontroller/-app-component-u-i-view-controller)
+[UIViewController → AppComponentUIViewController](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.platform/-app-component-u-i-view-controller)
 
 适用于创建 Compose 起始点的 `UIViewController` 扩展。
 
@@ -286,7 +286,7 @@ fun main() = application {
 
 > commonMain
 
-[BackHandler → BackHandler](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.backpress/-back-handler)
+[BackHandler → BackHandler](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.backpress/-back-handler)
 
 适用于系统返回事件的扩展。
 
@@ -318,47 +318,47 @@ BackHandler(enabled) {
 
 > commonMain
 
-[PlatformSystemBarsController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/-platform-system-bars-controller)
+[PlatformSystemBarsController](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.systembar/-platform-system-bars-controller)
 
 Android、iOS 的系统栏控制器。
 
-[NativeSystemBarsController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/-native-system-bars-controller)
+[NativeSystemBarsController](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.systembar/-native-system-bars-controller)
 
 Android、iOS 对应的原生系统栏控制器。
 
-[PlatformSystemBarStyle](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/-platform-system-bar-style)
+[PlatformSystemBarStyle](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.systembar/-platform-system-bar-style)
 
 系统栏的样式。
 
-[PlatformSystemBars](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/-platform-system-bars)
+[PlatformSystemBars](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.systembar/-platform-system-bars)
 
 系统栏的类型。
 
-[PlatformSystemBarBehavior](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/-platform-system-bar-behavior)
+[PlatformSystemBarBehavior](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.systembar/-platform-system-bar-behavior)
 
 系统栏的行为。
 
-[SystemBars → rememberSystemBarsController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/remember-system-bars-controller)
+[SystemBars → rememberSystemBarsController](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.systembar/remember-system-bars-controller)
 
-[SystemBars → nativeController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.systembar/native-controller)
+[SystemBars → nativeController](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.systembar/native-controller)
 
 适用于系统栏的扩展。
 
 > iosMain
 
-[SystemBarsController](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.component.systembar/-system-bars-controller)
+[SystemBarsController](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.platform.systembar/-system-bars-controller)
 
 系统栏控制器。
 
-[SystemBarStyle](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.component.systembar.style/-system-bar-style)
+[SystemBarStyle](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.platform.systembar.style/-system-bar-style)
 
 系统栏的样式。
 
-[SystemBars](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.component.systembar.type/-system-bars)
+[SystemBars](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.platform.systembar.type/-system-bars)
 
 系统栏的类型。
 
-[SystemBarBehavior](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.platform.component.systembar.type/-system-bar-behavior)
+[SystemBarBehavior](kdoc://compose-multiplatform/compose-multiplatform/com.highcapable.betterandroid.compose.multiplatform.platform.systembar.type/-system-bar-behavior)
 
 系统栏的行为。
 
