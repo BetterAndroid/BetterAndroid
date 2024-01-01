@@ -18,7 +18,21 @@ Time zone of version release date: **UTC+8**
 
 ## ui-component
 
-### 1.0.3 | 2023.12.03 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.4 | 2024.01.02 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- `SystemBarsController` has been fully migrated to window insets API, please refer to the documentation to start using the new usage
+- Reconstructed `SystemBarsController` and modified the initialization method, please refer to the documentation to get started using the new method
+- Window insets has been completely separated from the system bars into `WindowInsetsWrapper`, `InsetsWrapper`, `InsetsFactory`
+- Deprecated all related usages of window insets in the system bars, please start using the new window insets API now
+- Reconstructed `BackPressedController` and connected it to `BackPressedDispatcher`, please refer to the documentation to start using the new usage
+- `AppViewsFragment` adds a new loading layout method using the constructor method to pass in `layoutResId`
+- Renamed `RecyclerCosmeticMaccker` to `RecyclerCosmetic` and made related functions generic
+- Opened preset decorators for `RecyclerView`, now you can create them manually
+- Refactored a lot of functions related to adapters. Now you can create them manually using the method of the same name for each adapter (`BaseAdapter` is `CommonAdapter`)
+- Reconstructed notification related functions, please refer to the documentation to start using the new usage
+- Renamed and modified some other functions
+
+### 1.0.3 | 2023.12.03 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - The `init` method of `SystemBarsController` adds the `defaultPaddings` parameter, which can configure whether to automatically add the corresponding
   system bars padding during initialization

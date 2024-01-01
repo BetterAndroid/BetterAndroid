@@ -10,7 +10,21 @@
 
 ## ui-component
 
-### 1.0.3 | 2023.12.03 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.4 | 2024.01.02 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- `SystemBarsController` 已完全迁移到 Window Insets API，请参考文档开始使用新用法
+- 重构了 `SystemBarsController` 并修改了初始化方法，请参考文档使用新的方式开始使用
+- Window Insets 已从系统栏中完全分离为 `WindowInsetsWrapper`、`InsetsWrapper`、`InsetsFactory`
+- 作废了全部有关系统栏中的 Window Insets 相关用法，现在请开始使用全新的 Window Insets API
+- 重构了 `BackPressedController` 并对接到 `BackPressedDispatcher`，请参考文档开始使用新用法
+- `AppViewsFragment` 新增使用构造方法传入 `layoutResId` 的装载布局方式
+- 更名 `RecyclerCosmeticMacker` 为 `RecyclerCosmetic` 并对相关功能进行了泛型处理
+- 开放了 `RecyclerView` 的预置装饰器，现在你可以手动创建它们
+- 重构了大量有关适配器的功能，现在你可以使用每个适配器的同名方法手动进行创建 (`BaseAdapter` 为 `CommonAdapter`)
+- 重构了通知相关功能，请参考文档开始使用新用法
+- 进行了一些其它功能的更名和修改
+
+### 1.0.3 | 2023.12.03 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - `SystemBarsController` 的 `init` 方法新增 `defaultPaddings` 参数，可以配置初始化时是否自动添加对应的系统栏边距
 - 在 `SystemBarsController` 中使用 `show` 或 `hide` 方法时将自动判断是否已经添加系统栏边距来决定是否添加对应的边距
