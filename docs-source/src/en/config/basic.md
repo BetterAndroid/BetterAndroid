@@ -17,7 +17,7 @@ android {
 
 ## Jetpack Compose
 
-If you reference [compose-extension](../library/compose-extension.md) related functions, you need to enable `compose` in `buildFeatures`.
+If you reference [compose-extension](../library/compose-extension.md) or [compose-multiplatform](../library/compose-multiplatform.md) related functions, you need to enable `compose` in `buildFeatures`.
 
 Please refer [here](https://developer.android.com/jetpack/androidx/releases/compose-kotlin) to set the correct `kotlinCompilerExtensionVersion`.
 

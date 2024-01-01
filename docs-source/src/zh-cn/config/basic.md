@@ -17,7 +17,7 @@ android {
 
 ## Jetpack Compose
 
-如果你引用了 [compose-extension](../library/compose-extension.md) 相关功能，你需要在 `buildFeatures` 中启用 `compose`。
+如果你引用了 [compose-extension](../library/compose-extension.md) 或 [compose-multiplatform](../library/compose-multiplatform.md) 相关功能，你需要在 `buildFeatures` 中启用 `compose`。
 
 请参考 [这里](https://developer.android.com/jetpack/androidx/releases/compose-kotlin) 设置正确的 `kotlinCompilerExtensionVersion`。
 

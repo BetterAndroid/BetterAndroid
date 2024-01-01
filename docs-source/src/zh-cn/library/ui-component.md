@@ -119,7 +119,7 @@ class MainActivity : AppComponentActivity() {
 
 ::: tip
 
-有关 Jetpack Compose 的相关扩展你可以参考 [compose-extension](../library/compose-extension.md)。
+有关 Jetpack Compose 的相关扩展你可以参考 [compose-extension](../library/compose-extension.md)、[compose-multiplatform](../library/compose-multiplatform.md)。
 
 `BetterAndroid` 同样为 `Activity` 提供了相关扩展，你可以参考 [ui-extension → Activity 扩展](../library/ui-extension.md#activity-扩展)。
 
@@ -1390,7 +1390,7 @@ systemBars.init(rootView, edgeToEdgeInsets = null)
 ::: tip
 
 在 Jetpack Compose 中，你可以使用 `AppComponentActivity` 来获得一个设置了 `edgeToEdgeInsets = null` 初始化的 `SystemBarsController`，
-然后使用 Jetpack Compose 的方式去设置 Window Insets，`BetterAndroid` 同样为其提供了扩展支持，更多功能你可以参考 [compose-extension](../library/compose-extension.md)。
+然后使用 Jetpack Compose 的方式去设置 Window Insets，`BetterAndroid` 同样为其提供了扩展支持，更多功能你可以参考 [compose-multiplatform](../library/compose-multiplatform.md)。
 
 :::
 

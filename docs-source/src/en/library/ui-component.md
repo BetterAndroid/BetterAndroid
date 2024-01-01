@@ -119,7 +119,7 @@ class MainActivity : AppComponentActivity() {
 
 ::: tip
 
-For related extensions of Jetpack Compose, you can refer to [compose-extension](../library/compose-extension.md).
+For related extensions of Jetpack Compose, you can refer to [compose-extension](../library/compose-extension.md), [compose-multiplatform](../library/compose-multiplatform.md).
 
 `BetterAndroid` also provides related extensions for `Activity`, you can refer to [ui-extension → Activity Extension](../library/ui-extension.md#activity-extension).
 
@@ -1440,7 +1440,7 @@ you should use `edgeToEdgeInsets` to control the window insets `padding` of the 
 In Jetpack Compose, you can use `AppComponentActivity` to get a `SystemBarsController` initialized with `edgeToEdgeInsets = null`,
 then use Jetpack Compose to set window insets.
 
-`BetterAndroid` also provides extension support for it, for more functions, you can refer to [compose-extension](../library/compose-extension.md).
+`BetterAndroid` also provides extension support for it, for more functions, you can refer to [compose-multiplatform](../library/compose-multiplatform.md).
 
 :::
 
