@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.isSpecified
 
 /**
  * [Dp] extension, if [Dp] is not specified, return null.
+ * @receiver [Dp]
  * @return [Dp] or null.
  */
 @Stable
@@ -44,6 +45,7 @@ fun Dp.orNull() = if (isSpecified) this else null
 
 /**
  * [DpSize] extension, if [DpSize] is not specified, return null.
+ * @receiver [DpSize]
  * @return [DpSize] or null.
  */
 @Stable
@@ -51,6 +53,7 @@ fun DpSize.orNull() = if (isSpecified) this else null
 
 /**
  * [TextUnit] extension, if [TextUnit] is not specified, return null.
+ * @receiver [TextUnit]
  * @return [TextUnit] or null.
  */
 @Stable
@@ -58,6 +61,7 @@ fun TextUnit.orNull() = if (isSpecified) this else null
 
 /**
  * [Size] extension, if [Size] is not specified, return null.
+ * @receiver [Size]
  * @return [Size] or null.
  */
 @Stable
@@ -65,6 +69,7 @@ fun Size.orNull() = if (isSpecified) this else null
 
 /**
  * [Offset] extension, if [Offset] is not specified, return null.
+ * @receiver [Offset]
  * @return [Offset] or null.
  */
 @Stable
@@ -72,6 +77,7 @@ fun Offset.orNull() = if (isSpecified) this else null
 
 /**
  * [DpOffset] extension, if [DpOffset] is not specified, return null.
+ * @receiver [DpOffset]
  * @return [DpOffset] or null.
  */
 @Stable
@@ -79,6 +85,7 @@ fun DpOffset.orNull() = if (isSpecified) this else null
 
 /**
  * [ScaleFactor] extension, if [ScaleFactor] is not specified, return null.
+ * @receiver [ScaleFactor]
  * @return [ScaleFactor] or null.
  */
 @Stable

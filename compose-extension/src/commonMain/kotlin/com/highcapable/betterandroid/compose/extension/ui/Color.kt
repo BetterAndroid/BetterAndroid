@@ -75,6 +75,7 @@ fun mixColorOf(color1: Color, color2: Color, ratio: Float = 0.5f): Color {
 
 /**
  * [Color] extension, if [Color] is not specified, return null.
+ * @receiver the current color.
  * @return [Color] or null.
  */
 @Stable

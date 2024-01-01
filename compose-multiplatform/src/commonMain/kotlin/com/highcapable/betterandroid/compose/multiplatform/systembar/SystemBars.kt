@@ -98,6 +98,7 @@ expect class PlatformSystemBarsController internal constructor(actual: NativeSys
  * @see PlatformSystemBarStyle
  * @see PlatformSystemBarsController.statusBarStyle
  * @see PlatformSystemBarsController.navigationBarStyle
+ * @receiver [PlatformSystemBarsController]
  * @param style the system bars style.
  */
 @Stable
@@ -113,6 +114,7 @@ fun PlatformSystemBarsController.setStyle(style: PlatformSystemBarStyle) = setSt
  * @see PlatformSystemBarStyle
  * @see PlatformSystemBarsController.statusBarStyle
  * @see PlatformSystemBarsController.navigationBarStyle
+ * @receiver [PlatformSystemBarsController]
  * @param statusBar the status bars style.
  * @param navigationBar the navigation bars style.
  */

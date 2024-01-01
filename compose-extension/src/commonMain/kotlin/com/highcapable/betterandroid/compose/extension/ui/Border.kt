@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.isSpecified
  * Workaround for [BorderStroke.width] is 0.dp, which will cause the [Modifier.border] still draw a border.
  *
  * This function will stop draw the border if the [BorderStroke.width] is 0.dp.
+ * @receiver [Modifier]
  * @param border the border stroke.
  * @param shape the shape of the border, default is [RectangleShape].
  * @return [Modifier]

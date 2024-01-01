@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.SolidColor
 
 /**
  * Returns the solid color of the [BorderStroke.brush], or [Color.Unspecified] if the [BorderStroke.brush] is not a [SolidColor].
+ * @receiver [BorderStroke]
  * @return [Color]
  */
 @Stable
@@ -37,6 +38,7 @@ val BorderStroke.solidColor get() = solidColor()
 
 /**
  * Returns the solid color of the [BorderStroke.brush], or [default] if the [BorderStroke.brush] is not a [SolidColor].
+ * @receiver [BorderStroke]
  * @param default the default color, default is unspecified.
  * @return [Color]
  */

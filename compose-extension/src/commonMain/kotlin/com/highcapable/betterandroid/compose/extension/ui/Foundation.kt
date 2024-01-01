@@ -39,6 +39,7 @@ import androidx.compose.foundation.selection.toggleable as foundationToggleable
 
 /**
  * Draw content with [disabledAlpha] if [enabled] is false.
+ * @receiver [Modifier]
  * @param enabled whether the content is enabled.
  * @param disabledAlpha the alpha value when the content is disabled, default is 0.5f.
  * @return [Modifier]
@@ -58,6 +59,7 @@ fun Modifier.componentState(
 /**
  * Extension for [foundationClickable].
  * @see foundationClickable
+ * @receiver [Modifier]
  * @return [Modifier]
  */
 fun Modifier.clickable(
@@ -92,6 +94,7 @@ fun Modifier.clickable(
 /**
  * Extension for [foundationCombinedClickable].
  * @see foundationCombinedClickable
+ * @receiver [Modifier]
  * @return [Modifier]
  */
 fun Modifier.combinedClickable(
@@ -135,6 +138,7 @@ fun Modifier.combinedClickable(
 /**
  * Extension for [foundationToggleable].
  * @see foundationToggleable
+ * @receiver [Modifier]
  * @return [Modifier]
  */
 fun Modifier.toggleable(
@@ -169,6 +173,7 @@ fun Modifier.toggleable(
 /**
  * Extension for [foundationSelectable].
  * @see foundationSelectable
+ * @receiver [Modifier]
  * @return [Modifier]
  */
 fun Modifier.selectable(
