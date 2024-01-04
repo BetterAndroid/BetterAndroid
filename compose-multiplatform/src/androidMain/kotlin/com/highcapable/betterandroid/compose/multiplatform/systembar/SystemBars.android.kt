@@ -117,8 +117,6 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
 /**
  * Creates and remember a [PlatformSystemBarsController].
  *
- * Platform requirements:
- *
  * Please visit the [compose-multiplatform](https://betterandroid.github.io/BetterAndroid/en/library/compose-multiplatform#system-bars-status-bars-navigation-bars-home-indicator-etc)
  * documentation for usage.
  * @return [PlatformSystemBarsController]
