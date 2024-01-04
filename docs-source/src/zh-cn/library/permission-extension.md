@@ -1,6 +1,6 @@
 # permission-extension
 
-![GitHub release](https://img.shields.io/github/v/release/BetterAndroid/BetterAndroid?display_name=release&logo=github&color=green&filter=permission-extension-*)
+![Maven Central](https://img.shields.io/maven-central/v/com.highcapable.betterandroid/permission-extension?logo=apachemaven&logoColor=orange&color=green)
 
 这是针对应用权限管理、授权等相关功能扩展的一个依赖。
 

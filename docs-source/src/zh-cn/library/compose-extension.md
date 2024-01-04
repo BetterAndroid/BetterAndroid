@@ -1,6 +1,6 @@
 # compose-extension
 
-![GitHub release](https://img.shields.io/github/v/release/BetterAndroid/BetterAndroid?display_name=release&logo=github&color=green&filter=compose-extension-*)
+![Maven Central](https://img.shields.io/maven-central/v/com.highcapable.betterandroid/compose-extension?logo=apachemaven&logoColor=orange&color=green)
 <span style="margin-left: 5px"/>
 ![Android Min SDK](https://img.shields.io/badge/Min%20SDK-21-orange?logo=android)
 

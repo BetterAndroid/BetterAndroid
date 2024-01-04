@@ -1,6 +1,6 @@
 # permission-extension
 
-![GitHub release](https://img.shields.io/github/v/release/BetterAndroid/BetterAndroid?display_name=release&logo=github&color=green&filter=permission-extension-*)
+![Maven Central](https://img.shields.io/maven-central/v/com.highcapable.betterandroid/permission-extension?logo=apachemaven&logoColor=orange&color=green)
 
 This is a dependency for app permission management, authorization and other related extensions.
 
