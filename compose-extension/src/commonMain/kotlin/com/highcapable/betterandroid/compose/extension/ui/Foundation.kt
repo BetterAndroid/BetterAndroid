@@ -25,7 +25,6 @@ package com.highcapable.betterandroid.compose.extension.ui
 
 import androidx.compose.foundation.Indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -44,7 +43,6 @@ import androidx.compose.foundation.selection.toggleable as foundationToggleable
  * @param disabledAlpha the alpha value when the content is disabled, default is 0.5f.
  * @return [Modifier]
  */
-@Stable
 fun Modifier.componentState(
     enabled: Boolean,
     disabledAlpha: Float = 0.5f
