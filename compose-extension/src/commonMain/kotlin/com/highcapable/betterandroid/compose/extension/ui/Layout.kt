@@ -32,16 +32,16 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 /**
- * A subcompose row for its children.
+ * An adaptive row for its children.
  *
  * Workaround for autofill children layout dimensions,
  * visit [here](https://stackoverflow.com/questions/72925896/how-can-i-make-the-two-buttons-the-same-width-when-i-use-jetpack-compose).
  * @param modifier the [Modifier] to be applied to this layout.
  * @param spacingBetween the spacing between the children, default is 0.dp.
- * @param content the measured children content.
+ * @param content the children content.
  */
 @Composable
-fun SubcomposeRow(
+fun AdaptiveRow(
     modifier: Modifier = Modifier,
     spacingBetween: Dp = 0.dp,
     content: @Composable () -> Unit
@@ -89,16 +89,16 @@ fun SubcomposeRow(
 }
 
 /**
- * A subcompose column for its children.
+ * An adaptive column for its children.
  *
  * Workaround for autofill children layout dimensions,
  * visit [here](https://stackoverflow.com/questions/72925896/how-can-i-make-the-two-buttons-the-same-width-when-i-use-jetpack-compose).
  * @param modifier the [Modifier] to be applied to this layout.
  * @param spacingBetween the spacing between the children, default is 0.dp.
- * @param content the measured children content.
+ * @param content the children content.
  */
 @Composable
-fun SubcomposeColumn(
+fun AdaptiveColumn(
     modifier: Modifier = Modifier,
     spacingBetween: Dp = 0.dp,
     content: @Composable () -> Unit
