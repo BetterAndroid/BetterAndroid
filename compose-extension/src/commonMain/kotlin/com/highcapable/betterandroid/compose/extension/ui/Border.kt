@@ -39,8 +39,7 @@ import androidx.compose.ui.unit.isSpecified
  * Workaround for [BorderStroke.width] is 0.dp like [Dp.Hairline], which will cause the [Modifier.border] still draw a border,
  * see [here](https://stackoverflow.com/questions/72514987/unexpected-border-in-composables-border-shows-even-if-border-width-is-zero).
  *
- * This function will stop draw the border if the [width] is 0.dp,
- * I tink the scheme of set the border color to transparent is stupid.
+ * This function will stop draw the border if the [width] is 0.dp.
  * @see border
  * @receiver [Modifier]
  * @param width the border stroke width.
