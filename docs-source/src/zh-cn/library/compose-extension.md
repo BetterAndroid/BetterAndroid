@@ -243,7 +243,10 @@ val composeColor = uiColor.toComposeColor()
 
 你可以通过 `Modifier.border(...)` 方法为组件添加边框，但是当边框大小为 `0.dp` 时，边框依然会存在。
 
-为了解决这个问题，`BetterAndroid` 提供了 `borderOrElse` 扩展，它会在边框大小为 `0.dp` 时不再为组件添加边框。
+这个问题的起因出自 [这里](https://stackoverflow.com/questions/72514987/unexpected-border-in-composables-border-shows-even-if-border-width-is-zero)，
+其中提到的将边框设置为透明颜色的方案并不友好，因为它依然进行了一次绘制操作。
+
+于是 `BetterAndroid` 提供了 `borderOrElse` 扩展，它会在边框大小为 `0.dp` 时不再为组件添加边框。
 
 > 示例如下
 
@@ -252,7 +255,7 @@ Box(
     modifier = Modifier
         .size(50.dp)
         // 在这里，边框的大小为 0.dp，所以组件将不会有边框
-        .borderOrElse(0.dp, RectangleShape)
+        .borderOrElse(0.dp, Color.Black, RectangleShape)
 ) {
     // 一些内容
 }
@@ -489,6 +492,64 @@ val spValue = sp.orNull() ?: 10.sp
 ```
 
 你会发现 `orNull` 的写法更加简洁，而且更容易理解。
+
+### 自适应布局 (Adaptive Layout)
+
+::: tip 本节内容
+
+> commonMain
+
+[AdaptiveLayout → AdaptiveRow](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui.layout/-adaptive-row)
+
+[AdaptiveLayout → AdaptiveColumn](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui.layout/-adaptive-column)
+
+自适应布局相关扩展。
+
+:::
+
+自适应布局提供了可在不知道子组件大小的情况下对每个子组件进行测量并水平或垂直以父布局的大小对其进行平均分配的解决方案。
+
+例如，你可以使用以下方式对两个按钮进行水平排列，并以父组件的大小对它们的宽度进行平均分配。
+
+> 示例如下
+
+```kotlin
+// 创建一个 AdaptiveRow
+AdaptiveRow(
+    modifier = Modifier.width(150.dp),
+    // 你可以设置每个组件的间距
+    spacingBetween = 10.dp
+) {
+    Button(onClick = { /* ... */ }) {
+        Text("Button 1")
+    }
+    Button(onClick = { /* ... */ }) {
+        Text("Button 2")
+    }
+}
+```
+
+此时你不需要对 `Button` 设置任何宽度，它们将会自动进行测量并平均分配。
+
+同样地，你也可以使用 `AdaptiveColumn` 对组件进行垂直排列。
+
+> 示例如下
+
+```kotlin
+// 创建一个 AdaptiveColumn
+AdaptiveColumn(
+    modifier = Modifier.height(150.dp),
+    // 你可以设置每个组件的间距
+    spacingBetween = 10.dp
+) {
+    Button(onClick = { /* ... */ }) {
+        Text("Button 1")
+    }
+    Button(onClick = { /* ... */ }) {
+        Text("Button 2")
+    }
+}
+```
 
 ### Dialog、Popup 组件扩展
 

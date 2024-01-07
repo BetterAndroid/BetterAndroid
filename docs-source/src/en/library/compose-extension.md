@@ -245,7 +245,10 @@ Extensions for `Border` and `BorderStroke`.
 
 You can add a border to a component through the `Modifier.border(...)` method, but when the border size is `0.dp`, the border will still exist.
 
-To solve this problem, `BetterAndroid` provides the `borderOrElse` extension, which will no longer add borders to components when the border size is `0.dp`.
+The origin of this question comes from [here](https://stackoverflow.com/questions/72514987/unexpected-border-in-composables-border-shows-even-if-border-width-is-zero),
+the solution mentioned in setting the border to a transparent color is not friendly because it still performs a drawing operation.
+
+So `BetterAndroid` provides the `borderOrElse` extension, which will no longer add borders to components when the border size is `0.dp`.
 
 > The following example
 
@@ -254,7 +257,7 @@ Box(
     modifier = Modifier
         .size(50.dp)
         // Here, the size of the border is 0.dp, so the component will not have a border.
-        .borderOrElse(0.dp, RectangleShape)
+        .borderOrElse(0.dp, Color.Black, RectangleShape)
 ) {
     // Some content.
 }
@@ -496,6 +499,64 @@ val spValue = sp.orNull() ?: 10.sp
 ```
 
 You will find that `orNull` is more concise and easier to understand.
+
+### Adaptive Layout
+
+::: tip Contents of This Section
+
+> commonMain
+
+[AdaptiveLayout → AdaptiveRow](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui.layout/-adaptive-row)
+
+[AdaptiveLayout → AdaptiveColumn](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui.layout/-adaptive-column)
+
+Extensions for adaptive layout.
+
+:::
+
+Adaptive layout provides a solution to measure each child component and distribute it evenly with the size of the parent layout horizontally or vertically without knowing the size of the child component.
+
+For example, you can use the following method to arrange two buttons horizontally and evenly distribute their widths based on the size of the parent component.
+
+> The following example
+
+```kotlin
+// Create an AdaptiveRow.
+AdaptiveRow(
+    modifier = Modifier.width(150.dp),
+    // You can set the spacing of each component.
+    spacingBetween = 10.dp
+) {
+    Button(onClick = { /* ... */ }) {
+        Text("Button 1")
+    }
+    Button(onClick = { /* ... */ }) {
+        Text("Button 2")
+    }
+}
+```
+
+You don't need to set any width for the `Button` at this point, they will be automatically measured and evenly distributed.
+
+Likewise, you can use `AdaptiveColumn` to arrange components vertically.
+
+> The following example
+
+```kotlin
+// Create an AdaptiveColumn.
+AdaptiveColumn(
+    modifier = Modifier.height(150.dp),
+    // You can set the spacing of each component.
+    spacingBetween = 10.dp
+) {
+    Button(onClick = { /* ... */ }) {
+        Text("Button 1")
+    }
+    Button(onClick = { /* ... */ }) {
+        Text("Button 2")
+    }
+}
+```
 
 ### Dialog, Popup Component Extension
 
