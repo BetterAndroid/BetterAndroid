@@ -21,7 +21,7 @@
  */
 @file:Suppress("unused")
 
-package com.highcapable.betterandroid.compose.extension.ui
+package com.highcapable.betterandroid.compose.extension.ui.layout
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
