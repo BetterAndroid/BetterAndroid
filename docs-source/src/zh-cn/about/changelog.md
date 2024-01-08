@@ -112,7 +112,13 @@
 
 ## compose-extension
 
-### 1.0.0 | 2024.01.02 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.1 | 2024.01.08 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 移除部分无用的 `@Stable` 注解
+- 新增 `borderOrElse` 的同名方法和新用法
+- 新增 `AdaptiveRow`、`AdaptiveColumn`
+
+### 1.0.0 | 2024.01.02 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 首个版本提交至 Maven
 

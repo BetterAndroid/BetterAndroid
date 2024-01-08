@@ -123,7 +123,13 @@ Not yet released.
 
 ## compose-extension
 
-### 1.0.0 | 2024.01.02 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.1 | 2024.01.08 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Removed some useless `@Stable` annotations
+- Added `borderOrElse` method with the same name and new usage
+- Added `AdaptiveRow`, `AdaptiveColumn`
+
+### 1.0.0 | 2024.01.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - The first version is submitted to Maven
 
