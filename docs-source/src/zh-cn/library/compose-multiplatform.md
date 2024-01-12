@@ -205,6 +205,27 @@ fun createMainViewController() = AppComponentUIViewController {
 }
 ```
 
+然后，请确定你在 `build.gradle.kts` 中为 iOS 项目设置的共享模块名称。
+
+> 示例如下
+
+```kotlin
+kotlin {
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            // 设置共享模块名称
+            baseName = "ComposeApp"
+            // 建议设置为静态库
+            isStatic = true
+        }
+    }
+}
+```
+
 接下来，请在 iOS 项目中对 `AppDelegate.swift` 文件进行以下配置。
 
 如果你的 iOS 项目是使用 Swift UI 创建的，请手动创建这个文件并移除使用 Swift UI 创建的 `SwiftApp.swift` 相关文件。
@@ -213,7 +234,7 @@ fun createMainViewController() = AppComponentUIViewController {
 
 ```swift
 import UIKit
-import shared // 这里为你的 Kotlin Multiplatform 共享模块名称
+import ComposeApp // 这里为你的共享模块名称
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -225,7 +246,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // 创建一个新的 UIWindow
         window = UIWindow(frame: UIScreen.main.bounds)
         // 设置根视图的控制器
-        // MainViewControllerKt 是 shared.h 中自动生成的 Kotlin 代码
+        // MainViewControllerKt 是 ComposeApp.h 中自动生成的 Kotlin 代码
         window?.rootViewController = MainViewControllerKt.createMainViewController()
         // 使其可见
         window?.makeKeyAndVisible()

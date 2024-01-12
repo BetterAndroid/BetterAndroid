@@ -208,6 +208,27 @@ fun createMainViewController() = AppComponentUIViewController {
 }
 ```
 
+Then, determine the shared module name you set in `build.gradle.kts` for your iOS project.
+
+> The following example
+
+```kotlin
+kotlin {
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            // Set the shared module name.
+            baseName = "ComposeApp"
+            // It is recommended to set it as a static library.
+            isStatic = true
+        }
+    }
+}
+```
+
 Next, make the following configurations to the `AppDelegate.swift` file in your iOS project.
 
 If your iOS project was created using Swift UI, please create this file manually and remove the `SwiftApp.swift` related files created using Swift UI.
@@ -216,7 +237,7 @@ If your iOS project was created using Swift UI, please create this file manually
 
 ```swift
 import UIKit
-import shared // Here is your Kotlin Multiplatform shared module name.
+import ComposeApp // Here is your shared module name.
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -228,7 +249,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Create a new UIWindow.
         window = UIWindow(frame: UIScreen.main.bounds)
         // Set the controller of the root view.
-        // MainViewControllerKt is the automatically generated Kotlin code in shared.h.
+        // MainViewControllerKt is the automatically generated Kotlin code in ComposeApp.h.
         window?.rootViewController = MainViewControllerKt.createMainViewController()
         // Make it visible.
         window?.makeKeyAndVisible()
