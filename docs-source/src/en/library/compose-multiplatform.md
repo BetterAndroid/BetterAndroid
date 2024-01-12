@@ -170,18 +170,9 @@ fun App() {
 
 #### Android Platform
 
-First, please create an entry to the shared code in `App.android.kt` in `androidMain`.
+First, please import the [ui-component](../library/ui-component.md) module in the corresponding Android project.
 
-> The following example
-
-```kotlin
-@Composable
-fun MainView() = App()
-```
-
-Then, please import the [ui-component](../library/ui-component.md) module in the corresponding Android project.
-
-Next, please refer to [ui-component → Activity](../library/ui-component.md#activity) to use `AppComponentActivty` as the starting point for Compose.
+Then, please refer to [ui-component → Activity](../library/ui-component.md#activity) to use `AppComponentActivty` as the starting point for Compose.
 
 > The following example
 
@@ -191,7 +182,7 @@ class MainActivity : AppComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MainView()
+            App()
         }
     }
 }
@@ -207,19 +198,19 @@ You need to have a computer or virtual machine that can run macOS and have the X
 
 First, you need to manually create an iOS App Xcode project, select Swift as the language, and select `Storyboard` in the `Interface` column.
 
-Then, create an `AppComponentUIViewController` in the `App.ios.kt` file in `iosMain` using the following method.
+Then, create an `AppComponentUIViewController` in the `MainViewController.kt` file in `iosMain` using the following method.
 
 > The following example
 
 ```kotlin
-fun createUIViewController() = AppComponentUIViewController {
+fun createMainViewController() = AppComponentUIViewController {
     App()
 }
 ```
 
 Next, make the following configurations to the `AppDelegate.swift` file in your iOS project.
 
-If your iOS project was created using Swift UI, please create this file manually and remove the `App.swift` related files created using Swift UI.
+If your iOS project was created using Swift UI, please create this file manually and remove the `SwiftApp.swift` related files created using Swift UI.
 
 > The following example
 
@@ -237,8 +228,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Create a new UIWindow.
         window = UIWindow(frame: UIScreen.main.bounds)
         // Set the controller of the root view.
-        // App_iosKt is the automatically generated Kotlin code in shared.h.
-        window?.rootViewController = App_iosKt.createUIViewController()
+        // MainViewControllerKt is the automatically generated Kotlin code in shared.h.
+        window?.rootViewController = MainViewControllerKt.createMainViewController()
         // Make it visible.
         window?.makeKeyAndVisible()
         return true
@@ -257,16 +248,7 @@ because Swift UI will take over the state of the entire view, at this time, you 
 
 #### Desktop Platform
 
-First, create an entry to the shared code in `App.desktop.kt` in `desktopMain`.
-
-> The following example
-
-```kotlin
-@Composable
-fun MainView() = App()
-```
-
-Then, please use the following method to create the starting point of Compose in the corresponding Java project `Main.kt`.
+Please use the following method to create the starting point of Compose in the corresponding Java project `Main.kt`.
 
 > The following example
 
@@ -279,7 +261,7 @@ fun main() = application {
         // Set window size.
         state = rememberWindowState(width = 300.dp, height = 500.dp)
     ) {
-        MainView()
+        App()
     }
 }
 ```

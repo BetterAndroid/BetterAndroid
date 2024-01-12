@@ -167,18 +167,9 @@ fun App() {
 
 #### Android 平台
 
-首先，请在 `androidMain` 中的 `App.android.kt` 创建共享代码的入口。
+首先，请在对应的 Android 项目中导入 [ui-component](../library/ui-component.md) 模块。
 
-> 示例如下
-
-```kotlin
-@Composable
-fun MainView() = App()
-```
-
-然后，请在对应的 Android 项目中导入 [ui-component](../library/ui-component.md) 模块。
-
-接下来，请参考 [ui-component → Activity](../library/ui-component.md#activity) 使用 `AppComponentActivty` 作为 Compose 的起始点。
+然后，请参考 [ui-component → Activity](../library/ui-component.md#activity) 使用 `AppComponentActivty` 作为 Compose 的起始点。
 
 > 示例如下
 
@@ -188,7 +179,7 @@ class MainActivity : AppComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MainView()
+            App()
         }
     }
 }
@@ -204,19 +195,19 @@ class MainActivity : AppComponentActivity() {
 
 首先，你需要手动创建一个 iOS App 的 Xcode 项目，语言请选择 Swift，并在 `Interface` 一栏选择 `Storyboard`。
 
-然后，请在 `iosMain` 中的 `App.ios.kt` 文件中使用以下方式创建一个 `AppComponentUIViewController`。
+然后，请在 `iosMain` 中的 `MainViewController.kt` 文件中使用以下方式创建一个 `AppComponentUIViewController`。
 
 > 示例如下
 
 ```kotlin
-fun createUIViewController() = AppComponentUIViewController {
+fun createMainViewController() = AppComponentUIViewController {
     App()
 }
 ```
 
 接下来，请在 iOS 项目中对 `AppDelegate.swift` 文件进行以下配置。
 
-如果你的 iOS 项目是使用 Swift UI 创建的，请手动创建这个文件并移除使用 Swift UI 创建的 `App.swift` 相关文件。
+如果你的 iOS 项目是使用 Swift UI 创建的，请手动创建这个文件并移除使用 Swift UI 创建的 `SwiftApp.swift` 相关文件。
 
 > 示例如下
 
@@ -234,8 +225,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // 创建一个新的 UIWindow
         window = UIWindow(frame: UIScreen.main.bounds)
         // 设置根视图的控制器
-        // App_iosKt 是 shared.h 中自动生成的 Kotlin 代码
-        window?.rootViewController = App_iosKt.createUIViewController()
+        // MainViewControllerKt 是 shared.h 中自动生成的 Kotlin 代码
+        window?.rootViewController = MainViewControllerKt.createMainViewController()
         // 使其可见
         window?.makeKeyAndVisible()
         return true
@@ -253,16 +244,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 #### Desktop 平台
 
-首先，请在 `desktopMain` 中的 `App.desktop.kt` 创建共享代码的入口。
-
-> 示例如下
-
-```kotlin
-@Composable
-fun MainView() = App()
-```
-
-然后，请在对应的 Java 项目 `Main.kt` 中使用以下方式创建 Compose 的起始点。
+请在对应的 Java 项目 `Main.kt` 中使用以下方式创建 Compose 的起始点。
 
 > 示例如下
 
@@ -275,7 +257,7 @@ fun main() = application {
         // 设置窗口大小
         state = rememberWindowState(width = 300.dp, height = 500.dp)
     ) { 
-        MainView()
+        App()
     }
 }
 ```

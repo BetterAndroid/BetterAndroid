@@ -95,5 +95,8 @@ You can use the project template we provide to quickly create a project that int
 You can find some samples [here](repo://tree/main/samples) view the corresponding demo project to better understand how these functions work and quickly
 select the functions you need.
 
-At present, the demo functions is not perfect yet and will be improved after [Flexi UI](repo://FlexiUI) is released, you can
-experience the existing functions first and report bugs to us.
+At present, the demo function is not yet complete, and may be gradually improved in the future.
+
+But you can directly read the existing documents, which are sufficient to introduce related functions.
+
+If you are using Jetpack Compose, you can refer to [Flexi UI](https://github.com/BetterAndroid/FlexiUI).
