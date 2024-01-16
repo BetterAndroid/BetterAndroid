@@ -374,7 +374,7 @@ val paddingValues = padding.toPaddingValues()
 
 [Foundation → selectable](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/selectable)
 
-[Foundation → HapticFeedback](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/haptic-feedback)
+[Foundation → HapticFeedback](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/-haptic-feedback)
 
 Extensions related to foundation.
 
