@@ -132,6 +132,16 @@ interface ComponentPadding : PaddingValues {
      * @return [PaddingValues]
      */
     fun toPaddingValues(): PaddingValues
+
+    companion object {
+
+        /**
+         * Returns a [ComponentPadding] with all values set to 0.dp.
+         * @return [ComponentPadding]
+         */
+        @Stable
+        val None = ComponentPadding(0.dp)
+    }
 }
 
 /**
