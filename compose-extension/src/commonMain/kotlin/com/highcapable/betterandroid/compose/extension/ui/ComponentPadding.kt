@@ -159,13 +159,13 @@ private class ComponentPaddingImpl(
     override val vertical get() = top + bottom
 
     override val left: Dp
-        @Composable
         @ReadOnlyComposable
+        @Composable
         get() = calculateLeftPadding(LocalLayoutDirection.current)
 
     override val right: Dp
-        @Composable
         @ReadOnlyComposable
+        @Composable
         get() = calculateRightPadding(LocalLayoutDirection.current)
 
     override fun toPaddingValues() = PaddingValues(start, top, end, bottom)
