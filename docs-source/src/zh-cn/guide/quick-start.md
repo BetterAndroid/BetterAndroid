@@ -84,6 +84,7 @@ android {
 你可以使用我们提供的项目模版来快速创建一个集成了 `BetterAndroid` 依赖的项目。
 
 - [android-app-template](https://github.com/BetterAndroid/android-app-template)
+- [android-compose-app-template](https://github.com/BetterAndroid/android-compose-app-template)
 - [compose-multiplatform-template](https://github.com/BetterAndroid/compose-multiplatform-template)
 
 ## Demo

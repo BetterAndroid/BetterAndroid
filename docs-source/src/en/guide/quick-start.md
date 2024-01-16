@@ -88,6 +88,7 @@ You can click on the corresponding modules below to view detailed function intro
 You can use the project template we provide to quickly create a project that integrates `BetterAndroid` dependencies.
 
 - [android-app-template](https://github.com/BetterAndroid/android-app-template)
+- [android-compose-app-template](https://github.com/BetterAndroid/android-compose-app-template)
 - [compose-multiplatform-template](https://github.com/BetterAndroid/compose-multiplatform-template)
 
 ## Demo
