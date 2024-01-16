@@ -33,7 +33,7 @@ import androidx.compose.ui.window.Dialog as ComposeDialog
 /**
  * A wrapper to resolve [DialogProperties].
  *
- * - Note: The [scrimColor] only the alpha can support on Android platform's dimAmount.
+ * - Note: The [scrimColor] only the [Color.alpha] can support on Android platform's dimAmount.
  * @see DialogProperties
  */
 @Immutable
