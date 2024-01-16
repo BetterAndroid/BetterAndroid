@@ -25,10 +25,13 @@ package com.highcapable.betterandroid.compose.extension.ui
 
 import androidx.compose.foundation.Indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.clickable as foundationClickable
@@ -201,4 +204,36 @@ fun Modifier.selectable(
         role = role,
         onClick = onClick
     )
+}
+
+/**
+ * Returns a callback to add haptic feedback on touch or click event.
+ *
+ * Usage:
+ *
+ * ```kotlin
+ * Box(
+ *     modifier = Modifier.combinedClickable(
+ *         onLongClick = HapticFeedback {
+ *             // Do something.
+ *         }
+ *     )
+ * ) {
+ *     Text("Long Click Me")
+ * }
+ * ```
+ * @param type the haptic feedback type, default is [HapticFeedbackType.LongPress].
+ * @param handler handle the event.
+ * @return () -> [Unit]
+ */
+@Composable
+fun HapticFeedback(
+    type: HapticFeedbackType = HapticFeedbackType.LongPress,
+    handler: () -> Unit
+): () -> Unit {
+    val hapticFeedback = LocalHapticFeedback.current
+    return {
+        handler()
+        hapticFeedback.performHapticFeedback(type)
+    }
 }
