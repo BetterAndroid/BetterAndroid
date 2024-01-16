@@ -306,6 +306,8 @@ In terms of usage, `ComponentPadding` is exactly the same as `PaddingValues`, an
 ```kotlin
 // Create a ComponentPadding.
 val padding = ComponentPadding(10.dp)
+// Create a 0.dp ComponentPadding of all directions.
+val padding = ComponentPadding.None
 // Set padding for each direction.
 val padding = ComponentPadding(
     start = 15.dp,
@@ -372,6 +374,8 @@ val paddingValues = padding.toPaddingValues()
 
 [Foundation → selectable](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/selectable)
 
+[Foundation → HapticFeedback](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/haptic-feedback)
+
 Extensions related to foundation.
 
 :::
@@ -422,6 +426,26 @@ Box(
 You need to change the package name referenced by these functions from `androidx.compose.foundation` to `com.highcapable.betterandroid.compose.extension.ui`.
 
 :::
+
+In native Android, to implement haptic feedback, you need to use the `View.performHapticFeedback` method or pass `true` in the last bit of a method like `setOnLongClickListener`.
+
+In Jetpack Compose, you need to reference `LocalHapticFeedback` every time and then use the `performHapticFeedback` method, which seems unfriendly.
+
+`BetterAndroid` provides the `HapticFeedback` method for this purpose, you can now use the following methods to implement haptic feedback more simply.
+
+> The following example
+
+```kotlin
+Box(
+    modifier = Modifier.combinedClickable(
+        onLongClick = HapticFeedback {
+            // Do something.
+        }
+    )
+) {
+    Text("Long Click Me")
+}
+```
 
 ### ImageVector Extension
 

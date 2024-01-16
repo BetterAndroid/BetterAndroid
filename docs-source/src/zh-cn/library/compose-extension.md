@@ -304,6 +304,8 @@ val color = border.solidColor(Color.Black)
 ```kotlin
 // 创建一个 ComponentPadding
 val padding = ComponentPadding(10.dp)
+// 得到一个四边均为 0.dp 的 ComponentPadding
+val padding = ComponentPadding.None
 // 设置每个方向的 padding
 val padding = ComponentPadding(
     start = 15.dp,
@@ -369,6 +371,8 @@ val paddingValues = padding.toPaddingValues()
 
 [Foundation → selectable](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/selectable)
 
+[Foundation → HapticFeedback](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/haptic-feedback)
+
 基础功能相关扩展。
 
 :::
@@ -415,6 +419,26 @@ Box(
 你需要将这些方法引用的包名由 `androidx.compose.foundation` 更换为 `com.highcapable.betterandroid.compose.extension.ui`。
 
 :::
+
+在原生 Android 中，要实现触感反馈需要使用 `View.performHapticFeedback` 方法或在类似 `setOnLongClickListener` 的方法最后一位传入 `true`。
+
+在 Jetpack Compose 中，你需要每次都引用 `LocalHapticFeedback`，然后使用 `performHapticFeedback` 方法，这看起来并不友好。
+
+`BetterAndroid` 为此提供了 `HapticFeedback` 方法，你现在可以更加简单地使用以下方式来实现触感反馈。
+
+> 示例如下
+
+```kotlin
+Box(
+    modifier = Modifier.combinedClickable(
+        onLongClick = HapticFeedback {
+            // Do something.
+        }
+    )
+) {
+    Text("Long Click Me")
+}
+```
 
 ### 矢量图 (ImageVector) 扩展
 
