@@ -112,7 +112,14 @@
 
 ## compose-extension
 
-### 1.0.1 | 2024.01.08 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.2 | 2024.01.16 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 新增 `HapticFeedback` 方法，你可以将其设置到任意的点击、触摸事件上
+- `ComponentPadding` 新增 `None` 方法，你可以使用其直接得到 `ComponentPadding(0.dp)`
+- 修改了 `Dialog` 中的 `onDismissRequest` 为强制要求存在，匹配官方提供的 `foundation` 中的用法
+- 部分代码风格优化
+
+### 1.0.1 | 2024.01.08 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 移除部分无用的 `@Stable` 注解
 - 新增 `borderOrElse` 的同名方法和新用法

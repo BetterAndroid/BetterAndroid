@@ -123,7 +123,14 @@ Not yet released.
 
 ## compose-extension
 
-### 1.0.1 | 2024.01.08 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.2 | 2024.01.16 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Added `HapticFeedback` method, you can set it to any click or touch event
+- `ComponentPadding` adds a `None` method, you can use it to directly get `ComponentPadding(0.dp)`
+- Modified `onDismissRequest` in `Dialog` to make it mandatory to exist, matching the usage in the official `foundation`
+- Optimize some code styles
+
+### 1.0.1 | 2024.01.08 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Removed some useless `@Stable` annotations
 - Added `borderOrElse` method with the same name and new usage
