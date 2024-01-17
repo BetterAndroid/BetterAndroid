@@ -1,6 +1,6 @@
 # ui-component
 
-![Maven Central](https://img.shields.io/maven-central/v/com.highcapable.betterandroid/ui-component?logo=apachemaven&logoColor=orange&color=green)
+![Maven Central](https://img.shields.io/maven-central/v/com.highcapable.betterandroid/ui-component?logo=apachemaven&logoColor=orange)
 <span style="margin-left: 5px"/>
 ![Android Min SDK](https://img.shields.io/badge/Min%20SDK-21-orange?logo=android)
 

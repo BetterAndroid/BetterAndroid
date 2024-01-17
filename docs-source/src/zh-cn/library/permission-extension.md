@@ -1,6 +1,6 @@
 # permission-extension
 
-![Maven Central](https://img.shields.io/maven-central/v/com.highcapable.betterandroid/permission-extension?logo=apachemaven&logoColor=orange&color=green)
+![Maven Central](https://img.shields.io/maven-central/v/com.highcapable.betterandroid/permission-extension?logo=apachemaven&logoColor=orange)
 
 这是针对应用权限管理、授权等相关功能扩展的一个依赖。
 
