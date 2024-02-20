@@ -11,16 +11,16 @@ repositories:
 plugins:
   org.jetbrains.kotlin.multiplatform:
     alias: kotlin-multiplatform
-    version: 1.9.21
+    version: 1.9.22
   org.jetbrains.kotlin.android:
     alias: kotlin-android
     version-ref: kotlin-multiplatform
   org.jetbrains.compose:
     alias: jetbrains-compose
-    version: 1.5.11
+    version: 1.5.12
   com.android.application:
     alias: android-application
-    version: 8.2.0
+    version: 8.2.2
   com.android.library:
     alias: android-library
     version-ref: android-application
@@ -29,7 +29,7 @@ plugins:
     version: 1.9.10
   com.vanniktech.maven.publish:
     alias: maven-publish
-    version: 0.26.0
+    version: 0.27.0
 
 libraries:
   com.highcapable.yukireflection:
