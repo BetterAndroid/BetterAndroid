@@ -141,7 +141,8 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     @JvmOverloads
     @JvmName("onBindCustomViews")
     inline fun <reified VB : ViewBinding> onBindViews(
-        viewType: Int = DEFAULT_VIEW_TYPE, noinline boundItemViews: (binding: VB, entity: E, position: Int) -> Unit
+        viewType: Int = DEFAULT_VIEW_TYPE,
+        noinline boundItemViews: (binding: VB, entity: E, position: Int) -> Unit = { _, _, _ -> }
     ) = apply {
         boundItemViewTypes[boundItemViewsCallbacks.size] = viewType
         boundItemViewsCallbacks.add(RecyclerItemView(bindingClass = classOf<VB>(), viewType = viewType) { binding, _, entity, position ->
@@ -158,7 +159,9 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      */
     @JvmOverloads
     fun onBindViews(
-        @LayoutRes resId: Int, viewType: Int = DEFAULT_VIEW_TYPE, boundItemViews: (view: View, entity: E, position: Int) -> Unit
+        @LayoutRes resId: Int,
+        viewType: Int = DEFAULT_VIEW_TYPE,
+        boundItemViews: (view: View, entity: E, position: Int) -> Unit = { _, _, _ -> }
     ) = apply {
         boundItemViewTypes[boundItemViewsCallbacks.size] = viewType
         boundItemViewsCallbacks.add(RecyclerItemView(rootViewResId = resId, viewType = viewType) { _, rootView, entity, position ->
@@ -174,7 +177,11 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      * @return [RecyclerAdapterBuilder]<[E]>
      */
     @JvmOverloads
-    fun onBindViews(view: View, viewType: Int = DEFAULT_VIEW_TYPE, boundItemViews: (view: View, entity: E, position: Int) -> Unit) = apply {
+    fun onBindViews(
+        view: View,
+        viewType: Int = DEFAULT_VIEW_TYPE,
+        boundItemViews: (view: View, entity: E, position: Int) -> Unit = { _, _, _ -> }
+    ) = apply {
         boundItemViewTypes[boundItemViewsCallbacks.size] = viewType
         boundItemViewsCallbacks.add(RecyclerItemView(rootView = view, viewType = viewType) { _, rootView, entity, position ->
             rootView?.also { boundItemViews(it, entity, position) }

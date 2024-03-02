@@ -146,7 +146,9 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
      * @param boundItemViews callback and return each bound item function.
      * @return [CommonAdapterBuilder]<[E]>
      */
-    inline fun <reified VB : ViewBinding> onBindViews(noinline boundItemViews: (binding: VB, entity: E, position: Int) -> Unit) = apply {
+    inline fun <reified VB : ViewBinding> onBindViews(
+        noinline boundItemViews: (binding: VB, entity: E, position: Int) -> Unit = { _, _, _ -> }
+    ) = apply {
         boundItemViewsCallback = CommonItemView(bindingClass = classOf<VB>()) { binding, _, entity, position ->
             binding?.also { boundItemViews(it as VB, entity, position) }
         }
@@ -158,7 +160,7 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
      * @param boundItemViews callback and return each bound item function.
      * @return [CommonAdapterBuilder]<[E]>
      */
-    fun onBindViews(@LayoutRes resId: Int, boundItemViews: (view: View, entity: E, position: Int) -> Unit) = apply {
+    fun onBindViews(@LayoutRes resId: Int, boundItemViews: (view: View, entity: E, position: Int) -> Unit = { _, _, _ -> }) = apply {
         boundItemViewsCallback = CommonItemView(rootViewResId = resId) { _, itemView, entity, position ->
             itemView?.also { boundItemViews(it, entity, position) }
         }
@@ -170,7 +172,7 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
      * @param boundItemViews callback and return each bound item function.
      * @return [CommonAdapterBuilder]<[E]>
      */
-    fun onBindViews(view: View, boundItemViews: (view: View, entity: E, position: Int) -> Unit) = apply {
+    fun onBindViews(view: View, boundItemViews: (view: View, entity: E, position: Int) -> Unit = { _, _, _ -> }) = apply {
         boundItemViewsCallback = CommonItemView(rootView = view) { _, itemView, entity, position ->
             itemView?.also { boundItemViews(it, entity, position) }
         }

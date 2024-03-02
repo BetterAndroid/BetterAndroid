@@ -113,7 +113,9 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
      * @param boundItemViews callback and return each bound item function.
      * @return [PagerAdapterBuilder]<[E]>
      */
-    inline fun <reified VB : ViewBinding> onBindViews(noinline boundItemViews: (binding: VB, entity: E, position: Int) -> Unit) = apply {
+    inline fun <reified VB : ViewBinding> onBindViews(
+        noinline boundItemViews: (binding: VB, entity: E, position: Int) -> Unit = { _, _, _ -> }
+    ) = apply {
         boundItemViewsCallbacks.add(CommonItemView(bindingClass = classOf<VB>()) { binding, _, entity, position ->
             binding?.also { boundItemViews(it as VB, entity, position) }
         })
@@ -125,7 +127,7 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
      * @param boundItemViews callback and return each bound item function.
      * @return [PagerAdapterBuilder]<[E]>
      */
-    fun onBindViews(@LayoutRes resId: Int, boundItemViews: (view: View, entity: E, position: Int) -> Unit) = apply {
+    fun onBindViews(@LayoutRes resId: Int, boundItemViews: (view: View, entity: E, position: Int) -> Unit = { _, _, _ -> }) = apply {
         boundItemViewsCallbacks.add(CommonItemView(rootViewResId = resId) { _, itemView, entity, position ->
             itemView?.also { boundItemViews(it, entity, position) }
         })
@@ -137,7 +139,7 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
      * @param boundItemViews callback and return each bound item function.
      * @return [PagerAdapterBuilder]<[E]>
      */
-    fun onBindViews(view: View, boundItemViews: (view: View, entity: E, position: Int) -> Unit) = apply {
+    fun onBindViews(view: View, boundItemViews: (view: View, entity: E, position: Int) -> Unit = { _, _, _ -> }) = apply {
         boundItemViewsCallbacks.add(CommonItemView(rootView = view) { _, itemView, entity, position ->
             itemView?.also { boundItemViews(it, entity, position) }
         })
