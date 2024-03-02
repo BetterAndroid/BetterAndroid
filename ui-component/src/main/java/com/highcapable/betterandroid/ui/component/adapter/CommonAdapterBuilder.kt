@@ -207,12 +207,12 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
                         else -> null
                     }
                 } ?: error("Cannot bound ViewHolder on BaseAdapter, did you forgot to called onBindViews function?")
-                holderView?.apply {
-                    tag = holder
-                    itemViewsOnClickCallback?.also { setOnClickListener { it(it, getCurrentEntity(position), position) } }
-                    itemViewsOnLongClickCallback?.also { setOnLongClickListener { it(it, getCurrentEntity(position), position) } }
-                }
             } else holder = convertView.tag as CommonAdapterBuilder<E>.BaseViewHolder
+            holderView?.apply {
+                tag = holder
+                itemViewsOnClickCallback?.also { setOnClickListener { it(it, getCurrentEntity(position), position) } }
+                itemViewsOnLongClickCallback?.also { setOnLongClickListener { it(it, getCurrentEntity(position), position) } }
+            }
             boundItemViewsCallback?.onBindCallback?.invoke(
                 (holder as? BindingBaseHolder?)?.binding, holder.rootView, getCurrentEntity(position), position
             ); return holderView ?: error("Cannot bound ViewHolder on BaseAdapter because got null instance.")
