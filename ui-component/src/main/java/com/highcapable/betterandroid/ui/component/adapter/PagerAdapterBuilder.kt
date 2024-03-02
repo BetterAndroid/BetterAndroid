@@ -57,7 +57,7 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
     }
 
     /** The current each item function callbacks. */
-    private val boundItemViewsCallbacks = mutableListOf<CommonItemView<E>>()
+    private val boundItemViewsCallbacks = linkedSetOf<CommonItemView<E>>()
 
     /** The current each [PagerMediator] function callback. */
     private var pagerMediatorsCallback: (PagerMediator.() -> Unit)? = null
@@ -158,7 +158,7 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
          * @param position the current position.
          * @return [CommonItemView]<[E]> or null.
          */
-        private fun boundItemViewsCallbacks(position: Int) = boundItemViewsCallbacks.let { it.getOrNull(position) ?: it.getOrNull(0) }
+        private fun boundItemViewsCallbacks(position: Int) = boundItemViewsCallbacks.toList().let { it.getOrNull(position) ?: it.getOrNull(0) }
 
         override fun instantiateItem(container: ViewGroup, position: Int) =
             (viewHolders[position]?.also { container.addView(it.rootView) } ?: boundItemViewsCallbacks(position)?.let {

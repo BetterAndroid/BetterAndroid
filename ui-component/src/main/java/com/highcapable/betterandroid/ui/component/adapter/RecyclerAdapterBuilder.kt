@@ -57,7 +57,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     }
 
     /** The current each item function callbacks. */
-    private val boundItemViewsCallbacks = mutableListOf<RecyclerItemView<E>>()
+    private val boundItemViewsCallbacks = linkedSetOf<RecyclerItemView<E>>()
 
     /** The current each item on click event callback. */
     private var itemViewsOnClickCallback: ((View, Int, E, Int) -> Unit)? = null
