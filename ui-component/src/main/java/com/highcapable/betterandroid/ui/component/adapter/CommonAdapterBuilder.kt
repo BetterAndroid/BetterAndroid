@@ -78,6 +78,9 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
     /** The current [List] data callback. */
     private var listDataCallback: (() -> List<E>)? = null
 
+    /** The current entity ID callback. */
+    private var entityIdCallback: ((E, Int) -> Long)? = null
+
     /** The empty [Filter] callback. */
     private val emptyFilterCallback = {
         object : Filter() {
@@ -128,6 +131,15 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
      * @return [CommonAdapterBuilder]<[E]>
      */
     fun onBindData(result: (() -> List<E>)) = apply { listDataCallback = result }
+
+    /**
+     * Bind each item ID to [BaseAdapter].
+     *
+     * If not set will use current position as the ID.
+     * @param entityId callback the each item ID function.
+     * @return [CommonAdapterBuilder]<[E]>
+     */
+    fun onBindItemId(entityId: (entity: E, position: Int) -> Long) = apply { entityIdCallback = entityId }
 
     /**
      * Add and create view holder with [VB].
@@ -183,7 +195,7 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
         override fun getFilter() = filterCallback?.invoke() ?: emptyFilterCallback()
         override fun getCount() = dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: 0
         override fun getItem(position: Int) = getCurrentEntity(position)
-        override fun getItemId(position: Int) = position.toLong()
+        override fun getItemId(position: Int) = entityIdCallback?.invoke(getCurrentEntity(position), position) ?: position.toLong()
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
             var holderView = convertView
             val holder: CommonAdapterBuilder<E>.BaseViewHolder

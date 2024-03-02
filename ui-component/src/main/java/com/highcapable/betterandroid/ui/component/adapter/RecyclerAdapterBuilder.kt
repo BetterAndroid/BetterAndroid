@@ -71,6 +71,9 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     /** The current [List] data callback. */
     private var listDataCallback: (() -> List<E>)? = null
 
+    /** The current entity ID callback. */
+    private var entityIdCallback: ((E, Int) -> Long)? = null
+
     /** The current entity type callback. */
     private var entityTypeCallback: ((E, Int) -> Int)? = null
 
@@ -109,6 +112,15 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      * @return [RecyclerAdapterBuilder]<[E]>
      */
     fun onBindData(result: (() -> List<E>)) = apply { listDataCallback = result }
+
+    /**
+     * Bind each item ID to [RecyclerView.Adapter].
+     *
+     * If not set will use current position as the ID.
+     * @param entityId callback the each item ID function.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     */
+    fun onBindItemId(entityId: (entity: E, position: Int) -> Long) = apply { entityIdCallback = entityId }
 
     /**
      * Bind each view type to [RecyclerView.Adapter].
@@ -221,7 +233,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
         }
 
         override fun getItemViewType(position: Int) = entityTypeCallback?.invoke(getCurrentEntity(position), position) ?: 0
-        override fun getItemId(position: Int) = position.toLong()
+        override fun getItemId(position: Int) = entityIdCallback?.invoke(getCurrentEntity(position), position) ?: position.toLong()
         override fun getItemCount() = dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: 0
     }
 
