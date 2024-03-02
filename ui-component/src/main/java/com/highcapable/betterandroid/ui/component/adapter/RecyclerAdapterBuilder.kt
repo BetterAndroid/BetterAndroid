@@ -62,6 +62,9 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     /** The current each item function callbacks. */
     private val boundItemViewsCallbacks = linkedSetOf<RecyclerItemView<E>>()
 
+    /** The current each item view type callbacks. */
+    private val boundItemViewTypes = mutableMapOf<Int, Int>()
+
     /** The current each item on click event callback. */
     private var itemViewsOnClickCallback: ((View, Int, E, Int) -> Unit)? = null
 
@@ -73,9 +76,6 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
 
     /** The current entity ID callback. */
     private var entityIdCallback: ((E, Int) -> Long)? = null
-
-    /** The current entity type callback. */
-    private var entityTypeCallback: ((E, Int) -> Int)? = null
 
     /**
      * Get the entity [E].
@@ -124,10 +124,13 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
 
     /**
      * Bind each view type to [RecyclerView.Adapter].
-     * @param entityType callback the each view type function.
+     *
+     * - This function is deprecated and no effect, please directly use [onBindViews] and fill in the `viewType` parameter.
      * @return [RecyclerAdapterBuilder]<[E]>
      */
-    fun onBindViewsType(entityType: (entity: E, position: Int) -> Int) = apply { entityTypeCallback = entityType }
+    @Suppress("UNUSED_PARAMETER", "DeprecatedCallableAddReplaceWith")
+    @Deprecated(message = "Directly use onBindViews and fill in the `viewType` parameter.")
+    fun onBindViewsType(entityType: (entity: E, position: Int) -> Int) = apply {}
 
     /**
      * Add and create view holder with [VB].
@@ -140,6 +143,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     inline fun <reified VB : ViewBinding> onBindViews(
         viewType: Int = DEFAULT_VIEW_TYPE, noinline boundItemViews: (binding: VB, entity: E, position: Int) -> Unit
     ) = apply {
+        boundItemViewTypes[boundItemViewsCallbacks.size] = viewType
         boundItemViewsCallbacks.add(RecyclerItemView(bindingClass = classOf<VB>(), viewType = viewType) { binding, _, entity, position ->
             binding?.also { boundItemViews(it as VB, entity, position) }
         })
@@ -156,6 +160,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     fun onBindViews(
         @LayoutRes resId: Int, viewType: Int = DEFAULT_VIEW_TYPE, boundItemViews: (view: View, entity: E, position: Int) -> Unit
     ) = apply {
+        boundItemViewTypes[boundItemViewsCallbacks.size] = viewType
         boundItemViewsCallbacks.add(RecyclerItemView(rootViewResId = resId, viewType = viewType) { _, rootView, entity, position ->
             rootView?.also { boundItemViews(it, entity, position) }
         })
@@ -170,6 +175,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      */
     @JvmOverloads
     fun onBindViews(view: View, viewType: Int = DEFAULT_VIEW_TYPE, boundItemViews: (view: View, entity: E, position: Int) -> Unit) = apply {
+        boundItemViewTypes[boundItemViewsCallbacks.size] = viewType
         boundItemViewsCallbacks.add(RecyclerItemView(rootView = view, viewType = viewType) { _, rootView, entity, position ->
             rootView?.also { boundItemViews(it, entity, position) }
         })
@@ -232,7 +238,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
             }
         }
 
-        override fun getItemViewType(position: Int) = entityTypeCallback?.invoke(getCurrentEntity(position), position) ?: 0
+        override fun getItemViewType(position: Int) = boundItemViewTypes[position] ?: DEFAULT_VIEW_TYPE
         override fun getItemId(position: Int) = entityIdCallback?.invoke(getCurrentEntity(position), position) ?: position.toLong()
         override fun getItemCount() = dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: 0
     }
