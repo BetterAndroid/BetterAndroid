@@ -198,6 +198,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      * @param viewType specific a item view type to bind the on click event, only one of [id] and [viewType] can be used.
      * @param onClick callback and return each bound item function (the on click event callback).
      * @return [RecyclerAdapterBuilder]<[E]>
+     * @throws IllegalArgumentException if [id] and [viewType] are used at the same time.
      */
     @JvmOverloads
     fun onItemViewsClick(id: Long? = null, viewType: Int? = null, onClick: (view: View, entity: E, position: Int) -> Unit) = apply {
@@ -212,6 +213,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      * @param viewType specific a item view type to bind the on long click event, only one of [id] and [viewType] can be used.
      * @param onLongClick callback and return each bound item function (the on long click event callback).
      * @return [RecyclerAdapterBuilder]<[E]>
+     * @throws IllegalArgumentException if [id] and [viewType] are used at the same time.
      */
     @JvmOverloads
     fun onItemViewsLongClick(id: Long? = null, viewType: Int? = null, onLongClick: (view: View, entity: E, position: Int) -> Boolean) = apply {
