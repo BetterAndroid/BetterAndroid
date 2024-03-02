@@ -45,6 +45,9 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
 
     companion object {
 
+        /** The default view type. */
+        const val DEFAULT_VIEW_TYPE = 0
+
         /**
          * Create a new [RecyclerAdapterBuilder]<[E]> from [context].
          * @see RecyclerView.bindAdapter
@@ -116,14 +119,14 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
 
     /**
      * Add and create view holder with [VB].
-     * @param viewType the view type, default is 0.
+     * @param viewType the view type, default is [DEFAULT_VIEW_TYPE].
      * @param boundItemViews callback and return each bound item function.
      * @return [RecyclerAdapterBuilder]<[E]>
      */
     @JvmOverloads
     @JvmName("onBindCustomViews")
     inline fun <reified VB : ViewBinding> onBindViews(
-        viewType: Int = 0, noinline boundItemViews: (binding: VB, entity: E, position: Int) -> Unit
+        viewType: Int = DEFAULT_VIEW_TYPE, noinline boundItemViews: (binding: VB, entity: E, position: Int) -> Unit
     ) = apply {
         boundItemViewsCallbacks.add(RecyclerItemView(bindingClass = classOf<VB>(), viewType = viewType) { binding, _, entity, position ->
             binding?.also { boundItemViews(it as VB, entity, position) }
@@ -133,12 +136,14 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     /**
      * Add and create view holder.
      * @param resId item view layout ID.
-     * @param viewType the view type, default is 0.
+     * @param viewType the view type, default is [DEFAULT_VIEW_TYPE].
      * @param boundItemViews callback and return each bound item function.
      * @return [RecyclerAdapterBuilder]<[E]>
      */
     @JvmOverloads
-    fun onBindViews(@LayoutRes resId: Int, viewType: Int = 0, boundItemViews: (view: View, entity: E, position: Int) -> Unit) = apply {
+    fun onBindViews(
+        @LayoutRes resId: Int, viewType: Int = DEFAULT_VIEW_TYPE, boundItemViews: (view: View, entity: E, position: Int) -> Unit
+    ) = apply {
         boundItemViewsCallbacks.add(RecyclerItemView(rootViewResId = resId, viewType = viewType) { _, rootView, entity, position ->
             rootView?.also { boundItemViews(it, entity, position) }
         })
@@ -147,12 +152,12 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     /**
      * Add and create view holder.
      * @param view item [View], there must be no parent layout.
-     * @param viewType the view type, default is 0.
+     * @param viewType the view type, default is [DEFAULT_VIEW_TYPE].
      * @param boundItemViews callback and return each bound item function.
      * @return [RecyclerAdapterBuilder]<[E]>
      */
     @JvmOverloads
-    fun onBindViews(view: View, viewType: Int = 0, boundItemViews: (view: View, entity: E, position: Int) -> Unit) = apply {
+    fun onBindViews(view: View, viewType: Int = DEFAULT_VIEW_TYPE, boundItemViews: (view: View, entity: E, position: Int) -> Unit) = apply {
         boundItemViewsCallbacks.add(RecyclerItemView(rootView = view, viewType = viewType) { _, rootView, entity, position ->
             rootView?.also { boundItemViews(it, entity, position) }
         })
