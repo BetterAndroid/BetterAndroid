@@ -50,6 +50,9 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
 
     companion object {
 
+        /** The no ID's item ID. */
+        private const val ITEM_NO_ID = -1L
+
         /**
          * Create a new [CommonAdapterBuilder]<[E]> from [context].
          * @see ListView.bindAdapter
@@ -66,11 +69,11 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
     /** The current each item function callback. */
     private var boundItemViewsCallback: CommonItemView<E>? = null
 
-    /** The current each item on click event callback. */
-    private var itemViewsOnClickCallback: ((View, E, Int) -> Unit)? = null
+    /** The current each item on click event callbacks. */
+    private var itemViewsOnClickCallbacks = mutableMapOf<Long, (View, E, Int) -> Unit>()
 
-    /** The current each item on long click event callback. */
-    private var itemViewsOnLongClickCallback: ((View, E, Int) -> Boolean)? = null
+    /** The current each item on long click event callbacks. */
+    private var itemViewsOnLongClickCallbacks = mutableMapOf<Long, (View, E, Int) -> Boolean>()
 
     /** The current [Filter] callback. */
     private var filterCallback: (() -> Filter)? = null
@@ -180,18 +183,23 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
 
     /**
      * Set the each item view on click events.
+     * @param id specific a item ID to bind the on click event, default is [ITEM_NO_ID].
      * @param onClick callback and return each bound item function (the on click event callback).
      * @return [CommonAdapterBuilder]<[E]>
      */
-    fun onItemViewsClick(onClick: (view: View, entity: E, position: Int) -> Unit) = apply { itemViewsOnClickCallback = onClick }
+    @JvmOverloads
+    fun onItemViewsClick(id: Long = ITEM_NO_ID, onClick: (view: View, entity: E, position: Int) -> Unit) =
+        apply { itemViewsOnClickCallbacks[id] = onClick }
 
     /**
      * Set the each item view on long click events.
+     * @param id specific a item ID to bind the on long click event, default is [ITEM_NO_ID].
      * @param onLongClick callback and return each bound item function (the on long click event callback).
      * @return [CommonAdapterBuilder]<[E]>
      */
-    fun onItemViewsLongClick(onLongClick: (view: View, entity: E, position: Int) -> Boolean) =
-        apply { itemViewsOnLongClickCallback = onLongClick }
+    @JvmOverloads
+    fun onItemViewsLongClick(id: Long = ITEM_NO_ID, onLongClick: (view: View, entity: E, position: Int) -> Boolean) =
+        apply { itemViewsOnLongClickCallbacks[id] = onLongClick }
 
     override fun build(): BaseAdapter = object : BaseAdapter(), Filterable {
         override fun getFilter() = filterCallback?.invoke() ?: emptyFilterCallback()
@@ -224,8 +232,22 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
             } else holder = convertView.tag as CommonAdapterBuilder<E>.BaseViewHolder
             holderView?.apply {
                 tag = holder
-                itemViewsOnClickCallback?.also { setOnClickListener { it(it, getCurrentEntity(position), position) } }
-                itemViewsOnLongClickCallback?.also { setOnLongClickListener { it(it, getCurrentEntity(position), position) } }
+                itemViewsOnClickCallbacks
+                    .filterKeys { it == ITEM_NO_ID || it == getItemId(position) }
+                    .also { callbacks ->
+                        if (callbacks.isNotEmpty()) setOnClickListener {
+                            callbacks.forEach { (_, callback) -> callback(it, getCurrentEntity(position), position) }
+                        }
+                    }
+                itemViewsOnLongClickCallbacks
+                    .filterKeys { it == ITEM_NO_ID || it == getItemId(position) }
+                    .also { callbacks ->
+                        if (callbacks.isNotEmpty()) setOnLongClickListener {
+                            var result = false
+                            callbacks.forEach { (_, callback) -> result = callback(it, getCurrentEntity(position), position) }
+                            result
+                        }
+                    }
             }
             boundItemViewsCallback?.onBindCallback?.invoke(
                 (holder as? BindingBaseHolder?)?.binding, holder.rootView, getCurrentEntity(position), position

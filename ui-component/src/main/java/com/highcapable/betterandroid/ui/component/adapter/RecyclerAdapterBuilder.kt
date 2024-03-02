@@ -48,6 +48,9 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
         /** The default view type. */
         const val DEFAULT_VIEW_TYPE = 0
 
+        /** The no ID's item ID. */
+        private const val ITEM_NO_ID = -1L
+
         /**
          * Create a new [RecyclerAdapterBuilder]<[E]> from [context].
          * @see RecyclerView.bindAdapter
@@ -65,11 +68,11 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     /** The current each item view type callbacks. */
     private val boundItemViewTypes = mutableMapOf<Int, Int>()
 
-    /** The current each item on click event callback. */
-    private var itemViewsOnClickCallback: ((View, Int, E, Int) -> Unit)? = null
+    /** The current each item on click event callbacks. */
+    private var itemViewsOnClickCallbacks = mutableMapOf<Any, (View, E, Int) -> Unit>()
 
-    /** The current each item on long click event callback. */
-    private var itemViewsOnLongClickCallback: ((View, Int, E, Int) -> Boolean)? = null
+    /** The current each item on long click event callbacks. */
+    private var itemViewsOnLongClickCallbacks = mutableMapOf<Any, (View, E, Int) -> Boolean>()
 
     /** The current [List] data callback. */
     private var listDataCallback: (() -> List<E>)? = null
@@ -190,19 +193,51 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
 
     /**
      * Set the each item view on click events.
+     * @see onItemViewsLongClick
+     * @param id specific a item ID to bind the on click event, only one of [id] and [viewType] can be used.
+     * @param viewType specific a item view type to bind the on click event, only one of [id] and [viewType] can be used.
      * @param onClick callback and return each bound item function (the on click event callback).
      * @return [RecyclerAdapterBuilder]<[E]>
      */
-    fun onItemViewsClick(onClick: (view: View, viewType: Int, entity: E, position: Int) -> Unit) =
-        apply { itemViewsOnClickCallback = onClick }
+    @JvmOverloads
+    fun onItemViewsClick(id: Long? = null, viewType: Int? = null, onClick: (view: View, entity: E, position: Int) -> Unit) = apply {
+        require(id == null || viewType == null) { "Only one of id and viewType can be used of onItemViewsClick." }
+        itemViewsOnClickCallbacks[id ?: viewType ?: ITEM_NO_ID] = onClick
+    }
 
     /**
      * Set the each item view on long click events.
+     * @see onItemViewsClick
+     * @param id specific a item ID to bind the on long click event, only one of [id] and [viewType] can be used.
+     * @param viewType specific a item view type to bind the on long click event, only one of [id] and [viewType] can be used.
      * @param onLongClick callback and return each bound item function (the on long click event callback).
      * @return [RecyclerAdapterBuilder]<[E]>
      */
-    fun onItemViewsLongClick(onLongClick: (view: View, viewType: Int, entity: E, position: Int) -> Boolean) =
-        apply { itemViewsOnLongClickCallback = onLongClick }
+    @JvmOverloads
+    fun onItemViewsLongClick(id: Long? = null, viewType: Int? = null, onLongClick: (view: View, entity: E, position: Int) -> Boolean) = apply {
+        require(id == null || viewType == null) { "Only one of id and viewType can be used of onItemViewsLongClick." }
+        itemViewsOnLongClickCallbacks[id ?: viewType ?: ITEM_NO_ID] = onLongClick
+    }
+
+    /**
+     * Set the each item view on click events.
+     *
+     * - This function is deprecated and no effect, use [onItemViewsClick] instead.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     */
+    @Suppress("UNUSED_PARAMETER", "DeprecatedCallableAddReplaceWith")
+    @Deprecated(message = "Use onItemViewsClick instead.")
+    fun onItemViewsClick(onClick: (view: View, viewType: Int, entity: E, position: Int) -> Unit) = apply {}
+
+    /**
+     * Set the each item view on long click events.
+     *
+     * - This function is deprecated and no effect, use [onItemViewsLongClick] instead.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     */
+    @Suppress("UNUSED_PARAMETER", "DeprecatedCallableAddReplaceWith")
+    @Deprecated(message = "Use onItemViewsLongClick instead.")
+    fun onItemViewsLongClick(onLongClick: (view: View, viewType: Int, entity: E, position: Int) -> Boolean) = apply {}
 
     override fun build() = object : RecyclerView.Adapter<RecyclerAdapterBuilder<E>.BaseRecyclerHolder>() {
 
@@ -233,14 +268,29 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
                     is CommonRecyclerHolder -> it.onBindCallback(null, holder.rootView, getCurrentEntity(position), position)
                 }
             }
-            itemViewsOnClickCallback?.also {
-                holder.rootView.setOnClickListener {
-                    it(holder.rootView, holder.viewType, getCurrentEntity(holder.adapterPosition), holder.adapterPosition)
+            itemViewsOnClickCallbacks.filterKeys {
+                when (it) {
+                    is Long -> it == ITEM_NO_ID || it == getItemId(holder.adapterPosition)
+                    is Int -> it == DEFAULT_VIEW_TYPE || it == holder.viewType
+                    else -> false
+                }
+            }.also { callbacks ->
+                if (callbacks.isNotEmpty()) holder.rootView.setOnClickListener {
+                    callbacks.forEach { (_, callback) -> callback(it, getCurrentEntity(holder.adapterPosition), holder.adapterPosition) }
                 }
             }
-            itemViewsOnLongClickCallback?.also {
-                holder.rootView.setOnLongClickListener {
-                    it(holder.rootView, holder.viewType, getCurrentEntity(holder.adapterPosition), holder.adapterPosition)
+            itemViewsOnLongClickCallbacks.filterKeys {
+                when (it) {
+                    is Long -> it == ITEM_NO_ID || it == getItemId(holder.adapterPosition)
+                    is Int -> it == DEFAULT_VIEW_TYPE || it == holder.viewType
+                    else -> false
+                }
+            }.also { callbacks ->
+                if (callbacks.isNotEmpty()) holder.rootView.setOnLongClickListener {
+                    var result = false
+                    callbacks.forEach { (_, callback) ->
+                        result = result || callback(it, getCurrentEntity(holder.adapterPosition), holder.adapterPosition)
+                    }; result
                 }
             }
         }
