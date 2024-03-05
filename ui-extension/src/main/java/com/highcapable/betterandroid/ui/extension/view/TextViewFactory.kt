@@ -84,6 +84,14 @@ fun EditText.updateText(text: CharSequence?) {
 }
 
 /**
+ * Clear the text view's text.
+ * @receiver [TextView]
+ */
+fun TextView.clear() {
+    text = ""
+}
+
+/**
  * Set the text view's digits.
  * @receiver [TextView]
  * @param acceptedChars the allowed chars.
