@@ -27,6 +27,7 @@ package com.highcapable.betterandroid.ui.extension.view
 import android.graphics.Paint
 import android.text.InputType
 import android.text.method.DigitsKeyListener
+import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
@@ -71,6 +72,16 @@ var TextView.textColor
     set(@ColorInt value) {
         setTextColor(value)
     }
+
+/**
+ * Update the edit text's text and set the cursor to the end.
+ * @receiver [EditText]
+ * @param text the text.
+ */
+fun EditText.updateText(text: CharSequence?) {
+    setText(text)
+    if (!text.isNullOrEmpty()) setSelection(text.length)
+}
 
 /**
  * Set the text view's digits.
