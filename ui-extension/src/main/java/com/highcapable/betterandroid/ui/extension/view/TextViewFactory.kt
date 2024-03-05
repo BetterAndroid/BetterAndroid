@@ -25,6 +25,7 @@
 package com.highcapable.betterandroid.ui.extension.view
 
 import android.graphics.Paint
+import android.graphics.Typeface
 import android.text.InputType
 import android.text.method.DigitsKeyListener
 import android.widget.EditText
@@ -90,6 +91,15 @@ fun EditText.updateText(text: CharSequence?) {
 fun TextView.clear() {
     text = ""
 }
+
+/**
+ * Update the text view's typeface.
+ * @receiver [TextView]
+ * @param style the style.
+ * @param tf the typeface, default is [TextView.getTypeface].
+ */
+@JvmOverloads
+fun TextView.updateTypeface(style: Int, tf: Typeface? = typeface) = setTypeface(tf, style)
 
 /**
  * Set the text view's digits.
