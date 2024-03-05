@@ -45,6 +45,7 @@ class OnBackPressedCallback(enabled: Boolean = true, private val handleOnBackPre
         isEnabled = false
         controller.trigger()
         if (removed) controller.removeCallback(callback = this)
+        else isEnabled = true
     }
 
     @Deprecated(message = "Hide, use handleOnBackPressed.", level = DeprecationLevel.HIDDEN)
