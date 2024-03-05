@@ -26,6 +26,7 @@ package com.highcapable.betterandroid.ui.extension.view
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Outline
 import android.graphics.Point
 import android.os.Handler
 import android.os.Looper
@@ -34,6 +35,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import android.view.inputmethod.InputMethodManager
 import android.widget.AbsListView
 import android.widget.FrameLayout
@@ -385,6 +387,19 @@ fun ViewGroup.walkThroughChildren(): List<View> {
  * @return [Int]
  */
 fun View.indexOfInParent() = parentOrNull()?.indexOfChild(this) ?: -1
+
+/**
+ * Set the view's outline provider.
+ * @receiver [V]
+ * @param provider the outline provider callback.
+ */
+inline fun <reified V : View> V.outlineProvider(crossinline provider: (view: V, outline: Outline) -> Unit) {
+    outlineProvider = object : ViewOutlineProvider() {
+        override fun getOutline(view: View, outline: Outline) {
+            provider(view as V, outline)
+        }
+    }
+}
 
 /**
  * Inflate a view using [resId].
