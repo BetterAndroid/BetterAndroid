@@ -35,6 +35,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.AbsListView
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -310,6 +311,7 @@ inline fun <reified VGLP : ViewGroup.LayoutParams> ViewLayoutParams(
         else -> LayoutParamsWrapContent
     }
     return when (classOf<VGLP>()) {
+        classOf<AbsListView.LayoutParams>() -> AbsListView.LayoutParams(absWidth, absHeight) as VGLP
         classOf<LinearLayout.LayoutParams>() -> LinearLayout.LayoutParams(absWidth, absHeight) as VGLP
         classOf<RelativeLayout.LayoutParams>() -> RelativeLayout.LayoutParams(absWidth, absHeight) as VGLP
         classOf<FrameLayout.LayoutParams>() -> FrameLayout.LayoutParams(absWidth, absHeight) as VGLP
