@@ -1343,6 +1343,8 @@ window.clearScreenBrightness()
 
 [ViewFactory → indexOfInParent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/index-of-in-parent)
 
+[ViewFactory → outlineProvider](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/outline-provider)
+
 [ViewFactory → inflate](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/inflate)
 
 [ViewFactory → ViewLayoutParams](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-view-layout-params.html)
@@ -1586,6 +1588,30 @@ val view: View
 // Get the index of the View in the parent layout.
 // If the parent layout does not exist, -1 will be returned.
 val index = view.indexOfInParent()
+```
+
+Sets the `View`'s `outlineProvider`.
+
+`OutlineProvider` of `View` is used to set the outer outline of `View`, its type is `ViewOutlineProvider`.
+
+In Kotlin, we need to use `view.outlineProvider = object : ViewOutlineProvider()` to set it, which does not seem friendly.
+
+So `BetterAndroid` provides a simpler way for this.
+
+> The following example
+
+```kotlin
+// Assume this is your View object.
+val view: View
+// Set View's outlineProvider.
+view.outlineProvider { view, outline ->
+    // For example, you can set the outer outline of a circle here.
+    outline.setOval(0, 0, view.width, view.height)
+    // Or you can set the outer outline of the rounded rectangle here.
+    outline.setRoundRect(0, 0, view.width, view.height, 10f.toPx(context))
+}
+// Remember to set clipToOutline to true after setting outlineProvider.
+view.clipToOutline = true
 ```
 
 Inflate layout.

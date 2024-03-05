@@ -1304,6 +1304,8 @@ window.clearScreenBrightness()
 
 [ViewFactory → indexOfInParent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/index-of-in-parent)
 
+[ViewFactory → outlineProvider](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/outline-provider)
+
 [ViewFactory → inflate](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/inflate)
 
 [ViewFactory → ViewLayoutParams](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-view-layout-params.html)
@@ -1539,6 +1541,30 @@ val view: View
 // 获取 View 在父布局中的索引
 // 如果不存在父布局将会返回 -1
 val index = view.indexOfInParent()
+```
+
+设置 `View` 的 `outlineProvider` (外轮廓提供者)。
+
+`View` 的 `outlineProvider` 用于设置 `View` 的外轮廓，它的类型为 `ViewOutlineProvider`。
+
+在 Kotlin 中，我们需要使用 `view.outlineProvider = object : ViewOutlineProvider()` 的方式进行设置，这看起来并不友好。
+
+于是 `BetterAndroid` 为此提供了一个更加简单的方式。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 View 对象
+val view: View
+// 设置 View 的 outlineProvider
+view.outlineProvider { view, outline ->
+    // 例如，你可以在此处设置圆形的外轮廓
+    outline.setOval(0, 0, view.width, view.height)
+    // 或者你可以在此处设置圆角矩形的外轮廓
+    outline.setRoundRect(0, 0, view.width, view.height, 10f.toPx(context))
+}
+// 记得在设置 outlineProvider 之后设置 clipToOutline 为 true
+view.clipToOutline = true
 ```
 
 装载布局 (Inflate Layout)。
