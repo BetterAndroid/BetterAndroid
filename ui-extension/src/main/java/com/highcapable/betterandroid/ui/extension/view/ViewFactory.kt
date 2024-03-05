@@ -66,11 +66,43 @@ val View.location
     }.getOrNull() ?: Point()
 
 /**
+ * Get the view's parent view [VG].
+ * @receiver [View]
+ * @return [VG]
+ * @throws IllegalStateException if the parent view is not a type of [VG].
+ */
+@JvmName("parentTyped")
+inline fun <reified VG : ViewGroup> View.parent() = parent as? VG ?: error("This view's parent is not a type of ${classOf<VG>()}.")
+
+/**
+ * Get the view's parent view [VG].
+ * @receiver [View]
+ * @return [VG] or null.
+ */
+@JvmName("parentOrNullTyped")
+inline fun <reified VG : ViewGroup> View.parentOrNull() = parent as? VG?
+
+/**
+ * Get the view's parent view.
+ * @receiver [View]
+ * @return [ViewGroup]
+ * @throws IllegalStateException if the parent view is not a type of [ViewGroup].
+ */
+fun View.parent() = parent<ViewGroup>()
+
+/**
+ * Get the view's parent view.
+ * @receiver [View]
+ * @return [ViewGroup] or null.
+ */
+fun View.parentOrNull() = parentOrNull<ViewGroup>()
+
+/**
  * Remove self from its parent view using [ViewGroup.removeView].
  * @receiver [View]
  */
 fun View.removeSelf() {
-    (parent as? ViewGroup?)?.removeView(this)
+    parentOrNull()?.removeView(this)
 }
 
 /**
@@ -78,7 +110,7 @@ fun View.removeSelf() {
  * @receiver [View]
  */
 fun View.removeSelfInLayout() {
-    (parent as? ViewGroup?)?.removeViewInLayout(this)
+    parentOrNull()?.removeViewInLayout(this)
 }
 
 /**

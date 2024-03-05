@@ -34,6 +34,7 @@ import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
 import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
 import com.highcapable.betterandroid.ui.component.proxy.IViewBinding
 import com.highcapable.betterandroid.ui.extension.view.inflateViewBinding
+import com.highcapable.betterandroid.ui.extension.view.parentOrNull
 
 /**
  * App binding fragment with [IViewBinding].
@@ -79,6 +80,6 @@ open class AppBindingFragment<VB : ViewBinding> : BaseFragment(), IViewBinding<V
     @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (baseBinding == null) baseBinding = inflateViewBinding(parent = view.parent as? ViewGroup?)
+        if (baseBinding == null) baseBinding = inflateViewBinding(parent = view.parentOrNull())
     }
 }
