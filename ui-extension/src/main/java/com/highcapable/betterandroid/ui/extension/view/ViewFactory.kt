@@ -104,6 +104,26 @@ fun View.parent() = parent<ViewGroup>()
 fun View.parentOrNull() = parentOrNull<ViewGroup>()
 
 /**
+ * Get the view [V] by [index] in its parent view.
+ * @see ViewGroup.childOrNull
+ * @see ViewGroup.getChildAt
+ * @receiver [ViewGroup]
+ * @return [V]
+ * @throws IllegalStateException if the view at [index] is not a type of [V] or is null.
+ */
+inline fun <reified V : View> ViewGroup.child(index: Int) = getChildAt(index) as? V?
+    ?: error("This view at $index is not a type of ${classOf<V>()} or is null.")
+
+/**
+ * Get the view [V] by [index] in its parent view.
+ * @see ViewGroup.child
+ * @see ViewGroup.getChildAt
+ * @receiver [ViewGroup]
+ * @return [V] or null.
+ */
+inline fun <reified V : View> ViewGroup.childOrNull(index: Int) = getChildAt(index) as? V?
+
+/**
  * Remove self from its parent view using [ViewGroup.removeView].
  * @receiver [View]
  */
