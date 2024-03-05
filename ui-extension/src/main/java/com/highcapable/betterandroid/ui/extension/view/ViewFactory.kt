@@ -108,6 +108,7 @@ fun View.parentOrNull() = parentOrNull<ViewGroup>()
  * @see ViewGroup.childOrNull
  * @see ViewGroup.getChildAt
  * @receiver [ViewGroup]
+ * @param index the index of the view.
  * @return [V]
  * @throws IllegalStateException if the view at [index] is not a type of [V] or is null.
  */
@@ -119,6 +120,7 @@ inline fun <reified V : View> ViewGroup.child(index: Int) = getChildAt(index) as
  * @see ViewGroup.child
  * @see ViewGroup.getChildAt
  * @receiver [ViewGroup]
+ * @param index the index of the view.
  * @return [V] or null.
  */
 inline fun <reified V : View> ViewGroup.childOrNull(index: Int) = getChildAt(index) as? V?
