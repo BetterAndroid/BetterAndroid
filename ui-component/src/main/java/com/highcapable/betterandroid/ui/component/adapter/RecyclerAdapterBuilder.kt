@@ -48,6 +48,12 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
         /** The default view type. */
         const val DEFAULT_VIEW_TYPE = 0
 
+        /** The header view type. */
+        private const val HEADER_VIEW_TYPE = -10
+
+        /** The footer view type. */
+        private const val FOOTER_VIEW_TYPE = -20
+
         /** The no ID's item ID. */
         private const val ITEM_NO_ID = -1L
 
@@ -65,6 +71,12 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     /** The current each item function callbacks. */
     private val boundItemViewsCallbacks = linkedSetOf<RecyclerItemView<E>>()
 
+    /** The current header item view callback. */
+    private var boundHeaderItemViewCallback: RecyclerItemView<Any>? = null
+
+    /** The current footer item view callback. */
+    private var boundFooterItemViewCallback: RecyclerItemView<Any>? = null
+
     /** The current each item on click event callbacks. */
     private var itemViewsOnClickCallbacks = mutableMapOf<Any, (View, E, Int) -> Unit>()
 
@@ -79,6 +91,19 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
 
     /** The current entity type callback. */
     private var entityTypeCallback: ((E, Int) -> Int)? = null
+
+    /** Whether the adapter has a header view. */
+    private val hasHeaderView get() = boundHeaderItemViewCallback != null
+
+    /** Whether the adapter has a footer view. */
+    private val hasFooterView get() = boundFooterItemViewCallback != null
+
+    /**
+     * Get the current position of the item view excluding the header view.
+     * @receiver the current position.
+     * @return [Int]
+     */
+    private fun Int.overflowPosition() = if (hasHeaderView) this - 1 else this
 
     /**
      * Get the entity [E].
@@ -131,6 +156,132 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      * @return [RecyclerAdapterBuilder]<[E]>
      */
     fun onBindViewsType(entityType: (entity: E, position: Int) -> Int) = apply { entityTypeCallback = entityType }
+
+    /**
+     * Add and create view holder for a header view with [VB].
+     *
+     * A header item view is a special item view that is not included in the [dataSetCount] or [onBindData].
+     *
+     * - Note: You can only set one header view.
+     * @see onBindFooterView
+     * @see onBindViews
+     * @param boundHeaderView callback and return each bound item function.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     * @throws IllegalStateException if the header view already exists.
+     */
+    @JvmOverloads
+    @JvmName("onBindCustomHeaderView")
+    inline fun <reified VB : ViewBinding> onBindHeaderView(noinline boundHeaderView: (binding: VB) -> Unit = {}) = apply {
+        require(!hasHeaderView) { "The header view already exists, you can only set one header view." }
+        boundHeaderItemViewCallback = RecyclerItemView(bindingClass = classOf<VB>(), viewType = HEADER_VIEW_TYPE) { binding, _, _, _ ->
+            binding?.also { boundHeaderView(it as VB) }
+        }
+    }
+
+    /**
+     * Add and create view holder for a header view.
+     *
+     * A header item view is a special item view that is not included in the [dataSetCount] or [onBindData].
+     *
+     * - Note: You can only set one header view.
+     * @see onBindFooterView
+     * @see onBindViews
+     * @param resId item view layout ID.
+     * @param boundHeaderView callback and return each bound item function.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     * @throws IllegalStateException if the header view already exists.
+     */
+    @JvmOverloads
+    fun onBindHeaderView(@LayoutRes resId: Int, boundHeaderView: (view: View) -> Unit = {}) = apply {
+        require(!hasHeaderView) { "The header view already exists, you can only set one header view." }
+        boundHeaderItemViewCallback = RecyclerItemView(rootViewResId = resId, viewType = HEADER_VIEW_TYPE) { _, rootView, _, _ ->
+            rootView?.also { boundHeaderView(it) }
+        }
+    }
+
+    /**
+     * Add and create view holder for a header view.
+     *
+     * A header item view is a special item view that is not included in the [dataSetCount] or [onBindData].
+     *
+     * - Note: You can only set one header view.
+     * @see onBindFooterView
+     * @see onBindViews
+     * @param view item [View], there must be no parent layout.
+     * @param boundHeaderView callback and return each bound item function.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     * @throws IllegalStateException if the header view already exists.
+     */
+    @JvmOverloads
+    fun onBindHeaderView(view: View, boundHeaderView: (view: View) -> Unit = {}) = apply {
+        require(!hasHeaderView) { "The header view already exists, you can only set one header view." }
+        boundHeaderItemViewCallback = RecyclerItemView(rootView = view, viewType = HEADER_VIEW_TYPE) { _, rootView, _, _ ->
+            rootView?.also { boundHeaderView(it) }
+        }
+    }
+
+    /**
+     * Add and create view holder for a footer view with [VB].
+     *
+     * A footer item view is a special item view that is not included in the [dataSetCount] or [onBindData].
+     *
+     * - Note: You can only set one footer view.
+     * @see onBindHeaderView
+     * @see onBindViews
+     * @param boundFooterView callback and return each bound item function.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     * @throws IllegalStateException if the footer view already exists.
+     */
+    @JvmOverloads
+    @JvmName("onBindCustomFooterView")
+    inline fun <reified VB : ViewBinding> onBindFooterView(noinline boundFooterView: (binding: VB) -> Unit = {}) = apply {
+        require(!hasFooterView) { "The footer view already exists, you can only set one footer view." }
+        boundFooterItemViewCallback = RecyclerItemView(bindingClass = classOf<VB>(), viewType = FOOTER_VIEW_TYPE) { binding, _, _, _ ->
+            binding?.also { boundFooterView(it as VB) }
+        }
+    }
+
+    /**
+     * Add and create view holder for a footer view.
+     *
+     * A footer item view is a special item view that is not included in the [dataSetCount] or [onBindData].
+     *
+     * - Note: You can only set one footer view.
+     * @see onBindHeaderView
+     * @see onBindViews
+     * @param resId item view layout ID.
+     * @param boundFooterView callback and return each bound item function.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     * @throws IllegalStateException if the footer view already exists.
+     */
+    @JvmOverloads
+    fun onBindFooterView(@LayoutRes resId: Int, boundFooterView: (view: View) -> Unit = {}) = apply {
+        require(!hasFooterView) { "The footer view already exists, you can only set one footer view." }
+        boundFooterItemViewCallback = RecyclerItemView(rootViewResId = resId, viewType = FOOTER_VIEW_TYPE) { _, rootView, _, _ ->
+            rootView?.also { boundFooterView(it) }
+        }
+    }
+
+    /**
+     * Add and create view holder for a footer view.
+     *
+     * A footer item view is a special item view that is not included in the [dataSetCount] or [onBindData].
+     *
+     * - Note: You can only set one footer view.
+     * @see onBindHeaderView
+     * @see onBindViews
+     * @param view item [View], there must be no parent layout.
+     * @param boundFooterView callback and return each bound item function.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     * @throws IllegalStateException if the footer view already exists.
+     */
+    @JvmOverloads
+    fun onBindFooterView(view: View, boundFooterView: (view: View) -> Unit = {}) = apply {
+        require(!hasFooterView) { "The footer view already exists, you can only set one footer view." }
+        boundFooterItemViewCallback = RecyclerItemView(rootView = view, viewType = FOOTER_VIEW_TYPE) { _, rootView, _, _ ->
+            rootView?.also { boundFooterView(it) }
+        }
+    }
 
     /**
      * Add and create view holder with [VB].
@@ -245,7 +396,11 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
          * @param viewType the current view type。
          * @return [RecyclerItemView]<[E]> or null.
          */
-        private fun boundItemViewsCallbacks(viewType: Int) = boundItemViewsCallbacks.firstOrNull { it.viewType == viewType }
+        private fun boundItemViewsCallbacks(viewType: Int) = when (viewType) {
+            HEADER_VIEW_TYPE -> boundHeaderItemViewCallback
+            FOOTER_VIEW_TYPE -> boundFooterItemViewCallback
+            else -> boundItemViewsCallbacks.firstOrNull { it.viewType == viewType }
+        }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             boundItemViewsCallbacks(viewType)?.let {
@@ -264,42 +419,66 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
             )
 
         override fun onBindViewHolder(holder: RecyclerAdapterBuilder<E>.BaseRecyclerHolder, position: Int) {
-            boundItemViewsCallbacks.forEach {
-                if (it.viewType == holder.viewType) when (holder) {
-                    is BindingRecyclerHolder -> it.onBindCallback(holder.binding, holder.binding.root, getCurrentEntity(position), position)
-                    is CommonRecyclerHolder -> it.onBindCallback(null, holder.rootView, getCurrentEntity(position), position)
+            when {
+                hasHeaderView && position == 0 || hasFooterView && position == itemCount - 1 -> when (holder) {
+                    is BindingRecyclerHolder ->
+                        boundHeaderItemViewCallback?.onBindCallback?.invoke(holder.binding, holder.binding.root, Any(), position)
+                    is CommonRecyclerHolder ->
+                        boundHeaderItemViewCallback?.onBindCallback?.invoke(null, holder.rootView, Any(), position)
                 }
-            }
-            itemViewsOnClickCallbacks.filterKeys {
-                when (it) {
-                    is Long -> it == ITEM_NO_ID || it == getItemId(holder.adapterPosition)
-                    is Int -> it == DEFAULT_VIEW_TYPE || it == holder.viewType
-                    else -> false
-                }
-            }.also { callbacks ->
-                if (callbacks.isNotEmpty()) holder.rootView.setOnClickListener {
-                    callbacks.forEach { (_, callback) -> callback(it, getCurrentEntity(holder.adapterPosition), holder.adapterPosition) }
-                }
-            }
-            itemViewsOnLongClickCallbacks.filterKeys {
-                when (it) {
-                    is Long -> it == ITEM_NO_ID || it == getItemId(holder.adapterPosition)
-                    is Int -> it == DEFAULT_VIEW_TYPE || it == holder.viewType
-                    else -> false
-                }
-            }.also { callbacks ->
-                if (callbacks.isNotEmpty()) holder.rootView.setOnLongClickListener {
-                    var result = false
-                    callbacks.forEach { (_, callback) ->
-                        result = result || callback(it, getCurrentEntity(holder.adapterPosition), holder.adapterPosition)
-                    }; result
+                else -> {
+                    val sPosition = position.overflowPosition()
+                    boundItemViewsCallbacks.forEach {
+                        if (it.viewType == holder.viewType) when (holder) {
+                            is BindingRecyclerHolder ->
+                                it.onBindCallback(holder.binding, holder.binding.root, getCurrentEntity(sPosition), sPosition)
+                            is CommonRecyclerHolder ->
+                                it.onBindCallback(null, holder.rootView, getCurrentEntity(sPosition), sPosition)
+                        }
+                    }
+                    itemViewsOnClickCallbacks.filterKeys {
+                        when (it) {
+                            is Long -> it == ITEM_NO_ID || it == getItemId(sPosition)
+                            is Int -> it == DEFAULT_VIEW_TYPE || it == holder.viewType
+                            else -> false
+                        }
+                    }.also { callbacks ->
+                        if (callbacks.isNotEmpty()) holder.rootView.setOnClickListener {
+                            val ePosition = holder.adapterPosition.overflowPosition()
+                            callbacks.forEach { (_, callback) -> callback(it, getCurrentEntity(ePosition), ePosition) }
+                        }
+                    }
+                    itemViewsOnLongClickCallbacks.filterKeys {
+                        when (it) {
+                            is Long -> it == ITEM_NO_ID || it == getItemId(sPosition)
+                            is Int -> it == DEFAULT_VIEW_TYPE || it == holder.viewType
+                            else -> false
+                        }
+                    }.also { callbacks ->
+                        if (callbacks.isNotEmpty()) holder.rootView.setOnLongClickListener {
+                            val ePosition = holder.adapterPosition.overflowPosition()
+                            var result = false
+                            callbacks.forEach { (_, callback) ->
+                                result = result || callback(it, getCurrentEntity(ePosition), ePosition)
+                            }; result
+                        }
+                    }
                 }
             }
         }
 
-        override fun getItemViewType(position: Int) = entityTypeCallback?.invoke(getCurrentEntity(position), position) ?: DEFAULT_VIEW_TYPE
-        override fun getItemId(position: Int) = entityIdCallback?.invoke(getCurrentEntity(position), position) ?: position.toLong()
-        override fun getItemCount() = dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: 0
+        override fun getItemViewType(position: Int) = when {
+            hasHeaderView && position == 0 -> HEADER_VIEW_TYPE
+            hasFooterView && position == itemCount - 1 -> FOOTER_VIEW_TYPE
+            else -> entityTypeCallback?.invoke(getCurrentEntity(position.overflowPosition()), position.overflowPosition()) ?: DEFAULT_VIEW_TYPE
+        }
+        override fun getItemId(position: Int) = when {
+            hasHeaderView && position == 0 -> HEADER_VIEW_TYPE.toLong()
+            hasFooterView && position == itemCount - 1 -> FOOTER_VIEW_TYPE.toLong()
+            else -> entityIdCallback?.invoke(getCurrentEntity(position.overflowPosition()), position.overflowPosition()) ?: position.toLong()
+        }
+        override fun getItemCount() = (dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: 0) +
+            (if (hasHeaderView) 1 else 0) + (if (hasFooterView) 1 else 0)
     }
 
     /**
