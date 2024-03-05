@@ -43,6 +43,7 @@ import androidx.annotation.Px
 import androidx.core.content.getSystemService
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.children
 import androidx.core.view.marginBottom
 import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
@@ -258,6 +259,42 @@ fun View.updateMargin(@Px horizontal: Int = -1, @Px vertical: Int = -1) {
     if (horizontal >= 0) updateMargin(left = horizontal, right = horizontal)
     if (vertical >= 0) updateMargin(top = vertical, bottom = vertical)
 }
+
+/**
+ * Walk to the view's parent views.
+ * @receiver [View]
+ * @return [List]<[View]>
+ */
+fun View.walkToRoot(): List<View> {
+    val views = mutableListOf<View>()
+    var current: View? = this
+    while (current != null) {
+        views.add(current)
+        current = current.parentOrNull()
+    }; return views
+}
+
+/**
+ * Walk through the view's children views.
+ * @receiver [ViewGroup]
+ * @return [List]<[View]>
+ */
+fun ViewGroup.walkThroughChildren(): List<View> {
+    val children = mutableListOf<View>()
+    this.children.forEach { child ->
+        children.add(child)
+        if (child is ViewGroup) children.addAll(child.walkThroughChildren())
+    }; return children
+}
+
+/**
+ * Get the view's index in its parent view.
+ *
+ * If the parent view is not exists, return -1.
+ * @receiver [View]
+ * @return [Int]
+ */
+fun View.indexOfInParent() = parentOrNull()?.indexOfChild(this) ?: -1
 
 /**
  * Inflate a view using [resId].
