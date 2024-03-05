@@ -68,6 +68,7 @@ val View.location
 
 /**
  * Get the view's parent view [VG].
+ * @see ViewGroup.parentOrNull
  * @receiver [View]
  * @return [VG]
  * @throws IllegalStateException if the parent view is not a type of [VG].
@@ -77,6 +78,7 @@ inline fun <reified VG : ViewGroup> View.parent() = parent as? VG ?: error("This
 
 /**
  * Get the view's parent view [VG].
+ * @see ViewGroup.parent
  * @receiver [View]
  * @return [VG] or null.
  */
@@ -85,6 +87,7 @@ inline fun <reified VG : ViewGroup> View.parentOrNull() = parent as? VG?
 
 /**
  * Get the view's parent view.
+ * @see ViewGroup.parentOrNull
  * @receiver [View]
  * @return [ViewGroup]
  * @throws IllegalStateException if the parent view is not a type of [ViewGroup].
@@ -93,6 +96,7 @@ fun View.parent() = parent<ViewGroup>()
 
 /**
  * Get the view's parent view.
+ * @see ViewGroup.parent
  * @receiver [View]
  * @return [ViewGroup] or null.
  */
@@ -291,6 +295,7 @@ fun ViewGroup.walkThroughChildren(): List<View> {
  * Get the view's index in its parent view.
  *
  * If the parent view is not exists, return -1.
+ * @see ViewGroup.indexOfChild
  * @receiver [View]
  * @return [Int]
  */
