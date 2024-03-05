@@ -113,6 +113,7 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
      * @param boundItemViews callback and return each bound item function.
      * @return [PagerAdapterBuilder]<[E]>
      */
+    @JvmName("onBindViewsTyped")
     inline fun <reified VB : ViewBinding> onBindViews(
         noinline boundItemViews: (binding: VB, entity: E, position: Int) -> Unit = { _, _, _ -> }
     ) = apply {

@@ -149,6 +149,7 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
      * @param boundItemViews callback and return each bound item function.
      * @return [CommonAdapterBuilder]<[E]>
      */
+    @JvmName("onBindViewsTyped")
     inline fun <reified VB : ViewBinding> onBindViews(
         noinline boundItemViews: (binding: VB, entity: E, position: Int) -> Unit = { _, _, _ -> }
     ) = apply {

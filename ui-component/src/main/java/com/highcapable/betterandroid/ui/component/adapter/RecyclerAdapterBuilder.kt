@@ -170,7 +170,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      * @throws IllegalStateException if the header view already exists.
      */
     @JvmOverloads
-    @JvmName("onBindCustomHeaderView")
+    @JvmName("onBindHeaderViewTyped")
     inline fun <reified VB : ViewBinding> onBindHeaderView(noinline boundHeaderView: (binding: VB) -> Unit = {}) = apply {
         require(!hasHeaderView) { "The header view already exists, you can only set one header view." }
         boundHeaderItemViewCallback = RecyclerItemView(bindingClass = classOf<VB>(), viewType = HEADER_VIEW_TYPE) { binding, _, _, _ ->
@@ -233,7 +233,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      * @throws IllegalStateException if the footer view already exists.
      */
     @JvmOverloads
-    @JvmName("onBindCustomFooterView")
+    @JvmName("onBindFooterViewTyped")
     inline fun <reified VB : ViewBinding> onBindFooterView(noinline boundFooterView: (binding: VB) -> Unit = {}) = apply {
         require(!hasFooterView) { "The footer view already exists, you can only set one footer view." }
         boundFooterItemViewCallback = RecyclerItemView(bindingClass = classOf<VB>(), viewType = FOOTER_VIEW_TYPE) { binding, _, _, _ ->
@@ -291,7 +291,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      * @return [RecyclerAdapterBuilder]<[E]>
      */
     @JvmOverloads
-    @JvmName("onBindCustomViews")
+    @JvmName("onBindViewsTyped")
     inline fun <reified VB : ViewBinding> onBindViews(
         viewType: Int = DEFAULT_VIEW_TYPE,
         noinline boundItemViews: (binding: VB, entity: E, position: Int) -> Unit = { _, _, _ -> }
