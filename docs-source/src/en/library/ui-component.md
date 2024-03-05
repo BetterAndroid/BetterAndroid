@@ -459,6 +459,48 @@ val adapter = recyclerView.bindAdapter<CustomBean> {
 }
 ```
 
+Create the header `View` and the footer `View` for `RecyclerView`.
+
+You can use the `onBindHeaderView` and `onBindFooterView` methods to add a header `View` and a footer `View`.
+
+These are two special item layouts, they will not be calculated into the bound data and are passed through the subscript `position` of method callbacks such as `onBindViews` is not affected.
+
+::: warning
+
+You can only add one header `View` and one footer `View` at the same time.
+
+:::
+
+> The following example
+
+```kotlin
+// Assume this is your entity class.
+data class CustomBean(
+    var iconRes: Int,
+    var name: String
+)
+// Assume this is the data set you need to bind to.
+val listData = ArrayList<CustomBean>()
+// Create and bind to custom RecyclerView.Adapter.
+val adapter = recyclerView.bindAdapter<CustomBean> {
+    // Bind data set.
+    onBindData { listData }
+    // Bind the header View.
+    onBindHeaderView<AdapterHeaderBinding> { binding ->
+        binding.someText.text = "Header"
+    }
+    // Bind the footer View.
+    onBindFooterView<AdapterFooterBinding> { binding ->
+        binding.someText.text = "Footer"
+    }
+    // Bind custom adapter layout adapter_custom.xml.
+    onBindViews<AdapterCustomBinding> { binding, bean, position ->
+        binding.iconView.setImageResource(bean.iconRes)
+        binding.textView.text = bean.name
+    }
+}
+```
+
 If you want to manually create a `RecyclerView.Adapter` and bind it to `RecyclerView`, `ViewPager2`, please refer to the following example.
 
 > The following example

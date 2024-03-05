@@ -457,6 +457,46 @@ val adapter = recyclerView.bindAdapter<CustomBean> {
 }
 ```
 
+为 `RecyclerView` 创建头部 `View` 和末位 `View`。
+
+你可以使用 `onBindHeaderView` 和 `onBindFooterView` 方法来添加一个头部 `View` 和末位 `View`，这是两个特殊的条目布局，它们不会被计算入绑定的数据中，且通过 `onBindViews` 等方法回调的下标 `position` 不受影响。
+
+::: warning
+
+你只能同时添加一个头部 `View` 和一个末位 `View`。
+
+:::
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的实体类
+data class CustomBean(
+    var iconRes: Int,
+    var name: String
+)
+// 假设这就是你需要绑定的数据集
+val listData = ArrayList<CustomBean>()
+// 创建并绑定到自定义的 RecyclerView.Adapter
+val adapter = recyclerView.bindAdapter<CustomBean> {
+    // 绑定数据集
+    onBindData { listData }
+    // 绑定头部 View
+    onBindHeaderView<AdapterHeaderBinding> { binding ->
+        binding.someText.text = "Header"
+    }
+    // 绑定末位 View
+    onBindFooterView<AdapterFooterBinding> { binding ->
+        binding.someText.text = "Footer"
+    }
+    // 绑定自定义适配器布局 adapter_custom.xml
+    onBindViews<AdapterCustomBinding> { binding, bean, position ->
+        binding.iconView.setImageResource(bean.iconRes)
+        binding.textView.text = bean.name
+    }
+}
+```
+
 如果你希望手动创建一个 `RecyclerView.Adapter` 并绑定到 `RecyclerView`、`ViewPager2` 上，请参考以下示例。
 
 > 示例如下
