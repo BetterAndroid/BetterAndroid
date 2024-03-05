@@ -105,6 +105,10 @@ fun View.parentOrNull() = parentOrNull<ViewGroup>()
 
 /**
  * Get the view [V] by [index] in its parent view.
+ * @see ViewGroup.firstChild
+ * @see ViewGroup.firstChildOrNull
+ * @see ViewGroup.lastChild
+ * @see ViewGroup.lastChildOrNull
  * @see ViewGroup.childOrNull
  * @see ViewGroup.getChildAt
  * @receiver [ViewGroup]
@@ -117,6 +121,10 @@ inline fun <reified V : View> ViewGroup.child(index: Int) = getChildAt(index) as
 
 /**
  * Get the view [V] by [index] in its parent view.
+ * @see ViewGroup.firstChild
+ * @see ViewGroup.firstChildOrNull
+ * @see ViewGroup.lastChild
+ * @see ViewGroup.lastChildOrNull
  * @see ViewGroup.child
  * @see ViewGroup.getChildAt
  * @receiver [ViewGroup]
@@ -124,6 +132,60 @@ inline fun <reified V : View> ViewGroup.child(index: Int) = getChildAt(index) as
  * @return [V] or null.
  */
 inline fun <reified V : View> ViewGroup.childOrNull(index: Int) = getChildAt(index) as? V?
+
+/**
+ * Get the first child view [V] in its parent view.
+ * @see ViewGroup.firstChildOrNull
+ * @see ViewGroup.lastChild
+ * @see ViewGroup.lastChildOrNull
+ * @see ViewGroup.child
+ * @see ViewGroup.childOrNull
+ * @see ViewGroup.getChildAt
+ * @receiver [ViewGroup]
+ * @return [V]
+ * @throws IllegalStateException if the first child view is not a type of [V] or is null.
+ */
+inline fun <reified V : View> ViewGroup.firstChild() = child<V>(index = 0)
+
+/**
+ * Get the last child view [V] in its parent view.
+ * @see ViewGroup.firstChild
+ * @see ViewGroup.firstChildOrNull
+ * @see ViewGroup.lastChildOrNull
+ * @see ViewGroup.child
+ * @see ViewGroup.childOrNull
+ * @see ViewGroup.getChildAt
+ * @receiver [ViewGroup]
+ * @return [V]
+ * @throws IllegalStateException if the last child view is not a type of [V] or is null.
+ */
+inline fun <reified V : View> ViewGroup.lastChild() = child<V>(index = childCount - 1)
+
+/**
+ * Get the first child view [V] in its parent view.
+ * @see ViewGroup.firstChild
+ * @see ViewGroup.lastChild
+ * @see ViewGroup.lastChildOrNull
+ * @see ViewGroup.child
+ * @see ViewGroup.childOrNull
+ * @see ViewGroup.getChildAt
+ * @receiver [ViewGroup]
+ * @return [V] or null.
+ */
+inline fun <reified V : View> ViewGroup.firstChildOrNull() = childOrNull<V>(index = 0)
+
+/**
+ * Get the last child view [V] in its parent view.
+ * @see ViewGroup.firstChild
+ * @see ViewGroup.lastChild
+ * @see ViewGroup.firstChildOrNull
+ * @see ViewGroup.child
+ * @see ViewGroup.childOrNull
+ * @see ViewGroup.getChildAt
+ * @receiver [ViewGroup]
+ * @return [V] or null.
+ */
+inline fun <reified V : View> ViewGroup.lastChildOrNull() = childOrNull<V>(index = childCount - 1)
 
 /**
  * Remove self from its parent view using [ViewGroup.removeView].
