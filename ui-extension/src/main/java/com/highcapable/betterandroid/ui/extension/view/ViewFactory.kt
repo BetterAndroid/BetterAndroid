@@ -71,10 +71,11 @@ val View.location
  * @see ViewGroup.parentOrNull
  * @receiver [View]
  * @return [VG]
- * @throws IllegalStateException if the parent view is not a type of [VG].
+ * @throws IllegalStateException if the parent view is not a type of [VG] or is null.
  */
 @JvmName("parentTyped")
-inline fun <reified VG : ViewGroup> View.parent() = parent as? VG ?: error("This view's parent is not a type of ${classOf<VG>()}.")
+inline fun <reified VG : ViewGroup> View.parent() = parent as? VG?
+    ?: error("This view's parent is not a type of ${classOf<VG>()} or is null.")
 
 /**
  * Get the view's parent view [VG].
