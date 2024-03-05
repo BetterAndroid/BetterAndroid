@@ -26,6 +26,7 @@ package com.highcapable.betterandroid.ui.extension.view
 
 import android.graphics.Paint
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.text.InputType
 import android.text.method.DigitsKeyListener
 import android.widget.EditText
@@ -100,6 +101,40 @@ fun TextView.clear() {
  */
 @JvmOverloads
 fun TextView.updateTypeface(style: Int, tf: Typeface? = typeface) = setTypeface(tf, style)
+
+/**
+ * Update the text view's compound drawables.
+ * @see TextView.setCompoundDrawables
+ * @receiver [TextView]
+ * @param left the left drawable.
+ * @param top the top drawable.
+ * @param right the right drawable.
+ * @param bottom the bottom drawable.
+ */
+@JvmOverloads
+fun TextView.updateCompoundDrawables(
+    left: Drawable? = compoundDrawables[0],
+    top: Drawable? = compoundDrawables[1],
+    right: Drawable? = compoundDrawables[2],
+    bottom: Drawable? = compoundDrawables[3],
+) = setCompoundDrawables(left, top, right, bottom)
+
+/**
+ * Update the text view's compound drawables with intrinsic bounds.
+ * @see TextView.setCompoundDrawablesWithIntrinsicBounds
+ * @receiver [TextView]
+ * @param left the left drawable.
+ * @param top the top drawable.
+ * @param right the right drawable.
+ * @param bottom the bottom drawable.
+ */
+@JvmOverloads
+fun TextView.updateCompoundDrawablesWithIntrinsicBounds(
+    left: Drawable? = compoundDrawables[0],
+    top: Drawable? = compoundDrawables[1],
+    right: Drawable? = compoundDrawables[2],
+    bottom: Drawable? = compoundDrawables[3],
+) = setCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
 
 /**
  * Set the text view's digits.
