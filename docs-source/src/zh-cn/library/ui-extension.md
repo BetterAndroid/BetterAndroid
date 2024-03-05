@@ -1266,6 +1266,22 @@ window.clearScreenBrightness()
 
 [ViewFactory → location](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/location)
 
+[ViewFactory → parent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/parent)
+
+[ViewFactory → parentOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/parent-or-null)
+
+[ViewFactory → child](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/child)
+
+[ViewFactory → childOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/child-or-null)
+
+[ViewFactory → firstChild](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/first-child)
+
+[ViewFactory → lastChild](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/last-child)
+
+[ViewFactory → firstChildOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/first-child-or-null)
+
+[ViewFactory → lastChildOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/last-child-or-null)
+
 [ViewFactory → removeSelf](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/remove-self)
 
 [ViewFactory → removeSelfInLayout](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/remove-self-in-layout)
@@ -1281,6 +1297,12 @@ window.clearScreenBrightness()
 [ViewFactory → updatePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-padding)
 
 [ViewFactory → updateMargin](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-margin)
+
+[ViewFactory → walkToRoot](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/walk-to-root)
+
+[ViewFactory → walkThroughChildren](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/walk-through-children)
+
+[ViewFactory → indexOfInParent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/index-of-in-parent)
 
 [ViewFactory → inflate](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/inflate)
 
@@ -1313,6 +1335,50 @@ val location = view.location
 val x = location.x
 // Y 坐标
 val y = location.y
+```
+
+获取当前 `View` 的父布局。
+
+在传统写法中，我们需要使用 `View.parent` 获取到 `ViewParent` 对象，然后使用 `as` 转换为 `ViewGroup` 以获取到父布局对象。
+
+这种写法看起来非常麻烦，于是 `BetterAndroid` 为此提供了一个更加简单的方式。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 View 对象
+val view: View
+// 获取当前 View 的父布局
+val parent: ViewGroup = view.parent()
+// 指定父布局的类型 (如果类型是已知且确定的)
+val parent = view.parent<LinearLayout>()
+// 在不确定父布局是否存在的情况下，你还可以使用以下方式
+val parent = view.parentOrNull()
+```
+
+获取当前 `ViewGroup` 的子布局。
+
+在传统写法中，我们需要使用 `ViewGroup.getChildAt` 获取到 `View` 对象，然后使用 `as` 转换为 `View` 以获取到子布局对象。
+
+这种写法看起来同样非常麻烦，于是 `BetterAndroid` 也此提供了一个更加简单的方式。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 ViewGroup 对象
+val viewGroup: ViewGroup
+// 获取当前 ViewGroup 的子布局
+val child: View = viewGroup.child(index = 0)
+// 指定子布局的类型 (如果类型是已知且确定的)
+val child = viewGroup.child<Button>(index = 0)
+// 获取当前 ViewGroup 的第一个子布局
+val firstChild: View = viewGroup.firstChild()
+// 获取当前 ViewGroup 的最后一个子布局
+val lastChild: View = viewGroup.lastChild()
+// 在不确定子布局是否存在的情况下，你还可以使用以下方式
+val child = viewGroup.childOrNull(index = 0)
+val firstChild = viewGroup.firstChildOrNull()
+val lastChild = viewGroup.lastChildOrNull()
 ```
 
 从父布局 (容器) 中移除自身。
@@ -1438,6 +1504,41 @@ view.updateMargin(horizontal = 10.toPx(context))
 view.updateMargin(vertical = 10.toPx(context))
 // 更新左侧的 margin
 view.updateMargin(left = 10.toPx(context))
+```
+
+遍历父布局以及所有子布局。
+
+通常情况下，我们需要使用 `View.parent` 方法递归遍历父布局，使用 `ViewGroup.children` 方法递归遍历子布局。
+
+`BetterAndroid` 为此提供了一个更加简单的方式，它的设计灵感来源于 Kotlin 提供的 `File` 中的 `walk` 扩展方法。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 View 对象
+val view: View
+// 假设这就是你的 ViewGroup 对象
+val viewGroup: ViewGroup
+// 获取所有父布局
+val parents = view.walkToRoot()
+// 获取所有子布局
+val children = viewGroup.walkThroughChildren()
+```
+
+获取 `View` 在父布局中的索引。
+
+在传统写法中，我们需要使用 `ViewGroup.indexOfChild` 获取到 `View` 在父布局中的索引。
+
+这种写法看起来不是很友好，于是 `BetterAndroid` 为此提供了一个更加简单的方式。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 View 对象
+val view: View
+// 获取 View 在父布局中的索引
+// 如果不存在父布局将会返回 -1
+val index = view.indexOfInParent()
 ```
 
 装载布局 (Inflate Layout)。

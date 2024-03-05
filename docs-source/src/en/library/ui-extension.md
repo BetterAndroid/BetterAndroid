@@ -1305,6 +1305,22 @@ window.clearScreenBrightness()
 
 [ViewFactory → location](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/location)
 
+[ViewFactory → parent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/parent)
+
+[ViewFactory → parentOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/parent-or-null)
+
+[ViewFactory → child](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/child)
+
+[ViewFactory → childOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/child-or-null)
+
+[ViewFactory → firstChild](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/first-child)
+
+[ViewFactory → lastChild](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/last-child)
+
+[ViewFactory → firstChildOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/first-child-or-null)
+
+[ViewFactory → lastChildOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/last-child-or-null)
+
 [ViewFactory → removeSelf](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/remove-self)
 
 [ViewFactory → removeSelfInLayout](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/remove-self-in-layout)
@@ -1320,6 +1336,12 @@ window.clearScreenBrightness()
 [ViewFactory → updatePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-padding)
 
 [ViewFactory → updateMargin](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-margin)
+
+[ViewFactory → walkToRoot](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/walk-to-root)
+
+[ViewFactory → walkThroughChildren](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/walk-through-children)
+
+[ViewFactory → indexOfInParent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/index-of-in-parent)
 
 [ViewFactory → inflate](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/inflate)
 
@@ -1352,6 +1374,50 @@ val location = view.location
 val x = location.x
 // Y coordinate.
 val y = location.y
+```
+
+Get the parent layout of the current `View`.
+
+In traditional writing, we need to use `View.parent` to get the `ViewParent` object, and then use `as` to convert to `ViewGroup` to get the parent layout object.
+
+This way of writing seems very cumbersome, so `BetterAndroid` provides a simpler way for this.
+
+> The following example
+
+```kotlin
+// Assume this is your View object.
+val view: View
+// Get the parent layout of the current View.
+val parent: ViewGroup = view.parent()
+// Specify the type of the parent layout (if the type is known and determined).
+val parent = view.parent<LinearLayout>()
+// When you are not sure whether the parent layout exists, you can also use the following method.
+val parent = view.parentOrNull()
+```
+
+Get the child layout of the current `ViewGroup`.
+
+In traditional writing, we need to use `ViewGroup.getChildAt` to get the `View` object, and then use `as` to convert to `View` to get the child layout object.
+
+This way of writing also seems very troublesome, so `BetterAndroid` also provides a simpler way.
+
+> The following example
+
+```kotlin
+// Assume this is your ViewGroup object.
+val viewGroup: ViewGroup
+// Get the sublayout of the current ViewGroup.
+val child: View = viewGroup.child(index = 0)
+// Specify the type of sublayout (if the type is known and determined).
+val child = viewGroup.child<Button>(index = 0)
+// Get the first sublayout of the current ViewGroup.
+val firstChild: View = viewGroup.firstChild()
+// Get the last sublayout of the current ViewGroup.
+val lastChild: View = viewGroup.lastChild()
+// When you are not sure whether the sublayout exists, you can also use the following method.
+val child = viewGroup.childOrNull(index = 0)
+val firstChild = viewGroup.firstChildOrNull()
+val lastChild = viewGroup.lastChildOrNull()
 ```
 
 Removes itself from the parent layout (container).
@@ -1485,6 +1551,41 @@ view.updateMargin(horizontal = 10.toPx(context))
 view.updateMargin(vertical = 10.toPx(context))
 // Update left margin.
 view.updateMargin(left = 10.toPx(context))
+```
+
+Traverse the parent layout and all child layouts.
+
+Normally, we need to use the `View.parent` method to recursively traverse the parent layout and the `ViewGroup.children` method to recursively traverse the child layout.
+
+`BetterAndroid` provides a simpler way for this, its design is inspired by the `walk` extension method in `File` provided by Kotlin.
+
+> The following example
+
+```kotlin
+// Assume this is your View object.
+val view: View
+// Assume this is your ViewGroup object.
+val viewGroup: ViewGroup
+// Get all parent layouts.
+val parents = view.walkToRoot()
+// Get all sublayouts.
+val children = viewGroup.walkThroughChildren()
+```
+
+Gets the index of `View` in the parent layout.
+
+In traditional writing, we need to use `ViewGroup.indexOfChild` to get the index of `View` in the parent layout.
+
+This way of writing doesn't seem very friendly, so `BetterAndroid` provides a simpler way for this.
+
+> The following example
+
+```kotlin
+// Assume this is your View object.
+val view: View
+// Get the index of the View in the parent layout.
+// If the parent layout does not exist, -1 will be returned.
+val index = view.indexOfInParent()
 ```
 
 Inflate layout.
