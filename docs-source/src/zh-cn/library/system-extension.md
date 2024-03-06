@@ -53,39 +53,39 @@ implementation("com.highcapable.betterandroid:system-extension:<version>")
 
 `ApplicationInfo` 的 `flags` 属性包装类。
 
-[ApplicationFactory → getComponentName](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-component-name)
+[Application → getComponentName](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-component-name)
 
-[ApplicationFactory → hasPackage](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/has-package)
+[Application → hasPackage](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/has-package)
 
-[ApplicationFactory → hasLaunchActivity](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/has-launch-activity)
+[Application → hasLaunchActivity](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/has-launch-activity)
 
-[ApplicationFactory → getPackageInfo](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-package-info)
+[Application → getPackageInfo](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-package-info)
 
-[ApplicationFactory → getPackageInfoOrNull](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-package-info-or-null)
+[Application → getPackageInfoOrNull](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-package-info-or-null)
 
-[ApplicationFactory → getInstalledPackages](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-installed-packages)
+[Application → getInstalledPackages](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-installed-packages)
 
-[ApplicationFactory → getInstalledPackagesOrNull](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-installed-packages-or-null)
+[Application → getInstalledPackagesOrNull](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-installed-packages-or-null)
 
-[ApplicationFactory → queryLaunchActivitiesForPackage](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/query-launch-activities-for-package)
+[Application → queryLaunchActivitiesForPackage](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/query-launch-activities-for-package)
 
-[ApplicationFactory → queryLaunchActivitiesForPackageOrNull](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/query-launch-activities-for-package-or-null)
+[Application → queryLaunchActivitiesForPackageOrNull](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/query-launch-activities-for-package-or-null)
 
-[ApplicationFactory → isComponentEnabled](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/is-component-enabled)
+[Application → isComponentEnabled](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/is-component-enabled)
 
-[ApplicationFactory → enableComponent](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/enable-component)
+[Application → enableComponent](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/enable-component)
 
-[ApplicationFactory → disableComponent](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/disable-component)
+[Application → disableComponent](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/disable-component)
 
-[ApplicationFactory → resetComponent](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/reset-component)
+[Application → resetComponent](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/reset-component)
 
-[ApplicationFactory → versionCodeCompat](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/version-code-compat)
+[Application → versionCodeCompat](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/version-code-compat)
 
-[ApplicationFactory → primaryCpuAbi](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/primary-cpu-abi)
+[Application → primaryCpuAbi](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/primary-cpu-abi)
 
-[ApplicationFactory → secondaryCpuAbi](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/secondary-cpu-abi)
+[Application → secondaryCpuAbi](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/secondary-cpu-abi)
 
-[ApplicationFactory → hasFlags](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/has-flags)
+[Application → hasFlags](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/has-flags)
 
 适用于 `Application` 的相关扩展。
 
@@ -311,9 +311,9 @@ val isSystemApp = applicationInfo.hasFlags(ApplicationInfoFlagsWrapper.SYSTEM)
 
 ::: tip 本节内容
 
-[BroadcastFactory → registerReceiver](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/register-receiver)
+[Broadcast → registerReceiver](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/register-receiver)
 
-[BroadcastFactory → sendBroadcast](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/send-broadcast)
+[Broadcast → sendBroadcast](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/send-broadcast)
 
 适用于广播 (Broadcast) 的相关扩展。
 
@@ -394,13 +394,13 @@ context.registerReceiver(filter) { context, intent ->
 
 `ClipData.Item` 构建器。
 
-[ClipboardFactory → clipboardManager](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/clipboard-manager)
+[Clipboard → clipboardManager](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/clipboard-manager)
 
-[ClipboardFactory → copy](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/copy)
+[Clipboard → copy](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/copy)
 
-[ClipboardFactory → listOfItems](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/list-of-items)
+[Clipboard → listOfItems](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/list-of-items)
 
-[ClipboardFactory → ClipData](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/-clip-data)
+[Clipboard → ClipData](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/-clip-data)
 
 适用于剪贴板 (Clipboard) 的相关扩展。
 
@@ -498,13 +498,13 @@ context.clipboardManager.copy(clipData)
 
 ::: tip 本节内容
 
-[IntentFactory → getSerializableExtraCompat](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-serializable-extra-compat)
+[Intent → getSerializableExtraCompat](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-serializable-extra-compat)
 
-[IntentFactory → getSerializableCompat](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-serializable-compat)
+[Intent → getSerializableCompat](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-serializable-compat)
 
-[IntentFactory → getParcelableExtraCompat](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-parcelable-extra-compat)
+[Intent → getParcelableExtraCompat](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-parcelable-extra-compat)
 
-[IntentFactory → getParcelableCompat](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-parcelable-compat)
+[Intent → getParcelableCompat](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-parcelable-compat)
 
 适用于 `Intent` 的相关扩展。
 
@@ -540,13 +540,13 @@ val myData = intent.extras?.getParcelableCompat<MyData>("my_key_name")
 
 ::: tip 本节内容
 
-[ServiceFactory → startService](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/start-service)
+[Service → startService](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/start-service)
 
-[ServiceFactory → startForegroundService](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/start-foreground-service)
+[Service → startForegroundService](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/start-foreground-service)
 
-[ServiceFactory → startServiceOrElse](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/start-service-or-else)
+[Service → startServiceOrElse](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/start-service-or-else)
 
-[ServiceFactory → startForegroundServiceOrElse](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/start-foreground-service-or-else)
+[Service → startForegroundServiceOrElse](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/start-foreground-service-or-else)
 
 适用于 `Service` 的相关扩展。
 

@@ -224,7 +224,7 @@ class MainFragment : AppViewsFragment(R.layout.fragment_main) {
 
 `RecyclerView` 的九宫格纵向列表装饰器。
 
-[CommonAdapterFactory](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.factory)
+[CommonAdapter](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.factory)
 
 适用于上述适配器构建的扩展方法。
 
@@ -792,7 +792,7 @@ backPressed.destroy()
 
 系统通知推送器。
 
-[NotificationFactory](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.notification.factory)
+[Notification](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.notification.factory)
 
 适用于通知构建的扩展方法。
 
@@ -997,7 +997,7 @@ val isCanceled = poster.isCanceled
 
 `Insets` 的包装器。
 
-[InsetsFactory](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.insets.factory)
+[Insets](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.insets.factory)
 
 适用于 `Insets`、`WindowInsets` 的扩展方法。
 

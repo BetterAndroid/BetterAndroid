@@ -224,7 +224,7 @@ Linear vertical list decoration for `RecyclerView`.
 
 Grid vertical list decoration for `RecyclerView`.
 
-[CommonAdapterFactory](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.factory)
+[CommonAdapter](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.factory)
 
 Extension methods for the adapter build above.
 
@@ -805,7 +805,7 @@ System notification importance.
 
 System notification poster.
 
-[NotificationFactory](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.notification.factory)
+[Notification](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.notification.factory)
 
 Extension methods for the notification builds.
 
@@ -1023,7 +1023,7 @@ An absolute insets for `WindowInsetsWrapper`.
 
 A wrapper for `Insets`.
 
-[InsetsFactory](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.insets.factory)
+[Insets](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.insets.factory)
 
 Extension methods for `Insets`, `WindowInsets`.
 

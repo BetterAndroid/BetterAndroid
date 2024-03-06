@@ -45,11 +45,11 @@ implementation("com.highcapable.betterandroid:ui-extension:<version>")
 
 ::: tip 本节内容
 
-[ActivityFactory → startActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/start-activity)
+[Activity → startActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/start-activity)
 
-[ActivityFactory → startActivityOrElse](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/start-activity-or-else)
+[Activity → startActivityOrElse](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/start-activity-or-else)
 
-[ActivityFactory → isInMultiWindowModeCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/is-in-multi-window-mode-compat)
+[Activity → isInMultiWindowModeCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/is-in-multi-window-mode-compat)
 
 适用于 `Activity` 的扩展。
 
@@ -140,25 +140,25 @@ val isInMultiWindowMode = activity.isInMultiWindowModeCompat
 
 ::: tip 本节内容
 
-[FragmentFactory → commitTransaction](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/commit-transaction)
+[Fragment → commitTransaction](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/commit-transaction)
 
-[FragmentFactory → findFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/find-fragment)
+[Fragment → findFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/find-fragment)
 
-[FragmentFactory → attachToActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/attach-to-activity)
+[Fragment → attachToActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/attach-to-activity)
 
-[FragmentFactory → attachToFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/attach-to-fragment)
+[Fragment → attachToFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/attach-to-fragment)
 
-[FragmentFactory → detachFromActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/detach-from-activity)
+[Fragment → detachFromActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/detach-from-activity)
 
-[FragmentFactory → detachFromFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/detach-from-fragment)
+[Fragment → detachFromFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/detach-from-fragment)
 
-[FragmentFactory → replaceFromActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/replace-from-activity)
+[Fragment → replaceFromActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/replace-from-activity)
 
-[FragmentFactory → replaceFromFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/replace-from-fragment)
+[Fragment → replaceFromFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/replace-from-fragment)
 
-[FragmentFactory → hide](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/hide)
+[Fragment → hide](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/hide)
 
-[FragmentFactory → show](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/show)
+[Fragment → show](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/show)
 
 适用于 `Fragment` 的扩展。
 
@@ -402,9 +402,9 @@ fragment.show()
 
 对 Density 的友好处理接口。
 
-[DimensionFactory → toPx](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/to-px)
+[Dimension → toPx](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/to-px)
 
-[DimensionFactory → toDp](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/to-dp)
+[Dimension → toDp](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/to-dp)
 
 适用于 Dimension 的扩展。
 
@@ -475,55 +475,55 @@ class YourActivity : AppCompatActivity(), DisplayDensity {
 
 ::: tip 本节内容
 
-[ResourcesFactory → isUiInNightMode](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/is-ui-in-night-mode)
+[Resources → isUiInNightMode](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/is-ui-in-night-mode)
 
-[ResourcesFactory → toHexResourceId](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/to-hex-resource-id)
+[Resources → toHexResourceId](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/to-hex-resource-id)
 
-[ResourcesFactory → getDrawableCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-drawable-compat)
+[Resources → getDrawableCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-drawable-compat)
 
-[ResourcesFactory → getColorCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-color-compat)
+[Resources → getColorCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-color-compat)
 
-[ResourcesFactory → getColorStateListCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-color-state-list-compat)
+[Resources → getColorStateListCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-color-state-list-compat)
 
-[ResourcesFactory → getFloatCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-float-compat)
+[Resources → getFloatCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-float-compat)
 
-[ResourcesFactory → getFontCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-font-compat)
+[Resources → getFontCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-font-compat)
 
-[ResourcesFactory → getThemeAttrsBoolean](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-boolean)
+[Resources → getThemeAttrsBoolean](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-boolean)
 
-[ResourcesFactory → getThemeAttrsFloat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-float)
+[Resources → getThemeAttrsFloat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-float)
 
-[ResourcesFactory → getThemeAttrsInteger](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-integer)
+[Resources → getThemeAttrsInteger](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-integer)
 
-[ResourcesFactory → getThemeAttrsIntArray](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-int-array)
+[Resources → getThemeAttrsIntArray](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-int-array)
 
-[ResourcesFactory → getThemeAttrsStringArray](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-string-array)
+[Resources → getThemeAttrsStringArray](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-string-array)
 
-[ResourcesFactory → getThemeAttrsString](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-string)
+[Resources → getThemeAttrsString](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-string)
 
-[ResourcesFactory → getThemeAttrsDimension](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-dimension)
+[Resources → getThemeAttrsDimension](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-dimension)
 
-[ResourcesFactory → getThemeAttrsDrawable](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-drawable)
+[Resources → getThemeAttrsDrawable](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-drawable)
 
-[ResourcesFactory → getThemeAttrsColorStateList](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-color-state-list)
+[Resources → getThemeAttrsColorStateList](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-color-state-list)
 
-[ResourcesFactory → getThemeAttrsColor](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-color)
+[Resources → getThemeAttrsColor](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-color)
 
-[ResourcesFactory → isThemeAttrsIdsValueEquals](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/is-theme-attrs-ids-value-equals)
+[Resources → isThemeAttrsIdsValueEquals](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/is-theme-attrs-ids-value-equals)
 
-[ResourcesFactory → hasThemeAttrsId](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/has-theme-attrs-id)
+[Resources → hasThemeAttrsId](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/has-theme-attrs-id)
 
-[ResourcesFactory → getThemeAttrsId](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-id)
+[Resources → getThemeAttrsId](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-id)
 
-[ResourcesFactory → getMenuFromResource](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-menu-from-resource)
+[Resources → getMenuFromResource](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-menu-from-resource)
 
-[ResourcesFactory → getStringArray](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-string-array)
+[Resources → getStringArray](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-string-array)
 
-[ResourcesFactory → getIntArray](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-int-array)
+[Resources → getIntArray](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-int-array)
 
-[ResourcesFactory → getColorOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-color-or-null)
+[Resources → getColorOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-color-or-null)
 
-[ResourcesFactory → obtainStyledAttributes](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/obtain-styled-attributes)
+[Resources → obtainStyledAttributes](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/obtain-styled-attributes)
 
 适用于 `Resources` 的扩展。
 
@@ -766,19 +766,19 @@ val isAvailable = SystemColors.isAvailable
 
 基于 `ColorStateList` 的颜色状态。
 
-[ColorFactory → isBrightColor](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/is-bright-color)
+[Color → isBrightColor](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/is-bright-color)
 
-[ColorFactory → toHexColor](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/to-hex-color)
+[Color → toHexColor](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/to-hex-color)
 
-[ColorFactory → toAlphaColor](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/to-alpha-color)
+[Color → toAlphaColor](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/to-alpha-color)
 
-[ColorFactory → mixColorOf](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/mix-color-of)
+[Color → mixColorOf](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/mix-color-of)
 
-[ColorFactory → toNormalColorStateList](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/to-normal-color-state-list)
+[Color → toNormalColorStateList](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/to-normal-color-state-list)
 
-[ColorFactory → toNullableColorStateList](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/to-nullable-color-state-list)
+[Color → toNullableColorStateList](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/to-nullable-color-state-list)
 
-[ColorFactory → ColorStateList](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/-color-state-list)
+[Color → ColorStateList](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/-color-state-list)
 
 适用于颜色的扩展。
 
@@ -877,27 +877,27 @@ val colorStateList = ColorStateList(
 
 ::: tip 本节内容
 
-[BitmapFactory → decodeToBitmap](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/decode-to-bitmap)
+[Bitmap → decodeToBitmap](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/decode-to-bitmap)
 
-[BitmapFactory → decodeToBitmapOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/decode-to-bitmap-or-null)
+[Bitmap → decodeToBitmapOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/decode-to-bitmap-or-null)
 
-[BitmapFactory → createBitmap](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/create-bitmap)
+[Bitmap → createBitmap](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/create-bitmap)
 
-[BitmapFactory → createBitmapOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/create-bitmap-or-null)
+[Bitmap → createBitmapOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/create-bitmap-or-null)
 
-[BitmapFactory → writeBitmap](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/write-bitmap)
+[Bitmap → writeBitmap](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/write-bitmap)
 
-[BitmapFactory → compressBitmap](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/compress-bitmap)
+[Bitmap → compressBitmap](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/compress-bitmap)
 
-[BitmapFactory → blur](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/blur)
+[Bitmap → blur](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/blur)
 
-[BitmapFactory → round](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/round)
+[Bitmap → round](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/round)
 
-[BitmapFactory → compress](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/compress)
+[Bitmap → compress](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/compress)
 
-[BitmapFactory → reduce](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/reduce)
+[Bitmap → reduce](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/reduce)
 
-[BitmapFactory → zoom](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/zoom)
+[Bitmap → zoom](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/zoom)
 
 适用于位图的扩展。
 
@@ -1083,11 +1083,11 @@ val blurBitmap = bitmap.blur(25)
 
 `GradientDrawable` 的兼容处理类。
 
-[DrawableFactory → setPaddingCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/set-padding-compat)
+[Drawable → setPaddingCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/set-padding-compat)
 
-[DrawableFactory → setPadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/set-padding)
+[Drawable → setPadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/set-padding)
 
-[DrawableFactory → updatePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/update-padding)
+[Drawable → updatePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/update-padding)
 
 适用于 `Drawable` 的扩展。
 
@@ -1138,7 +1138,7 @@ drawable.setPadding(10.toPx(context))
 
 ::: tip 本节内容
 
-[ToastFactory → toast](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/toast)
+[Toast → toast](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/toast)
 
 适用于 `Toast` 的扩展。
 
@@ -1208,11 +1208,11 @@ Thread {
 
 ::: tip 本节内容
 
-[WindowFactory → updateLayoutParams](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-layout-params)
+[Window → updateLayoutParams](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-layout-params)
 
-[WindowFactory → updateScreenBrightness](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-screen-brightness)
+[Window → updateScreenBrightness](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-screen-brightness)
 
-[WindowFactory → clearScreenBrightness](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/clear-screen-brightness)
+[Window → clearScreenBrightness](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/clear-screen-brightness)
 
 适用于 `Window` 的扩展。
 
@@ -1264,53 +1264,53 @@ window.clearScreenBrightness()
 
 ::: tip 本节内容
 
-[ViewFactory → location](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/location)
+[View → location](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/location)
 
-[ViewFactory → parent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/parent)
+[View → parent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/parent)
 
-[ViewFactory → parentOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/parent-or-null)
+[View → parentOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/parent-or-null)
 
-[ViewFactory → child](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/child)
+[View → child](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/child)
 
-[ViewFactory → childOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/child-or-null)
+[View → childOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/child-or-null)
 
-[ViewFactory → firstChild](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/first-child)
+[View → firstChild](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/first-child)
 
-[ViewFactory → lastChild](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/last-child)
+[View → lastChild](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/last-child)
 
-[ViewFactory → firstChildOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/first-child-or-null)
+[View → firstChildOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/first-child-or-null)
 
-[ViewFactory → lastChildOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/last-child-or-null)
+[View → lastChildOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/last-child-or-null)
 
-[ViewFactory → removeSelf](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/remove-self)
+[View → removeSelf](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/remove-self)
 
-[ViewFactory → removeSelfInLayout](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/remove-self-in-layout)
+[View → removeSelfInLayout](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/remove-self-in-layout)
 
-[ViewFactory → showIme](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/show-ime)
+[View → showIme](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/show-ime)
 
-[ViewFactory → hideIme](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/hide-ime)
+[View → hideIme](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/hide-ime)
 
-[ViewFactory → performKeyPressed](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/perform-key-pressed)
+[View → performKeyPressed](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/perform-key-pressed)
 
-[ViewFactory → performTouch](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/perform-touch)
+[View → performTouch](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/perform-touch)
 
-[ViewFactory → updatePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-padding)
+[View → updatePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-padding)
 
-[ViewFactory → updateMargin](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-margin)
+[View → updateMargin](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-margin)
 
-[ViewFactory → walkToRoot](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/walk-to-root)
+[View → walkToRoot](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/walk-to-root)
 
-[ViewFactory → walkThroughChildren](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/walk-through-children)
+[View → walkThroughChildren](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/walk-through-children)
 
-[ViewFactory → indexOfInParent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/index-of-in-parent)
+[View → indexOfInParent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/index-of-in-parent)
 
-[ViewFactory → outlineProvider](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/outline-provider)
+[View → outlineProvider](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/outline-provider)
 
-[ViewFactory → ViewLayoutParams](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-view-layout-params.html)
+[View → ViewLayoutParams](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-view-layout-params.html)
 
-[ViewFactory → LayoutParamsMatchParent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-layout-params-match-parent)
+[View → LayoutParamsMatchParent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-layout-params-match-parent)
 
-[ViewFactory → LayoutParamsWrapContent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-layout-params-wrap-content)
+[View → LayoutParamsWrapContent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-layout-params-wrap-content)
 
 适用于 `View` 的扩展。
 
@@ -1593,9 +1593,9 @@ view.layoutParams = layoutParams
 
 ::: tip 本节内容
 
-[LayoutInflaterFactory → layoutInflater](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/layout-inflater)
+[LayoutInflater → layoutInflater](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/layout-inflater)
 
-[LayoutInflaterFactory → inflate](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/inflate)
+[LayoutInflater → inflate](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/inflate)
 
 适用于 `LayoutInflater` 的扩展。
 
@@ -1622,15 +1622,15 @@ val myView = context.layoutInflater.inflate(R.layout.my_layout, root = view, att
 
 ::: tip 本节内容
 
-[TextViewFactory → isEllipsize](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/is-ellipsize)
+[TextView → isEllipsize](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/is-ellipsize)
 
-[TextViewFactory → isUnderline](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/is-underline)
+[TextView → isUnderline](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/is-underline)
 
-[TextViewFactory → isStrikeThrough](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/is-strike-through)
+[TextView → isStrikeThrough](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/is-strike-through)
 
-[TextViewFactory → textColor](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/text-color)
+[TextView → textColor](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/text-color)
 
-[TextViewFactory → setDigits](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/set-digits)
+[TextView → setDigits](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/set-digits)
 
 适用于 `TextView` 的扩展。
 
@@ -1727,7 +1727,7 @@ editText.setDigits("0123456789", locale = Locale.CHINA)
 
 ::: tip 本节内容
 
-[ViewBindingFactory → inflateViewBinding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/inflate-view-binding)
+[ViewBinding → inflateViewBinding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/inflate-view-binding)
 
 适用于 `ViewBinding` 的扩展。
 
