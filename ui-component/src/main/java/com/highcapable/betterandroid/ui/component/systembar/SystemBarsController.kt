@@ -52,8 +52,8 @@ import com.highcapable.betterandroid.ui.component.insets.factory.removeWindowIns
 import com.highcapable.betterandroid.ui.component.insets.factory.setInsetsPadding
 import com.highcapable.betterandroid.ui.component.systembar.compat.SystemBarsCompat
 import com.highcapable.betterandroid.ui.component.systembar.style.SystemBarStyle
-import com.highcapable.betterandroid.ui.component.systembar.type.SystemBars
 import com.highcapable.betterandroid.ui.component.systembar.type.SystemBarBehavior
+import com.highcapable.betterandroid.ui.component.systembar.type.SystemBars
 import com.highcapable.betterandroid.ui.extension.component.base.isUiInNightMode
 import com.highcapable.betterandroid.ui.extension.graphics.isBrightColor
 import com.highcapable.betterandroid.ui.extension.graphics.mixColorOf
