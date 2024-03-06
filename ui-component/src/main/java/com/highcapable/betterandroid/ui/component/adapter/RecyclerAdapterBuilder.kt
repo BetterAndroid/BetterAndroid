@@ -33,8 +33,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.highcapable.betterandroid.ui.component.adapter.base.IAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.factory.bindAdapter
 import com.highcapable.betterandroid.ui.component.adapter.view.RecyclerItemView
-import com.highcapable.betterandroid.ui.extension.view.inflate
 import com.highcapable.betterandroid.ui.extension.view.inflateViewBinding
+import com.highcapable.betterandroid.ui.extension.view.layoutInflater
 import com.highcapable.yukireflection.factory.classOf
 
 /**
@@ -409,7 +409,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
                         val binding = adapterContext.inflateViewBinding(it.bindingClass, parent = parent, attachToRoot = false)
                         BindingRecyclerHolder(binding, binding.root, viewType)
                     }
-                    it.rootViewResId >= 0 -> CommonRecyclerHolder(adapterContext.inflate(it.rootViewResId, parent), it.viewType)
+                    it.rootViewResId >= 0 -> CommonRecyclerHolder(adapterContext.layoutInflater.inflate(it.rootViewResId, parent), it.viewType)
                     it.rootView != null -> CommonRecyclerHolder(it.rootView.apply { layoutParams = parent.layoutParams }, it.viewType)
                     else -> null
                 }

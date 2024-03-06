@@ -36,6 +36,7 @@ import com.highcapable.betterandroid.ui.component.adapter.mediator.PagerMediator
 import com.highcapable.betterandroid.ui.component.adapter.view.CommonItemView
 import com.highcapable.betterandroid.ui.extension.view.inflate
 import com.highcapable.betterandroid.ui.extension.view.inflateViewBinding
+import com.highcapable.betterandroid.ui.extension.view.layoutInflater
 import com.highcapable.yukireflection.factory.classOf
 
 /**
@@ -172,7 +173,7 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
                             BindingBaseHolder(binding = binding).apply { viewHolders[position] = this }
                         }
                     it.rootViewResId >= 0 ->
-                        adapterContext.inflate(it.rootViewResId).let { itemView ->
+                        adapterContext.layoutInflater.inflate(it.rootViewResId).let { itemView ->
                             container.addView(itemView)
                             CommonBaseHolder(rootView = itemView).apply { viewHolders[position] = this }
                         }

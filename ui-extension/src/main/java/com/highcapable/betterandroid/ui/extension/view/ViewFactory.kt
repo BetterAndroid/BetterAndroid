@@ -53,7 +53,6 @@ import androidx.core.view.marginTop
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
-import com.highcapable.betterandroid.ui.extension.component.base.toHexResourceId
 import com.highcapable.yukireflection.factory.classOf
 
 /**
@@ -403,50 +402,55 @@ inline fun <reified V : View> V.outlineProvider(crossinline provider: (view: V, 
 
 /**
  * Inflate a view using [resId].
- * @receiver the current context.
- * @param resId the view id.
- * @param parent the root view, default is null.
- * @param attachToRoot whether to attach to the root view, default false.
- * @return [View]
+ *
+ * - This function is deprecated, use [LayoutInflater.inflate] instead.
  */
+@Deprecated(
+    message = "Use LayoutInflater.inflate instead.",
+    ReplaceWith("layoutInflater.inflate<View>(resId, parent, attachToRoot)", "android.view.View")
+)
 @JvmOverloads
-fun Context.inflate(resId: Int, parent: ViewGroup? = null, attachToRoot: Boolean = false): View =
-    (if (this is Activity) layoutInflater else LayoutInflater.from(this)).inflate(resId, parent, attachToRoot)
+fun Context.inflate(resId: Int, parent: ViewGroup? = null, attachToRoot: Boolean = false) =
+    layoutInflater.inflate<View>(resId, parent, attachToRoot)
 
 /**
  * Inflate a view using [resId].
- * @receiver the current context.
- * @param resId the view id.
- * @param parent the root view, default is null.
- * @param attachToRoot whether to attach to the root view, default false.
- * @return [V]
- * @throws IllegalStateException if [resId] is invalid.
+ *
+ * - This function is deprecated, use [LayoutInflater.inflate] instead.
  */
+@Deprecated(
+    message = "Use LayoutInflater.inflate instead.",
+    ReplaceWith("layoutInflater.inflate<V>(resId, parent, attachToRoot)")
+)
 @JvmName("inflateTyped")
 inline fun <reified V : View> Context.inflate(resId: Int, parent: ViewGroup? = null, attachToRoot: Boolean = false): V =
-    inflate(resId, parent, attachToRoot) as? V? ?: error("This view with ID ${resId.toHexResourceId()} is not a type of ${classOf<V>()}")
+    layoutInflater.inflate<V>(resId, parent, attachToRoot)
 
 /**
  * Inflate a view using [resId].
- * @receiver the root view.
- * @param resId the view id.
- * @param attachToRoot whether to attach to the root view, default false.
- * @return [View]
+ *
+ * - This function is deprecated, use [LayoutInflater.inflate] instead.
  */
+@Deprecated(
+    message = "Use LayoutInflater.inflate instead.",
+    ReplaceWith("context.layoutInflater.inflate<View>(resId, root = this, attachToRoot)", "android.view.View")
+)
 @JvmOverloads
-fun ViewGroup.inflate(resId: Int, attachToRoot: Boolean = false): View = context.inflate(resId, parent = this, attachToRoot)
+fun ViewGroup.inflate(resId: Int, attachToRoot: Boolean = false) =
+    context.layoutInflater.inflate<View>(resId, root = this, attachToRoot)
 
 /**
  * Inflate a view using [resId].
- * @receiver the root view.
- * @param resId the view id.
- * @param attachToRoot whether to attach to the root view, default false.
- * @return [V]
- * @throws IllegalStateException if [resId] is invalid.
+ *
+ * - This function is deprecated, use [LayoutInflater.inflate] instead.
  */
+@Deprecated(
+    message = "Use LayoutInflater.inflate instead.",
+    ReplaceWith("context.layoutInflater.inflate<V>(resId, root = this, attachToRoot)")
+)
 @JvmName("inflateTyped")
-inline fun <reified V : View> ViewGroup.inflate(resId: Int, attachToRoot: Boolean = false): V =
-    inflate(resId, attachToRoot) as? V? ?: error("This view with ID ${resId.toHexResourceId()} is not a type of ${classOf<V>()}")
+inline fun <reified V : View> ViewGroup.inflate(resId: Int, attachToRoot: Boolean = false) =
+    context.layoutInflater.inflate<V>(resId, root = this, attachToRoot)
 
 /**
  * Create a new [ViewGroup.LayoutParams].
