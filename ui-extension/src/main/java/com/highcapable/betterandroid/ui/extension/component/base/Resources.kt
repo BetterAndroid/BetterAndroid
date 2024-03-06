@@ -36,6 +36,7 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.SparseArray
 import android.util.TypedValue
+import android.view.ContextThemeWrapper
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -59,6 +60,7 @@ import androidx.core.view.isNotEmpty
 import androidx.core.view.size
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 import com.highcapable.yukireflection.factory.classOf
+import com.highcapable.yukireflection.factory.field
 
 /**
  * Whether in non-standard (special) floating window mode.
@@ -68,6 +70,15 @@ import com.highcapable.yukireflection.factory.classOf
 @Suppress("UnusedReceiverParameter", "DeprecatedCallableAddReplaceWith")
 @Deprecated(message = "No effect and will be removed in the future.")
 val Configuration.isSpecialWindowingMode get() = false
+
+/**
+ * Get the current theme resource ID.
+ *
+ * - Note: This is a hidden API, and it may not be available on all devices.
+ * @receiver the current context theme wrapper.
+ * @return [Int]
+ */
+val ContextThemeWrapper.themeResId get() = classOf<ContextThemeWrapper>().field { name = "mThemeResource" }.ignored().get(this).int()
 
 /**
  * Determine whether the current UI mode is night mode.
