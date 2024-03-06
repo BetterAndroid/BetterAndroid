@@ -26,6 +26,7 @@ import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import com.highcapable.betterandroid.ui.component.activity.base.BaseComponentActivity
 import com.highcapable.betterandroid.ui.component.insets.factory.handleOnWindowInsetsChanged
+import com.highcapable.betterandroid.ui.extension.view.firstChild
 import android.R as Android_R
 
 /**
@@ -43,7 +44,7 @@ open class AppComponentActivity : BaseComponentActivity() {
     @CallSuper
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)
-        val rootView = findViewById<ViewGroup>(Android_R.id.content).getChildAt(0)
+        val rootView = findViewById<ViewGroup>(Android_R.id.content).firstChild<View>()
         systemBars.init(rootView, edgeToEdgeInsets = null)
     }
 
