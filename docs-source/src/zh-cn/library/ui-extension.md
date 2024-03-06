@@ -140,7 +140,7 @@ val isInMultiWindowMode = activity.isInMultiWindowModeCompat
 
 ::: tip 本节内容
 
-[Fragment → commitTransaction](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/commit-transaction)
+[Fragment → fragmentManager](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/fragment-manager)
 
 [Fragment → findFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/find-fragment)
 
@@ -168,27 +168,31 @@ val isInMultiWindowMode = activity.isInMultiWindowModeCompat
 
 为了对 `Fragment` 相关操作进行简化，`BetterAndroid` 为 `Fragment` 提供了一些实用的扩展功能。
 
-你可以使用 `commitTransaction` 来完成从 `beginTransaction` 到 `commit` 的操作。
+`BetterAndroid` 会自动帮你引入 `androidx.fragment:fragment-ktx` 依赖，你可以 [参考这里](https://developer.android.com/kotlin/ktx#fragment) 以开始使用。
 
-此方法帮你执行了 `beginTransaction` 到 `commit` 或 `commitAllowingStateLoss` 的操作，你只需要添加其中的事务即可。
+::: warning
+
+在 `1.0.2` 及之前版本中的 `commitTransaction` 方法已被弃用，本着 “不重复造轮子” 的原则，请迁移到 `fragment-ktx` 依赖中的 `commit`、`commitNow` 方法。
+
+:::
+
+获取存在的 `FragmentManager`。
+
+`BetterAndroid` 为 `FragmentActivity` 和 `Fragment` 提供了一个更加友好的方式来获取存在的 `FragmentManager`。
 
 > 示例如下
 
 ```kotlin
 // 假设这就是你的 FragmentActivity
 val activity: FragmentActivity
-// 提交一个事务处理
-actvity.supportFragmentManager.commitTransaction {
-    // 在这里添加一些事务操作
-    // 例如添加一个 Fragment
-    add(R.id.container, YourFragment())
-}
-// 你可以设置 allowingStateLoss 参数来决定是否允许状态丢失
-// 在不设置的情况下，默认为 true
-actvity.supportFragmentManager.commitTransaction(allowingStateLoss = true) {
-    // ...
-    add(R.id.container, YourFragment())
-}
+// 假设这就是你的 Fragment
+val fragment: Fragment
+// 从 FragmentActivity 获取 FragmentManager
+val fragmentManager = activity.fragmentManager()
+// 从 Fragment 获取 FragmentManager
+val fragmentManager = fragment.fragmentManager()
+// 对于 Fragment，你可以设置参数 parent 为 true 来获取父 FragmentManager
+val parentFragmentManager = fragment.fragmentManager(parent = true)
 ```
 
 使用泛型的方式来查找一个存在的 `Fragment`。
@@ -203,9 +207,9 @@ actvity.supportFragmentManager.commitTransaction(allowingStateLoss = true) {
 // 假设这就是你的 FragmentActivity
 val activity: FragmentActivity
 // 通过 ID 查找一个 Fragment
-val fragment = activity.supportFragmentManager.findFragment<YourFragment>(R.id.container)
+val fragment = activity.fragmentManager().findFragment<YourFragment>(R.id.container)
 // 通过 TAG 查找一个 Fragment
-val fragment = activity.supportFragmentManager.findFragment<YourFragment>("your_fragment_tag")
+val fragment = activity.fragmentManager().findFragment<YourFragment>("your_fragment_tag")
 ```
 
 绑定 `Fragment` 到 `FragmentActivity`。

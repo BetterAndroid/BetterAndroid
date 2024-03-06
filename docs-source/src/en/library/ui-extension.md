@@ -143,7 +143,7 @@ val isInMultiWindowMode = activity.isInMultiWindowModeCompat
 
 ::: tip Contents of This Section
 
-[Fragment → commitTransaction](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/commit-transaction)
+[Fragment → fragmentManager](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/fragment-manager)
 
 [Fragment → findFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/find-fragment)
 
@@ -171,27 +171,33 @@ Extensions for `Fragment`.
 
 In order to simplify `Fragment` related operations, `BetterAndroid` provides some practical extension functions for `Fragment`.
 
-You can use `commitTransaction` to complete the operation from `beginTransaction` to `commit`.
+`BetterAndroid` will automatically help you introduce the `androidx.fragment:fragment-ktx` dependency, you can [refer here](https://developer.android.com/kotlin/ktx#fragment) to get started.
 
-This method helps you perform the operations from `beginTransaction` to `commit` or `commitAllowingStateLoss`, you only need to add the transactions therein.
+::: warning
+
+The `commitTransaction` method in `1.0.2` and previous versions has been deprecated.
+
+In line with the principle of "not reinventing the wheel", please migrate to the `commit` and `commitNow` methods in the `fragment-ktx` dependency.
+
+:::
+
+Get the existing `FragmentManager`.
+
+`BetterAndroid` provides a more friendly way for `FragmentActivity` and `Fragment` to obtain the existing `FragmentManager`.
 
 > The following example
 
 ```kotlin
 // Assume this is your FragmentActivity.
 val activity: FragmentActivity
-// Submit a transaction.
-actvity.supportFragmentManager.commitTransaction {
-    // Add some transaction operations here.
-    // For example, add a fragment.
-    add(R.id.container, YourFragment())
-}
-// You can set the allowingStateLoss parameter to decide whether to allow state loss.
-// Defaults to true if not set.
-actvity.supportFragmentManager.commitTransaction(allowingStateLoss = true) {
-    // ...
-    add(R.id.container, YourFragment())
-}
+// Assume this is your Fragment.
+val fragment: Fragment
+// Get FragmentManager from FragmentActivity.
+val fragmentManager = activity.fragmentManager()
+// Get FragmentManager from Fragment.
+val fragmentManager = fragment.fragmentManager()
+// For Fragment, you can set the parameter parent to true to get the parent FragmentManager.
+val parentFragmentManager = fragment.fragmentManager(parent = true)
 ```
 
 Use generics to find an existing `Fragment`.
@@ -206,9 +212,9 @@ You don't need to worry about not being found or type errors at all, in which ca
 // Assume this is your FragmentActivity.
 val activity: FragmentActivity
 // Find a fragment by ID.
-val fragment = activity.supportFragmentManager.findFragment<YourFragment>(R.id.container)
+val fragment = activity.fragmentManager().findFragment<YourFragment>(R.id.container)
 // Find a fragment by TAG.
-val fragment = activity.supportFragmentManager.findFragment<YourFragment>("your_fragment_tag")
+val fragment = activity.fragmentManager().findFragment<YourFragment>("your_fragment_tag")
 ```
 
 Bind `Fragment` to `FragmentActivity`.
