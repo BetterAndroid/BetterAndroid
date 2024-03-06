@@ -1345,8 +1345,6 @@ window.clearScreenBrightness()
 
 [ViewFactory → outlineProvider](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/outline-provider)
 
-[ViewFactory → inflate](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/inflate)
-
 [ViewFactory → ViewLayoutParams](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-view-layout-params.html)
 
 [ViewFactory → LayoutParamsMatchParent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-layout-params-match-parent)
@@ -1614,30 +1612,6 @@ view.outlineProvider { view, outline ->
 view.clipToOutline = true
 ```
 
-Inflate layout.
-
-Normally we can use `getLayoutInflater` or `LayoutInflater.from(context)` in `Activity` to create a `LayoutInflater` object, and then use the `inflate` method to inflate the layout.
-
-`BetterAndroid` simplifies this step for you, now, you can use the `inflate` method in `ViewGroup` and `Context` to inflate the layout.
-
-> The following example
-
-```kotlin
-// Assume this is your ViewGroup.
-val view: ViewGroup
-// Assume this is your context.
-val context: Context
-// You can inflate the layout in ViewGroup using the following method.
-val myView = view.inflate(R.layout.my_layout)
-// You can set the attachToRoot parameter to decide whether to add it to the ViewGroup at the same time.
-val myView = view.inflate(R.layout.my_layout, attachToRoot = true)
-// When context exists, you can inflate the layout using the following method.
-val myView = context.inflate(R.layout.my_layout)
-// You can specify a parent layout for it,
-// if you need to add it to the parent layout immediately, you can set the attachToRoot parameter to true.
-val myView = context.inflate(R.layout.my_layout, view, attachToRoot = true)
-```
-
 Manually create a `LayoutParams` object.
 
 `LayoutParams` is the layout parameter of `View`, and its type depends on the parent layout of `View`, for example, the `LayoutParams` of `LinearLayout` is `LinearLayout.LayoutParams`.
@@ -1649,7 +1623,7 @@ now, you can save yourself the step of creating an object using the super long `
 
 ```kotlin
 // Assume this is your view.
-Val view: View
+val view: View
 // Create a LinearLayout.LayoutParams object, by default, width and height are both WRAP_CONTENT.
 val layoutParams = ViewLayoutParams<LinearLayout.LayoutParams>()
 // Set both width and height to MATCH_PARENT.
@@ -1660,6 +1634,35 @@ val layoutParams = ViewLayoutParams<LinearLayout.LayoutParams>(widthMatchParent 
 val layoutParams = ViewLayoutParams<LinearLayout.LayoutParams>(50.toPx(context), 30.toPx(context))
 // Set to view.
 view.layoutParams = layoutParams
+```
+
+### LayoutInflater Extension
+
+::: tip Contents of This Section
+
+[LayoutInflaterFactory → layoutInflater](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/layout-inflater)
+
+[LayoutInflaterFactory → inflate](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/inflate)
+
+Extensions for `LayoutInflater`.
+
+:::
+
+Normally we can use `getLayoutInflater` or `LayoutInflater.from(context)` in `Activity` to create a `LayoutInflater` object, and then use the `inflate` method to inflate the layout.
+
+`BetterAndroid` simplifies this step for you, now, you can use `layoutInflater` in `Context` to get the `LayoutInflater` object, and then use the `inflate` method to load the layout.
+
+> The following example
+
+```kotlin
+// Assume this is your ViewGroup.
+val view: ViewGroup
+// Assume this is your context.
+val context: Context
+// You can inflate the layout in ViewGroup using the following method.
+val myView = context.layoutInflater.inflate(R.layout.my_layout, root = view)
+// You can set the attachToRoot parameter to decide whether to add it to the ViewGroup at the same time.
+val myView = context.layoutInflater.inflate(R.layout.my_layout, root = view, attachToRoot = true)
 ```
 
 ### TextView Extension

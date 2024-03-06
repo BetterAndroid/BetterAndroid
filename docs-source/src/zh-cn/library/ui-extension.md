@@ -1306,8 +1306,6 @@ window.clearScreenBrightness()
 
 [ViewFactory → outlineProvider](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/outline-provider)
 
-[ViewFactory → inflate](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/inflate)
-
 [ViewFactory → ViewLayoutParams](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-view-layout-params.html)
 
 [ViewFactory → LayoutParamsMatchParent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-layout-params-match-parent)
@@ -1567,29 +1565,6 @@ view.outlineProvider { view, outline ->
 view.clipToOutline = true
 ```
 
-装载布局 (Inflate Layout)。
-
-通常情况下我们可以在 `Activity` 中使用 `getLayoutInflater` 或使用 `LayoutInflater.from(context)` 来创建一个 `LayoutInflater` 对象，然后使用 `inflate` 方法来装载布局。
-
-`BetterAndroid` 为你简化了这一步骤，现在，你能够在 `ViewGroup`、`Context` 中使用 `inflate` 方法来装载布局。
-
-> 示例如下
-
-```kotlin
-// 假设这就是你的 ViewGroup 对象
-val view: ViewGroup
-// 假设这就是你的 Context 对象
-val context: Context
-// 你可以在 ViewGroup 中使用以下方式装载布局
-val myView = view.inflate(R.layout.my_layout)
-// 你可以设置 attachToRoot 参数来决定是否同时将其添加到 ViewGroup 中
-val myView = view.inflate(R.layout.my_layout, attachToRoot = true)
-// 在存在 Context 的情况下，你可以使用以下方式装载布局
-val myView = context.inflate(R.layout.my_layout)
-// 你可以为其指定一个父布局，如果需要立即添加到父布局中，你可以设置 attachToRoot 参数为 true
-val myView = context.inflate(R.layout.my_layout, view, attachToRoot = true)
-```
-
 手动创建一个 `LayoutParams` 对象。
 
 `LayoutParams` 是 `View` 的布局参数，它的类型取决于 `View` 的父布局，例如 `LinearLayout` 的 `LayoutParams` 为 `LinearLayout.LayoutParams`。
@@ -1612,6 +1587,35 @@ val layoutParams = ViewLayoutParams<LinearLayout.LayoutParams>(widthMatchParent 
 val layoutParams = ViewLayoutParams<LinearLayout.LayoutParams>(50.toPx(context), 30.toPx(context))
 // 设置到 View 中
 view.layoutParams = layoutParams
+```
+
+### LayoutInflater 扩展
+
+::: tip 本节内容
+
+[LayoutInflaterFactory → layoutInflater](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/layout-inflater)
+
+[LayoutInflaterFactory → inflate](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/inflate)
+
+适用于 `LayoutInflater` 的扩展。
+
+:::
+
+通常情况下我们可以在 `Activity` 中使用 `getLayoutInflater` 或使用 `LayoutInflater.from(context)` 来创建一个 `LayoutInflater` 对象，然后使用 `inflate` 方法来装载布局。
+
+`BetterAndroid` 为你简化了这一步骤，现在，你能够在 `Context` 中使用 `layoutInflater` 获取到 `LayoutInflater` 对象，然后使用 `inflate` 方法来装载布局。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 ViewGroup 对象
+val view: ViewGroup
+// 假设这就是你的 Context 对象
+val context: Context
+// 你可以在 ViewGroup 中使用以下方式装载布局
+val myView = context.layoutInflater.inflate(R.layout.my_layout, root = view)
+// 你可以设置 attachToRoot 参数来决定是否同时将其添加到 ViewGroup 中
+val myView = context.layoutInflater.inflate(R.layout.my_layout, root = view, attachToRoot = true)
 ```
 
 ### TextView 扩展
