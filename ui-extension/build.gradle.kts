@@ -41,6 +41,7 @@ android {
 dependencies {
     implementation(projects.systemExtension)
     implementation(com.highcapable.yukireflection.api)
+    api(androidx.fragment.fragment.ktx)
     implementation(androidx.core.core.ktx)
     implementation(androidx.appcompat.appcompat)
     implementation(com.google.android.material.material)
