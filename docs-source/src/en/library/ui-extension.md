@@ -493,6 +493,8 @@ The naming method of `dp`, `px`, `toPx`, `toDp` may conflict with the naming met
 
 ::: tip Contents of This Section
 
+[Resources → themeResId](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/theme-res-id)
+
 [Resources → isUiInNightMode](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/is-ui-in-night-mode)
 
 [Resources → toHexResourceId](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/to-hex-resource-id)
@@ -550,6 +552,25 @@ Extensions for `Resources`.
 Resources are a very important part of Android, they contain layouts, images, strings, etc, needed in the apps.
 
 In order to use `Resources` more conveniently, `BetterAndroid` provides some practical extension functions for it.
+
+Get the theme resource ID in `ContextThemeWrapper`.
+
+Normally, the theme resource ID set using `setTheme` cannot be obtained directly. For this reason, `BetterAndroid` provides you with a way to obtain it through reflection.
+
+::: warning
+
+This method may not work on all devices or be compatible with all Android versions, please test it yourself.
+
+:::
+
+> The following example
+
+```kotlin
+// Assume this is your ContextThemeWrapper.
+val context: ContextThemeWrapper
+// Get the set theme resource ID.
+val themeResId = context.themeResId
+```
 
 For the attr in `Resources`, usually we need to create a `TypedValue` object, and then use `Context.getTheme().resolveAttribute`
 to fill it with the corresponding ID to obtain its own value.

@@ -479,6 +479,8 @@ class YourActivity : AppCompatActivity(), DisplayDensity {
 
 ::: tip 本节内容
 
+[Resources → themeResId](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/theme-res-id)
+
 [Resources → isUiInNightMode](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/is-ui-in-night-mode)
 
 [Resources → toHexResourceId](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/to-hex-resource-id)
@@ -536,6 +538,25 @@ class YourActivity : AppCompatActivity(), DisplayDensity {
 资源 (Resources) 是 Android 中非常重要的一个部分，它包含了应用程序中需要的布局、图片、字符串等等。
 
 为了能更加方便地使用 `Resources`，`BetterAndroid` 为其提供了一些实用的扩展功能。
+
+获取 `ContextThemeWrapper` 中的主题资源 ID。
+
+通常情况下使用 `setTheme` 设置的主题资源 ID 是无法直接获取到的，为此 `BetterAndroid` 通过反射的方式为你提供了一个获取方式。
+
+::: warning
+
+此方法可能不会适用于所有设备或兼容所有 Android 版本，请自行测试。
+
+:::
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 ContextThemeWrapper
+val context: ContextThemeWrapper
+// 获取已设置的主题资源 ID
+val themeResId = context.themeResId
+```
 
 针对 `Resources` 中的 attr 属性，通常情况下我们需要创建一个 `TypedValue` 对象，然后使用 `Context.getTheme().resolveAttribute` 来对它填充相应的 ID 以获取到其本身的值内容。
 
