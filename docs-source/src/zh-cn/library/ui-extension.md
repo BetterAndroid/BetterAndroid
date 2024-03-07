@@ -1655,6 +1655,16 @@ val myView = context.layoutInflater.inflate(R.layout.my_layout, root = view, att
 
 [TextView → textColor](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/text-color)
 
+[TextView → updateText](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-text)
+
+[TextView → clear](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/clear)
+
+[TextView → updateTypeface](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-typeface)
+
+[TextView → updateCompoundDrawables](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-compound-drawables)
+
+[TextView → updateCompoundDrawablesWithIntrinsicBounds](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-compound-drawables-with-intrinsic-bounds)
+
 [TextView → setDigits](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/set-digits)
 
 适用于 `TextView` 的扩展。
@@ -1721,6 +1731,79 @@ val textView: TextView
 val textColor = textView.textColor
 // 设置 TextView 的文本颜色
 textView.textColor = Color.RED
+```
+
+更新 `EditText` 的文本。
+
+`EditText` 继承自 `TextView`，直接使用 `setText(...)` 更新的文本会导致光标位置依然处于第一位。
+
+`BetterAndroid` 为此提供了一个更加方便的方式，它会根据文本长度自动帮你设置 `setSelection` 以保持光标位置始终在文本的最后。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 EditText 对象
+val editText: EditText
+// 更新 EditText 的文本
+editText.updateText("Hello World!")
+```
+
+清空 `TextView` 的文本。
+
+使用 `setText("")` 或 `text = ""` 看起来不是很友好，于是 `BetterAndroid` 为此提供了一个更加简单的方式。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 TextView 对象
+val textView: TextView
+// 清空 TextView 的文本
+textView.clear()
+```
+
+更新 `TextView` 的 `Typeface` (字体)。
+
+`Typeface` 是 Android 中的字体，有时候我们只需要关心字体的粗细和斜体，而不需要设置具体的字体。
+
+`BetterAndroid` 为此提供了一个更加简单的方式，现在，你可以使用以下方式更新 `TextView` 的 `Typeface`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 TextView 对象
+val textView: TextView
+// 仅将 TextView 的字体设置为粗体
+textView.updateTypeface(Typeface.BOLD)
+```
+
+更新 `TextView` 的 `CompoundDrawables` (复合绘图)。
+
+`CompoundDrawables` 是 `TextView` 中的复合绘图，它包含了 `Drawable` 对象。
+
+使用传统的 `setCompoundDrawables` 方法需要传入四个参数且不需要的参数还需要填写 `null`，这看起来非常麻烦。
+
+`BetterAndroid` 为此提供了一个更加简单的方式，现在，你可以使用以下方式直接更新 `TextView` 的 `CompoundDrawables`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 TextView 对象
+val textView: TextView
+// 更新 TextView 的 CompoundDrawables
+// 我们只需要填写需要方向的参数，其它方向的参数将会自动重新设置为原有的 CompoundDrawables
+textView.updateCompoundDrawables(
+    left = R.drawable.ic_left,
+    top = R.drawable.ic_top,
+    right = R.drawable.ic_right,
+    bottom = R.drawable.ic_bottom
+)
+// 使用 setCompoundDrawablesWithIntrinsicBounds 的方式更新 CompoundDrawables
+textView.updateCompoundDrawablesWithIntrinsicBounds(
+    left = R.drawable.ic_left,
+    top = R.drawable.ic_top,
+    right = R.drawable.ic_right,
+    bottom = R.drawable.ic_bottom
+)
 ```
 
 设置 `TextView` 的输入限制 (Digits)。

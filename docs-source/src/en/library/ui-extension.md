@@ -1704,6 +1704,16 @@ val myView = context.layoutInflater.inflate(R.layout.my_layout, root = view, att
 
 [TextView → textColor](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/text-color)
 
+[TextView → updateText](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-text)
+
+[TextView → clear](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/clear)
+
+[TextView → updateTypeface](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-typeface)
+
+[TextView → updateCompoundDrawables](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-compound-drawables)
+
+[TextView → updateCompoundDrawablesWithIntrinsicBounds](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-compound-drawables-with-intrinsic-bounds)
+
 [TextView → setDigits](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/set-digits)
 
 Extensions for `TextView`.
@@ -1763,8 +1773,6 @@ because the corresponding `TextView.getTextColors` is a `ColorStateList` object.
 
 So `BetterAndroid` has added an extension for this function, now, you can use the following methods to get and set the text color of `TextView`.
 
-
-
 ```kotlin
 // Assume this is your TextView.
 val textView: TextView
@@ -1772,6 +1780,80 @@ val textView: TextView
 val textColor = textView.textColor
 // Set the text color of TextView.
 textView.textColor = Color.RED
+```
+
+Update the text of `EditText`.
+
+`EditText` inherits from `TextView`, directly using `setText(...)` to update the text will cause the cursor position to still be at the first position.
+
+`BetterAndroid` provides a more convenient way for this, it will automatically set `setSelection` for you according to the length of the text to keep the cursor position at the end of the text.
+
+> The following example
+
+```kotlin
+// Assume this is your EditText.
+val editText: EditText
+// Update the text of EditText.
+editText.updateText("Hello World!")
+```
+
+Clear the text of `TextView`.
+
+Using `setText("")` or `text = ""` does not seem very friendly, so `BetterAndroid` provides a simpler way for this.
+
+> The following example
+
+```kotlin
+// Assume this is your TextView.
+val textView: TextView
+// Clear the text of TextView.
+textView.clear()
+```
+
+Update `TextView`'s `Typeface`.
+
+`Typeface` is a font in Android, sometimes we only need to care about the thickness and italics of the font without setting a specific font.
+
+`BetterAndroid` provides a simpler way for this, now, you can update the `Typeface` of `TextView` using the following method.
+
+> The following example
+
+```kotlin
+// Assume this is your TextView.
+val textView: TextView
+// Only set the TextView's font to bold.
+textView.updateTypeface(Typeface.BOLD)
+```
+
+Updated `CompoundDrawables` of `TextView`.
+
+`CompoundDrawables` are compound drawings in `TextView` that contain `Drawable` objects.
+
+Using the traditional `setCompoundDrawables` method requires passing in four parameters and filling in `null` for unnecessary parameters, which seems very troublesome.
+
+`BetterAndroid` provides a simpler way for this, now, you can directly update the `CompoundDrawables` of `TextView` using the following method.
+
+> The following example
+
+```kotlin
+// Assume this is your TextView.
+val textView: TextView
+// Update CompoundDrawables of TextView.
+// We only need to fill in the parameters in the required direction,
+// and the parameters in other directions will be automatically reset to the original CompoundDrawables.
+textView.updateCompoundDrawables(
+    left = R.drawable.ic_left,
+    top = R.drawable.ic_top,
+    right = R.drawable.ic_right,
+    bottom = R.drawable.ic_bottom
+)
+// Use setCompoundDrawablesWithIntrinsicBounds to update CompoundDrawables.
+textView.updateCompoundDrawablesWithIntrinsicBounds(
+    left = R.drawable.ic_left,
+    top = R.drawable.ic_top,
+    right = R.drawable.ic_right,
+    bottom = R.drawable.ic_bottom
+)
 ```
 
 Set the input limits (digits) of the `TextView`.
