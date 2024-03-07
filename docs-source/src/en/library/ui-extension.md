@@ -1763,7 +1763,7 @@ because the corresponding `TextView.getTextColors` is a `ColorStateList` object.
 
 So `BetterAndroid` has added an extension for this function, now, you can use the following methods to get and set the text color of `TextView`.
 
-> The following example
+
 
 ```kotlin
 // Assume this is your TextView.
@@ -1804,7 +1804,13 @@ editText.setDigits("0123456789", locale = Locale.CHINA)
 
 ::: tip Contents of This Section
 
-[ViewBinding → inflateViewBinding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/inflate-view-binding)
+[ViewBinding → ViewBinding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.binding/-view-binding)
+
+[ViewBinding → viewBinding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.binding/view-binding)
+
+[ViewBinding → ViewBindingBuilder](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.binding/-view-binding-builder)
+
+[ViewBinding → ViewBindingDelegate](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.binding/-view-binding-delegate)
 
 Extensions for `ViewBinding`.
 
@@ -1817,13 +1823,84 @@ and there is no implementation of `inflate` and other methods, you can only use 
 
 So `BetterAndroid` performed reflection processing on it to obtain the `inflate` method and extract the object type through generics.
 
-::: warning
+These designs are partly inspired by the [ViewBindingKTX](https://github.com/DylanCaiCoding/ViewBindingKTX) project, many thanks to the author of this project.
 
-We do not recommend that you manually use this method to operate `ViewBinding` yourself.
+Now you can create a `ViewBindingBuilder` using the following and pass it to wherever needed for manipulation.
 
-This set of APIs may not work stably in any special scenarios, they are currently only used to provide [ui-component](../library/ui-component.md), and only tested limited usage scenarios.
+> The following example
 
-Therefore, detailed usage methods will not be provided here, if you still want to use this API to load `ViewBinding`,
-you can find the annotated usage in the `inflateViewBinding` method in **Contents of This Section** to read.
+```kotlin
+// Create a ViewBindingBuilder.
+val builder = ViewBinding<ActivityMainBinding>()
+// Inflate the layout when needed.
+val binding = builder.inflate(layoutInflater)
+// Assume this is your View.
+val view: View
+// You can also bind to an existing View.
+val binding = builder.bind(view)
+```
+
+In this way we have implemented the passing of `ViewBinding`, and you can use it anywhere.
+
+You can also use delegation to use `ViewBinding` in `Activity` and other places.
+
+> The following example
+
+```kotlin
+class YourActvity : Activity() {
+
+    val binding: ActivityMainBinding by viewBinding()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(binding.root)
+    }
+}
+```
+
+If you need to encapsulate `ViewBinding` into the parent class and bind it to the subclass using generics, you can use the following method.
+
+First we need to create a parent class.
+
+> The following example
+
+```kotlin
+open class YourBaseActvity<VB : ViewBinding> : Activity() {
+
+    lateinit var binding: VB
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+       super.onCreate(savedInstanceState)
+       // Inflate the view binding.
+       binding = ViewBindingBuilder.fromGeneric<VB>(this).inflate(layoutInflater)
+       setContentView(binding.root)
+    }
+}
+```
+
+Then inherit this parent class as a global object into the subclass.
+
+> The following example
+
+```kotlin
+class YourActivity : YourBaseActivity<ActivityMainBinding>() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+       super.onCreate(savedInstanceState)
+       binding.mainText.text = "Hello World!"
+    }
+}
+```
+
+::: tip
+
+You can also refer to [ui-component → Activity](../library/ui-component.md#activity) to directly use the encapsulated `AppBindingActivity` or refer to
+[ui-component → Fragment](../library/ui-component.md#fragment) directly uses the encapsulated `AppBindingFragment`.
+
+:::
+
+:::danger
+
+If your application was compiled with obfuscation enabled, you need to refer to [R8 & Proguard Obfuscate](../config/r8-proguard) to correctly configure the obfuscation rules.
 
 :::

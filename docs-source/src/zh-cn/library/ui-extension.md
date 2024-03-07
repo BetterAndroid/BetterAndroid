@@ -1752,7 +1752,13 @@ editText.setDigits("0123456789", locale = Locale.CHINA)
 
 ::: tip 本节内容
 
-[ViewBinding → inflateViewBinding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/inflate-view-binding)
+[ViewBinding → ViewBinding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.binding/-view-binding)
+
+[ViewBinding → viewBinding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.binding/view-binding)
+
+[ViewBinding → ViewBindingBuilder](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.binding/-view-binding-builder)
+
+[ViewBinding → ViewBindingDelegate](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.binding/-view-binding-delegate)
 
 适用于 `ViewBinding` 的扩展。
 
@@ -1764,10 +1770,84 @@ editText.setDigits("0123456789", locale = Locale.CHINA)
 
 于是 `BetterAndroid` 对其进行了反射处理来获得其中的 `inflate` 方法并通过泛型来提取对象的类型。
 
-::: warning
+这些设计的灵感部分来源于 [ViewBindingKTX](https://github.com/DylanCaiCoding/ViewBindingKTX) 项目，非常感谢这个项目的作者。
 
-我们不建议你手动使用此方法来自行操作 `ViewBinding`，这套 API 可能无法稳定工作于任何特殊场景，它们现在仅用于提供给 [ui-component](../library/ui-component.md) 使用，且仅测试了有限的使用场景。
+现在你可以使用以下方式创建一个 `ViewBindingBuilder` 并可以将其传递到任何需要的地方进行操作。
 
-所以这里也不会提供详细的使用方法，如果你依然想要使用这套 API 来装载 `ViewBinding`，你可以在 **本节内容** 中找到 `inflateViewBinding` 方法中的注释用法进行阅读。
+> 示例如下
+
+```kotlin
+// 创建一个 ViewBindingBuilder
+val builder = ViewBinding<ActivityMainBinding>()
+// 在需要时装载布局
+val binding = builder.inflate(layoutInflater)
+// 假设这就是你的 View
+val view: View
+// 你也可以绑定到一个存在的 View 上
+val binding = builder.bind(view)
+```
+
+这样我们就实现了 `ViewBinding` 的传递，你可以在任何地方使用它。
+
+你还可以使用委托的方式来实现在 `Activity` 等地方使用 `ViewBinding`。
+
+> 示例如下
+
+```kotlin
+class YourActvity : Activity() {
+
+    val binding: ActivityMainBinding by viewBinding()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(binding.root)
+    }
+}
+```
+
+如果你需要实现将 `ViewBinding` 封装到父类并使用泛型的方式绑定到子类，你可以使用以下方式。
+
+首先我们需要创建一个父类。
+
+> 示例如下
+
+```kotlin
+open class YourBaseActvity<VB : ViewBinding> : Activity() {
+
+    lateinit var binding: VB
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // 在这里装载 ViewBinding
+        binding = ViewBindingBuilder.fromGeneric<VB>(this).inflate(layoutInflater)
+        setContentView(binding.root)
+    }
+}
+```
+
+然后将这个父类作为全局对象继承到子类中。
+
+> 示例如下
+
+```kotlin
+class YourActivity : YourBaseActivity<ActivityMainBinding>() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding.mainText.text = "Hello World!"
+    }
+}
+```
+
+::: tip
+
+你还可以参考 [ui-component → Activity](../library/ui-component.md#activity) 直接使用已经封装好的 `AppBindingActivity` 或参考
+[ui-component → Fragment](../library/ui-component.md#fragment) 直接使用已经封装好的 `AppBindingFragment`。
+
+:::
+
+::: danger
+
+如果你的应用程序在编译时启用了混淆功能，你需要参考 [R8 与 ProGuard 混淆](../config/r8-proguard) 来正确配置混淆规则。
 
 :::
