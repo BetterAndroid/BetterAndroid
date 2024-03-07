@@ -160,7 +160,7 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
         /**
          * Create a [ViewBindingBuilder] from [clazz]'s generic class.
          * @see fromGeneric
-         * @param clazz the generic class.
+         * @param clazz the generic class's owner.
          * @return [ViewBindingBuilder]<[VB]>
          * @throws IllegalArgumentException if the generic class is not found or not a [ViewBinding].
          */
