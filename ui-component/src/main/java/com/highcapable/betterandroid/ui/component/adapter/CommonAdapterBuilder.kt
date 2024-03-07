@@ -37,10 +37,9 @@ import androidx.viewbinding.ViewBinding
 import com.highcapable.betterandroid.ui.component.adapter.base.IAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.factory.bindAdapter
 import com.highcapable.betterandroid.ui.component.adapter.view.CommonItemView
+import com.highcapable.betterandroid.ui.extension.binding.ViewBinding
 import com.highcapable.betterandroid.ui.extension.view.inflate
-import com.highcapable.betterandroid.ui.extension.view.inflateViewBinding
 import com.highcapable.betterandroid.ui.extension.view.layoutInflater
-import com.highcapable.yukireflection.factory.classOf
 import androidx.appcompat.widget.ListPopupWindow as AndroidX_ListPopupWindow
 
 /**
@@ -154,7 +153,7 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
     inline fun <reified VB : ViewBinding> onBindViews(
         noinline boundItemViews: (binding: VB, entity: E, position: Int) -> Unit = { _, _, _ -> }
     ) = apply {
-        boundItemViewsCallback = CommonItemView(bindingClass = classOf<VB>()) { binding, _, entity, position ->
+        boundItemViewsCallback = CommonItemView(ViewBinding<VB>()) { binding, _, entity, position ->
             binding?.also { boundItemViews(it as VB, entity, position) }
         }
     }
@@ -214,8 +213,8 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
             if (convertView == null) {
                 holder = boundItemViewsCallback?.let {
                     when {
-                        it.bindingClass != null ->
-                            adapterContext.inflateViewBinding(it.bindingClass).let { binding ->
+                        it.bindingBuilder != null ->
+                            it.bindingBuilder.inflate(adapterContext.layoutInflater).let { binding ->
                                 holderView = binding.root
                                 BindingBaseHolder(binding = binding)
                             }

@@ -33,9 +33,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.highcapable.betterandroid.ui.component.adapter.base.IAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.factory.bindAdapter
 import com.highcapable.betterandroid.ui.component.adapter.view.RecyclerItemView
-import com.highcapable.betterandroid.ui.extension.view.inflateViewBinding
+import com.highcapable.betterandroid.ui.extension.binding.ViewBinding
 import com.highcapable.betterandroid.ui.extension.view.layoutInflater
-import com.highcapable.yukireflection.factory.classOf
 
 /**
  * [RecyclerView.Adapter] builder, using entity [E].
@@ -173,7 +172,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     @JvmName("onBindHeaderViewTyped")
     inline fun <reified VB : ViewBinding> onBindHeaderView(noinline boundHeaderView: (binding: VB) -> Unit = {}) = apply {
         require(!hasHeaderView) { "The header view already exists, you can only set one header view." }
-        boundHeaderItemViewCallback = RecyclerItemView(bindingClass = classOf<VB>(), viewType = HEADER_VIEW_TYPE) { binding, _, _, _ ->
+        boundHeaderItemViewCallback = RecyclerItemView(ViewBinding<VB>(), viewType = HEADER_VIEW_TYPE) { binding, _, _, _ ->
             binding?.also { boundHeaderView(it as VB) }
         }
     }
@@ -236,7 +235,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     @JvmName("onBindFooterViewTyped")
     inline fun <reified VB : ViewBinding> onBindFooterView(noinline boundFooterView: (binding: VB) -> Unit = {}) = apply {
         require(!hasFooterView) { "The footer view already exists, you can only set one footer view." }
-        boundFooterItemViewCallback = RecyclerItemView(bindingClass = classOf<VB>(), viewType = FOOTER_VIEW_TYPE) { binding, _, _, _ ->
+        boundFooterItemViewCallback = RecyclerItemView(ViewBinding<VB>(), viewType = FOOTER_VIEW_TYPE) { binding, _, _, _ ->
             binding?.also { boundFooterView(it as VB) }
         }
     }
@@ -296,7 +295,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
         viewType: Int = DEFAULT_VIEW_TYPE,
         noinline boundItemViews: (binding: VB, entity: E, position: Int) -> Unit = { _, _, _ -> }
     ) = apply {
-        boundItemViewsCallbacks.add(RecyclerItemView(bindingClass = classOf<VB>(), viewType = viewType) { binding, _, entity, position ->
+        boundItemViewsCallbacks.add(RecyclerItemView(ViewBinding<VB>(), viewType = viewType) { binding, _, entity, position ->
             binding?.also { boundItemViews(it as VB, entity, position) }
         })
     }
@@ -405,8 +404,8 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             boundItemViewsCallbacks(viewType)?.let {
                 when {
-                    it.bindingClass != null -> {
-                        val binding = adapterContext.inflateViewBinding(it.bindingClass, parent = parent, attachToRoot = false)
+                    it.bindingBuilder != null -> {
+                        val binding = it.bindingBuilder.inflate(adapterContext.layoutInflater, parent)
                         BindingRecyclerHolder(binding, binding.root, viewType)
                     }
                     it.rootViewResId >= 0 -> CommonRecyclerHolder(adapterContext.layoutInflater.inflate(it.rootViewResId, parent), it.viewType)

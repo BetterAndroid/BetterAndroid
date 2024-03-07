@@ -34,10 +34,9 @@ import com.highcapable.betterandroid.ui.component.adapter.base.IAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.factory.bindAdapter
 import com.highcapable.betterandroid.ui.component.adapter.mediator.PagerMediator
 import com.highcapable.betterandroid.ui.component.adapter.view.CommonItemView
+import com.highcapable.betterandroid.ui.extension.binding.ViewBinding
 import com.highcapable.betterandroid.ui.extension.view.inflate
-import com.highcapable.betterandroid.ui.extension.view.inflateViewBinding
 import com.highcapable.betterandroid.ui.extension.view.layoutInflater
-import com.highcapable.yukireflection.factory.classOf
 
 /**
  * [PagerAdapter] builder, using entity [E].
@@ -118,7 +117,7 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
     inline fun <reified VB : ViewBinding> onBindViews(
         noinline boundItemViews: (binding: VB, entity: E, position: Int) -> Unit = { _, _, _ -> }
     ) = apply {
-        boundItemViewsCallbacks.add(CommonItemView(bindingClass = classOf<VB>()) { binding, _, entity, position ->
+        boundItemViewsCallbacks.add(CommonItemView(ViewBinding<VB>()) { binding, _, entity, position ->
             binding?.also { boundItemViews(it as VB, entity, position) }
         })
     }
@@ -167,8 +166,8 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
         override fun instantiateItem(container: ViewGroup, position: Int) =
             (viewHolders[position]?.also { container.addView(it.rootView) } ?: boundItemViewsCallbacks(position)?.let {
                 when {
-                    it.bindingClass != null ->
-                        adapterContext.inflateViewBinding(it.bindingClass).let { binding ->
+                    it.bindingBuilder != null ->
+                        it.bindingBuilder.inflate(adapterContext.layoutInflater).let { binding ->
                             container.addView(binding.root)
                             BindingBaseHolder(binding = binding).apply { viewHolders[position] = this }
                         }

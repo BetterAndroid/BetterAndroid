@@ -24,14 +24,15 @@ package com.highcapable.betterandroid.ui.component.adapter.view.proxy
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.viewbinding.ViewBinding
+import com.highcapable.betterandroid.ui.extension.binding.ViewBindingBuilder
 
 /**
  * Base adapter item view, using entity [E].
  */
 internal interface IBaseItemView<E> {
 
-    /** [ViewBinding]'s [Class] */
-    val bindingClass: Class<*>?
+    /** [ViewBindingBuilder] */
+    val bindingBuilder: ViewBindingBuilder<*>?
 
     /** The item view layout ID. */
     @get:LayoutRes

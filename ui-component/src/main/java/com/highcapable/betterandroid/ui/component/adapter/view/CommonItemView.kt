@@ -26,12 +26,13 @@ import android.widget.BaseAdapter
 import androidx.viewbinding.ViewBinding
 import androidx.viewpager.widget.PagerAdapter
 import com.highcapable.betterandroid.ui.component.adapter.view.proxy.IBaseItemView
+import com.highcapable.betterandroid.ui.extension.binding.ViewBindingBuilder
 
 /**
  * [BaseAdapter] or [PagerAdapter] adapter item view, using entity [E].
  */
 internal class CommonItemView<E>(
-    override val bindingClass: Class<*>? = null,
+    override val bindingBuilder: ViewBindingBuilder<*>? = null,
     override val rootViewResId: Int = -1,
     override val rootView: View? = null,
     override val onBindCallback: (ViewBinding?, View?, E, Int) -> Unit

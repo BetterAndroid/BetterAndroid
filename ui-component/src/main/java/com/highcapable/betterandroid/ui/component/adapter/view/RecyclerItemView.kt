@@ -25,13 +25,14 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.highcapable.betterandroid.ui.component.adapter.view.proxy.IBaseItemView
+import com.highcapable.betterandroid.ui.extension.binding.ViewBindingBuilder
 
 /**
  * [RecyclerView.Adapter] adapter item view, using entity [E].
  * @param viewType the view type.
  */
 internal class RecyclerItemView<E>(
-    override val bindingClass: Class<*>? = null,
+    override val bindingBuilder: ViewBindingBuilder<*>? = null,
     override val rootViewResId: Int = -1,
     override val rootView: View? = null,
     val viewType: Int = 0,
