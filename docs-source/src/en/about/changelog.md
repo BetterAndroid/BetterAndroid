@@ -18,7 +18,19 @@ Time zone of version release date: **UTC+8**
 
 ## ui-component
 
-### 1.0.4 | 2024.01.02 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.5 | 2024.03.08 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Removed `Factory` suffix from all extension method `kt` files
+- Removed deprecated files in the previous version
+- Fixed the problem of incorrect subscripts and item positions returned by `onItemViewsClick` and `onItemViewsLongClick` in `CommonAdapterBuilder`
+- Adjust the entry record object added in the adapter to `LinkedHashSet` to prevent repeated additions
+- Open `DEFAULT_VIEW_TYPE` in `RecyclerAdapterBuilder`
+- Added `onBindItemId` method in the adapter to customize the behavior of `getItemId`
+- The adapter now allows direct use of `onBindViews` to bind item layouts without callbacks
+- Added `onBindHeaderView` and `onBindFooterView` methods in `RecyclerAdapterBuilder`
+- If the `trigger` method is called in `OnBackPressedCallback` and is not removed, the callback event will be re-enabled
+
+### 1.0.4 | 2024.01.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - `SystemBarsController` has been fully migrated to window insets API, please refer to the documentation to start using the new usage
 - Reconstructed `SystemBarsController` and modified the initialization method, please refer to the documentation to get started using the new method
@@ -59,7 +71,22 @@ Time zone of version release date: **UTC+8**
 
 ## ui-extension
 
-### 1.0.2 | 2024.01.02 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.3 | 2024.03.08 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Removed `Factory` suffix from all extension method `kt` files
+- Removed deprecated files in the previous version
+- The `ViewLayoutParams` method of `ViewFactory` now supports the `AbsListView.LayoutParams` type
+- Added `updateCompoundDrawables` and `updateCompoundDrawablesWithIntrinsicBounds` methods in `ViewFactory`
+- Added `parent` and `parentOrNull` methods in `ViewFactory`
+- Added `walkToRoot`, `walkThroughChildren`, `indexOfInParent` methods in `ViewFactory`
+- Added `child`, `childOrNull`, `firstChild`, `lastChild`, `firstChildOrNull`, `lastChildOrNull` methods in `ViewFactory`
+- Merge the `inflate` method in `ViewFactory` into `LayoutInflaterFactory` and deprecated the original method
+- Added `addToBackStack` parameter to the add methods in `FragmentFactory`
+- The `commitTransaction` method is deprecated in `FragmentFactory` and is now migrate to the official `fragment-ktx` dependency
+- Added `themeResId` method in `ResourcesFactory`
+- Added new `ViewBinding` solution and deprecated the old solution
+
+### 1.0.2 | 2024.01.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Some package names that are not classified according to the standard have been moved, if you encounter an error, please re-import these calling methods
 - Modified related names for Java calls

@@ -10,7 +10,19 @@
 
 ## ui-component
 
-### 1.0.4 | 2024.01.02 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.5 | 2024.03.08 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 移除了所有扩展方法 `kt` 文件的 `Factory` 后缀
+- 移除了上一个版本中已作废的文件
+- 修复 `CommonAdapterBuilder` 中的 `onItemViewsClick`、`onItemViewsLongClick` 返回的下标和条目位置错误问题
+- 调整适配器中添加的条目记录对象为 `LinkedHashSet` 以防止重复添加
+- 开放 `RecyclerAdapterBuilder` 中的 `DEFAULT_VIEW_TYPE`
+- 适配器中新增 `onBindItemId` 方法，可自定义 `getItemId` 的行为
+- 适配器中现在允许无回调直接使用 `onBindViews` 绑定条目布局
+- `RecyclerAdapterBuilder` 中新增 `onBindHeaderView`、`onBindFooterView` 方法
+- 在 `OnBackPressedCallback` 中调用 `trigger` 方法后若未移除则将重新启用此回调事件
+
+### 1.0.4 | 2024.01.02 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - `SystemBarsController` 已完全迁移到 Window Insets API，请参考文档开始使用新用法
 - 重构了 `SystemBarsController` 并修改了初始化方法，请参考文档使用新的方式开始使用
@@ -48,7 +60,22 @@
 
 ## ui-extension
 
-### 1.0.2 | 2024.01.02 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.3 | 2024.03.08 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 移除了所有扩展方法 `kt` 文件的 `Factory` 后缀
+- 移除了上一个版本中已作废的文件
+- `ViewFactory` 的 `ViewLayoutParams` 方法新增支持 `AbsListView.LayoutParams` 类型
+- `ViewFactory` 中新增 `updateCompoundDrawables`、`updateCompoundDrawablesWithIntrinsicBounds` 方法
+- `ViewFactory` 中新增 `parent`、`parentOrNull` 方法
+- `ViewFactory` 中新增 `walkToRoot`、`walkThroughChildren`、`indexOfInParent` 方法
+- `ViewFactory` 中新增 `child`、`childOrNull`、`firstChild`、`lastChild`、`firstChildOrNull`、`lastChildOrNull` 方法
+- 合并 `ViewFactory` 中的 `inflate` 方法到 `LayoutInflaterFactory` 中并作废原方法
+- `FragmentFactory` 中的添加方法新增 `addToBackStack` 参数
+- `FragmentFactory` 中作废了 `commitTransaction` 方法，现已迁移到官方提供的 `fragment-ktx` 依赖
+- `ResourcesFactory` 中新增 `themeResId` 方法
+- 新增全新的 `ViewBinding` 解决方案并弃用旧版方案
+
+### 1.0.2 | 2024.01.02 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 移动了部分不规范分类的包名，如遇到报错，请重新对这些调用的方法进行 `import` 操作
 - 修改了针对 Java 调用的相关名称
