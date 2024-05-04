@@ -247,31 +247,35 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
      * Inflate the [ViewBinding].
      * @param layoutInflater the layout inflater.
      * @param parent the parent view, default is null.
-     * @param attachToParent whether to attach the parent view, default is false.
+     * @param attachToParent whether to attach the parent view, default is false, if the layout root node is `<merge>` or `<include>`,
+     * this parameter will be ignored and always keep to true.
      * @return [VB]
      * @throws IllegalStateException if the binding failed.
      */
     @JvmOverloads
     fun inflate(layoutInflater: LayoutInflater, parent: ViewGroup? = null, attachToParent: Boolean = false): VB {
-        var binding: VB?
-        binding = bindingClass.method {
+        val binding = bindingClass.method {
             name = "inflate"
             param(LayoutInflaterClass, ViewGroupClass, BooleanType)
         }.ignored().get().invoke<VB>(layoutInflater, parent, attachToParent)
-        require(binding != null || parent == null || !attachToParent) {
-            "Cannot find the inflate(LayoutInflater, ViewGroup, Boolean) method in $bindingClass, " +
-                "if your layout root node is <merge> or <include>, " +
-                "this means that your layout must be bound to a parent layout, " +
-                "please set the \"parent\" parameter and set the \"attachToParent\" to true.\n" +
-                "If you are using R8, please configure obfuscation rules."
+        return when {
+            binding != null -> binding
+            parent != null ->
+                bindingClass.method {
+                    name = "inflate"
+                    param(LayoutInflaterClass, ViewGroupClass)
+                }.ignored().get().invoke<VB>(layoutInflater, parent) ?: error(
+                    "Cannot find the inflate(LayoutInflater, ViewGroup) method in $bindingClass, " +
+                        "if you are using R8, please configure obfuscation rules."
+                )
+            else -> error(
+                "Cannot find the inflate(LayoutInflater, ViewGroup, Boolean) method in $bindingClass, " +
+                    "if your layout root node is <merge> or <include>, " +
+                    "this means that your layout must be bound to a parent layout, " +
+                    "please set the \"parent\" parameter and set the \"attachToParent\" to true.\n" +
+                    "If you are using R8, please configure obfuscation rules."
+            )
         }
-        if (binding == null) binding = bindingClass.method {
-            name = "inflate"
-            param(LayoutInflaterClass, ViewGroupClass)
-        }.ignored().get().invoke<VB>(layoutInflater, parent)
-        require(binding != null) {
-            "Cannot find the inflate(...) method in $bindingClass, if you are using R8, please configure obfuscation rules."
-        }; return binding
     }
 }
 
