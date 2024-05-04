@@ -29,6 +29,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.highcapable.betterandroid.ui.extension.view.layoutInflater
 import com.highcapable.yukireflection.factory.classOf
@@ -96,11 +97,48 @@ inline fun <reified VB : ViewBinding> ViewBinding() = ViewBindingBuilder(classOf
  *     *** inflate(***);
  * }
  * ```
+ * @see Fragment.viewBinding
  * @param parent the parent view, default is null.
  * @param attachToParent whether to attach the parent view, default is false.
  * @return [ViewBindingDelegate]<[VB]>
  */
 inline fun <reified VB : ViewBinding> Context.viewBinding(parent: ViewGroup? = null, attachToParent: Boolean = false) =
+    ViewBindingDelegate(classOf<VB>(), { layoutInflater }, parent, attachToParent)
+
+/**
+ * Create a delegate for [ViewBinding].
+ *
+ * Usage:
+ *
+ * ```kotlin
+ * class YourFragment : Fragment() {
+ *
+ *     val binding: FragmentMainBinding by viewBinding()
+ *
+ *     override fun onCreateView(
+ *         inflater: LayoutInflater,
+ *         container: ViewGroup?,
+ *         savedInstanceState: Bundle?
+ *     ) = binding.root
+ * }
+ * ```
+ *
+ * - Note: You need to keep the [ViewBinding] class not to be obfuscated,
+ *   edit the `proguard-rules.pro` in your project:
+ *
+ * ```proguard
+ * -keep class * implements androidx.viewbinding.ViewBinding {
+ *     <init>();
+ *     *** bind(***);
+ *     *** inflate(***);
+ * }
+ * ```
+ * @see Context.viewBinding
+ * @param parent the parent view, default is null.
+ * @param attachToParent whether to attach the parent view, default is false.
+ * @return [ViewBindingDelegate]<[VB]>
+ */
+inline fun <reified VB : ViewBinding> Fragment.viewBinding(parent: ViewGroup? = null, attachToParent: Boolean = false) =
     ViewBindingDelegate(classOf<VB>(), { layoutInflater }, parent, attachToParent)
 
 /**
