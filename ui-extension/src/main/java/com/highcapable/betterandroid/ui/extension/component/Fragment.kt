@@ -36,7 +36,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.fragment.app.commitNow
-import com.highcapable.betterandroid.ui.extension.R
 import com.highcapable.betterandroid.ui.extension.generated.BetterAndroidProperties
 import com.highcapable.betterandroid.ui.extension.view.firstChildOrNull
 import android.R as Android_R
@@ -79,8 +78,7 @@ inline fun <reified T : Fragment> FragmentManager.findFragment(tag: String) = fi
  * @param activity the [FragmentActivity] that needs to be bound to.
  * @param viewId the container view id that needs to be bound to.
  * @param view the container that needs to be bound to, default is [Activity.requireRootView].
- * @param beginAnimResId the [Fragment] start to enter animation, default is [R.anim.simple_ui_open_in].
- * @param finishAnimResId the [Fragment] finished enter animation, default is [R.anim.simple_ui_open_out].
+ * @param animId the [Fragment] transition animation.
  * @param tag the [Fragment] tag, default is [System.currentTimeMillis].
  * @param addToBackStack whether to add to back stack name, default is null.
  * @param runOnCommit the commit [Runnable], default is null.
@@ -92,15 +90,14 @@ fun Fragment.attachToActivity(
     activity: FragmentActivity,
     @IdRes viewId: Int = View.NO_ID,
     view: View? = activity.requireRootView(),
-    @AnimRes beginAnimResId: Int = R.anim.simple_ui_open_in,
-    @AnimRes finishAnimResId: Int = R.anim.simple_ui_open_out,
+    @AnimRes animId: Int = 0,
     tag: String = System.currentTimeMillis().toString(),
     addToBackStack: String? = null,
     runOnCommit: Runnable? = null,
     allowStateLoss: Boolean = true
 ) {
     activity.fragmentManager().commit(allowStateLoss) {
-        setCustomAnimations(beginAnimResId, finishAnimResId)
+        setCustomAnimations(animId, 0)
         add(viewId.takeIf { it != View.NO_ID } ?: view?.id ?: error("Fragment need attached to a view."), this@attachToActivity, tag)
         addToBackStack?.also { addToBackStack(it) }
         runOnCommit?.also { runOnCommit(it) }
@@ -112,8 +109,7 @@ fun Fragment.attachToActivity(
  * @param fragment the [Fragment] that needs to be bound to.
  * @param viewId the container view id that needs to be bound to.
  * @param view the container that needs to be bound to, default is [Fragment.requireRootView].
- * @param beginAnimResId the [Fragment] start to enter animation, default is [R.anim.simple_ui_open_in].
- * @param finishAnimResId the [Fragment] finished enter animation, default is [R.anim.simple_ui_open_out].
+ * @param animId the [Fragment] transition animation.
  * @param tag the [Fragment] tag, default is [System.currentTimeMillis].
  * @param addToBackStack whether to add to back stack name, default is null.
  * @param runOnCommit the commit [Runnable], default is null.
@@ -125,15 +121,14 @@ fun Fragment.attachToFragment(
     fragment: Fragment,
     @IdRes viewId: Int = View.NO_ID,
     view: View? = fragment.requireRootView(),
-    @AnimRes beginAnimResId: Int = R.anim.simple_ui_open_in,
-    @AnimRes finishAnimResId: Int = R.anim.simple_ui_open_out,
+    @AnimRes animId: Int = 0,
     tag: String = System.currentTimeMillis().toString(),
     addToBackStack: String? = null,
     runOnCommit: Runnable? = null,
     allowStateLoss: Boolean = true
 ) {
     fragment.fragmentManager().commit(allowStateLoss) {
-        setCustomAnimations(beginAnimResId, finishAnimResId)
+        setCustomAnimations(animId, 0)
         add(viewId.takeIf { it != View.NO_ID } ?: view?.id ?: error("Fragment need attached to a view."), this@attachToFragment, tag)
         addToBackStack?.also { addToBackStack(it) }
         runOnCommit?.also { runOnCommit(it) }
@@ -145,8 +140,8 @@ fun Fragment.attachToFragment(
  * @param activity the [FragmentActivity] that needs to be replace to.
  * @param viewId the container view id that needs to be replace to.
  * @param view the container that needs to be replace to, default is [Activity.requireRootView].
- * @param beginAnimResId the [Fragment] start to enter animation, default is [R.anim.simple_ui_open_in].
- * @param finishAnimResId the [Fragment] finished enter animation, default is [R.anim.simple_ui_open_out].
+ * @param enterAnimId the [Fragment] enter transition animation.
+ * @param exitAnimId the [Fragment] exit transition animation.
  * @param tag the [Fragment] tag, default is [System.currentTimeMillis].
  * @param addToBackStack whether to add to back stack name, default is null.
  * @param runOnCommit the commit [Runnable], default is null.
@@ -158,15 +153,15 @@ fun Fragment.replaceFromActivity(
     activity: FragmentActivity,
     @IdRes viewId: Int = View.NO_ID,
     view: View? = activity.requireRootView(),
-    @AnimRes beginAnimResId: Int = R.anim.simple_ui_open_in,
-    @AnimRes finishAnimResId: Int = R.anim.simple_ui_open_out,
+    @AnimRes enterAnimId: Int = 0,
+    @AnimRes exitAnimId: Int = 0,
     tag: String = System.currentTimeMillis().toString(),
     addToBackStack: String? = null,
     runOnCommit: Runnable? = null,
     allowStateLoss: Boolean = true
 ) {
     activity.fragmentManager().commit(allowStateLoss) {
-        setCustomAnimations(beginAnimResId, finishAnimResId)
+        setCustomAnimations(enterAnimId, exitAnimId)
         replace(viewId.takeIf { it != View.NO_ID } ?: view?.id ?: error("Fragment need attached to a view."), this@replaceFromActivity, tag)
         addToBackStack?.also { addToBackStack(it) }
         runOnCommit?.also { runOnCommit(it) }
@@ -178,8 +173,8 @@ fun Fragment.replaceFromActivity(
  * @param fragment the [Fragment] that needs to be replace to.
  * @param viewId the container view id that needs to be replace to.
  * @param view the container that needs to be replace to, default is [Fragment.requireRootView].
- * @param beginAnimResId the [Fragment] start to enter animation, default is [R.anim.simple_ui_open_in].
- * @param finishAnimResId the [Fragment] finished enter animation, default is [R.anim.simple_ui_open_out].
+ * @param enterAnimId the [Fragment] enter transition animation.
+ * @param exitAnimId the [Fragment] exit transition animation.
  * @param tag the [Fragment] tag, default is [System.currentTimeMillis].
  * @param addToBackStack whether to add to back stack name, default is null.
  * @param runOnCommit the commit [Runnable], default is null.
@@ -191,15 +186,15 @@ fun Fragment.replaceFromFragment(
     fragment: Fragment,
     @IdRes viewId: Int = View.NO_ID,
     view: View? = fragment.requireRootView(),
-    @AnimRes beginAnimResId: Int = R.anim.simple_ui_open_in,
-    @AnimRes finishAnimResId: Int = R.anim.simple_ui_open_out,
+    @AnimRes enterAnimId: Int = 0,
+    @AnimRes exitAnimId: Int = 0,
     tag: String = System.currentTimeMillis().toString(),
     addToBackStack: String? = null,
     runOnCommit: Runnable? = null,
     allowStateLoss: Boolean = true
 ) {
     fragment.fragmentManager().commit(allowStateLoss) {
-        setCustomAnimations(beginAnimResId, finishAnimResId)
+        setCustomAnimations(enterAnimId, exitAnimId)
         replace(viewId.takeIf { it != View.NO_ID } ?: view?.id ?: error("Fragment need attached to a view."), this@replaceFromFragment, tag)
         addToBackStack?.also { addToBackStack(it) }
         runOnCommit?.also { runOnCommit(it) }
@@ -210,8 +205,7 @@ fun Fragment.replaceFromFragment(
  * Show the current [Fragment].
  * @param activity the current [FragmentActivity], default is [Fragment.getActivity].
  * @param fragment the current parent [Fragment], default is [Fragment.getParentFragment].
- * @param beginAnimResId the [Fragment] start to enter animation, default is [R.anim.simple_ui_open_in].
- * @param finishAnimResId the [Fragment] finished enter animation, default is [R.anim.simple_ui_open_out].
+ * @param animId the [Fragment] transition animation.
  * @param runOnCommit the commit [Runnable], default is null.
  * @param allowStateLoss whether to allow state loss, default true.
  */
@@ -219,14 +213,13 @@ fun Fragment.replaceFromFragment(
 fun Fragment.show(
     activity: FragmentActivity? = getActivity(),
     fragment: Fragment? = parentFragment,
-    @AnimRes beginAnimResId: Int = R.anim.simple_ui_open_in,
-    @AnimRes finishAnimResId: Int = R.anim.simple_ui_open_out,
+    @AnimRes animId: Int = 0,
     runOnCommit: Runnable? = null,
     allowStateLoss: Boolean = true
 ) {
     /** Begin. */
     fun FragmentTransaction.begin() {
-        setCustomAnimations(beginAnimResId, finishAnimResId)
+        setCustomAnimations(animId, 0)
         show(this@show)
         runOnCommit?.also { runOnCommit(it) }
     }
@@ -239,8 +232,7 @@ fun Fragment.show(
  * Hide the current [Fragment].
  * @param activity the current [FragmentActivity], default is [Fragment.getActivity].
  * @param fragment the current parent [Fragment], default is [Fragment.getParentFragment].
- * @param beginAnimResId the [Fragment] start to exit animation, default is [R.anim.simple_ui_exit_in].
- * @param finishAnimResId the [Fragment] finished exit animation, default is [R.anim.simple_ui_exit_out].
+ * @param animId the [Fragment] transition animation.
  * @param runOnCommit the commit [Runnable], default is null.
  * @param allowStateLoss whether to allow state loss, default true.
  */
@@ -248,14 +240,13 @@ fun Fragment.show(
 fun Fragment.hide(
     activity: FragmentActivity? = getActivity(),
     fragment: Fragment? = parentFragment,
-    @AnimRes beginAnimResId: Int = R.anim.simple_ui_exit_in,
-    @AnimRes finishAnimResId: Int = R.anim.simple_ui_exit_out,
+    @AnimRes animId: Int = 0,
     runOnCommit: Runnable? = null,
     allowStateLoss: Boolean = true
 ) {
     /** Begin. */
     fun FragmentTransaction.begin() {
-        setCustomAnimations(beginAnimResId, finishAnimResId)
+        setCustomAnimations(0, animId)
         hide(this@hide)
         runOnCommit?.also { runOnCommit(it) }
     }
@@ -267,21 +258,19 @@ fun Fragment.hide(
 /**
  * Detach and remove [Fragment] from [FragmentActivity].
  * @param activity the current [FragmentActivity], default is [Fragment.getActivity].
- * @param beginAnimResId the [Fragment] start to exit animation, default is [R.anim.simple_ui_exit_in].
- * @param finishAnimResId the [Fragment] finished exit animation, default is [R.anim.simple_ui_exit_out].
+ * @param animId the [Fragment] transition animation.
  * @param runOnCommit the commit [Runnable], default is null.
  * @param allowStateLoss whether to allow state loss, default true.
  */
 @JvmOverloads
 fun Fragment.detachFromActivity(
     activity: FragmentActivity? = getActivity(),
-    @AnimRes beginAnimResId: Int = R.anim.simple_ui_exit_in,
-    @AnimRes finishAnimResId: Int = R.anim.simple_ui_exit_out,
+    @AnimRes animId: Int = 0,
     runOnCommit: Runnable? = null,
     allowStateLoss: Boolean = true
 ) {
     activity?.fragmentManager()?.commit(allowStateLoss) {
-        setCustomAnimations(beginAnimResId, finishAnimResId)
+        setCustomAnimations(0, animId)
         remove(this@detachFromActivity)
         runOnCommit?.also { runOnCommit(it) }
     } ?: Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to remove Fragment $this, FragmentActivity is null.")
@@ -290,21 +279,19 @@ fun Fragment.detachFromActivity(
 /**
  * Detach and remove child [Fragment] from [Fragment].
  * @param fragment the current parent [Fragment], default is [Fragment.getParentFragment].
- * @param beginAnimResId the [Fragment] start to exit animation, default is [R.anim.simple_ui_exit_in].
- * @param finishAnimResId the [Fragment] finished exit animation, default is [R.anim.simple_ui_exit_out].
+ * @param animId the [Fragment] transition animation.
  * @param runOnCommit the commit [Runnable], default is null.
  * @param allowStateLoss whether to allow state loss, default true.
  */
 @JvmOverloads
 fun Fragment.detachFromFragment(
     fragment: Fragment? = parentFragment,
-    @AnimRes beginAnimResId: Int = R.anim.simple_ui_exit_in,
-    @AnimRes finishAnimResId: Int = R.anim.simple_ui_exit_out,
+    @AnimRes animId: Int = 0,
     runOnCommit: Runnable? = null,
     allowStateLoss: Boolean = true
 ) {
     fragment?.fragmentManager()?.commit(allowStateLoss) {
-        setCustomAnimations(beginAnimResId, finishAnimResId)
+        setCustomAnimations(0, animId)
         remove(this@detachFromFragment)
         runOnCommit?.also { runOnCommit(it) }
     } ?: Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to remove Fragment $this, parent Fragment is null.")
@@ -422,8 +409,8 @@ fun FragmentActivity.attachFragments(
     vararg fragments: Fragment,
     @IdRes viewId: Int = View.NO_ID,
     view: View? = requireRootView(),
-    @AnimRes beginAnimResId: Int = R.anim.simple_ui_open_in,
-    @AnimRes finishAnimResId: Int = R.anim.simple_ui_open_out,
+    @AnimRes beginAnimResId: Int = 0,
+    @AnimRes finishAnimResId: Int = 0,
     tag: String = System.currentTimeMillis().toString(),
     runOnCommit: Runnable? = null,
     allowingStateLoss: Boolean = true
@@ -442,8 +429,8 @@ fun Fragment.attachFragments(
     vararg fragments: Fragment,
     @IdRes viewId: Int = View.NO_ID,
     view: View? = requireRootView(),
-    @AnimRes beginAnimResId: Int = R.anim.simple_ui_open_in,
-    @AnimRes finishAnimResId: Int = R.anim.simple_ui_open_out,
+    @AnimRes beginAnimResId: Int = 0,
+    @AnimRes finishAnimResId: Int = 0,
     tag: String = System.currentTimeMillis().toString(),
     runOnCommit: Runnable? = null,
     allowingStateLoss: Boolean = true
@@ -460,8 +447,8 @@ fun Fragment.attachFragments(
 @JvmOverloads
 fun FragmentActivity.showFragments(
     vararg fragments: Fragment,
-    @AnimRes beginAnimResId: Int = R.anim.simple_ui_open_in,
-    @AnimRes finishAnimResId: Int = R.anim.simple_ui_open_out,
+    @AnimRes beginAnimResId: Int = 0,
+    @AnimRes finishAnimResId: Int = 0,
     runOnCommit: Runnable? = null,
     allowingStateLoss: Boolean = true
 ) {
@@ -477,8 +464,8 @@ fun FragmentActivity.showFragments(
 @JvmOverloads
 fun Fragment.showFragments(
     vararg fragments: Fragment,
-    @AnimRes beginAnimResId: Int = R.anim.simple_ui_open_in,
-    @AnimRes finishAnimResId: Int = R.anim.simple_ui_open_out,
+    @AnimRes beginAnimResId: Int = 0,
+    @AnimRes finishAnimResId: Int = 0,
     runOnCommit: Runnable? = null,
     allowingStateLoss: Boolean = true
 ) {
@@ -494,8 +481,8 @@ fun Fragment.showFragments(
 @JvmOverloads
 fun FragmentActivity.hideFragments(
     vararg fragments: Fragment,
-    @AnimRes beginAnimResId: Int = R.anim.simple_ui_exit_in,
-    @AnimRes finishAnimResId: Int = R.anim.simple_ui_exit_out,
+    @AnimRes beginAnimResId: Int = 0,
+    @AnimRes finishAnimResId: Int = 0,
     runOnCommit: Runnable? = null,
     allowingStateLoss: Boolean = true
 ) {
@@ -511,8 +498,8 @@ fun FragmentActivity.hideFragments(
 @JvmOverloads
 fun Fragment.hideFragments(
     vararg fragments: Fragment,
-    @AnimRes beginAnimResId: Int = R.anim.simple_ui_exit_in,
-    @AnimRes finishAnimResId: Int = R.anim.simple_ui_exit_out,
+    @AnimRes beginAnimResId: Int = 0,
+    @AnimRes finishAnimResId: Int = 0,
     runOnCommit: Runnable? = null,
     allowingStateLoss: Boolean = true
 ) {
@@ -528,8 +515,8 @@ fun Fragment.hideFragments(
 @JvmOverloads
 fun FragmentActivity.detachFragments(
     vararg fragments: Fragment,
-    @AnimRes beginAnimResId: Int = R.anim.simple_ui_exit_in,
-    @AnimRes finishAnimResId: Int = R.anim.simple_ui_exit_out,
+    @AnimRes beginAnimResId: Int = 0,
+    @AnimRes finishAnimResId: Int = 0,
     runOnCommit: Runnable? = null,
     allowingStateLoss: Boolean = true
 ) {
@@ -545,8 +532,8 @@ fun FragmentActivity.detachFragments(
 @JvmOverloads
 fun Fragment.detachFragments(
     vararg fragments: Fragment,
-    @AnimRes beginAnimResId: Int = R.anim.simple_ui_exit_in,
-    @AnimRes finishAnimResId: Int = R.anim.simple_ui_exit_out,
+    @AnimRes beginAnimResId: Int = 0,
+    @AnimRes finishAnimResId: Int = 0,
     runOnCommit: Runnable? = null,
     allowingStateLoss: Boolean = true
 ) {
