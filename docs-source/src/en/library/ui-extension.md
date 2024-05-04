@@ -275,8 +275,7 @@ val fragment = YourFragment()
 fragment.attachToActivity(
     activity = activity,
     viewId = R.id.container,
-    beginAnimResId = R.anim.slide_in_right, // Start entering.
-    finishAnimResId = R.anim.slide_out_left // Finish entry.
+    animId = R.anim.slide_in_right // Entry animation.
 )
 ```
 
@@ -405,9 +404,15 @@ fragment.show()
 
 Any binding, unbinding, replacement, showing, or hiding operation can be set up with a transition animation.
 
-You can find the `beginAnimResId` and `finishAnimResId` parameters in these methods, the default animation has been built in by `BetterAndroid`, and you do not need to do it.
+You can find the `animId`, `enterAnimId` and `exitAnimId` parameters in these methods, by default, no animation will be set.
 
-Any operation can have animation effects while performing those operations.
+:::
+
+::: warning
+
+Starting from version `1.0.4`, `BetterAndroid` has removed the default transition animation and related resource files.
+
+We believe that transition animation should be something that each developer decides for themselves, not for tool libraries.
 
 :::
 

@@ -270,8 +270,7 @@ val fragment = YourFragment()
 fragment.attachToActivity(
     activity = activity,
     viewId = R.id.container,
-    beginAnimResId = R.anim.slide_in_right, // 开始进入
-    finishAnimResId = R.anim.slide_out_left // 结束进入
+    animId = R.anim.slide_in_right // 入场动画
 )
 ```
 
@@ -394,7 +393,13 @@ fragment.show()
 
 ::: tip
 
-任何一个绑定、解绑、替换、显示、隐藏操作都可以被设置过渡动画，你可以在这些方法中找到 `beginAnimResId` 和 `finishAnimResId` 参数，默认的动画已被 `BetterAndroid` 内置，你无需进行任何操作即可在进行这些操作时拥有动画效果。
+任何一个绑定、解绑、替换、显示、隐藏操作都可以被设置过渡动画，你可以在这些方法中找到 `animId`、`enterAnimId` 和 `exitAnimId` 参数，默认将不设置动画效果。
+
+:::
+
+::: warning
+
+从 `1.0.4` 版本开始，`BetterAndroid` 移除了默认的过渡动画并移除了相关资源文件，我们认为过渡动画应该是每个开发者自行决定的事情，并非工具库所为之。
 
 :::
 
