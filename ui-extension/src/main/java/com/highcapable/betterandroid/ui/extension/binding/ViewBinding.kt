@@ -245,5 +245,15 @@ class ViewBindingDelegate<VB : ViewBinding> internal constructor(
     private val parent: ViewGroup?,
     private val attachToParent: Boolean
 ) {
-    operator fun getValue(thisRef: Any?, property: Any?) = ViewBindingBuilder(bindingClass).inflate(layoutInflater(), parent, attachToParent)
+
+    /** The [ViewBinding] instance cache. */
+    private var binding: VB? = null
+
+    /**
+     * Bind the [ViewBinding] instance and cache it.
+     * @return [VB]
+     */
+    private fun bind() = ViewBindingBuilder(bindingClass).inflate(layoutInflater(), parent, attachToParent).also { binding = it }
+
+    operator fun getValue(thisRef: Any?, property: Any?) = binding ?: bind()
 }
