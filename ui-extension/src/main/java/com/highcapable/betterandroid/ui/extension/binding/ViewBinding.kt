@@ -190,22 +190,27 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
          * -keep class * extends android.app.Activity
          * ```
          * @param instance the instance.
+         * @param onlySuperClass whether to find the generic class only in the super class, default is false.
          * @return [ViewBindingBuilder]<[VB]>
          * @throws IllegalArgumentException if the generic class is not found or not a [ViewBinding].
          */
-        fun <VB : ViewBinding> fromGeneric(instance: Any) = fromGeneric<VB>(instance.javaClass)
+        fun <VB : ViewBinding> fromGeneric(instance: Any, onlySuperClass: Boolean = false) = fromGeneric<VB>(instance.javaClass, onlySuperClass)
 
         /**
          * Create a [ViewBindingBuilder] from [clazz]'s generic class.
          * @see fromGeneric
          * @param clazz the generic class's owner.
+         * @param onlySuperClass whether to find the generic class only in the super class, default is false.
          * @return [ViewBindingBuilder]<[VB]>
          * @throws IllegalArgumentException if the generic class is not found or not a [ViewBinding].
          */
-        fun <VB : ViewBinding> fromGeneric(clazz: Class<*>): ViewBindingBuilder<VB> {
-            val bindingClass = clazz.findSuperGenericClass()
+        fun <VB : ViewBinding> fromGeneric(clazz: Class<*>, onlySuperClass: Boolean = false): ViewBindingBuilder<VB> {
+            val currentClass = if (onlySuperClass) clazz.superclass else clazz
+            val bindingClass = currentClass?.findSuperGenericClass()
             require(bindingClass != null) {
-                "Cannot find the generic class from $clazz, if you are using R8, please configure obfuscation rules."
+                if (currentClass != null)
+                    "Cannot find the generic class from $clazz, if you are using R8, please configure obfuscation rules."
+                else "The $clazz has no super class."
             }
             require(bindingClass implements classOf<ViewBinding>()) {
                 "The generic class $bindingClass from $clazz must be a ViewBinding."
