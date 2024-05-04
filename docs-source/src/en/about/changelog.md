@@ -71,7 +71,17 @@ Time zone of version release date: **UTC+8**
 
 ## ui-extension
 
-### 1.0.3 | 2024.03.08 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.4 | 2024.05.05 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Integrate the parameters of the entry and exit animation methods in the `Fragment` extension
+- Remove the default transition animation in the `Fragment` extension and delete the related resource files
+- Added the `Fragment.viewBinding` method in the `ViewBinding` extension
+- Fix the problem that the layout inflate by `viewBinding` in the `ViewBinding` extension will not be automatically cached
+- Fix the problem that the `inflate` method in the `ViewBinding` extension cannot be loaded correctly when encountering `<merge>` and `<include>` type layouts
+- Adjust the `inflate` method in the `ViewBinding` extension to ignore the `attachToParent` parameter when encountering `<merge>` and `<include>` type layouts
+- Remove all deprecated methods in the old version of the `ViewBinding` extension
+
+### 1.0.3 | 2024.03.08 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Removed `Factory` suffix from all extension method `kt` files
 - Removed deprecated files in the previous version

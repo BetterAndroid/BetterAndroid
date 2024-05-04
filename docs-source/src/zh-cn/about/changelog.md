@@ -60,7 +60,17 @@
 
 ## ui-extension
 
-### 1.0.3 | 2024.03.08 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.4 | 2024.05.05 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 整合 `Fragment` 扩展中的进入、退出动画方法参数
+- 移除默认的 `Fragment` 扩展中的过渡动画，并删除相关资源文件
+- `ViewBinding` 扩展中新增 `Fragment.viewBinding` 方法
+- 修复 `ViewBinding` 扩展中 `viewBinding` 装载的布局不会自动缓存的问题
+- 修复 `ViewBinding` 扩展中 `inflate` 方法遇到 `<merge>` 和 `<include>` 类型布局不能正确装载的问题
+- 调整 `ViewBinding` 扩展中 `inflate` 方法遇到 `<merge>` 和 `<include>` 类型布局将忽略 `attachToParent` 参数
+- 移除旧版 `ViewBinding` 扩展中已弃用的全部方法
+
+### 1.0.3 | 2024.03.08 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 移除了所有扩展方法 `kt` 文件的 `Factory` 后缀
 - 移除了上一个版本中已作废的文件
