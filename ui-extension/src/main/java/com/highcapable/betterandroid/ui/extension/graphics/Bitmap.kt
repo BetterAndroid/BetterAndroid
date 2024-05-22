@@ -161,7 +161,7 @@ fun Resources.createBitmapOrNull(@DrawableRes resId: Int, opts: BitmapFactory.Op
  * @see OutputStream.compressBitmap
  * @receiver [File]
  * @param bitmap the current bitmap.
- * @param format the bitmap format, defaul is [Bitmap.CompressFormat.PNG].
+ * @param format the bitmap format, default is [Bitmap.CompressFormat.PNG].
  * @param quality the quality, default is 100.
  */
 @JvmOverloads
@@ -175,7 +175,7 @@ fun File.writeBitmap(bitmap: Bitmap, format: Bitmap.CompressFormat = Bitmap.Comp
  * @see File.writeBitmap
  * @receiver [OutputStream]
  * @param bitmap the current bitmap.
- * @param format the bitmap format, defaul is [Bitmap.CompressFormat.PNG].
+ * @param format the bitmap format, default is [Bitmap.CompressFormat.PNG].
  * @param quality the quality, default is 100.
  * @return [Boolean] whether the bitmap compress success.
  */
