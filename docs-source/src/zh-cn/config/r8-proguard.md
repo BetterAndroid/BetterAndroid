@@ -11,6 +11,6 @@
 -keep class * implements androidx.viewbinding.ViewBinding {
     <init>();
     *** bind(***);
-    *** inflate(***);
+    *** inflate(...);
 }
 ```
