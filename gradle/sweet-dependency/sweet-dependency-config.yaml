@@ -11,25 +11,28 @@ repositories:
 plugins:
   org.jetbrains.kotlin.multiplatform:
     alias: kotlin-multiplatform
-    version: 1.9.22
+    version: 2.0.0
   org.jetbrains.kotlin.android:
     alias: kotlin-android
     version-ref: kotlin-multiplatform
   org.jetbrains.compose:
     alias: jetbrains-compose
-    version: 1.5.12
+    version: 1.6.11
+  org.jetbrains.kotlin.plugin.compose:
+    alias: compose-compiler
+    version-ref: kotlin-multiplatform
   com.android.application:
     alias: android-application
-    version: 8.2.2
+    version: 8.5.0
   com.android.library:
     alias: android-library
     version-ref: android-application
   org.jetbrains.dokka:
     alias: kotlin-dokka
-    version: 1.9.10
+    version: 1.9.20
   com.vanniktech.maven.publish:
     alias: maven-publish
-    version: 0.27.0
+    version: 0.28.0
 
 libraries:
   com.highcapable.yukireflection:
@@ -37,19 +40,19 @@ libraries:
       version: 1.0.3
   androidx.core:
     core-ktx:
-      version: 1.12.0
+      version: 1.13.1
   androidx.fragment:
     fragment-ktx:
-      version: 1.6.2
+      version: 1.8.0
   androidx.activity:
     activity:
-      version: 1.8.2
+      version: 1.9.0
   androidx.appcompat:
     appcompat:
-      version: 1.6.1
+      version: 1.7.0
   com.google.android.material:
     material:
-      version: 1.11.0
+      version: 1.12.0
   androidx.constraintlayout:
     constraintlayout:
       version: 2.1.4
