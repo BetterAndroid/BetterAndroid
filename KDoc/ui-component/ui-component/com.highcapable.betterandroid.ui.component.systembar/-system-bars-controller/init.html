@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>init</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+</head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+                    <a class="library-name--link" href="../../../index.html">
+                            ui-component
+                    </a>
+            </div>
+            <div class="library-version">
+1.0.5            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":ui-component:dokkaHtml/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="member" id="content" pageIds="ui-component::com.highcapable.betterandroid.ui.component.systembar/SystemBarsController/init/#android.view.View?#kotlin.Function1[com.highcapable.betterandroid.ui.component.insets.WindowInsetsWrapper,com.highcapable.betterandroid.ui.component.insets.InsetsWrapper]?/PointingToDeclaration//-1606589770">
+  <div class="breadcrumbs"><a href="../../../index.html">ui-component</a><span class="delimiter">/</span><a href="../index.html">com.highcapable.betterandroid.ui.component.systembar</a><span class="delimiter">/</span><a href="index.html">SystemBarsController</a><span class="delimiter">/</span><span class="current">init</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>init</span></span></h1>
+  </div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-overloads/index.html"><span class="token annotation builtin">JvmOverloads</span></a></div></div><span class="token keyword">fun </span><a href="init.html"><span class="token function">init</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">rootView<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">edgeToEdgeInsets<span class="token operator">: </span><a href="../../com.highcapable.betterandroid.ui.component.insets/-window-insets-wrapper/index.html">WindowInsetsWrapper</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="../../com.highcapable.betterandroid.ui.component.insets/-insets-wrapper/index.html">InsetsWrapper</a><span class="token operator">?</span><span class="token operator"> = </span>{ safeDrawingIgnoringIme }</span></span><span class="token punctuation">)</span></div><p class="paragraph">Initialize <a href="index.html">SystemBarsController</a>.</p><p class="paragraph">It is recommended to use this function in <a href="https://developer.android.com/reference/kotlin/android/app/Activity.html#oncreate">Activity.onCreate</a>.</p><p class="paragraph">You can use <a href="destroy.html">destroy</a> to destroy this <a href="index.html">SystemBarsController</a>.</p><ul><li><p class="paragraph">The initialization operation will not be called repeatedly, repeated calls will only be performed once.</p></li></ul><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>root</span><wbr></wbr><span><span>View</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the root view (must have a parent), default is <a href="https://developer.android.com/reference/kotlin/android/R.id.html#content">Android_R.id.content</a>.</p></div></div></div></div><div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>edge</span><wbr></wbr><span>To</span><wbr></wbr><span>Edge</span><wbr></wbr><span><span>Insets</span></span></u></div></span></div><div><div class="title"><p class="paragraph">handle the <a href="init.html">rootView</a>'s window insets for edge-to-edge, default is <a href="../../com.highcapable.betterandroid.ui.component.insets/-window-insets-wrapper/safe-drawing-ignoring-ime.html">WindowInsetsWrapper.safeDrawingIgnoringIme</a>, if you don't want to set that, you can set it to null.</p></div></div></div></div></div><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="destroy.html"><span>System</span><wbr></wbr><span>Bars</span><wbr></wbr><span>Controller.</span><wbr></wbr><span>destroy</span></a></div></span></div><div></div></div></div></div><h4 class="">Throws</h4><div class="table"><div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-illegal-state-exception/index.html"><span>Illegal</span><wbr></wbr><span>State</span><wbr></wbr><span><span>Exception</span></span></a></div></span></div><div><div class="title"><p class="paragraph">if the <a href="init.html">rootView</a> is not available.</p></div></div></div></div></div><hr><div class="symbol monospace"><span class="token keyword">fun </span><a href="init.html"><span class="token function"><strike>init</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">defaultPaddings<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span></div><div class="deprecation-content"><h3 class="">Deprecated</h3><p class="paragraph">Use init instead.</p></div><p class="paragraph">Initialize <a href="index.html">SystemBarsController</a>.</p><ul><li><p class="paragraph">This function is deprecated and no effect, use <a href="init.html">init</a> instead.</p></li><li><p class="paragraph">The root view's initialization timing has been changed.</p></li></ul><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="init.html"><span>System</span><wbr></wbr><span>Bars</span><wbr></wbr><span>Controller.</span><wbr></wbr><span>init</span></a></div></span></div><div></div></div></div></div></div></div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>BetterAndroid | Apache-2.0 License | Copyright (C) 2019-2024 HighCapable</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

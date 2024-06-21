@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>DialogPropertiesWrapper</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+</head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+                    <a class="library-name--link" href="../../../index.html">
+                            compose-extension
+                    </a>
+            </div>
+            <div class="library-version">
+1.0.2            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":compose-extension:dokkaHtml/commonMain">common</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="compose-extension::com.highcapable.betterandroid.compose.extension.ui.window/DialogPropertiesWrapper///PointingToDeclaration//-1940754140">
+  <div class="breadcrumbs"><a href="../../../index.html">compose-extension</a><span class="delimiter">/</span><a href="../index.html">com.highcapable.betterandroid.compose.extension.ui.window</a><span class="delimiter">/</span><span class="current">DialogPropertiesWrapper</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Dialog</span><wbr></wbr><span>Properties</span><wbr></wbr><span><span>Wrapper</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="index.html">DialogPropertiesWrapper</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>dismissOnBackPress<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>dismissOnClickOutside<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>usePlatformDefaultWidth<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>usePlatformInsets<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>scrimColor<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token operator"> = </span>DefaultScrimColor<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>androidProperties<span class="token operator">: </span><a href="-android-properties/index.html">DialogPropertiesWrapper.AndroidProperties</a><span class="token operator"> = </span>AndroidProperties()</span></span><span class="token punctuation">)</span></div><p class="paragraph">A wrapper to resolve <a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/window/DialogProperties.html">DialogProperties</a>.</p><ul><li><p class="paragraph">Note: The <a href="scrim-color.html">scrimColor</a> only the <a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html#alpha">Color.alpha</a> can support on Android platform's dimAmount.</p></li></ul><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/window/DialogProperties.html"><span>Dialog</span><wbr></wbr><span><span>Properties</span></span></a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="177100409%2FConstructors%2F-1940754140" anchor-label="DialogPropertiesWrapper" id="177100409%2FConstructors%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-dialog-properties-wrapper.html"><span>Dialog</span><wbr></wbr><span>Properties</span><wbr></wbr><span><span>Wrapper</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="177100409%2FConstructors%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">dismissOnBackPress<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span><span class="token punctuation">, </span></span><span class="parameter ">dismissOnClickOutside<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span><span class="token punctuation">, </span></span><span class="parameter ">usePlatformDefaultWidth<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span><span class="token punctuation">, </span></span><span class="parameter ">usePlatformInsets<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span><span class="token punctuation">, </span></span><span class="parameter ">scrimColor<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token operator"> = </span>DefaultScrimColor<span class="token punctuation">, </span></span><span class="parameter ">androidProperties<span class="token operator">: </span><a href="-android-properties/index.html">DialogPropertiesWrapper.AndroidProperties</a><span class="token operator"> = </span>AndroidProperties()</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="1754808565%2FClasslikes%2F-1940754140" anchor-label="AndroidProperties" id="1754808565%2FClasslikes%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-android-properties/index.html"><span>Android</span><wbr></wbr><span><span>Properties</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1754808565%2FClasslikes%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-android-properties/index.html">AndroidProperties</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>securePolicy<span class="token operator">: </span><a href="../-secure-flag-policy-wrapper/index.html">SecureFlagPolicyWrapper</a><span class="token operator"> = </span>SecureFlagPolicyWrapper.Inherit<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>decorFitsSystemWindows<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Android platform's properties.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="1785569570%2FProperties%2F-1940754140" anchor-label="androidProperties" id="1785569570%2FProperties%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="android-properties.html"><span>android</span><wbr></wbr><span><span>Properties</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1785569570%2FProperties%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="android-properties.html">androidProperties</a><span class="token operator">: </span><a href="-android-properties/index.html">DialogPropertiesWrapper.AndroidProperties</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="506440771%2FProperties%2F-1940754140" anchor-label="dismissOnBackPress" id="506440771%2FProperties%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="dismiss-on-back-press.html"><span>dismiss</span><wbr></wbr><span>On</span><wbr></wbr><span>Back</span><wbr></wbr><span><span>Press</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="506440771%2FProperties%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="dismiss-on-back-press.html">dismissOnBackPress</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1755658370%2FProperties%2F-1940754140" anchor-label="dismissOnClickOutside" id="-1755658370%2FProperties%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="dismiss-on-click-outside.html"><span>dismiss</span><wbr></wbr><span>On</span><wbr></wbr><span>Click</span><wbr></wbr><span><span>Outside</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1755658370%2FProperties%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="dismiss-on-click-outside.html">dismissOnClickOutside</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2939431%2FProperties%2F-1940754140" anchor-label="scrimColor" id="-2939431%2FProperties%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="scrim-color.html"><span>scrim</span><wbr></wbr><span><span>Color</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2939431%2FProperties%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="scrim-color.html">scrimColor</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="879834949%2FProperties%2F-1940754140" anchor-label="usePlatformDefaultWidth" id="879834949%2FProperties%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="use-platform-default-width.html"><span>use</span><wbr></wbr><span>Platform</span><wbr></wbr><span>Default</span><wbr></wbr><span><span>Width</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="879834949%2FProperties%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="use-platform-default-width.html">usePlatformDefaultWidth</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="141284148%2FProperties%2F-1940754140" anchor-label="usePlatformInsets" id="141284148%2FProperties%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="use-platform-insets.html"><span>use</span><wbr></wbr><span>Platform</span><wbr></wbr><span><span>Insets</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="141284148%2FProperties%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="use-platform-insets.html">usePlatformInsets</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>BetterAndroid | Apache-2.0 License | Copyright (C) 2019-2024 HighCapable</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

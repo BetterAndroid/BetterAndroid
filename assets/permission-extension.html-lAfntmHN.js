@@ -1,0 +1,1 @@
+const e=JSON.parse('{"key":"v-1e799634","path":"/zh-cn/library/permission-extension.html","title":"permission-extension","lang":"zh-CN","frontmatter":{},"headers":[],"git":{"updatedTime":1705458205000,"contributors":[{"name":"fankesyooni","email":"qzmmcn@163.com","commits":3}]},"filePathRelative":"zh-cn/library/permission-extension.md"}');export{e as data};

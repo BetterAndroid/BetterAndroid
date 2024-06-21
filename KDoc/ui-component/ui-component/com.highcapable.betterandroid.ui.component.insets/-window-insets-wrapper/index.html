@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>WindowInsetsWrapper</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+</head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+                    <a class="library-name--link" href="../../../index.html">
+                            ui-component
+                    </a>
+            </div>
+            <div class="library-version">
+1.0.5            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":ui-component:dokkaHtml/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="ui-component::com.highcapable.betterandroid.ui.component.insets/WindowInsetsWrapper///PointingToDeclaration//-1606589770">
+  <div class="breadcrumbs"><a href="../../../index.html">ui-component</a><span class="delimiter">/</span><a href="../index.html">com.highcapable.betterandroid.ui.component.insets</a><span class="delimiter">/</span><span class="current">WindowInsetsWrapper</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Window</span><wbr></wbr><span>Insets</span><wbr></wbr><span><span>Wrapper</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">WindowInsetsWrapper</a></div><p class="paragraph">A wrapper carried the common window insets.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>window</span><wbr></wbr><span><span>Insets</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the window insets.</p></div></div></div></div><div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>window</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the current window.</p></div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="-837912917%2FClasslikes%2F-1606589770" anchor-label="Absolute" id="-837912917%2FClasslikes%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-absolute/index.html"><span><span>Absolute</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-837912917%2FClasslikes%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">class </span><a href="-absolute/index.html">Absolute</a></div><div class="brief "><p class="paragraph">An absolute window insets object obtained from <a href="https://developer.android.com/reference/kotlin/android/view/Window.html#getdecorview">Window.getDecorView</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1664880820%2FClasslikes%2F-1606589770" anchor-label="Companion" id="1664880820%2FClasslikes%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1664880820%2FClasslikes%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-133355936%2FProperties%2F-1606589770" anchor-label="captionBar" id="-133355936%2FProperties%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="caption-bar.html"><span>caption</span><wbr></wbr><span><span>Bar</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-133355936%2FProperties%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="caption-bar.html">captionBar</a><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the caption bar insets.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1230692865%2FProperties%2F-1606589770" anchor-label="displayCutout" id="-1230692865%2FProperties%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="display-cutout.html"><span>display</span><wbr></wbr><span><span>Cutout</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1230692865%2FProperties%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="display-cutout.html">displayCutout</a><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the display cutout insets.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="13088460%2FProperties%2F-1606589770" anchor-label="ime" id="13088460%2FProperties%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="ime.html"><span><span>ime</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="13088460%2FProperties%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="ime.html">ime</a><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the ime insets.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2068845019%2FProperties%2F-1606589770" anchor-label="mandatorySystemGestures" id="2068845019%2FProperties%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="mandatory-system-gestures.html"><span>mandatory</span><wbr></wbr><span>System</span><wbr></wbr><span><span>Gestures</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2068845019%2FProperties%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="mandatory-system-gestures.html">mandatorySystemGestures</a><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the mandatory system gestures insets.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="272627097%2FProperties%2F-1606589770" anchor-label="navigationBars" id="272627097%2FProperties%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="navigation-bars.html"><span>navigation</span><wbr></wbr><span><span>Bars</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="272627097%2FProperties%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="navigation-bars.html">navigationBars</a><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the navigation bars insets.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1571882815%2FProperties%2F-1606589770" anchor-label="safeContent" id="-1571882815%2FProperties%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="safe-content.html"><span>safe</span><wbr></wbr><span><span>Content</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1571882815%2FProperties%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="safe-content.html">safeContent</a><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the safe content insets. (include <a href="safe-drawing.html">safeDrawing</a> and <a href="safe-gestures.html">safeGestures</a>)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2019595076%2FProperties%2F-1606589770" anchor-label="safeDrawing" id="-2019595076%2FProperties%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="safe-drawing.html"><span>safe</span><wbr></wbr><span><span>Drawing</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2019595076%2FProperties%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="safe-drawing.html">safeDrawing</a><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the safe drawing insets. (include <a href="display-cutout.html">displayCutout</a>, <a href="system-bars.html">systemBars</a> and <a href="ime.html">ime</a>)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1752031884%2FProperties%2F-1606589770" anchor-label="safeDrawingIgnoringIme" id="1752031884%2FProperties%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="safe-drawing-ignoring-ime.html"><span>safe</span><wbr></wbr><span>Drawing</span><wbr></wbr><span>Ignoring</span><wbr></wbr><span><span>Ime</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1752031884%2FProperties%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="safe-drawing-ignoring-ime.html">safeDrawingIgnoringIme</a><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the safe drawing (ignoring ime) insets. (include <a href="display-cutout.html">displayCutout</a>, <a href="system-bars.html">systemBars</a>)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="259394294%2FProperties%2F-1606589770" anchor-label="safeGestures" id="259394294%2FProperties%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="safe-gestures.html"><span>safe</span><wbr></wbr><span><span>Gestures</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="259394294%2FProperties%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="safe-gestures.html">safeGestures</a><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the safe gestures insets. (include <a href="system-gestures.html">systemGestures</a>, <a href="mandatory-system-gestures.html">mandatorySystemGestures</a>, <a href="waterfall.html">waterfall</a> and <a href="tappable-element.html">tappableElement</a>)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1824312443%2FProperties%2F-1606589770" anchor-label="statusBars" id="1824312443%2FProperties%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="status-bars.html"><span>status</span><wbr></wbr><span><span>Bars</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1824312443%2FProperties%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="status-bars.html">statusBars</a><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the status bars insets.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="619597662%2FProperties%2F-1606589770" anchor-label="systemBars" id="619597662%2FProperties%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="system-bars.html"><span>system</span><wbr></wbr><span><span>Bars</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="619597662%2FProperties%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="system-bars.html">systemBars</a><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the system bars insets. (include <a href="caption-bar.html">captionBar</a>, <a href="status-bars.html">statusBars</a> and <a href="navigation-bars.html">navigationBars</a>)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1480548500%2FProperties%2F-1606589770" anchor-label="systemGestures" id="1480548500%2FProperties%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="system-gestures.html"><span>system</span><wbr></wbr><span><span>Gestures</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1480548500%2FProperties%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="system-gestures.html">systemGestures</a><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the system gestures insets.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1665547240%2FProperties%2F-1606589770" anchor-label="tappableElement" id="-1665547240%2FProperties%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="tappable-element.html"><span>tappable</span><wbr></wbr><span><span>Element</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1665547240%2FProperties%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="tappable-element.html">tappableElement</a><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the tappable element insets.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-523960677%2FProperties%2F-1606589770" anchor-label="waterfall" id="-523960677%2FProperties%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="waterfall.html"><span><span>waterfall</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-523960677%2FProperties%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="waterfall.html">waterfall</a><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the waterfall insets.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1162241445%2FFunctions%2F-1606589770" anchor-label="captionBar" id="1162241445%2FFunctions%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="caption-bar.html"><span>caption</span><wbr></wbr><span><span>Bar</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1162241445%2FFunctions%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="caption-bar.html"><span class="token function">captionBar</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">ignoringVisibility<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the caption bar insets.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1230692865%2FFunctions%2F-1606589770" anchor-label="displayCutout" id="-1230692865%2FFunctions%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="display-cutout.html"><span>display</span><wbr></wbr><span><span>Cutout</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1230692865%2FFunctions%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="display-cutout.html"><span class="token function">displayCutout</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the display cutout insets.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="13088460%2FFunctions%2F-1606589770" anchor-label="ime" id="13088460%2FFunctions%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="ime.html"><span><span>ime</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="13088460%2FFunctions%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="ime.html"><span class="token function">ime</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the ime insets.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2068845019%2FFunctions%2F-1606589770" anchor-label="mandatorySystemGestures" id="2068845019%2FFunctions%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="mandatory-system-gestures.html"><span>mandatory</span><wbr></wbr><span>System</span><wbr></wbr><span><span>Gestures</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2068845019%2FFunctions%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="mandatory-system-gestures.html"><span class="token function">mandatorySystemGestures</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the mandatory system gestures insets.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1967284962%2FFunctions%2F-1606589770" anchor-label="navigationBars" id="-1967284962%2FFunctions%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="navigation-bars.html"><span>navigation</span><wbr></wbr><span><span>Bars</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1967284962%2FFunctions%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="navigation-bars.html"><span class="token function">navigationBars</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">ignoringVisibility<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the navigation bars insets.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1930689094%2FFunctions%2F-1606589770" anchor-label="safeContent" id="1930689094%2FFunctions%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="safe-content.html"><span>safe</span><wbr></wbr><span><span>Content</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1930689094%2FFunctions%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="safe-content.html"><span class="token function">safeContent</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">ignoringVisibility<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the safe content insets. (include <a href="safe-drawing.html">safeDrawing</a> and <a href="safe-gestures.html">safeGestures</a>)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2000706305%2FFunctions%2F-1606589770" anchor-label="safeDrawing" id="2000706305%2FFunctions%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="safe-drawing.html"><span>safe</span><wbr></wbr><span><span>Drawing</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2000706305%2FFunctions%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="safe-drawing.html"><span class="token function">safeDrawing</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">ignoringVisibility<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the safe drawing insets. (include <a href="display-cutout.html">displayCutout</a>, <a href="system-bars.html">systemBars</a> and <a href="ime.html">ime</a>)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="560227537%2FFunctions%2F-1606589770" anchor-label="safeDrawingIgnoringIme" id="560227537%2FFunctions%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="safe-drawing-ignoring-ime.html"><span>safe</span><wbr></wbr><span>Drawing</span><wbr></wbr><span>Ignoring</span><wbr></wbr><span><span>Ime</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="560227537%2FFunctions%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="safe-drawing-ignoring-ime.html"><span class="token function">safeDrawingIgnoringIme</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">ignoringVisibility<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the safe drawing (ignoring ime) insets. (include <a href="display-cutout.html">displayCutout</a>, <a href="system-bars.html">systemBars</a>)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1474333627%2FFunctions%2F-1606589770" anchor-label="safeGestures" id="1474333627%2FFunctions%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="safe-gestures.html"><span>safe</span><wbr></wbr><span><span>Gestures</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1474333627%2FFunctions%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="safe-gestures.html"><span class="token function">safeGestures</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">ignoringVisibility<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the safe gestures insets. (include <a href="system-gestures.html">systemGestures</a>, <a href="mandatory-system-gestures.html">mandatorySystemGestures</a>, <a href="waterfall.html">waterfall</a> and <a href="tappable-element.html">tappableElement</a>)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="482328704%2FFunctions%2F-1606589770" anchor-label="statusBars" id="482328704%2FFunctions%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="status-bars.html"><span>status</span><wbr></wbr><span><span>Bars</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="482328704%2FFunctions%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="status-bars.html"><span class="token function">statusBars</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">ignoringVisibility<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the status bars insets.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1152711203%2FFunctions%2F-1606589770" anchor-label="systemBars" id="1152711203%2FFunctions%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="system-bars.html"><span>system</span><wbr></wbr><span><span>Bars</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1152711203%2FFunctions%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="system-bars.html"><span class="token function">systemBars</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">ignoringVisibility<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the system bars insets. (include <a href="caption-bar.html">captionBar</a>, <a href="status-bars.html">statusBars</a> and <a href="navigation-bars.html">navigationBars</a>)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1480548500%2FFunctions%2F-1606589770" anchor-label="systemGestures" id="1480548500%2FFunctions%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="system-gestures.html"><span>system</span><wbr></wbr><span><span>Gestures</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1480548500%2FFunctions%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="system-gestures.html"><span class="token function">systemGestures</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the system gestures insets.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1926275421%2FFunctions%2F-1606589770" anchor-label="tappableElement" id="1926275421%2FFunctions%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="tappable-element.html"><span>tappable</span><wbr></wbr><span><span>Element</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1926275421%2FFunctions%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="tappable-element.html"><span class="token function">tappableElement</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">ignoringVisibility<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the tappable element insets.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-139538143%2FFunctions%2F-1606589770" anchor-label="toString" id="-139538143%2FFunctions%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-string.html"><span>to</span><wbr></wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-139538143%2FFunctions%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="to-string.html"><span class="token function">toString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-523960677%2FFunctions%2F-1606589770" anchor-label="waterfall" id="-523960677%2FFunctions%2F-1606589770" data-filterable-set=":ui-component:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="waterfall.html"><span><span>waterfall</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-523960677%2FFunctions%2F-1606589770"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="waterfall.html"><span class="token function">waterfall</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-insets-wrapper/index.html">InsetsWrapper</a></div><div class="brief "><p class="paragraph">Get the waterfall insets.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>BetterAndroid | Apache-2.0 License | Copyright (C) 2019-2024 HighCapable</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

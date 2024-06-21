@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>ComponentPadding</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+</head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+                    <a class="library-name--link" href="../../../index.html">
+                            compose-extension
+                    </a>
+            </div>
+            <div class="library-version">
+1.0.2            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":compose-extension:dokkaHtml/commonMain">common</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="compose-extension::com.highcapable.betterandroid.compose.extension.ui/ComponentPadding///PointingToDeclaration//-1940754140">
+  <div class="breadcrumbs"><a href="../../../index.html">compose-extension</a><span class="delimiter">/</span><a href="../index.html">com.highcapable.betterandroid.compose.extension.ui</a><span class="delimiter">/</span><span class="current">ComponentPadding</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Component</span><wbr></wbr><span><span>Padding</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Stable.html"><span class="token annotation builtin">Stable</span></a></div></div><span class="token keyword">interface </span><a href="index.html">ComponentPadding</a> : <a href="https://developer.android.com/reference/kotlin/androidx/compose/foundation/layout/PaddingValues.html">PaddingValues</a></div><p class="paragraph">A set of 4 paddings, each with a start, top, end, and bottom value.</p><p class="paragraph">Inherited from <a href="https://developer.android.com/reference/kotlin/androidx/compose/foundation/layout/PaddingValues.html">PaddingValues</a>, can be used for <a href="https://developer.android.com/reference/kotlin/androidx/compose/foundation/layout/package-summary.html">Modifier.padding</a>.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="1584956463%2FClasslikes%2F-1940754140" anchor-label="Companion" id="1584956463%2FClasslikes%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1584956463%2FClasslikes%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="858749095%2FProperties%2F-1940754140" anchor-label="bottom" id="858749095%2FProperties%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="bottom.html"><span><span>bottom</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="858749095%2FProperties%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="bottom.html">bottom</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/Dp.html">Dp</a></div><div class="brief "><p class="paragraph">The amount of dp to apply to the bottom edge.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1703330477%2FProperties%2F-1940754140" anchor-label="end" id="1703330477%2FProperties%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="end.html"><span><span>end</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1703330477%2FProperties%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="end.html">end</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/Dp.html">Dp</a></div><div class="brief "><p class="paragraph">The amount of dp to apply to the end edge.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1092951630%2FProperties%2F-1940754140" anchor-label="horizontal" id="1092951630%2FProperties%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="horizontal.html"><span><span>horizontal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1092951630%2FProperties%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="horizontal.html">horizontal</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/Dp.html">Dp</a></div><div class="brief "><p class="paragraph">The amount of dp to apply to the start and end edges.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-956421237%2FProperties%2F-1940754140" anchor-label="left" id="-956421237%2FProperties%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="left.html"><span><span>left</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-956421237%2FProperties%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div><div class="block"><span class="token annotation builtin">@get:</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/ReadOnlyComposable.html"><span class="token annotation builtin">ReadOnlyComposable</span></a></div></div><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="left.html">left</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/Dp.html">Dp</a></div><div class="brief "><p class="paragraph">Calculate the left padding.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1649120716%2FProperties%2F-1940754140" anchor-label="right" id="1649120716%2FProperties%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="right.html"><span><span>right</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1649120716%2FProperties%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div><div class="block"><span class="token annotation builtin">@get:</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/ReadOnlyComposable.html"><span class="token annotation builtin">ReadOnlyComposable</span></a></div></div><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="right.html">right</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/Dp.html">Dp</a></div><div class="brief "><p class="paragraph">Calculate the right padding.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1045721530%2FProperties%2F-1940754140" anchor-label="start" id="-1045721530%2FProperties%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="start.html"><span><span>start</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1045721530%2FProperties%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="start.html">start</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/Dp.html">Dp</a></div><div class="brief "><p class="paragraph">The amount of dp to apply to the start edge.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-783865997%2FProperties%2F-1940754140" anchor-label="top" id="-783865997%2FProperties%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="top.html"><span><span>top</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-783865997%2FProperties%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="top.html">top</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/Dp.html">Dp</a></div><div class="brief "><p class="paragraph">The amount of dp to apply to the top edge.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1257157508%2FProperties%2F-1940754140" anchor-label="vertical" id="-1257157508%2FProperties%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="vertical.html"><span><span>vertical</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1257157508%2FProperties%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="vertical.html">vertical</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/Dp.html">Dp</a></div><div class="brief "><p class="paragraph">The amount of dp to apply to the top and bottom edges.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-247682730%2FFunctions%2F-1940754140" anchor-label="calculateBottomPadding" id="-247682730%2FFunctions%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-247682730%2FFunctions%2F-1940754140"><span>calculate</span><wbr></wbr><span>Bottom</span><wbr></wbr><span><span>Padding</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-247682730%2FFunctions%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="index.html#-247682730%2FFunctions%2F-1940754140"><span class="token function">calculateBottomPadding</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/Dp.html">Dp</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-309933618%2FFunctions%2F-1940754140" anchor-label="calculateLeftPadding" id="-309933618%2FFunctions%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-309933618%2FFunctions%2F-1940754140"><span>calculate</span><wbr></wbr><span>Left</span><wbr></wbr><span><span>Padding</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-309933618%2FFunctions%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="index.html#-309933618%2FFunctions%2F-1940754140"><span class="token function">calculateLeftPadding</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">layoutDirection<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/LayoutDirection.html">LayoutDirection</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/Dp.html">Dp</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1423145157%2FFunctions%2F-1940754140" anchor-label="calculateRightPadding" id="1423145157%2FFunctions%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1423145157%2FFunctions%2F-1940754140"><span>calculate</span><wbr></wbr><span>Right</span><wbr></wbr><span><span>Padding</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1423145157%2FFunctions%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="index.html#1423145157%2FFunctions%2F-1940754140"><span class="token function">calculateRightPadding</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">layoutDirection<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/LayoutDirection.html">LayoutDirection</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/Dp.html">Dp</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1175268254%2FFunctions%2F-1940754140" anchor-label="calculateTopPadding" id="-1175268254%2FFunctions%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1175268254%2FFunctions%2F-1940754140"><span>calculate</span><wbr></wbr><span>Top</span><wbr></wbr><span><span>Padding</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1175268254%2FFunctions%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="index.html#-1175268254%2FFunctions%2F-1940754140"><span class="token function">calculateTopPadding</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/Dp.html">Dp</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-336734726%2FFunctions%2F-1940754140" anchor-label="copy" id="-336734726%2FFunctions%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="copy.html"><span><span>copy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-336734726%2FFunctions%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="copy.html"><span class="token function">copy</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">start<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/Dp.html">Dp</a><span class="token operator"> = </span>this.start<span class="token punctuation">, </span></span><span class="parameter ">top<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/Dp.html">Dp</a><span class="token operator"> = </span>this.top<span class="token punctuation">, </span></span><span class="parameter ">end<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/Dp.html">Dp</a><span class="token operator"> = </span>this.end<span class="token punctuation">, </span></span><span class="parameter ">bottom<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/Dp.html">Dp</a><span class="token operator"> = </span>this.bottom</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ComponentPadding</a></div><div class="brief "><p class="paragraph">Duplicate this <a href="index.html">ComponentPadding</a> with new values.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-998329392%2FFunctions%2F-1940754140" anchor-label="toPaddingValues" id="-998329392%2FFunctions%2F-1940754140" data-filterable-set=":compose-extension:dokkaHtml/commonMain"></a>
+          <div class="table-row" data-filterable-current=":compose-extension:dokkaHtml/commonMain" data-filterable-set=":compose-extension:dokkaHtml/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-padding-values.html"><span>to</span><wbr></wbr><span>Padding</span><wbr></wbr><span><span>Values</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-998329392%2FFunctions%2F-1940754140"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":compose-extension:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="to-padding-values.html"><span class="token function">toPaddingValues</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/foundation/layout/PaddingValues.html">PaddingValues</a></div><div class="brief "><p class="paragraph">Convert to <a href="https://developer.android.com/reference/kotlin/androidx/compose/foundation/layout/PaddingValues.html">PaddingValues</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>BetterAndroid | Apache-2.0 License | Copyright (C) 2019-2024 HighCapable</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
