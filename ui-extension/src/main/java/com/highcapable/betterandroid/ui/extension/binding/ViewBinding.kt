@@ -62,7 +62,7 @@ import java.lang.reflect.ParameterizedType
  * -keep class * implements androidx.viewbinding.ViewBinding {
  *     <init>();
  *     *** bind(***);
- *     *** inflate(***);
+ *     *** inflate(...);
  * }
  * ```
  * @see Context.viewBinding
@@ -94,7 +94,7 @@ inline fun <reified VB : ViewBinding> ViewBinding() = ViewBindingBuilder(classOf
  * -keep class * implements androidx.viewbinding.ViewBinding {
  *     <init>();
  *     *** bind(***);
- *     *** inflate(***);
+ *     *** inflate(...);
  * }
  * ```
  * @see Fragment.viewBinding
@@ -130,7 +130,7 @@ inline fun <reified VB : ViewBinding> Context.viewBinding(parent: ViewGroup? = n
  * -keep class * implements androidx.viewbinding.ViewBinding {
  *     <init>();
  *     *** bind(***);
- *     *** inflate(***);
+ *     *** inflate(...);
  * }
  * ```
  * @see Context.viewBinding
