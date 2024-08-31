@@ -782,23 +782,23 @@ when (kind) {
 The following is a comparison table of constants for currently collected system kinds, if you have features for more system kinds,
 you are welcome to PR or go to [GitHub Issues](repo://issues) to make suggestions to us.
 
-| `SystemKind` Name | System Kind                                                                                   |
-| ----------------- | --------------------------------------------------------------------------------------------- |
-| `DEFAULT`         | Default, uncategorized. (native or native-like and system categories not currently collected) |
-| `HARMONYOS`       | [HarmonyOS](https://www.harmonyos.com/) (Based on AOSP)                                       |
-| `EMUI`            | [EMUI](https://www.huaweicentral.com/emui)                                                    |
-| `MIUI`            | [MIUI](https://home.miui.com/)                                                                |
-| `HYPEROS`         | [HyperOS](https://hyperos.mi.com/)                                                            |
-| `COLOROS`         | [ColorOS](https://www.coloros.com/)                                                           |
-| `FUNTOUCHOS`      | [FuntouchOS](https://www.vivo.com/funtouchos)                                                 |
-| `ORIGINOS`        | [OriginOS](https://www.vivo.com/originos)                                                     |
-| `FLYME`           | [Flyme](https://flyme.com/)                                                                   |
-| `ONEUI`           | [OneUI](https://www.samsung.com/one-ui)                                                       |
-| `ZUI`             | [ZUI](https://zui.com/)                                                                       |
-| `REDMAGICOS`      | [RedMagicOS](https://www.nubia.com/)                                                          |
-| `NUBIAUI`         | [NubiaUI](https://www.nubia.com/)                                                             |
-| `ROGUI`           | [RogUI](https://www.asus.com/)                                                                |
-| `VISIONOS`        | [VisionOS](https://fans.hisense.com/forum-269-1.html)                                         |
+| `SystemKind` Name | System Kind                                                                                                        |
+|-------------------|--------------------------------------------------------------------------------------------------------------------|
+| `DEFAULT`         | Default, uncategorized. (Stock Android or AOSP-based Android system and system categories not currently collected) |
+| `HARMONYOS`       | [HarmonyOS](https://www.harmonyos.com/) (Based on AOSP)                                                            |
+| `EMUI`            | [EMUI](https://www.huaweicentral.com/emui)                                                                         |
+| `MIUI`            | [MIUI](https://home.miui.com/)                                                                                     |
+| `HYPEROS`         | [HyperOS](https://hyperos.mi.com/)                                                                                 |
+| `COLOROS`         | [ColorOS](https://www.coloros.com/)                                                                                |
+| `FUNTOUCHOS`      | [FuntouchOS](https://www.vivo.com/funtouchos)                                                                      |
+| `ORIGINOS`        | [OriginOS](https://www.vivo.com/originos)                                                                          |
+| `FLYME`           | [Flyme](https://flyme.com/)                                                                                        |
+| `ONEUI`           | [OneUI](https://www.samsung.com/one-ui)                                                                            |
+| `ZUI`             | [ZUI](https://zui.com/)                                                                                            |
+| `REDMAGICOS`      | [RedMagicOS](https://www.nubia.com/)                                                                               |
+| `NUBIAUI`         | [NubiaUI](https://www.nubia.com/)                                                                                  |
+| `ROGUI`           | [RogUI](https://www.asus.com/)                                                                                     |
+| `VISIONOS`        | [VisionOS](https://fans.hisense.com/forum-269-1.html)                                                              |
 
 `SystemProperties` is a tool provided by Android that can read the contents of `build.prop` during runtime, but this function is not open to developers.
 

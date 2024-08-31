@@ -39,8 +39,8 @@ object SystemKind {
     /**
      * The default kind.
      *
-     * Also included some other third-party customization systems or native,
-     * native-like and Pixel.
+     * Also included some other third-party customization systems or Stock Android,
+     * AOSP-based Android system and Pixel.
      */
     const val DEFAULT = 1000
 
