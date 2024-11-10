@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2022/10/12.
  */
-@file:Suppress("unused", "MemberVisibilityCanBePrivate", "SwitchIntDef")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate", "SwitchIntDef", "DEPRECATION")
 
 package com.highcapable.betterandroid.ui.component.systembar
 
