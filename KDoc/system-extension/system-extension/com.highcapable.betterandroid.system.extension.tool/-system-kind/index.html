@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>SystemKind</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+</head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+                    <a class="library-name--link" href="../../../index.html">
+                            system-extension
+                    </a>
+            </div>
+            <div class="library-version">
+1.0.1            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":system-extension:dokkaHtml/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="system-extension::com.highcapable.betterandroid.system.extension.tool/SystemKind///PointingToDeclaration//1196173011">
+  <div class="breadcrumbs"><a href="../../../index.html">system-extension</a><span class="delimiter">/</span><a href="../index.html">com.highcapable.betterandroid.system.extension.tool</a><span class="delimiter">/</span><span class="current">SystemKind</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>System</span><wbr></wbr><span><span>Kind</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":system-extension:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">object </span><a href="index.html">SystemKind</a></div><p class="paragraph">Android system kind tool.</p><p class="paragraph">Here is a collection of third-party in-depth customization of the identification functions of Android ROMs from some major manufacturers.</p><p class="paragraph">The identification function relies on reading the <a href="https://developer.android.com/reference/kotlin/java/lang/Class.html">Class</a> implementation that exists specifically in the system framework of the current running environment through Java reflection and <a href="../-system-properties/index.html">SystemProperties</a>.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="174796281%2FProperties%2F1196173011" anchor-label="COLOROS" id="174796281%2FProperties%2F1196173011" data-filterable-set=":system-extension:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":system-extension:dokkaHtml/release" data-filterable-set=":system-extension:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-c-o-l-o-r-o-s.html"><span><span>COLOROS</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="174796281%2FProperties%2F1196173011"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":system-extension:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-c-o-l-o-r-o-s.html">COLOROS</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">1005</span></div><div class="brief "><p class="paragraph"><a href="https://www.coloros.com/">ColorOS</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-135863001%2FProperties%2F1196173011" anchor-label="current" id="-135863001%2FProperties%2F1196173011" data-filterable-set=":system-extension:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":system-extension:dokkaHtml/release" data-filterable-set=":system-extension:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="current.html"><span><span>current</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-135863001%2FProperties%2F1196173011"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":system-extension:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-static/index.html"><span class="token annotation builtin">JvmStatic</span></a></div></div><span class="token keyword">val </span><a href="current.html">current</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">Get the current system kind.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1552790145%2FProperties%2F1196173011" anchor-label="DEFAULT" id="-1552790145%2FProperties%2F1196173011" data-filterable-set=":system-extension:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":system-extension:dokkaHtml/release" data-filterable-set=":system-extension:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-d-e-f-a-u-l-t.html"><span><span>DEFAULT</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1552790145%2FProperties%2F1196173011"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":system-extension:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-d-e-f-a-u-l-t.html">DEFAULT</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">1000</span></div><div class="brief "><p class="paragraph">The default kind.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-918188002%2FProperties%2F1196173011" anchor-label="EMUI" id="-918188002%2FProperties%2F1196173011" data-filterable-set=":system-extension:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":system-extension:dokkaHtml/release" data-filterable-set=":system-extension:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-e-m-u-i.html"><span><span>EMUI</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-918188002%2FProperties%2F1196173011"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":system-extension:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-e-m-u-i.html">EMUI</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">1002</span></div><div class="brief "><p class="paragraph"><a href="https://www.huaweicentral.com/emui">EMUI</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-408956299%2FProperties%2F1196173011" anchor-label="FLYME" id="-408956299%2FProperties%2F1196173011" data-filterable-set=":system-extension:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":system-extension:dokkaHtml/release" data-filterable-set=":system-extension:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-f-l-y-m-e.html"><span><span>FLYME</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-408956299%2FProperties%2F1196173011"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":system-extension:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-f-l-y-m-e.html">FLYME</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">1008</span></div><div class="brief "><p class="paragraph"><a href="https://flyme.com/">Flyme</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1203520918%2FProperties%2F1196173011" anchor-label="FUNTOUCHOS" id="1203520918%2FProperties%2F1196173011" data-filterable-set=":system-extension:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":system-extension:dokkaHtml/release" data-filterable-set=":system-extension:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-f-u-n-t-o-u-c-h-o-s.html"><span><span>FUNTOUCHOS</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1203520918%2FProperties%2F1196173011"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":system-extension:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-f-u-n-t-o-u-c-h-o-s.html">FUNTOUCHOS</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">1006</span></div><div class="brief "><p class="paragraph"><a href="https://www.vivo.com/funtouchos">FuntouchOS</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1306422710%2FProperties%2F1196173011" anchor-label="HARMONYOS" id="1306422710%2FProperties%2F1196173011" data-filterable-set=":system-extension:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":system-extension:dokkaHtml/release" data-filterable-set=":system-extension:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-h-a-r-m-o-n-y-o-s.html"><span><span>HARMONYOS</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1306422710%2FProperties%2F1196173011"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":system-extension:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-h-a-r-m-o-n-y-o-s.html">HARMONYOS</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">1001</span></div><div class="brief "><p class="paragraph"><a href="https://www.harmonyos.com/">HarmonyOS</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-368574128%2FProperties%2F1196173011" anchor-label="HYPEROS" id="-368574128%2FProperties%2F1196173011" data-filterable-set=":system-extension:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":system-extension:dokkaHtml/release" data-filterable-set=":system-extension:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-h-y-p-e-r-o-s.html"><span><span>HYPEROS</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-368574128%2FProperties%2F1196173011"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":system-extension:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-h-y-p-e-r-o-s.html">HYPEROS</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">1004</span></div><div class="brief "><p class="paragraph"><a href="https://hyperos.mi.com/">HyperOS</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1350604458%2FProperties%2F1196173011" anchor-label="MIUI" id="1350604458%2FProperties%2F1196173011" data-filterable-set=":system-extension:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":system-extension:dokkaHtml/release" data-filterable-set=":system-extension:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-m-i-u-i.html"><span><span>MIUI</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1350604458%2FProperties%2F1196173011"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":system-extension:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-m-i-u-i.html">MIUI</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">1003</span></div><div class="brief "><p class="paragraph"><a href="https://home.miui.com/">MIUI</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1428408615%2FProperties%2F1196173011" anchor-label="NUBIAUI" id="-1428408615%2FProperties%2F1196173011" data-filterable-set=":system-extension:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":system-extension:dokkaHtml/release" data-filterable-set=":system-extension:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-n-u-b-i-a-u-i.html"><span><span>NUBIAUI</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1428408615%2FProperties%2F1196173011"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":system-extension:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-n-u-b-i-a-u-i.html">NUBIAUI</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">1012</span></div><div class="brief "><p class="paragraph"><a href="https://www.nubia.com/">NubiaUI</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1105912614%2FProperties%2F1196173011" anchor-label="ONEUI" id="1105912614%2FProperties%2F1196173011" data-filterable-set=":system-extension:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":system-extension:dokkaHtml/release" data-filterable-set=":system-extension:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-o-n-e-u-i.html"><span><span>ONEUI</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1105912614%2FProperties%2F1196173011"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":system-extension:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-o-n-e-u-i.html">ONEUI</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">1009</span></div><div class="brief "><p class="paragraph"><a href="https://www.samsung.com/one-ui">OneUI</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1440013072%2FProperties%2F1196173011" anchor-label="ORIGINOS" id="1440013072%2FProperties%2F1196173011" data-filterable-set=":system-extension:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":system-extension:dokkaHtml/release" data-filterable-set=":system-extension:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-o-r-i-g-i-n-o-s.html"><span><span>ORIGINOS</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1440013072%2FProperties%2F1196173011"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":system-extension:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-o-r-i-g-i-n-o-s.html">ORIGINOS</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">1007</span></div><div class="brief "><p class="paragraph"><a href="https://www.vivo.com/originos">OriginOS</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1178089094%2FProperties%2F1196173011" anchor-label="REDMAGICOS" id="-1178089094%2FProperties%2F1196173011" data-filterable-set=":system-extension:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":system-extension:dokkaHtml/release" data-filterable-set=":system-extension:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-r-e-d-m-a-g-i-c-o-s.html"><span><span>REDMAGICOS</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1178089094%2FProperties%2F1196173011"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":system-extension:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-r-e-d-m-a-g-i-c-o-s.html">REDMAGICOS</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">1011</span></div><div class="brief "><p class="paragraph"><a href="https://www.nubia.com/">RedMagicOS</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1323489602%2FProperties%2F1196173011" anchor-label="ROGUI" id="1323489602%2FProperties%2F1196173011" data-filterable-set=":system-extension:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":system-extension:dokkaHtml/release" data-filterable-set=":system-extension:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-r-o-g-u-i.html"><span><span>ROGUI</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1323489602%2FProperties%2F1196173011"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":system-extension:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-r-o-g-u-i.html">ROGUI</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">1013</span></div><div class="brief "><p class="paragraph"><a href="https://www.asus.com/">RogUI</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-950450930%2FProperties%2F1196173011" anchor-label="VISIONOS" id="-950450930%2FProperties%2F1196173011" data-filterable-set=":system-extension:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":system-extension:dokkaHtml/release" data-filterable-set=":system-extension:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-v-i-s-i-o-n-o-s.html"><span><span>VISIONOS</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-950450930%2FProperties%2F1196173011"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":system-extension:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-v-i-s-i-o-n-o-s.html">VISIONOS</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">1014</span></div><div class="brief "><p class="paragraph"><a href="https://fans.hisense.com/forum-269-1.html">VisionOS</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1517448530%2FProperties%2F1196173011" anchor-label="ZUI" id="1517448530%2FProperties%2F1196173011" data-filterable-set=":system-extension:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":system-extension:dokkaHtml/release" data-filterable-set=":system-extension:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-z-u-i.html"><span><span>ZUI</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1517448530%2FProperties%2F1196173011"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":system-extension:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-z-u-i.html">ZUI</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">1010</span></div><div class="brief "><p class="paragraph"><a href="https://zui.com/">ZUI</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-138175591%2FFunctions%2F1196173011" anchor-label="equals" id="-138175591%2FFunctions%2F1196173011" data-filterable-set=":system-extension:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":system-extension:dokkaHtml/release" data-filterable-set=":system-extension:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="equals.html"><span><span>equals</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-138175591%2FFunctions%2F1196173011"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":system-extension:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-static/index.html"><span class="token annotation builtin">JvmStatic</span></a></div></div><span class="token keyword">fun </span><a href="equals.html"><span class="token function">equals</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">kind<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Determine whether the current system is of the specific kind.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2040647530%2FFunctions%2F1196173011" anchor-label="get" id="2040647530%2FFunctions%2F1196173011" data-filterable-set=":system-extension:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":system-extension:dokkaHtml/release" data-filterable-set=":system-extension:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get.html"><span><span>get</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2040647530%2FFunctions%2F1196173011"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":system-extension:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-static/index.html"><span class="token annotation builtin">JvmStatic</span></a></div></div><span class="token keyword">fun </span><a href="get.html"><span class="token function"><strike>get</strike></span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">Get the current system kind.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>BetterAndroid | Apache-2.0 License | Copyright (C) 2019-2024 HighCapable</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

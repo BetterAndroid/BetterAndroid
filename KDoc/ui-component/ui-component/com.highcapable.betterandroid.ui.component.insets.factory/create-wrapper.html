@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>createWrapper</title>
+    <link href="../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+</head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+                    <a class="library-name--link" href="../../index.html">
+                            ui-component
+                    </a>
+            </div>
+            <div class="library-version">
+1.0.5            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":ui-component:dokkaHtml/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="member" id="content" pageIds="ui-component::com.highcapable.betterandroid.ui.component.insets.factory//createWrapper/androidx.core.view.WindowInsetsCompat#android.view.Window?/PointingToDeclaration//-1606589770">
+  <div class="breadcrumbs"><a href="../../index.html">ui-component</a><span class="delimiter">/</span><a href="index.html">com.highcapable.betterandroid.ui.component.insets.factory</a><span class="delimiter">/</span><span class="current">createWrapper</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>create</span><wbr></wbr><span><span>Wrapper</span></span></h1>
+  </div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-overloads/index.html"><span class="token annotation builtin">JvmOverloads</span></a></div></div><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/androidx/core/view/WindowInsetsCompat.html">WindowInsetsCompat</a><span class="token punctuation">.</span><a href="create-wrapper.html"><span class="token function">createWrapper</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">window<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/view/Window.html">Window</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../com.highcapable.betterandroid.ui.component.insets/-window-insets-wrapper/index.html">WindowInsetsWrapper</a></div><p class="paragraph">Create a <a href="../com.highcapable.betterandroid.ui.component.insets/-window-insets-wrapper/index.html">WindowInsetsWrapper</a> from <a href="https://developer.android.com/reference/kotlin/androidx/core/view/WindowInsetsCompat.html">WindowInsetsCompat</a>.</p><p class="paragraph">Please see <a href="../com.highcapable.betterandroid.ui.component.insets/-window-insets-wrapper/-companion/from.html">WindowInsetsWrapper.from</a> that why you may need the <a href="create-wrapper.html">window</a> parameter.</p><p class="paragraph">You can use <span data-unresolved-link="com.highcapable.betterandroid.ui.component.insets.factory//handleOnWindowInsetsChanged/android.view.View#kotlin.Boolean#kotlin.Boolean#kotlin.Int#kotlin.Function2[android.view.View,com.highcapable.betterandroid.ui.component.insets.WindowInsetsWrapper,kotlin.Unit]/PointingToDeclaration/">View.handleOnWindowInsetsChanged</span> to handle the insets change.</p><span class="kdoc-tag"><h4 class="">Receiver</h4><p class="paragraph"><a href="https://developer.android.com/reference/kotlin/androidx/core/view/WindowInsetsCompat.html">WindowInsetsCompat</a></p></span><span class="kdoc-tag"><h4 class="">Return</h4><p class="paragraph"><a href="../com.highcapable.betterandroid.ui.component.insets/-window-insets-wrapper/index.html">WindowInsetsWrapper</a></p></span><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>window</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the current window, default is null.</p></div></div></div></div></div><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../com.highcapable.betterandroid.ui.component.insets/-window-insets-wrapper/-companion/from.html"><span>Window</span><wbr></wbr><span>Insets</span><wbr></wbr><span>Wrapper.</span><wbr></wbr><span>Companion.</span><wbr></wbr><span>from</span></a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ui-component:dokkaHtml/release" data-filterable-set=":ui-component:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><span data-unresolved-link="com.highcapable.betterandroid.ui.component.insets.factory//handleOnWindowInsetsChanged/android.view.View#kotlin.Boolean#kotlin.Boolean#kotlin.Int#kotlin.Function2[android.view.View,com.highcapable.betterandroid.ui.component.insets.WindowInsetsWrapper,kotlin.Unit]/PointingToDeclaration/"><span>handle</span><wbr></wbr><span>On</span><wbr></wbr><span>Window</span><wbr></wbr><span>Insets</span><wbr></wbr><span><span>Changed</span></span></span></div></span></div><div></div></div></div></div></div></div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>BetterAndroid | Apache-2.0 License | Copyright (C) 2019-2024 HighCapable</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
