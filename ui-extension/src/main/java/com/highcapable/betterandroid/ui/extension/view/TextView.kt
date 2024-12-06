@@ -99,10 +99,10 @@ fun TextView.clear() {
  * Update the text view's typeface.
  * @receiver [TextView]
  * @param style the style.
- * @param tf the typeface, default is [TextView.getTypeface].
+ * @param tf the typeface, default is null.
  */
 @JvmOverloads
-fun TextView.updateTypeface(style: Int, tf: Typeface? = typeface) = setTypeface(tf, style)
+fun TextView.updateTypeface(style: Int, tf: Typeface? = null) = setTypeface(tf, style)
 
 /**
  * Update the text view's compound drawables.
