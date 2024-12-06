@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2023/10/25.
  */
-@file:Suppress("unused")
+@file:Suppress("unused", "SetTextI18n")
 @file:JvmName("TextViewUtils")
 
 package com.highcapable.betterandroid.ui.extension.view
