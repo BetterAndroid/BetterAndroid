@@ -27,7 +27,6 @@ package com.highcapable.betterandroid.ui.extension.view
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
-import android.text.InputType
 import android.text.method.DigitsKeyListener
 import android.widget.EditText
 import android.widget.TextView
@@ -143,13 +142,13 @@ fun TextView.updateCompoundDrawablesWithIntrinsicBounds(
  * Set the text view's digits.
  * @receiver [TextView]
  * @param acceptedChars the allowed chars.
- * @param inputType the input type, default is [InputType.TYPE_CLASS_TEXT] | [InputType.TYPE_TEXT_VARIATION_NORMAL].
+ * @param inputType the input type, default is [TextView.getInputType].
  * @param locale the locale, default is [Locale.ROOT], require Android 8.0 (26).
  */
 @JvmOverloads
 fun TextView.setDigits(
     acceptedChars: String,
-    inputType: Int = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_NORMAL,
+    inputType: Int = this.inputType,
     locale: Locale = Locale.ROOT
 ) {
     @Suppress("DEPRECATION")
