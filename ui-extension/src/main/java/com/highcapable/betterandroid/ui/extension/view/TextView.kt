@@ -82,7 +82,10 @@ var TextView.textColor
  */
 fun EditText.updateText(text: CharSequence?) {
     setText(text)
-    if (!text.isNullOrEmpty()) setSelection(text.length)
+    // The [setText] can be overridden by user,
+    // so here we should use [getText] to get the text again.
+    val afterText = getText() ?: return
+    if (afterText.isNotEmpty()) setSelection(afterText.length)
 }
 
 /**
