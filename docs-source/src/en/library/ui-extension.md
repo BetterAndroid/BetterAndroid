@@ -1709,7 +1709,11 @@ val myView = context.layoutInflater.inflate(R.layout.my_layout, root = view, att
 
 [TextView → textColor](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/text-color)
 
-[TextView → updateText](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-text)
+[TextView → textToString](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/text-to-String)
+
+[TextView → hintToString](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/hint-to-String)
+
+[EditText → updateText](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-text)
 
 [TextView → clear](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/clear)
 
@@ -1785,6 +1789,34 @@ val textView: TextView
 val textColor = textView.textColor
 // Set the text color of TextView.
 textView.textColor = Color.RED
+```
+
+Get the text of `TextView` and convert it to `String`.
+
+Normally, the text obtained directly using `TextView.getText` is a `CharSequence` object.
+
+If you need to convert it to `String`, you need `getText().toString()`, which seems cumbersome.
+
+`BetterAndroid` provides a simpler way for this. Now, you can use the following method to get the text of `TextView` and convert it to `String`.
+
+> The following example
+
+```kotlin
+// Assume this is your TextView object.
+val textView: TextView
+// Get the text of TextView and convert it to String.
+val text = textView.textToString()
+```
+
+Using `TextView.getHint` can also be done in a similar way.
+
+> The following example
+
+```kotlin
+// Assume this is your TextView object.
+val textView: TextView
+// Get the hint text of TextView and convert it to String.
+val hint = textView.hintToString()
 ```
 
 Update the text of `EditText`.

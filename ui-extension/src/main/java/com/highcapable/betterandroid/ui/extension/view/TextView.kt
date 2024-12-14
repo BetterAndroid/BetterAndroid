@@ -75,6 +75,24 @@ var TextView.textColor
     }
 
 /**
+ * Call [TextView.getText] and [toString].
+ *
+ * If the text is `null`, return an empty string.
+ * @receiver [TextView]
+ * @return [String]
+ */
+fun TextView.textToString() = text?.toString() ?: ""
+
+/**
+ * Call [TextView.getHint] and [toString].
+ *
+ * If the hint is `null`, return an empty string.
+ * @receiver [TextView]
+ * @return [String]
+ */
+fun TextView.hintToString() = hint?.toString() ?: ""
+
+/**
  * Update the edit text's text and set the cursor to the end.
  * @receiver [EditText]
  * @param text the text.

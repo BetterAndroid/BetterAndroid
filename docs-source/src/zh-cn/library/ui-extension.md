@@ -1660,7 +1660,11 @@ val myView = context.layoutInflater.inflate(R.layout.my_layout, root = view, att
 
 [TextView → textColor](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/text-color)
 
-[TextView → updateText](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-text)
+[TextView → textToString](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/text-to-String)
+
+[TextView → hintToString](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/hint-to-String)
+
+[EditText → updateText](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-text)
 
 [TextView → clear](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/clear)
 
@@ -1736,6 +1740,32 @@ val textView: TextView
 val textColor = textView.textColor
 // 设置 TextView 的文本颜色
 textView.textColor = Color.RED
+```
+
+获取 `TextView` 的文本并将其转换为 `String`。
+
+通常情况下，直接使用 `TextView.getText` 获取到的文本是一个 `CharSequence` 对象，如果你需要将其转换为 `String`，需要 `getText().toString()`，这看起来比较繁琐。
+
+`BetterAndroid` 为此提供了一个更加简单的方式，现在，你可以使用以下方式获取 `TextView` 的文本并将其转换为 `String`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 TextView 对象
+val textView: TextView
+// 获取 TextView 的文本并转换为 String
+val text = textView.textToString()
+```
+
+使用 `TextView.getHint` 也可以使用同样类似的方式。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 TextView 对象
+val textView: TextView
+// 获取 TextView 的提示文本并转换为 String
+val hint = textView.hintToString()
 ```
 
 更新 `EditText` 的文本。
