@@ -28,7 +28,6 @@ import android.Manifest
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
-import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.Window
@@ -49,12 +48,16 @@ import androidx.fragment.app.Fragment
 @JvmOverloads
 @JvmName("showToast")
 fun Context.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT, allowBackground: Boolean = false) {
-    val toastable = Runnable { Toast.makeText(this, message, duration).show() }
+    fun continueToast() = Toast.makeText(this, message, duration).show()
     if (Looper.myLooper() != Looper.getMainLooper()) {
         if (!allowBackground) error("Not allowed to show a toast from non-main thread, if you must do this, please set allowBackground to true.")
-        if (this is Activity) runOnUiThread(toastable)
-        else Handler(Looper.getMainLooper()).post(toastable)
-    } else toastable.run()
+        if (this is Activity) runOnUiThread { continueToast() }
+        else Thread {
+            Looper.prepare()
+            continueToast()
+            Looper.loop()
+        }.start()
+    } else continueToast()
 }
 
 /**
