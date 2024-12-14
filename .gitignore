@@ -93,6 +93,9 @@ fabric.properties
 .gradle
 build/
 
+# Kotlin
+.kotlin/
+
 # Mkdocs temporary serving folder
 docs-gen
 site
