@@ -1547,6 +1547,8 @@ window.clearScreenBrightness()
 
 [View → performTouch](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/perform-touch)
 
+[View → setIntervalOnClickListener](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/set-interval-on-click-listener)
+
 [View → updatePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-padding)
 
 [View → updateMargin](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-margin)
@@ -1732,6 +1734,30 @@ view.performKeyPressed(KeyEvent.KEYCODE_DEL)
 // the unit is milliseconds.
 // Default is 150 milliseconds.
 view.performKeyPressed(KeyEvent.KEYCODE_DEL, duration = 500)
+```
+
+Set interval click event.
+
+The `setOnClickListener` method provided by `View` may cause misoperations if the click event is triggered multiple times in a short period.
+
+To address this, `BetterAndroid` provides the `setIntervalOnClickListener` method.
+
+Within the specified interval, repeated click events will be ignored.
+
+> The following example
+
+```kotlin
+// Assume this is your view.
+val view: View
+// Set interval click event.
+view.setIntervalOnClickListener {
+    // Your code here.
+}
+// You can pass the timeMillis parameter to set the interval time for the click event, in milliseconds.
+// The default is 300 milliseconds.
+view.setIntervalOnClickListener(1000) {
+    // Your code here.
+}
 ```
 
 Update `View`’s `padding` and `margin`.

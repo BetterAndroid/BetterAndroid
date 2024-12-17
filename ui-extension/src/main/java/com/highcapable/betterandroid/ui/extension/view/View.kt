@@ -293,6 +293,25 @@ fun View.performTouch(downX: Float, downY: Float, upX: Float, upY: Float, durati
 }
 
 /**
+ * Set the view's click listener with interval.
+ * @see View.setOnClickListener
+ * @receiver [View]
+ * @param timeMillis the interval time in milliseconds, default is 300.
+ * @param listener the click listener.
+ */
+@JvmOverloads
+fun View.setIntervalOnClickListener(timeMillis: Long = 300L, listener: View.OnClickListener) {
+    var lastClickTime = 0L
+    setOnClickListener { view ->
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastClickTime < timeMillis)
+            return@setOnClickListener
+        lastClickTime = currentTime
+        listener.onClick(view)
+    }
+}
+
+/**
  * Updates this view's horizontal or vertical padding.
  * @see View.updatePadding
  * @receiver [View]

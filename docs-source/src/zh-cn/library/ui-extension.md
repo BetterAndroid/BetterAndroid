@@ -1503,6 +1503,8 @@ window.clearScreenBrightness()
 
 [View → performTouch](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/perform-touch)
 
+[View → setIntervalOnClickListener](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/set-interval-on-click-listener)
+
 [View → updatePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-padding)
 
 [View → updateMargin](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-margin)
@@ -1681,6 +1683,28 @@ view.performKeyPressed(KeyEvent.KEYCODE_DEL)
 // 你可以在后方加入 duration 参数来设置持续时间 (从按下到抬起)，单位为毫秒
 // 默认为 150 毫秒
 view.performKeyPressed(KeyEvent.KEYCODE_DEL, duration = 500)
+```
+
+设置间隔点击事件。
+
+`View` 提供的 `setOnClickListener` 方法设置的点击事件可能在短时间内被多次触发造成误操作，针对这种情况，`BetterAndroid` 为你提供了 `setIntervalOnClickListener` 方法。
+
+在指定的间隔时间内，点击事件重复触发将被忽略。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 View 对象
+val view: View
+// 设置间隔点击事件
+view.setIntervalOnClickListener {
+    // Your code here.
+}
+// 你可以在方法参数中传入 timeMillis 参数来设置点击事件的间隔时间，单位为毫秒
+// 默认为 300 毫秒
+view.setIntervalOnClickListener(1000) {
+    // Your code here.
+}
 ```
 
 更新 `View` 的 `padding` 和 `margin`。
