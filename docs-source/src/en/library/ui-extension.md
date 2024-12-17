@@ -456,6 +456,10 @@ We believe that transition animation should be something that each developer dec
 
 [LifecycleOwner → requireActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/require-activity)
 
+[View → lifecycleOwner](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/lifecycle-owner)
+
+[View → requireLifecycleOwner](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/require-lifecycle-owner)
+
 Extensions for `LifecycleOwner`.
 
 :::
@@ -482,6 +486,54 @@ val yourActivity = lcOwner.activity<YourActivity>()
 // Or.
 val yourActivity = lcOwner.requireActivity<YourActivity>()
 ```
+
+You can also get the `LifecycleOwner` from a `View`.
+
+> The following example
+
+```kotlin
+// Assume this is your View.
+val view: View
+// Get the LifecycleOwner of the View.
+val lcOwner = view.lifecycleOwner
+// Get the non-null LifecycleOwner (throws exception if failed).
+val lcOwner = view.requireLifecycleOwner()
+```
+
+::: danger
+
+This is essentially an experimental feature, and the `LifecycleOwner` obtained from `View` is uncertain. 
+
+It essentially determines and prioritizes the first `Fragment` bound in the `Activity` by obtaining the context in the `View`. 
+If no `Fragment` is bound, it will select the `Activity`.
+
+We recommend prioritizing the method of passing the current `LifecycleOwner` to obtain it for custom `View`, or passing it after the `View` is loaded.
+
+> The following example
+
+```kotlin
+// You can pass the LifecycleOwner in the constructor.
+class YourView(
+    context: Context,
+    attrs: AttributeSet?,
+    lcOwner: LifecycleOwner
+) : View(context, attrs) {
+
+    // Or set the LifecycleOwner after loading.
+    var lifecycleOwner: LifecycleOwner = lcOwner
+
+    init {
+        // Your code here.
+    }
+}
+// Set in your LifecycleOwner.
+// Assume this is your View.
+val yourView: YourView
+// Assume this is the current LifecycleOwner.
+yourView.lifecycleOwner = this
+```
+
+:::
 
 ### Dimension Extension
 

@@ -26,7 +26,9 @@ package com.highcapable.betterandroid.ui.extension.component
 
 import android.app.Activity
 import android.content.Context
+import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import com.highcapable.yukireflection.factory.classOf
 
@@ -102,3 +104,31 @@ inline fun <reified T : Activity> LifecycleOwner.activity() = activity as? T?
  */
 @JvmName("requireActivity_Typed")
 inline fun <reified T : Activity> LifecycleOwner.requireActivity() = requireActivity() as? T? ?: error("LifecycleOwner is not ${classOf<T>()}.")
+
+/**
+ * Get the [LifecycleOwner] from the view.
+ *
+ * The view must be attached to a [FragmentActivity] or [Activity].
+ * @see View.requireLifecycleOwner
+ * @receiver [View]
+ * @return [LifecycleOwner] or null.
+ */
+val View.lifecycleOwner: LifecycleOwner?
+    get() {
+        // Query the lifecycle owner from the first fragment of the activity.
+        val byFragment = (context as? FragmentActivity?)?.fragmentManager()?.fragments?.lastOrNull()
+        // Query the lifecycle owner from the activity.
+        val byOwner = context as? LifecycleOwner?
+        return byFragment ?: byOwner
+    }
+
+/**
+ * Get the [LifecycleOwner] from the view.
+ *
+ * The view must be attached to a [FragmentActivity] or [Activity].
+ * @see View.lifecycleOwner
+ * @receiver [View]
+ * @return [LifecycleOwner]
+ * @throws IllegalStateException if the view is not attached to a [FragmentActivity] or [Activity].
+ */
+fun View.requireLifecycleOwner() = lifecycleOwner ?: error("This View must be attached to a Fragment or Activity.")

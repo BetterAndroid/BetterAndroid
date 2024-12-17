@@ -443,6 +443,10 @@ fragment.show()
 
 [LifecycleOwner → requireActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/require-activity)
 
+[View → lifecycleOwner](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/lifecycle-owner)
+
+[View → requireLifecycleOwner](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/require-lifecycle-owner)
+
 适用于 `LifecycleOwner` 的扩展。
 
 :::
@@ -469,6 +473,52 @@ val yourActivity = lcOwner.activity<YourActivity>()
 // 或者
 val yourActivity = lcOwner.requireActivity<YourActivity>()
 ```
+
+你还可以从一个 `View` 中获取其所在的 `LifecycleOwner`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 View
+val view: View
+// 获取 View 所在的 LifecycleOwner
+val lcOwner = view.lifecycleOwner
+// 获取非空 LifecycleOwner (获取失败会抛出异常)
+val lcOwner = view.requireLifecycleOwner()
+```
+
+::: danger
+
+这本质上是一个实验性功能，从 `View` 获取的 `LifecycleOwner` 是不确定的，
+它本质上是通过获取 `View` 中的上下文来确定并优先选择 `Activity` 中绑定的首位 `Fragment`，如果没有绑定 `Fragment` 则会选择 `Activity`。
+
+我们建议优先对自定义 `View` 采用传递当前 `LifecycleOwner` 的方式来获取，或者在 `View` 装载后传递。
+
+> 示例如下
+
+```kotlin
+// 你可以在构造函数中传递 LifecycleOwner
+class YourView(
+    context: Context,
+    attrs: AttributeSet?,
+    lcOwner: LifecycleOwner
+) : View(context, attrs) {
+
+    // 或者在装载后设置 LifecycleOwner
+    var lifecycleOwner: LifecycleOwner = lcOwner
+
+    init {
+        // Your code here.
+    }
+}
+// 在你的 LifecycleOwner 中设置
+// 假设这就是你的 View
+val yourView: YourView
+// 假设 this 就是当前的 LifecycleOwner
+yourView.lifecycleOwner = this
+```
+
+:::
 
 ### 尺寸 (Dimension) 扩展
 
