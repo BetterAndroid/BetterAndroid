@@ -1583,13 +1583,13 @@ val child: View = viewGroup.child(index = 0)
 // 指定子布局的类型 (如果类型是已知且确定的)
 val child = viewGroup.child<Button>(index = 0)
 // 获取当前 ViewGroup 的第一个子布局
-val firstChild: View = viewGroup.firstChild()
+val firstChild: View = viewGroup.firstChild
 // 获取当前 ViewGroup 的最后一个子布局
-val lastChild: View = viewGroup.lastChild()
+val lastChild: View = viewGroup.lastChild
 // 在不确定子布局是否存在的情况下，你还可以使用以下方式
 val child = viewGroup.childOrNull(index = 0)
-val firstChild = viewGroup.firstChildOrNull()
-val lastChild = viewGroup.lastChildOrNull()
+val firstChild = viewGroup.firstChildOrNull
+val lastChild = viewGroup.lastChildOrNull
 ```
 
 从父布局 (容器) 中移除自身。

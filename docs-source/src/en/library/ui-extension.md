@@ -1627,13 +1627,13 @@ val child: View = viewGroup.child(index = 0)
 // Specify the type of sublayout (if the type is known and determined).
 val child = viewGroup.child<Button>(index = 0)
 // Get the first sublayout of the current ViewGroup.
-val firstChild: View = viewGroup.firstChild()
+val firstChild: View = viewGroup.firstChild
 // Get the last sublayout of the current ViewGroup.
-val lastChild: View = viewGroup.lastChild()
+val lastChild: View = viewGroup.lastChild
 // When you are not sure whether the sublayout exists, you can also use the following method.
 val child = viewGroup.childOrNull(index = 0)
-val firstChild = viewGroup.firstChildOrNull()
-val lastChild = viewGroup.lastChildOrNull()
+val firstChild = viewGroup.firstChildOrNull
+val lastChild = viewGroup.lastChildOrNull
 ```
 
 Removes itself from the parent layout (container).
