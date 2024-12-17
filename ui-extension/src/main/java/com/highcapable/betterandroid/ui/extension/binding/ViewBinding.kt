@@ -221,10 +221,9 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
          * Find the super generic class.
          * @return [Class] or null.
          */
-        private fun Class<*>.findSuperGenericClass(): Class<*>? {
-            return (genericSuperclass as? ParameterizedType?)?.actualTypeArguments?.getOrNull(0) as? Class<*>?
+        private fun Class<*>.findSuperGenericClass(): Class<*>? =
+            (genericSuperclass as? ParameterizedType?)?.actualTypeArguments?.getOrNull(0) as? Class<*>?
                 ?: superclass?.findSuperGenericClass()
-        }
     }
 
     /**
