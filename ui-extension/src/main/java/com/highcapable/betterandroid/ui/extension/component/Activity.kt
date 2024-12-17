@@ -30,6 +30,8 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Bundle
+import androidx.fragment.app.Fragment
 import com.highcapable.betterandroid.system.extension.component.queryLaunchActivitiesForPackage
 import com.highcapable.betterandroid.system.extension.component.queryLaunchActivitiesForPackageOrNull
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
@@ -59,10 +61,32 @@ val Activity.isInMultiWindowModeCompat get() = SystemVersion.require(SystemVersi
  * @see Context.startActivityOrElse
  * @receiver the current context.
  * @param newTask whether to start with a new task, default false.
- * @param initiate the [Intent] builder body, default is empty.
+ * @param options the [Bundle], default is null.
+ * @param intent the [Intent] builder body, default is empty.
  */
-inline fun <reified T : Activity> Context.startActivity(newTask: Boolean = false, initiate: Intent.() -> Unit = {}) =
-    startActivity(Intent(this, classOf<T>()).apply { if (newTask) flags = flags or Intent.FLAG_ACTIVITY_NEW_TASK }.apply(initiate))
+inline fun <reified T : Activity> Context.startActivity(
+    newTask: Boolean = false,
+    options: Bundle? = null,
+    intent: Intent.() -> Unit = {}
+) = startActivity(
+    Intent(this, classOf<T>()).apply {
+        if (newTask) flags = flags or Intent.FLAG_ACTIVITY_NEW_TASK
+    }.apply(intent), options
+)
+
+/**
+ * Start an [Activity] instance [T].
+ * @see Fragment.startActivityOrElse
+ * @receiver the current context.
+ * @param newTask whether to start with a new task, default false.
+ * @param options the [Bundle], default is null.
+ * @param intent the [Intent] builder body, default is empty.
+ */
+inline fun <reified T : Activity> Fragment.startActivity(
+    newTask: Boolean = false,
+    options: Bundle? = null,
+    intent: Intent.() -> Unit = {}
+) = requireContext().startActivity<T>(newTask, options, intent)
 
 /**
  * Start an [Activity] using [ComponentName].
@@ -72,13 +96,40 @@ inline fun <reified T : Activity> Context.startActivity(newTask: Boolean = false
  * @param activityClass the target app [Activity] class name.
  * @param newTask whether to start with a new task, default true,
  * if not it will cause the top stack to overlap.
- * @param initiate the [Intent] builder body, default is empty.
+ * @param options the [Bundle], default is null.
+ * @param intent the [Intent] builder body, default is empty.
  */
-inline fun Context.startActivity(packageName: String, activityClass: String, newTask: Boolean = true, initiate: Intent.() -> Unit = {}) =
-    startActivity(Intent().apply {
+inline fun Context.startActivity(
+    packageName: String,
+    activityClass: String,
+    newTask: Boolean = true,
+    options: Bundle? = null,
+    intent: Intent.() -> Unit = {}
+) = startActivity(
+    Intent().apply {
         if (newTask) flags = flags or Intent.FLAG_ACTIVITY_NEW_TASK
         component = ComponentName(packageName, activityClass)
-    }.apply(initiate))
+    }.apply(intent), options
+)
+
+/**
+ * Start an [Activity] using [ComponentName].
+ * @see Fragment.startActivityOrElse
+ * @receiver the current context.
+ * @param packageName the target package name.
+ * @param activityClass the target app [Activity] class name.
+ * @param newTask whether to start with a new task, default true,
+ * if not it will cause the top stack to overlap.
+ * @param options the [Bundle], default is null.
+ * @param intent the [Intent] builder body, default is empty.
+ */
+inline fun Fragment.startActivity(
+    packageName: String,
+    activityClass: String,
+    newTask: Boolean = true,
+    options: Bundle? = null,
+    intent: Intent.() -> Unit = {}
+) = requireContext().startActivity(packageName, activityClass, newTask, options, intent)
 
 /**
  * Start an [Activity] using [ComponentName].
@@ -93,25 +144,74 @@ inline fun Context.startActivity(packageName: String, activityClass: String, new
  * @param packageName the target package name.
  * @param newTask whether to start with a new task, default true,
  * if not it will cause the top stack to overlap.
- * @param initiate the [Intent] builder body, default is empty.
+ * @param options the [Bundle], default is null.
+ * @param intent the [Intent] builder body, default is empty.
  * @throws IllegalStateException if the [Activity] class name that needs to be
  * started by the target app cannot be found.
  */
-inline fun Context.startActivity(packageName: String, newTask: Boolean = true, initiate: Intent.() -> Unit = {}) {
+inline fun Context.startActivity(
+    packageName: String,
+    newTask: Boolean = true,
+    options: Bundle? = null,
+    intent: Intent.() -> Unit = {}
+) {
     val className = packageManager?.queryLaunchActivitiesForPackage(packageName)?.firstOrNull()?.activityInfo?.name
         ?: error("No launch activities found for package \"$packageName\".")
-    startActivity(packageName, className, newTask, initiate)
+    startActivity(packageName, className, newTask, options, intent)
 }
+
+/**
+ * Start an [Activity] using [ComponentName].
+ *
+ * This function auto obtains the [Activity] class name that
+ * the target app needs to start through [PackageManager.getLaunchIntentForPackage].
+ *
+ * - The [Manifest.permission.QUERY_ALL_PACKAGES] permissions or a queries list declaration required
+ *   when target sdk higher than 29.
+ * @see Fragment.startActivityOrElse
+ * @receiver the current context.
+ * @param packageName the target package name.
+ * @param newTask whether to start with a new task, default true,
+ * if not it will cause the top stack to overlap.
+ * @param options the [Bundle], default is null.
+ * @param intent the [Intent] builder body, default is empty.
+ * @throws IllegalStateException if the [Activity] class name that needs to be
+ * started by the target app cannot be found.
+ */
+inline fun Fragment.startActivity(
+    packageName: String,
+    newTask: Boolean = true,
+    options: Bundle? = null,
+    intent: Intent.() -> Unit = {}
+) = requireContext().startActivity(packageName, newTask, options, intent)
 
 /**
  * Start an [Activity] instance [T].
  * @receiver the current context.
  * @param newTask whether to start with a new task, default false.
- * @param initiate the [Intent] builder body, default is empty.
+ * @param options the [Bundle], default is null.
+ * @param intent the [Intent] builder body, default is empty.
  * @return [Boolean] whether succeed.
  */
-inline fun <reified T : Activity> Context.startActivityOrElse(newTask: Boolean = false, initiate: Intent.() -> Unit = {}) =
-    runCatching { startActivity<T>(newTask, initiate) }.isSuccess
+inline fun <reified T : Activity> Context.startActivityOrElse(
+    newTask: Boolean = false,
+    options: Bundle? = null,
+    intent: Intent.() -> Unit = {}
+) = runCatching { startActivity<T>(newTask, options, intent) }.isSuccess
+
+/**
+ * Start an [Activity] instance [T].
+ * @receiver the current context.
+ * @param newTask whether to start with a new task, default false.
+ * @param options the [Bundle], default is null.
+ * @param intent the [Intent] builder body, default is empty.
+ * @return [Boolean] whether succeed.
+ */
+inline fun <reified T : Activity> Fragment.startActivityOrElse(
+    newTask: Boolean = false,
+    options: Bundle? = null,
+    intent: Intent.() -> Unit = {}
+) = requireContext().startActivityOrElse<T>(newTask, options, intent)
 
 /**
  * Start an [Activity] using [ComponentName].
@@ -120,11 +220,36 @@ inline fun <reified T : Activity> Context.startActivityOrElse(newTask: Boolean =
  * @param activityClass the target app [Activity] class name.
  * @param newTask whether to start with a new task, default true,
  * if not it will cause the top stack to overlap.
- * @param initiate the [Intent] builder body, default is empty.
+ * @param options the [Bundle], default is null.
+ * @param intent the [Intent] builder body, default is empty.
  * @return [Boolean] whether succeed.
  */
-inline fun Context.startActivityOrElse(packageName: String, activityClass: String, newTask: Boolean = true, initiate: Intent.() -> Unit = {}) =
-    runCatching { startActivity(packageName, activityClass, newTask, initiate) }.isSuccess
+inline fun Context.startActivityOrElse(
+    packageName: String,
+    activityClass: String,
+    newTask: Boolean = true,
+    options: Bundle? = null,
+    intent: Intent.() -> Unit = {}
+) = runCatching { startActivity(packageName, activityClass, newTask, options, intent) }.isSuccess
+
+/**
+ * Start an [Activity] using [ComponentName].
+ * @receiver the current context.
+ * @param packageName the target package name.
+ * @param activityClass the target app [Activity] class name.
+ * @param newTask whether to start with a new task, default true,
+ * if not it will cause the top stack to overlap.
+ * @param options the [Bundle], default is null.
+ * @param intent the [Intent] builder body, default is empty.
+ * @return [Boolean] whether succeed.
+ */
+inline fun Fragment.startActivityOrElse(
+    packageName: String,
+    activityClass: String,
+    newTask: Boolean = true,
+    options: Bundle? = null,
+    intent: Intent.() -> Unit = {}
+) = requireContext().startActivityOrElse(packageName, activityClass, newTask, options, intent)
 
 /**
  * Start an [Activity] using [ComponentName].
@@ -138,18 +263,57 @@ inline fun Context.startActivityOrElse(packageName: String, activityClass: Strin
  * @param packageName the target package name.
  * @param newTask whether to start with a new task, default true,
  * if not it will cause the top stack to overlap.
- * @param initiate the [Intent] builder body, default is empty.
+ * @param options the [Bundle], default is null.
+ * @param intent the [Intent] builder body, default is empty.
  * @return [Boolean] whether succeed.
  */
-inline fun Context.startActivityOrElse(packageName: String, newTask: Boolean = true, initiate: Intent.() -> Unit = {}): Boolean {
+inline fun Context.startActivityOrElse(
+    packageName: String,
+    newTask: Boolean = true,
+    options: Bundle? = null,
+    intent: Intent.() -> Unit = {}
+): Boolean {
     val className = packageManager?.queryLaunchActivitiesForPackageOrNull(packageName)?.firstOrNull()?.activityInfo?.name ?: return false
-    return runCatching { startActivity(packageName, className, newTask, initiate) }.isSuccess
+    return runCatching { startActivity(packageName, className, newTask, options, intent) }.isSuccess
 }
+
+/**
+ * Start an [Activity] using [ComponentName].
+ *
+ * This function auto obtains the [Activity] class name that
+ * the target app needs to start through [PackageManager.getLaunchIntentForPackage].
+ *
+ * - The [Manifest.permission.QUERY_ALL_PACKAGES] permissions or a queries list declaration required
+ *   when target sdk higher than 29.
+ * @receiver the current context.
+ * @param packageName the target package name.
+ * @param newTask whether to start with a new task, default true,
+ * if not it will cause the top stack to overlap.
+ * @param options the [Bundle], default is null.
+ * @param intent the [Intent] builder body, default is empty.
+ * @return [Boolean] whether succeed.
+ */
+inline fun Fragment.startActivityOrElse(
+    packageName: String,
+    newTask: Boolean = true,
+    options: Bundle? = null,
+    intent: Intent.() -> Unit = {}
+) = requireContext().startActivityOrElse(packageName, newTask, options, intent)
 
 /**
  * Start an [Activity].
  * @receiver the current context.
  * @param intent the intent to start.
+ * @param options the [Bundle], default is null.
  * @return [Boolean] whether succeed.
  */
-fun Context.startActivityOrElse(intent: Intent) = runCatching { startActivity(intent) }.isSuccess
+fun Context.startActivityOrElse(intent: Intent, options: Bundle? = null) = runCatching { startActivity(intent, options) }.isSuccess
+
+/**
+ * Start an [Activity].
+ * @receiver the current context.
+ * @param intent the intent to start.
+ * @param options the [Bundle], default is null.
+ * @return [Boolean] whether succeed.
+ */
+fun Fragment.startActivityOrElse(intent: Intent, options: Bundle? = null) = requireContext().startActivityOrElse(intent, options)

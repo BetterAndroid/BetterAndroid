@@ -45,9 +45,9 @@ implementation("com.highcapable.betterandroid:ui-extension:<version>")
 
 ::: tip 本节内容
 
-[Activity → startActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/start-activity)
+[Activity / Fragment → startActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/start-activity)
 
-[Activity → startActivityOrElse](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/start-activity-or-else)
+[Activity / Fragment → startActivityOrElse](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/start-activity-or-else)
 
 [Activity → isInMultiWindowModeCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/is-in-multi-window-mode-compat)
 
@@ -74,6 +74,15 @@ context.startActivity<AnotherActivity> {
 // 如果你需要使用 Intent.FLAG_ACTIVITY_NEW_TASK 来启动另一个 Activity，
 // 你可以直接这样使用
 context.startActivity<AnotherActivity>(newTask = true)
+// 如果你需要添加启动参数，你可以向其中添加 "options" 选项
+// 例如我们需要一个共享元素动画
+val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity).toBundle()
+context.startActivity<AnotherActivity>(options = options)
+// 同样地，你也可以在一个 Fragment 中直接使用
+// 假设这就是你的 Fragment
+val fragment: Fragment
+// 假设 AnotherActivity 就是你的目标 Activity
+fragment.startActivity<AnotherActivity>()
 ```
 
 如果你需要启动一个外部应用程序的 `Activity`，你可以使用以下方式。

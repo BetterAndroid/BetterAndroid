@@ -45,9 +45,9 @@ You can view the KDoc [click here](kdoc://ui-extension).
 
 ::: tip Contents of This Section
 
-[Activity → startActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/start-activity)
+[Activity / Fragment → startActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/start-activity)
 
-[Activity → startActivityOrElse](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/start-activity-or-else)
+[Activity / Fragment → startActivityOrElse](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/start-activity-or-else)
 
 [Activity → isInMultiWindowModeCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/is-in-multi-window-mode-compat)
 
@@ -74,6 +74,15 @@ context.startActivity<AnotherActivity> {
 // If you need to use Intent.FLAG_ACTIVITY_NEW_TASK to start another activity,
 // you can use it directly like this.
 context.startActivity<AnotherActivity>(newTask = true)
+// If you need to add launch options, you can add the "options" parameter.
+// For example, we need a shared element transition animation.
+val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity).toBundle()
+context.startActivity<AnotherActivity>(options = options)
+// Similarly, you can use it directly in a Fragment.
+// Assume this is your Fragment.
+val fragment: Fragment
+// Assume AnotherActivity is your target Activity.
+fragment.startActivity<AnotherActivity>()
 ```
 
 If you need to start an `Activity` from an external app, you can use the following method.
