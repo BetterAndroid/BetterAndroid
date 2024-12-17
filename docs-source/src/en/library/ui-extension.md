@@ -145,6 +145,8 @@ val isInMultiWindowMode = activity.isInMultiWindowModeCompat
 
 [Fragment → fragmentManager](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/fragment-manager)
 
+[Fragment → parentFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/parent-fragment)
+
 [Fragment → findFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/find-fragment)
 
 [Fragment → attachToActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/attach-to-activity)
@@ -200,9 +202,26 @@ val fragmentManager = fragment.fragmentManager()
 val parentFragmentManager = fragment.fragmentManager(parent = true)
 ```
 
-Use generics to find an existing `Fragment`.
+Using generics to get the parent `Fragment`.
+
+`BetterAndroid` provides a more friendly way to get the parent `Fragment`.
 
 It can automatically help you convert the found `Fragment` to the current type without using the `as` form for coercion.
+
+You don't need to worry about not being found or type errors at all, in which case `null` will be returned.
+
+> The following example
+
+```kotlin
+// Assume this is your Fragment.
+val fragment: Fragment
+// Get the parent Fragment using generics.
+val parentFragment = fragment.parentFragment<YourParentFragment>()
+```
+
+Use generics to find an existing `Fragment`.
+
+Similarly, it can automatically convert the found `Fragment` to the current type without using the `as` form for coercion.
 
 You don't need to worry about not being found or type errors at all, in which case `null` will be returned.
 

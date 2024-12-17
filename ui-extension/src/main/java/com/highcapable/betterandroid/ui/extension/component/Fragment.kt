@@ -56,6 +56,13 @@ fun FragmentActivity.fragmentManager() = supportFragmentManager
 fun Fragment.fragmentManager(parent: Boolean = false) = if (parent) parentFragmentManager else childFragmentManager
 
 /**
+ * Get the parent [Fragment].
+ * @receiver [Fragment]
+ * @return [T] or null.
+ */
+inline fun <reified T : Fragment> Fragment.parentFragment() = parentFragment as? T?
+
+/**
  * Find an exists [Fragment] by [id].
  * @see FragmentManager.findFragmentById
  * @receiver [FragmentManager]

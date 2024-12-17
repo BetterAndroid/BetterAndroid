@@ -142,6 +142,8 @@ val isInMultiWindowMode = activity.isInMultiWindowModeCompat
 
 [Fragment → fragmentManager](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/fragment-manager)
 
+[Fragment → parentFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/parent-fragment)
+
 [Fragment → findFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/find-fragment)
 
 [Fragment → attachToActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/attach-to-activity)
@@ -195,9 +197,26 @@ val fragmentManager = fragment.fragmentManager()
 val parentFragmentManager = fragment.fragmentManager(parent = true)
 ```
 
-使用泛型的方式来查找一个存在的 `Fragment`。
+使用泛型的方式来获取父级 `Fragment`。
+
+`BetterAndroid` 为 `Fragment` 提供了一个更加友好的方式来获取父级 `Fragment`。
 
 它可以自动帮你把找到的 `Fragment` 转换为当前类型而不需要再使用 `as` 的形式进行强制转换。
+
+你完全不需要担心找不到或者类型错误的情况，遇到这种情况将会返回 `null`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Fragment
+val fragment: Fragment
+// 通过泛型的方式获取父 Fragment
+val parentFragment = fragment.parentFragment<YourParentFragment>()
+```
+
+使用泛型的方式来查找一个存在的 `Fragment`。
+
+同样地，它可以自动帮你把找到的 `Fragment` 转换为当前类型而不需要再使用 `as` 的形式进行强制转换。
 
 你完全不需要担心找不到或者类型错误的情况，遇到这种情况将会返回 `null`。
 
