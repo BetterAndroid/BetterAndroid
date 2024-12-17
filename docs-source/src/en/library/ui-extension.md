@@ -535,6 +535,69 @@ yourView.lifecycleOwner = this
 
 :::
 
+### Coroutines Extensions
+
+::: tip Contents of This Section
+
+[LifecycleOwner → launch](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/launch)
+
+[LifecycleOwner → async](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/async)
+
+[CoroutinesScope / LifecycleOwner → runDelayed](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/run-delayed)
+
+[CoroutinesScope / LifecycleOwner → repeatWithDelay](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/repeat-with-delay)
+
+Extensions for coroutines.
+
+:::
+
+Coroutines are an important feature in Kotlin, providing a more elegant solution for asynchronous programming.
+
+Since coroutines themselves are a standard library in Kotlin and do not directly bind to the Android lifecycle,
+`BetterAndroid` provides some practical extension functions to bridge important UI interactions.
+
+::: warning
+
+These extension functions only support Kotlin. If you are using Java, you will not be able to use these extensions.
+
+:::
+
+Using coroutines in the Android lifecycle typically requires `lifecycleScope`, which can be cumbersome.
+
+Now, you no longer need to use `lifecycleScope.launch` to start a coroutine. You can directly use it in any instance that inherits from `LifecycleOwner`.
+
+> The following example
+
+```kotlin
+// Assume this is your LifecycleOwner.
+val lcOwner: LifecycleOwner
+// Start a coroutine.
+lcOwner.launch {
+    // Your code here.
+}
+// Start an async coroutine.
+val deferred = lcOwner.async {
+    // Your code here.
+}
+```
+
+Additionally, `BetterAndroid` provides more extensions for coroutines to switch between the main thread and non-main threads in Android.
+
+> The following example
+
+```kotlin
+// Assume this is your LifecycleOwner.
+val lcOwner: LifecycleOwner
+// Execute after a 1s delay.
+lcOwner.runDelayed(1000) {
+    // Your code here.
+}
+// Repeat 10 times, with a default delay of 1s each time.
+lcOwner.repeatWithDelay(10) { index ->
+    Log.d("Repeat", "Index: $index")
+}
+```
+
 ### Dimension Extension
 
 ::: tip Contents of This Section

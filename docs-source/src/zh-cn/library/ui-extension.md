@@ -520,6 +520,68 @@ yourView.lifecycleOwner = this
 
 :::
 
+### 协程 (Coroutines) 扩展
+
+::: tip 本节内容
+
+[LifecycleOwner → launch](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/launch)
+
+[LifecycleOwner → async](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/async)
+
+[CoroutinesScope / LifecycleOwner → runDelayed](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/run-delayed)
+
+[CoroutinesScope / LifecycleOwner → repeatWithDelay](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/repeat-with-delay)
+
+适用于协程的扩展。
+
+:::
+
+协程 (Coroutines) 是 Kotlin 中的一个重要特性，它为异步编程提供了一种更加优雅的解决方案。
+
+协程本身作为 Kotlin 的一个标准库，它并不会直接与 Android 的生命周期进行绑定，为此 `BetterAndroid` 为其提供了一些实用的扩展功能并将其作用于 UI 重要的交互桥梁。
+
+::: warning
+
+这些扩展功能仅支持使用 Kotlin 实现，如果你正在使用 Java，你将无法使用这些扩展功能。
+
+:::
+
+在 Android 生命周期中使用协程每次都需要使用 `lifecycleScope`，试图在证明 “我是我”，虽然调用域规范，但是显得很臃肿。
+
+现在，你不再需要使用 `lifecycleScope.launch` 来启动一个协程，你可以直接在任何继承于 `LifecycleOwner` 的实例中使用。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 LifecycleOwner
+val lcOwner: LifecycleOwner
+// 启动一个协程
+lcOwner.launch {
+    // Your code here.
+}
+// 启动一个异步协程
+val deferred = lcOwner.async {
+    // Your code here.
+}
+```
+
+除此之外，`BetterAndroid` 还为协程提供了更多适用于 Android 主线程与非主线程互相切换的扩展功能。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 LifecycleOwner
+val lcOwner: LifecycleOwner
+// 延迟 1s 后执行
+lcOwner.runDelayed(1000) {
+    // Your code here.
+}
+// 重复执行 10 次，每次默认延迟 1s
+lcOwner.repeatWithDelay(10) { index ->
+    Log.d("Repeat", "Index: $index")
+}
+```
+
 ### 尺寸 (Dimension) 扩展
 
 ::: tip 本节内容
