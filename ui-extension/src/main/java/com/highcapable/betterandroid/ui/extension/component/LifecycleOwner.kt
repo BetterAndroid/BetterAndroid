@@ -92,7 +92,7 @@ fun LifecycleOwner.requireActivity() = when (this) {
  * @receiver the current [LifecycleOwner].
  * @return [T] or null.
  */
-@JvmName("activity_Typed")
+@JvmName("activityTyped")
 inline fun <reified T : Activity> LifecycleOwner.activity() = activity as? T?
 
 /**
@@ -102,7 +102,7 @@ inline fun <reified T : Activity> LifecycleOwner.activity() = activity as? T?
  * @return [T]
  * @throws IllegalStateException if it is not attached to an [Activity] or if it is not [T].
  */
-@JvmName("requireActivity_Typed")
+@JvmName("requireActivityTyped")
 inline fun <reified T : Activity> LifecycleOwner.requireActivity() = requireActivity() as? T? ?: error("LifecycleOwner is not ${classOf<T>()}.")
 
 /**
