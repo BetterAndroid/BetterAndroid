@@ -431,6 +431,45 @@ fragment.show()
 
 :::
 
+### LifecycleOwner 扩展
+
+::: tip 本节内容
+
+[LifecycleOwner → context](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/context)
+
+[LifecycleOwner → activity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/activity)
+
+[LifecycleOwner → requireContext](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/require-context)
+
+[LifecycleOwner → requireActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/require-activity)
+
+适用于 `LifecycleOwner` 的扩展。
+
+:::
+
+`LifecycleOwner` 是 Android Jetpack 中的一个重要组件，它为 `Activity`、`Fragment` 等提供了生命周期的管理。
+
+`BetterAndroid` 为 `LifecycleOwner` 提供了通过其获取上下文的职能，你可以在常用继承于 `LifecycleOwner` 的实例中使用。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 LifecycleOwner
+val lcOwner: LifecycleOwner
+// 获取上下文
+val context = lcOwner.context
+// 获取 Activity
+val activity = lcOwner.activity
+// 获取非空上下文 (获取失败会抛出异常)
+val context = lcOwner.requireContext()
+// 获取非空 Activity (获取失败会抛出异常)
+val activity = lcOwner.requireActivity()
+// 你也可以将获取到的 Activity 转换为指定的类型
+val yourActivity = lcOwner.activity<YourActivity>()
+// 或者
+val yourActivity = lcOwner.requireActivity<YourActivity>()
+```
+
 ### 尺寸 (Dimension) 扩展
 
 ::: tip 本节内容

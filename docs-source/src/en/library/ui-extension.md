@@ -444,6 +444,45 @@ We believe that transition animation should be something that each developer dec
 
 :::
 
+### LifecycleOwner Extension
+
+::: tip Contents of This Section
+
+[LifecycleOwner → context](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/context)
+
+[LifecycleOwner → activity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/activity)
+
+[LifecycleOwner → requireContext](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/require-context)
+
+[LifecycleOwner → requireActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/require-activity)
+
+Extensions for `LifecycleOwner`.
+
+:::
+
+`LifecycleOwner` is an important component in Android Jetpack, providing lifecycle management for `Activity`, `Fragment`, etc.
+
+`BetterAndroid` provides extensions for `LifecycleOwner` to obtain context, which you can use in commonly inherited instances of `LifecycleOwner`.
+
+> The following example
+
+```kotlin
+// Assume this is your LifecycleOwner.
+val lcOwner: LifecycleOwner
+// Get context.
+val context = lcOwner.context
+// Get Activity.
+val activity = lcOwner.activity
+// Get non-null context (throws exception if failed).
+val context = lcOwner.requireContext()
+// Get non-null Activity (throws exception if failed).
+val activity = lcOwner.requireActivity()
+// You can also convert the obtained Activity to a specified type.
+val yourActivity = lcOwner.activity<YourActivity>()
+// Or.
+val yourActivity = lcOwner.requireActivity<YourActivity>()
+```
+
 ### Dimension Extension
 
 ::: tip Contents of This Section
