@@ -716,7 +716,7 @@ The naming method of `dp`, `px`, `toPx`, `toDp` may conflict with the naming met
 
 [Resources → getThemeAttrsColor](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-color)
 
-[Resources → isThemeAttrsIdsValueEquals](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/is-theme-attrs-ids-value-equals)
+[Resources → areThemeAttrsIdsValueEquals](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/are-theme-attrs-ids-value-equals)
 
 [Resources → hasThemeAttrsId](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/has-theme-attrs-id)
 
@@ -822,7 +822,7 @@ You can also compare two attr values to see if they are equals.
 // Assume this is your context.
 val context: Context
 // Compare the values ​​of the two attr to see if they are equals.
-val isEquals = context.isThemeAttrsIdsValueEquals(R.attr.first_attr, R.attr.second_attr)
+val isEquals = context.areThemeAttrsIdsValueEquals(R.attr.first_attr, R.attr.second_attr)
 ```
 
 ::: tip
@@ -830,7 +830,7 @@ val isEquals = context.isThemeAttrsIdsValueEquals(R.attr.first_attr, R.attr.seco
 The `Context.getThemeAttrs*` series of methods support common instances in Android that can be converted to actual resource objects, 
 such as `getThemeAttrsColor`, `getThemeAttrsInteger`, `getThemeAttrsString`, etc.
 
-Currently `Context.getThemeAttrs*` and `Context.isThemeAttrsIdsValueEquals` support the value contents of the following common resource IDs:
+Currently `Context.getThemeAttrs*` and `Context.areThemeAttrsIdsValueEquals` support the value contents of the following common resource IDs:
 
 `Color`, `ColorStateList`, `Drawable`, `Dimension`, `String`, `StringArray`, `IntArray`, `Float`, `Boolean`
 

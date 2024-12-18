@@ -342,7 +342,7 @@ fun Context.getThemeAttrsColor(@AttrRes id: Int) = resources.getColorCompat(getT
  * @param lastId the second attribute resources ID.
  * @return [Boolean] are equal.
  */
-fun Context.isThemeAttrsIdsValueEquals(@AttrRes firstId: Int, @AttrRes lastId: Int) = when {
+fun Context.areThemeAttrsIdsValueEquals(@AttrRes firstId: Int, @AttrRes lastId: Int) = when {
     firstId == lastId -> true
     runCatching { getThemeAttrsColor(firstId) == getThemeAttrsColor(lastId) }.getOrNull() ?: false -> true
     runCatching { getThemeAttrsColorStateList(firstId) == getThemeAttrsColorStateList(lastId) }.getOrNull() ?: false -> true
@@ -356,6 +356,15 @@ fun Context.isThemeAttrsIdsValueEquals(@AttrRes firstId: Int, @AttrRes lastId: I
     runCatching { getThemeAttrsBoolean(firstId) == getThemeAttrsBoolean(lastId) }.getOrNull() ?: false -> true
     else -> false
 }
+
+/**
+ * Get the resource ID of the attribute resource list from the current theme.
+ *
+ * - This function is deprecated, use [areThemeAttrsIdsValueEquals] instead.
+ * @see Context.areThemeAttrsIdsValueEquals
+ */
+@Deprecated(message = "Use areThemeAttrsIdsValueEquals instead.", ReplaceWith("areThemeAttrsIdsValueEquals(firstId, lastId)"))
+fun Context.isThemeAttrsIdsValueEquals(@AttrRes firstId: Int, @AttrRes lastId: Int) = areThemeAttrsIdsValueEquals(firstId, lastId)
 
 /**
  * Determine whether the resource ID of

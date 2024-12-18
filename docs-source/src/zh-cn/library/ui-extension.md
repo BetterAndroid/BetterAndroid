@@ -699,7 +699,7 @@ class YourActivity : AppCompatActivity(), DisplayDensity {
 
 [Resources → getThemeAttrsColor](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-theme-attrs-color)
 
-[Resources → isThemeAttrsIdsValueEquals](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/is-theme-attrs-ids-value-equals)
+[Resources → areThemeAttrsIdsValueEquals](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/are-theme-attrs-ids-value-equals)
 
 [Resources → hasThemeAttrsId](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/has-theme-attrs-id)
 
@@ -804,14 +804,14 @@ val hasWindowBackgroundId = context.hasThemeAttrsId(android.R.attr.windowBackgro
 // 假设这就是你的 Context
 val context: Context
 // 比较两个 attr 的值内容是否相等
-val isEquals = context.isThemeAttrsIdsValueEquals(R.attr.first_attr, R.attr.second_attr)
+val isEquals = context.areThemeAttrsIdsValueEquals(R.attr.first_attr, R.attr.second_attr)
 ```
 
 ::: tip
 
 `Context.getThemeAttrs*` 系列方法支持 Android 中能够被转换到实际资源对象的常用实例，例如 `getThemeAttrsColor`、`getThemeAttrsInteger`、`getThemeAttrsString` 等。
 
-目前 `Context.getThemeAttrs*`、`Context.isThemeAttrsIdsValueEquals` 支持以下常用资源 ID 的值内容：
+目前 `Context.getThemeAttrs*`、`Context.areThemeAttrsIdsValueEquals` 支持以下常用资源 ID 的值内容：
 
 `Color`、`ColorStateList`、`Drawable`、`Dimension`、`String`、`StringArray`、`IntArray`、`Float`、`Boolean`
 
