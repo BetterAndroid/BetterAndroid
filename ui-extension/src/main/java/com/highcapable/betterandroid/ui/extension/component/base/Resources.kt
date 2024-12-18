@@ -402,6 +402,7 @@ fun Context.getMenuFromResource(@MenuRes id: Int) = runCatching {
 
 /**
  * Get string array.
+ * @see Resources.getStringArray
  * @receiver the current typed array from resource.
  * @param index the attribute resources ID array.
  * @param defValue the default value, default is empty array.
@@ -413,6 +414,7 @@ fun TypedArray.getStringArray(@StyleableRes index: Int, defValue: Array<String> 
 
 /**
  * Get int array.
+ * @see Resources.getIntArray
  * @receiver the current typed array from resource.
  * @param index the attribute resources ID array.
  * @param defValue the default value, default is empty array.
@@ -424,6 +426,7 @@ fun TypedArray.getIntArray(@StyleableRes index: Int, defValue: Array<Int> = empt
 
 /**
  * Get color, return [defValue] when not has this value.
+ * @see TypedArray.getColor
  * @receiver the current typed array from resource.
  * @param index the attribute resources ID array.
  * @param defValue the default value, default is null.
@@ -435,6 +438,7 @@ fun TypedArray.getColorOrNull(@StyleableRes index: Int, @ColorInt defValue: Int?
 
 /**
  * Get [ColorStateList], return [defValue] when not has this value.
+ * @see TypedArray.getColorStateList
  * @receiver the current typed array from resource.
  * @param index the attribute resources ID array.
  * @param defValue the default value, default is null.
@@ -446,6 +450,7 @@ fun TypedArray.getColorStateListOrNull(@StyleableRes index: Int, defValue: Color
 
 /**
  * Get [Int], return [defValue] when not has this value.
+ * @see TypedArray.getInteger
  * @receiver the current typed array from resource.
  * @param index the attribute resources ID array.
  * @param defValue the default value, default is null.
@@ -457,6 +462,7 @@ fun TypedArray.getIntegerOrNull(@StyleableRes index: Int, defValue: Int? = null)
 
 /**
  * Get [Int], return [defValue] when not has this value.
+ * @see TypedArray.getInt
  * @receiver the current typed array from resource.
  * @param index the attribute resources ID array.
  * @param defValue the default value, default is null.
@@ -468,6 +474,7 @@ fun TypedArray.getIntOrNull(@StyleableRes index: Int, defValue: Int? = null) =
 
 /**
  * Get [CharSequence], return [defValue] when not has this value.
+ * @see TypedArray.getText
  * @receiver the current typed array from resource.
  * @param index the attribute resources ID array.
  * @param defValue the default value, default is null.
@@ -479,6 +486,7 @@ fun TypedArray.getTextOrNull(@StyleableRes index: Int, defValue: CharSequence? =
 
 /**
  * Get [String], return [defValue] when not has this value.
+ * @see TypedArray.getString
  * @receiver the current typed array from resource.
  * @param index the attribute resources ID array.
  * @param defValue the default value, default is null.
@@ -490,6 +498,7 @@ fun TypedArray.getStringOrNull(@StyleableRes index: Int, defValue: String? = nul
 
 /**
  * Get [Boolean], return [defValue] when not has this value.
+ * @see TypedArray.getBoolean
  * @receiver the current typed array from resource.
  * @param index the attribute resources ID array.
  * @param defValue the default value, default is null.
@@ -501,6 +510,7 @@ fun TypedArray.getBooleanOrNull(@StyleableRes index: Int, defValue: Boolean? = n
 
 /**
  * Get [Float], return [defValue] when not has this value.
+ * @see TypedArray.getFloat
  * @receiver the current typed array from resource.
  * @param index the attribute resources ID array.
  * @param defValue the default value, default is null.
@@ -512,6 +522,7 @@ fun TypedArray.getFloatOrNull(@StyleableRes index: Int, defValue: Float? = null)
 
 /**
  * Get dimension, return [defValue] when not has this value.
+ * @see TypedArray.getDimension
  * @receiver the current typed array from resource.
  * @param index the attribute resources ID array.
  * @param defValue the default value, default is null.
@@ -523,6 +534,7 @@ fun TypedArray.getDimensionOrNull(@StyleableRes index: Int, defValue: Float? = n
 
 /**
  * Get dimension, return [defValue] when not has this value.
+ * @see TypedArray.getDimensionPixelSize
  * @receiver the current typed array from resource.
  * @param index the attribute resources ID array.
  * @param defValue the default value, default is null.
@@ -534,6 +546,7 @@ fun TypedArray.getDimensionPixelSizeOrNull(@StyleableRes index: Int, defValue: I
 
 /**
  * Get dimension, return [defValue] when not has this value.
+ * @see TypedArray.getDimensionPixelOffset
  * @receiver the current typed array from resource.
  * @param index the attribute resources ID array.
  * @param defValue the default value, default is null.
@@ -545,6 +558,7 @@ fun TypedArray.getDimensionPixelOffsetOrNull(@StyleableRes index: Int, defValue:
 
 /**
  * Get layout dimension, return [defValue] when not has this value.
+ * @see TypedArray.getLayoutDimension
  * @receiver the current typed array from resource.
  * @param index the attribute resources ID array.
  * @param defValue the default value, default is null.
@@ -556,6 +570,7 @@ fun TypedArray.getLayoutDimensionOrNull(@StyleableRes index: Int, defValue: Int?
 
 /**
  * Get [Drawable], return [defValue] when not has this value.
+ * @see TypedArray.getDrawable
  * @receiver the current typed array from resource.
  * @param index the attribute resources ID array.
  * @param defValue the default value, default is null.
@@ -567,6 +582,7 @@ fun TypedArray.getDrawableOrNull(@StyleableRes index: Int, defValue: Drawable? =
 
 /**
  * Get [Typeface], return [defValue] when not has this value.
+ * @see TypedArray.getFont
  * @receiver the current typed array from resource.
  * @param index the attribute resources ID array.
  * @param defValue the default value, default is null.
