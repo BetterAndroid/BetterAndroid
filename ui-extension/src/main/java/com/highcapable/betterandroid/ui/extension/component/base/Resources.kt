@@ -101,7 +101,7 @@ fun @receiver:IdRes Int.toHexResourceId() = "0x${Integer.toHexString(this)}"
  * @param id the [Drawable] resources ID.
  * @param theme the given theme, default is null.
  * @return [Drawable]
- * @throws [Resources.NotFoundException] if the resource is not found.
+ * @throws Resources.NotFoundException if the resource is not found.
  */
 @JvmOverloads
 fun Resources.getDrawableCompat(@DrawableRes id: Int, theme: Theme? = null) = getDrawableCompat<Drawable>(id, theme)
@@ -112,7 +112,7 @@ fun Resources.getDrawableCompat(@DrawableRes id: Int, theme: Theme? = null) = ge
  * @param id the [Drawable] resources ID.
  * @param theme the given theme, default is null.
  * @return [T]
- * @throws [Resources.NotFoundException] if the resource is not found.
+ * @throws Resources.NotFoundException if the resource is not found.
  * @throws IllegalStateException if [Drawable] type is not [T].
  */
 @JvmName("getDrawableCompatTyped")
@@ -125,7 +125,7 @@ inline fun <reified T : Drawable> Resources.getDrawableCompat(@DrawableRes id: I
  * @param id the [ColorStateList] resources ID.
  * @param theme the given theme, default is null.
  * @return [ColorStateList]
- * @throws [Resources.NotFoundException] if the resource is not found.
+ * @throws Resources.NotFoundException if the resource is not found.
  */
 @JvmOverloads
 fun Resources.getColorStateListCompat(@ColorRes id: Int, theme: Theme? = null) = ColorStateListCompat.get(this, id, theme)
@@ -136,7 +136,7 @@ fun Resources.getColorStateListCompat(@ColorRes id: Int, theme: Theme? = null) =
  * @param id the color resource ID.
  * @param theme the given theme, default is null.
  * @return [Int]
- * @throws [Resources.NotFoundException] if the resource is not found.
+ * @throws Resources.NotFoundException if the resource is not found.
  */
 @JvmOverloads
 fun Resources.getColorCompat(@ColorRes id: Int, theme: Theme? = null) = ResourcesCompat.getColor(this, id, theme)
@@ -146,7 +146,7 @@ fun Resources.getColorCompat(@ColorRes id: Int, theme: Theme? = null) = Resource
  * @receiver the current resource.
  * @param id the [Float] resources ID.
  * @return [Float]
- * @throws [Resources.NotFoundException] if the resource is not found.
+ * @throws Resources.NotFoundException if the resource is not found.
  */
 fun Resources.getFloatCompat(@DimenRes id: Int) = ResourcesCompat.getFloat(this, id)
 
@@ -155,7 +155,7 @@ fun Resources.getFloatCompat(@DimenRes id: Int) = ResourcesCompat.getFloat(this,
  * @receiver the current context.
  * @param id the [Typeface] resources ID.
  * @return [Typeface] or null.
- * @throws [Resources.NotFoundException] if the resource is not found.
+ * @throws Resources.NotFoundException if the resource is not found.
  */
 fun Context.getFontCompat(@FontRes id: Int) =
     SystemVersion.requireOrNull(SystemVersion.O, ResourcesCompat.getFont(this, id)) { resources.getFont(id) }
@@ -165,7 +165,7 @@ fun Context.getFontCompat(@FontRes id: Int) =
  * @receiver the current context.
  * @param id the [Drawable] resources ID.
  * @return [Drawable]
- * @throws [Resources.NotFoundException] if the resource is not found.
+ * @throws Resources.NotFoundException if the resource is not found.
  */
 fun Context.getDrawableCompat(@DrawableRes id: Int) = resources.getDrawableCompat<Drawable>(id, theme)
 
@@ -174,7 +174,7 @@ fun Context.getDrawableCompat(@DrawableRes id: Int) = resources.getDrawableCompa
  * @receiver the current context.
  * @param id the [Drawable] resources ID.
  * @return [T]
- * @throws [Resources.NotFoundException] if the resource is not found.
+ * @throws Resources.NotFoundException if the resource is not found.
  * @throws [IllegalStateException] if [Drawable] type is not [T].
  */
 @JvmName("getDrawableCompatTyped")
@@ -185,7 +185,7 @@ inline fun <reified T : Drawable> Context.getDrawableCompat(@DrawableRes id: Int
  * @receiver the current context.
  * @param id the [ColorStateList] resources ID.
  * @return [ColorStateList]
- * @throws [Resources.NotFoundException] if the resource is not found.
+ * @throws Resources.NotFoundException if the resource is not found.
  */
 fun Context.getColorStateListCompat(@ColorRes id: Int) =
     SystemVersion.require(SystemVersion.M, resources.getColorStateListCompat(id, theme)) { getColorStateList(id) }
@@ -195,7 +195,7 @@ fun Context.getColorStateListCompat(@ColorRes id: Int) =
  * @receiver the current context.
  * @param id the color resource ID.
  * @return [Int]
- * @throws [Resources.NotFoundException] if the resource is not found.
+ * @throws Resources.NotFoundException if the resource is not found.
  */
 fun Context.getColorCompat(@ColorRes id: Int) = SystemVersion.require(SystemVersion.M, resources.getColorCompat(id, theme)) { getColor(id) }
 
@@ -207,7 +207,7 @@ fun Context.getColorCompat(@ColorRes id: Int) = SystemVersion.require(SystemVers
  * @receiver the current context.
  * @param id the attribute resources ID.
  * @return [Boolean]
- * @throws [Resources.NotFoundException] if the resource is not found.
+ * @throws Resources.NotFoundException if the resource is not found.
  */
 fun Context.getThemeAttrsBoolean(@AttrRes id: Int) = resources.getBoolean(getThemeAttrsId(id))
 
@@ -219,7 +219,7 @@ fun Context.getThemeAttrsBoolean(@AttrRes id: Int) = resources.getBoolean(getThe
  * @receiver the current context.
  * @param id the attribute resources ID.
  * @return [Float]
- * @throws [Resources.NotFoundException] if the resource is not found.
+ * @throws Resources.NotFoundException if the resource is not found.
  */
 fun Context.getThemeAttrsFloat(@AttrRes id: Int) = resources.getFloatCompat(getThemeAttrsId(id))
 
@@ -231,7 +231,7 @@ fun Context.getThemeAttrsFloat(@AttrRes id: Int) = resources.getFloatCompat(getT
  * @receiver the current context.
  * @param id the attribute resources ID.
  * @return [IntArray]
- * @throws [Resources.NotFoundException] if the resource is not found.
+ * @throws Resources.NotFoundException if the resource is not found.
  */
 fun Context.getThemeAttrsIntArray(@AttrRes id: Int) = resources.getIntArray(getThemeAttrsId(id))
 
@@ -243,7 +243,7 @@ fun Context.getThemeAttrsIntArray(@AttrRes id: Int) = resources.getIntArray(getT
  * @receiver the current context.
  * @param id the attribute resources ID.
  * @return [Int]
- * @throws [Resources.NotFoundException] if the resource is not found.
+ * @throws Resources.NotFoundException if the resource is not found.
  */
 fun Context.getThemeAttrsInteger(@AttrRes id: Int) = resources.getInteger(getThemeAttrsId(id))
 
@@ -255,7 +255,7 @@ fun Context.getThemeAttrsInteger(@AttrRes id: Int) = resources.getInteger(getThe
  * @receiver the current context.
  * @param id the attribute resources ID.
  * @return [Array]<[String]>
- * @throws [Resources.NotFoundException] if the resource is not found.
+ * @throws Resources.NotFoundException if the resource is not found.
  */
 fun Context.getThemeAttrsStringArray(@AttrRes id: Int): Array<String> = resources.getStringArray(getThemeAttrsId(id))
 
@@ -267,7 +267,7 @@ fun Context.getThemeAttrsStringArray(@AttrRes id: Int): Array<String> = resource
  * @receiver the current context.
  * @param id the attribute resources ID.
  * @return [String]
- * @throws [Resources.NotFoundException] if the resource is not found.
+ * @throws Resources.NotFoundException if the resource is not found.
  */
 fun Context.getThemeAttrsString(@AttrRes id: Int) = resources.getString(getThemeAttrsId(id))
 
@@ -279,7 +279,7 @@ fun Context.getThemeAttrsString(@AttrRes id: Int) = resources.getString(getTheme
  * @receiver the current context.
  * @param id the attribute resources ID.
  * @return [Float]
- * @throws [Resources.NotFoundException] if the resource is not found.
+ * @throws Resources.NotFoundException if the resource is not found.
  */
 fun Context.getThemeAttrsDimension(@AttrRes id: Int) = resources.getDimension(getThemeAttrsId(id))
 
@@ -291,7 +291,7 @@ fun Context.getThemeAttrsDimension(@AttrRes id: Int) = resources.getDimension(ge
  * @receiver the current context.
  * @param id the attribute resources ID.
  * @return [Drawable]
- * @throws [Resources.NotFoundException] if the resource is not found.
+ * @throws Resources.NotFoundException if the resource is not found.
  */
 fun Context.getThemeAttrsDrawable(@AttrRes id: Int) = resources.getDrawableCompat(getThemeAttrsId(id), theme)
 
@@ -303,7 +303,7 @@ fun Context.getThemeAttrsDrawable(@AttrRes id: Int) = resources.getDrawableCompa
  * @receiver the current context.
  * @param id the attribute resources ID.
  * @return [ColorStateList]
- * @throws [Resources.NotFoundException] if the resource is not found.
+ * @throws Resources.NotFoundException if the resource is not found.
  */
 fun Context.getThemeAttrsColorStateList(@AttrRes id: Int) = resources.getColorStateListCompat(getThemeAttrsId(id), theme)
 
@@ -315,7 +315,7 @@ fun Context.getThemeAttrsColorStateList(@AttrRes id: Int) = resources.getColorSt
  * @receiver the current context.
  * @param id the attribute resources ID.
  * @return [Int]
- * @throws [Resources.NotFoundException] if the resource is not found.
+ * @throws Resources.NotFoundException if the resource is not found.
  */
 fun Context.getThemeAttrsColor(@AttrRes id: Int) = resources.getColorCompat(getThemeAttrsId(id), theme)
 
@@ -653,7 +653,7 @@ private object ColorStateListCompat {
      * @param id the [ColorStateList] resource ID.
      * @param theme the given theme.
      * @return [ColorStateList]
-     * @throws [Resources.NotFoundException] if the resource is not found.
+     * @throws Resources.NotFoundException if the resource is not found.
      */
     fun get(resources: Resources, @ColorRes id: Int, theme: Theme?) =
         SystemVersion.require(SystemVersion.M, createFromXml(resources, id, theme)) { resources.getColorStateList(id, theme) }
@@ -663,7 +663,7 @@ private object ColorStateListCompat {
      * @param resources the current resource.
      * @param id the [ColorStateList] resource ID.
      * @param theme the given theme.
-     * @throws [Resources.NotFoundException] if the resource is not found.
+     * @throws Resources.NotFoundException if the resource is not found.
      */
     private fun createFromXml(resources: Resources, id: Int, theme: Theme?) =
         sColorStateCaches.get(id) ?: runCatching {
