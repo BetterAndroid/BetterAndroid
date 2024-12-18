@@ -730,6 +730,32 @@ The naming method of `dp`, `px`, `toPx`, `toDp` may conflict with the naming met
 
 [Resources → getColorOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-color-or-null)
 
+[Resources → getColorStateListOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-color-state-list-or-null)
+
+[Resources → getIntegerOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-integer-or-null)
+
+[Resources → getIntOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-int-or-null)
+
+[Resources → getTextOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-text-or-null)
+
+[Resources → getStringOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-string-or-null)
+
+[Resources → getBooleanOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-boolean-or-null)
+
+[Resources → getFloatOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-float-or-null)
+
+[Resources → getDimensionOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-dimension-or-null)
+
+[Resources → getDimensionPixelSizeOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-dimension-pixel-size-or-null)
+
+[Resources → getDimensionPixelOffsetOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-dimension-pixel-offset-or-null)
+
+[Resources → getLayoutDimensionOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-layout-dimension-or-null)
+
+[Resources → getDrawableOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-drawable-or-null)
+
+[Resources → getFontOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-font-or-null)
+
 [Resources → obtainStyledAttributes](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/obtain-styled-attributes)
 
 Extensions for `Resources`.
@@ -910,6 +936,54 @@ class MyView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 ::: tip
 
 `BetterAndroid` also provides `getStringArray`, `getIntArray` and `getColorOrNull` utility methods for `TypedArray`, which you can find them in **Contents of This Section** above.
+
+The `TypedArray.get...OrNull` method differs from the original method in that it first checks if the attribute resource exists before returning the relevant result.
+
+If it does not exist, it returns the default `defValue`, which is `null` by default.
+
+For example, with a color attribute resource, sometimes we need to determine whether the user has set this attribute.
+
+The original method can only set a non-`null` default value, but any color value is valid. In this case, the need to **first check if the attribute resource exists** arises.
+
+The specific implementation is `val myType = if (value.hasValue(index)) value.get...(..., ...) else ...`.
+
+In practice, we need to encapsulate such an approach ourselves to call the corresponding attribute resource, which is cumbersome.
+
+Therefore, `BetterAndroid` provides this encapsulation, allowing you to operate directly using the following method.
+
+> The following example
+
+```xml
+<declare-styleable name="MyView">
+    <attr name="myType" format="color" />
+</declare-styleable>
+```
+
+```xml
+<com.example.MyView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:myType="#FF000000" />
+```
+
+```kotlin
+obtainStyledAttributes(attrs, R.styleable.MyView) {
+    // If "app:myType" is declared in XML, the value of myType is 0xFF000000, otherwise null.
+    val myType = it.getColorOrNull(R.styleable.MyView_myType)
+    // If "app:myType" is declared in XML, the value of myType is 0xFF000000, otherwise 0xFF232323.
+    // The value of myType can be null in any case,
+    // so it is not recommended to use !! to assert non-null.
+    val myType = it.getColorOrNull(R.styleable.MyView_myType, 0xFF232323.toInt())
+    // (Recommended) You can ensure that the value of myType is not null
+    // by keeping defValue as null.
+    val myType = it.getColorOrNull(R.styleable.MyView_myType) ?: 0xFF232323.toInt()
+    // Or, you can handle the case where myType is null while keeping defValue as null.
+    // If not null, the user has set the "app:myType" attribute.
+    if (myType != null) {
+        // Your code here.
+    }
+}
+```
 
 :::
 

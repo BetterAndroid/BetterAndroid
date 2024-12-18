@@ -42,7 +42,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
-import androidx.annotation.ArrayRes
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
@@ -52,6 +51,7 @@ import androidx.annotation.FontRes
 import androidx.annotation.IdRes
 import androidx.annotation.MenuRes
 import androidx.annotation.Px
+import androidx.annotation.RequiresApi
 import androidx.annotation.StyleableRes
 import androidx.core.content.res.ColorStateListInflaterCompat
 import androidx.core.content.res.ResourcesCompat
@@ -404,23 +404,178 @@ fun Context.getMenuFromResource(@MenuRes id: Int) = runCatching {
  * Get string array.
  * @receiver the current typed array from resource.
  * @param index the attribute resources ID array.
- * @param defValue the default value, default is -1.
- * @return [Array]<[String]> if no data will return empty array.
+ * @param defValue the default value, default is empty array.
+ * @return [Array]<[String]> if no data will return [defValue].
  */
 @JvmOverloads
-fun TypedArray.getStringArray(@StyleableRes index: Int, @ArrayRes defValue: Int = -1) =
-    runCatching { resources.getStringArray(getResourceId(index, defValue)) as? Array<String> }.getOrNull() ?: emptyArray()
+fun TypedArray.getStringArray(@StyleableRes index: Int, defValue: Array<String> = emptyArray()) =
+    runCatching { resources.getStringArray(getResourceId(index, -1)) as? Array<String> }.getOrNull() ?: defValue
 
 /**
  * Get int array.
  * @receiver the current typed array from resource.
  * @param index the attribute resources ID array.
- * @param defValue the default value, default is -1.
- * @return [Array]<[Int]> if no data will return empty array.
+ * @param defValue the default value, default is empty array.
+ * @return [Array]<[Int]> if no data will return [defValue].
  */
 @JvmOverloads
-fun TypedArray.getIntArray(@StyleableRes index: Int, @ArrayRes defValue: Int = -1) =
-    runCatching { resources.getIntArray(getResourceId(index, defValue)).toTypedArray() }.getOrNull() ?: emptyArray()
+fun TypedArray.getIntArray(@StyleableRes index: Int, defValue: Array<Int> = emptyArray()) =
+    runCatching { resources.getIntArray(getResourceId(index, -1)).toTypedArray() }.getOrNull() ?: defValue
+
+/**
+ * Get color, return [defValue] when not has this value.
+ * @receiver the current typed array from resource.
+ * @param index the attribute resources ID array.
+ * @param defValue the default value, default is null.
+ * @return [Int] or null.
+ */
+@JvmOverloads
+fun TypedArray.getColorOrNull(@StyleableRes index: Int, @ColorInt defValue: Int? = null) =
+    if (hasValue(index)) getColor(index, defValue ?: Color.TRANSPARENT) else defValue
+
+/**
+ * Get [ColorStateList], return [defValue] when not has this value.
+ * @receiver the current typed array from resource.
+ * @param index the attribute resources ID array.
+ * @param defValue the default value, default is null.
+ * @return [ColorStateList] or null.
+ */
+@JvmOverloads
+fun TypedArray.getColorStateListOrNull(@StyleableRes index: Int, defValue: ColorStateList? = null) =
+    if (hasValue(index)) getColorStateList(index) ?: defValue else defValue
+
+/**
+ * Get [Int], return [defValue] when not has this value.
+ * @receiver the current typed array from resource.
+ * @param index the attribute resources ID array.
+ * @param defValue the default value, default is null.
+ * @return [Int] or null.
+ */
+@JvmOverloads
+fun TypedArray.getIntegerOrNull(@StyleableRes index: Int, defValue: Int? = null) =
+    if (hasValue(index)) getInteger(index, defValue ?: 0) else defValue
+
+/**
+ * Get [Int], return [defValue] when not has this value.
+ * @receiver the current typed array from resource.
+ * @param index the attribute resources ID array.
+ * @param defValue the default value, default is null.
+ * @return [Int] or null.
+ */
+@JvmOverloads
+fun TypedArray.getIntOrNull(@StyleableRes index: Int, defValue: Int? = null) =
+    if (hasValue(index)) getInt(index, defValue ?: 0) else defValue
+
+/**
+ * Get [CharSequence], return [defValue] when not has this value.
+ * @receiver the current typed array from resource.
+ * @param index the attribute resources ID array.
+ * @param defValue the default value, default is null.
+ * @return [CharSequence] or null.
+ */
+@JvmOverloads
+fun TypedArray.getTextOrNull(@StyleableRes index: Int, defValue: CharSequence? = null) =
+    if (hasValue(index)) getText(index) ?: defValue else defValue
+
+/**
+ * Get [String], return [defValue] when not has this value.
+ * @receiver the current typed array from resource.
+ * @param index the attribute resources ID array.
+ * @param defValue the default value, default is null.
+ * @return [String] or null.
+ */
+@JvmOverloads
+fun TypedArray.getStringOrNull(@StyleableRes index: Int, defValue: String? = null) =
+    if (hasValue(index)) getString(index) ?: defValue else defValue
+
+/**
+ * Get [Boolean], return [defValue] when not has this value.
+ * @receiver the current typed array from resource.
+ * @param index the attribute resources ID array.
+ * @param defValue the default value, default is null.
+ * @return [Boolean] or null.
+ */
+@JvmOverloads
+fun TypedArray.getBooleanOrNull(@StyleableRes index: Int, defValue: Boolean? = null) =
+    if (hasValue(index)) getBoolean(index, defValue ?: false) else defValue
+
+/**
+ * Get [Float], return [defValue] when not has this value.
+ * @receiver the current typed array from resource.
+ * @param index the attribute resources ID array.
+ * @param defValue the default value, default is null.
+ * @return [Float] or null.
+ */
+@JvmOverloads
+fun TypedArray.getFloatOrNull(@StyleableRes index: Int, defValue: Float? = null) =
+    if (hasValue(index)) getFloat(index, defValue ?: 0f) else defValue
+
+/**
+ * Get dimension, return [defValue] when not has this value.
+ * @receiver the current typed array from resource.
+ * @param index the attribute resources ID array.
+ * @param defValue the default value, default is null.
+ * @return [Float] or null.
+ */
+@JvmOverloads
+fun TypedArray.getDimensionOrNull(@StyleableRes index: Int, defValue: Float? = null) =
+    if (hasValue(index)) getDimension(index, defValue ?: 0f) else defValue
+
+/**
+ * Get dimension, return [defValue] when not has this value.
+ * @receiver the current typed array from resource.
+ * @param index the attribute resources ID array.
+ * @param defValue the default value, default is null.
+ * @return [Int] or null.
+ */
+@JvmOverloads
+fun TypedArray.getDimensionPixelSizeOrNull(@StyleableRes index: Int, defValue: Int? = null) =
+    if (hasValue(index)) getDimensionPixelSize(index, defValue ?: 0) else defValue
+
+/**
+ * Get dimension, return [defValue] when not has this value.
+ * @receiver the current typed array from resource.
+ * @param index the attribute resources ID array.
+ * @param defValue the default value, default is null.
+ * @return [Int] or null.
+ */
+@JvmOverloads
+fun TypedArray.getDimensionPixelOffsetOrNull(@StyleableRes index: Int, defValue: Int? = null) =
+    if (hasValue(index)) getDimensionPixelOffset(index, defValue ?: 0) else defValue
+
+/**
+ * Get layout dimension, return [defValue] when not has this value.
+ * @receiver the current typed array from resource.
+ * @param index the attribute resources ID array.
+ * @param defValue the default value, default is null.
+ * @return [Int] or null.
+ */
+@JvmOverloads
+fun TypedArray.getLayoutDimensionOrNull(@StyleableRes index: Int, defValue: Int? = null) =
+    if (hasValue(index)) getLayoutDimension(index, defValue ?: 0) else defValue
+
+/**
+ * Get [Drawable], return [defValue] when not has this value.
+ * @receiver the current typed array from resource.
+ * @param index the attribute resources ID array.
+ * @param defValue the default value, default is null.
+ * @return [Drawable] or null.
+ */
+@JvmOverloads
+fun TypedArray.getDrawableOrNull(@StyleableRes index: Int, defValue: Drawable? = null) =
+    if (hasValue(index)) getDrawable(index) ?: defValue else defValue
+
+/**
+ * Get [Typeface], return [defValue] when not has this value.
+ * @receiver the current typed array from resource.
+ * @param index the attribute resources ID array.
+ * @param defValue the default value, default is null.
+ * @return [Typeface] or null.
+ */
+@RequiresApi(SystemVersion.O)
+@JvmOverloads
+fun TypedArray.getFontOrNull(@StyleableRes index: Int, defValue: Typeface? = null) =
+    if (hasValue(index)) getFont(index) ?: defValue else defValue
 
 /**
  * - This function is deprecated and no effect and will be removed in the future.
@@ -439,17 +594,6 @@ fun TypedArray.getDimensionPx(context: Context, @StyleableRes index: Int, @Px de
 @Suppress("UnusedReceiverParameter", "UNUSED_PARAMETER", "DeprecatedCallableAddReplaceWith")
 @Deprecated(message = "Use toPx or toDp and call getDimension yourself.")
 fun TypedArray.getDimensionPx(view: View, @StyleableRes index: Int, @Px defValue: Float) = 0f
-
-/**
- * Get color, return null when no default value.
- * @receiver the current typed array from resource.
- * @param index the attribute resources ID array.
- * @param defValue the default value, default is null.
- * @return [Int] or null.
- */
-@JvmOverloads
-fun TypedArray.getColorOrNull(@StyleableRes index: Int, @ColorInt defValue: Int? = null) =
-    if (hasValue(index)) getColor(index, defValue ?: Color.TRANSPARENT) else null
 
 /**
  * Obtain [View] attributes.

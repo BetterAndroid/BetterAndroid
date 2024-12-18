@@ -713,6 +713,32 @@ class YourActivity : AppCompatActivity(), DisplayDensity {
 
 [Resources → getColorOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-color-or-null)
 
+[Resources → getColorStateListOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-color-state-list-or-null)
+
+[Resources → getIntegerOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-integer-or-null)
+
+[Resources → getIntOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-int-or-null)
+
+[Resources → getTextOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-text-or-null)
+
+[Resources → getStringOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-string-or-null)
+
+[Resources → getBooleanOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-boolean-or-null)
+
+[Resources → getFloatOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-float-or-null)
+
+[Resources → getDimensionOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-dimension-or-null)
+
+[Resources → getDimensionPixelSizeOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-dimension-pixel-size-or-null)
+
+[Resources → getDimensionPixelOffsetOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-dimension-pixel-offset-or-null)
+
+[Resources → getLayoutDimensionOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-layout-dimension-or-null)
+
+[Resources → getDrawableOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-drawable-or-null)
+
+[Resources → getFontOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-font-or-null)
+
 [Resources → obtainStyledAttributes](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/obtain-styled-attributes)
 
 适用于 `Resources` 的扩展。
@@ -887,6 +913,45 @@ class MyView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 ::: tip
 
 `BetterAndroid` 还为 `TypedArray` 提供了 `getStringArray`、`getIntArray` 以及 `getColorOrNull` 等实用方法，你可以在上方的 **本节内容** 中找到它们。
+
+`TypedArray.get...OrNull` 的作用不同于原始方法的功能，它会首先判断是否存在此属性资源，然后才会返回相关结果，如果不存在则返回默认的 `defValue`，默认为 `null`。
+
+例如 Color 这种属性资源，有的时候我们需要明确确定用户是否设置了此属性，原始的方法只能设置一个非 `null` 的默认值，但是颜色在任何数值上都有作用，此时 **首先判断是否存在此属性资源** 的作用就应运而生。
+
+具体实现方案就是 `val myType = if (value.hasValue(index)) value.get...(..., ...) else ...`，在实际应用中，我们需要自己封装一个这样的做法去实现对应的属性资源调用，显得很繁琐，
+所以现在 `BetterAndroid` 为你提供了这种封装，你可以直接使用如下方式进行操作。
+
+> 示例如下
+
+```xml
+<declare-styleable name="MyView">
+    <attr name="myType" format="color" />
+</declare-styleable>
+```
+
+```xml
+<com.example.MyView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:myType="#FF000000" />
+```
+
+```kotlin
+obtainStyledAttributes(attrs, R.styleable.MyView) {
+    // 如果 "app:myType" 已被声明于 XML 中，则 myType 的值为 0xFF000000，否则为 null
+    val myType = it.getColorOrNull(R.styleable.MyView_myType)
+    // 如果 "app:myType" 已被声明于 XML 中，则 myType 的值为 0xFF000000，否则为 0xFF232323
+    // myType 的值在任何情况下都可能为 null，不建议使用 !! 来绝对确认其不为 null
+    val myType = it.getColorOrNull(R.styleable.MyView_myType, 0xFF232323.toInt())
+    // (推荐) 你可以这样来绝对获得 myType 的值不为 null，保持 defValue 为 null
+    val myType = it.getColorOrNull(R.styleable.MyView_myType) ?: 0xFF232323.toInt()
+    // 或者，你可以在保持 defValue 为 null 时对 myType 为 null 时做出判断
+    // 不为 null 即用户设置了 "app:myType" 属性
+    if (myType != null) {
+        // Your code here.
+    }
+}
+```
 
 :::
 
