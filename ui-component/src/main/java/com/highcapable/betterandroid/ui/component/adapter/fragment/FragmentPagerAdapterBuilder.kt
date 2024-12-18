@@ -31,6 +31,7 @@ import androidx.viewpager.widget.ViewPager
 import com.highcapable.betterandroid.ui.component.adapter.base.IAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.factory.bindFragments
 import com.highcapable.betterandroid.ui.component.adapter.mediator.PagerMediator
+import com.highcapable.betterandroid.ui.extension.component.fragmentManager
 
 /**
  * [FragmentPagerAdapter] builder.
@@ -83,7 +84,7 @@ class FragmentPagerAdapterBuilder private constructor(private val adapterInstanc
     fun onBindFragments(bindFragments: (position: Int) -> Fragment) = apply { onBindFragmentsCallback = bindFragments }
 
     override fun build() = object : FragmentPagerAdapter(
-        (adapterInstance as? Fragment?)?.childFragmentManager ?: (adapterInstance as? FragmentActivity?)?.supportFragmentManager
+        (adapterInstance as? Fragment?)?.fragmentManager() ?: (adapterInstance as? FragmentActivity?)?.fragmentManager()
             ?: error("FragmentPagerAdapter need a FragmentActivity or Fragment instance."), behavior
     ) {
         override fun getPageTitle(position: Int) = PagerMediator(position).let { pagerMediatorsCallback?.invoke(it); it.title }

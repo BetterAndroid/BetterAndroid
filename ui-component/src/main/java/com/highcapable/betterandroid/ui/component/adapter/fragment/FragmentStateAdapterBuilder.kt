@@ -31,6 +31,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.highcapable.betterandroid.ui.component.adapter.base.IAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.factory.bindFragments
+import com.highcapable.betterandroid.ui.extension.component.fragmentManager
 
 /**
  * [FragmentStateAdapter] builder.
@@ -71,7 +72,7 @@ class FragmentStateAdapterBuilder private constructor(private val adapterInstanc
     fun onBindFragments(bindFragments: (position: Int) -> Fragment) = apply { onBindFragmentsCallback = bindFragments }
 
     override fun build() = object : FragmentStateAdapter(
-        (adapterInstance as? Fragment?)?.childFragmentManager ?: (adapterInstance as? FragmentActivity?)?.supportFragmentManager
+        (adapterInstance as? Fragment?)?.fragmentManager() ?: (adapterInstance as? FragmentActivity?)?.fragmentManager()
             ?: error("FragmentStateAdapter need a FragmentActivity or Fragment instance."),
         (adapterInstance as? LifecycleOwner?)?.lifecycle ?: error("FragmentStateAdapter need an implemented instance of LifecycleOwner.")
     ) {
