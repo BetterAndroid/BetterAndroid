@@ -42,6 +42,7 @@ import com.highcapable.betterandroid.ui.extension.component.base.toHexResourceId
 import com.highcapable.betterandroid.ui.extension.graphics.base.BitmapBlurFactory
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileDescriptor
 import java.io.InputStream
 import java.io.OutputStream
 import kotlin.math.sqrt
@@ -59,6 +60,21 @@ import kotlin.math.sqrt
 @JvmOverloads
 fun File.decodeToBitmap(opts: BitmapFactory.Options? = null) =
     decodeToBitmapOrNull(opts) ?: error("Unable to decode file $absolutePath of a bitmap.")
+
+/**
+ * Decode a file descriptor into a bitmap.
+ *
+ * If cannot be decoded into a bitmap, will throw an exception.
+ * @see FileDescriptor.decodeToBitmapOrNull
+ * @receiver [FileDescriptor]
+ * @param outPadding set the padding of this bitmap, default is null.
+ * @param opts the [BitmapFactory.Options], default is null.
+ * @return [Bitmap]
+ * @throws IllegalStateException if the bitmap decode failed.
+ */
+@JvmOverloads
+fun FileDescriptor.decodeToBitmap(outPadding: Rect? = null, opts: BitmapFactory.Options? = null) =
+    decodeToBitmapOrNull(outPadding, opts) ?: error("Unable to decode file descriptor $this of a bitmap.")
 
 /**
  * Decode a stream into a bitmap.
@@ -116,6 +132,19 @@ fun Resources.createBitmap(@DrawableRes resId: Int, opts: BitmapFactory.Options?
 @JvmOverloads
 fun File.decodeToBitmapOrNull(opts: BitmapFactory.Options? = null) =
     runCatching { BitmapFactory.decodeFile(absolutePath, opts) }.getOrNull()
+
+/**
+ * Decode a file descriptor into a bitmap.
+ *
+ * If cannot be decoded into a bitmap, the function returns null.
+ * @receiver [FileDescriptor]
+ * @param outPadding set the padding of this bitmap, default is null, see [BitmapFactory.decodeFileDescriptor].
+ * @param opts the [BitmapFactory.Options], default is null.
+ * @return [Bitmap] or null.
+ */
+@JvmOverloads
+fun FileDescriptor.decodeToBitmapOrNull(outPadding: Rect? = null, opts: BitmapFactory.Options? = null) =
+    runCatching { BitmapFactory.decodeFileDescriptor(this, outPadding, opts) }.getOrNull()
 
 /**
  * Decode a stream into a bitmap.
