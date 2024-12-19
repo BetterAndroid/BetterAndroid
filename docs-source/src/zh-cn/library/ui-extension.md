@@ -1520,6 +1520,8 @@ window.clearScreenBrightness()
 
 [View → removeSelfInLayout](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/remove-self-in-layout)
 
+[View → animate](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/animate)
+
 [View → showIme](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/show-ime)
 
 [View → hideIme](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/hide-ime)
@@ -1632,6 +1634,21 @@ val view: View
 view.removeSelf()
 // 使用 ViewGroup.removeViewInLayout 方法移除自身
 view.removeSelfInLayout()
+```
+
+创建动画。
+
+`BetterAndroid` 为 `View` 提供了 `animate` 方法的 lambda 实现，它将自动调用 `start` 方法，你可以使用它来创建一些简单的动画效果。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 View 对象
+val view: View
+// 创建动画
+view.animate {
+    // Your code here.
+}
 ```
 
 显示或隐藏输入法 (IME)。

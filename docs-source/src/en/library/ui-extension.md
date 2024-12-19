@@ -1572,6 +1572,8 @@ window.clearScreenBrightness()
 
 [View → removeSelfInLayout](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/remove-self-in-layout)
 
+[View → animate](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/animate)
+
 [View → showIme](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/show-ime)
 
 [View → hideIme](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/hide-ime)
@@ -1686,6 +1688,23 @@ val view: View
 view.removeSelf()
 // Use the ViewGroup.removeViewInLayout method to remove itself.
 view.removeSelfInLayout()
+```
+
+Create animations.
+
+`BetterAndroid` provides a lambda implementation of the `animate` method for `View`, which will automatically call the `start` method.
+
+You can use it to create some simple animation effects.
+
+> The following example
+
+```kotlin
+// Assume this is your View.
+val view: View
+// Create animation.
+view.animate {
+    // Your code here.
+}
 ```
 
 Show or hide the input method (IME).

@@ -36,6 +36,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
+import android.view.ViewPropertyAnimator
 import android.view.inputmethod.InputMethodManager
 import android.widget.AbsListView
 import android.widget.FrameLayout
@@ -343,6 +344,13 @@ fun View.showSoftInput() = showIme()
  */
 @Deprecated(message = "Use View.hideIme instead.", ReplaceWith("hideIme()"))
 fun View.hideSoftInput() = hideIme()
+
+/**
+ * Animate the view.
+ * @receiver [View]
+ * @param action the view property animator action.
+ */
+fun View.animate(action: ViewPropertyAnimator.() -> Unit) = animate().apply(action).start()
 
 /**
  * Simulate the key down and up events.
