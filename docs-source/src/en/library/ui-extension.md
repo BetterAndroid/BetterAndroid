@@ -2160,6 +2160,37 @@ editText.setDigits("0123456789", InputType.TYPE_CLASS_NUMBER or InputType.TYPE_N
 editText.setDigits("0123456789", locale = Locale.CHINA)
 ```
 
+### RecyclerView Extension
+
+::: tip Contents of This Section
+
+[RecyclerView → layoutManager](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/layout-manager)
+
+Extensions for `RecyclerView`.
+
+:::
+
+`RecyclerView` is one of the most commonly used list components in Android.
+
+`BetterAndroid` provides some extensions to make it more convenient to use in Kotlin.
+
+Get the `LayoutManager` of `RecyclerView`.
+
+`BetterAndroid` provides a convenient way to get the `LayoutManager`.
+
+Now, you no longer need to get the `layoutManager` of `RecyclerView` and then use `as` to convert it to the corresponding type.
+
+You can directly use the following method to get the `LayoutManager`.
+
+> The following example
+
+```kotlin
+// Assume this is your RecyclerView.
+val recyclerView: RecyclerView
+// Get the LayoutManager of RecyclerView, if the type is incorrect or does not exist, it will return null.
+val layoutManager = recyclerView.layoutManager<LinearLayoutManager>()
+```
+
 ### ViewBinding Extension
 
 ::: tip Contents of This Section

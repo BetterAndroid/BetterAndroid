@@ -2094,6 +2094,31 @@ editText.setDigits("0123456789", InputType.TYPE_CLASS_NUMBER or InputType.TYPE_N
 editText.setDigits("0123456789", locale = Locale.CHINA)
 ```
 
+### RecyclerView 扩展
+
+::: tip 本节内容
+
+[RecyclerView → layoutManager](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/layout-manager)
+
+适用于 `RecyclerView` 的扩展。
+
+:::
+
+`RecyclerView` 是 Android 中最常用的列表组件之一，`BetterAndroid` 为 `RecyclerView` 提供了一些能在 Kotlin 中使用更加方便的扩展功能。
+
+获取 `RecyclerView` 的 `LayoutManager`。
+
+`BetterAndroid` 为你提供了一个方便获取 `LayoutManager` 的方式，现在你不再需要获取到 `RecyclerView` 的 `layoutManager` 后再使用 `as` 转换为对应类型，你可以直接使用以下方式获取 `LayoutManager`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 RecyclerView 对象
+val recyclerView: RecyclerView
+// 获取 RecyclerView 的 LayoutManager，如果类型错误或不存在将会返回 null
+val layoutManager = recyclerView.layoutManager<LinearLayoutManager>()
+```
+
 ### 布局绑定 (ViewBinding) 扩展
 
 ::: tip 本节内容
