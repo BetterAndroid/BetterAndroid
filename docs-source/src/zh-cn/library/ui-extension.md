@@ -155,21 +155,17 @@ val isInMultiWindowMode = activity.isInMultiWindowModeCompat
 
 [Fragment → findFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/find-fragment)
 
-[Fragment → attachToActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/attach-to-activity)
+[Fragment → FragmentTransaction](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/-fragment-transaction)
 
-[Fragment → attachToFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/attach-to-fragment)
+[Fragment → attach](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/attach)
 
-[Fragment → detachFromActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/detach-from-activity)
+[Fragment → detach](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/detach)
 
-[Fragment → detachFromFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/detach-from-fragment)
-
-[Fragment → replaceFromActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/replace-from-activity)
-
-[Fragment → replaceFromFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/replace-from-fragment)
-
-[Fragment → hide](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/hide)
+[Fragment → replace](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/replace)
 
 [Fragment → show](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/show)
+
+[Fragment → hide](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/hide)
 
 适用于 `Fragment` 的扩展。
 
@@ -184,6 +180,8 @@ val isInMultiWindowMode = activity.isInMultiWindowModeCompat
 ::: warning
 
 在 `1.0.2` 及之前版本中的 `commitTransaction` 方法已被弃用，本着 “不重复造轮子” 的原则，请迁移到 `fragment-ktx` 依赖中的 `commit`、`commitNow` 方法。
+
+在 `1.0.5` 及之后的版本中，我们合并了 `...ToActivity`、`...ToFragment` 方法并改进了使用方式，请进行迁移。
 
 :::
 
@@ -240,49 +238,56 @@ val fragment = activity.fragmentManager().findFragment<YourFragment>(R.id.contai
 val fragment = activity.fragmentManager().findFragment<YourFragment>("your_fragment_tag")
 ```
 
-绑定 `Fragment` 到 `FragmentActivity`。
+绑定 `Fragment` 到宿主 (`FragmentActivity` 或 `Fragment`)。
 
 你可以不需要使用类似 `FragmentManger.beginTransaction`...`commit` 的方式进行，现在完成这个操作将会更加简单。
 
 > 示例如下
 
 ```kotlin
-// 假设这就是你的 FragmentActivity
+// 假设这就是你的宿主
 val activity: FragmentActivity
 // 假设这就是你的 Fragment
 val fragment = YourFragment()
 // 绑定 Fragment
-fragment.attachToActivity(activity)
+fragment.attach(activity)
 ```
 
-是的，这样你就完成了全部的绑定操作，在默认情况下，它会将 `Fragment` 绑定到 `Activity` 通过 `setContentView` 设置的布局中。
+是的，这样你就完成了全部的绑定操作，在默认情况下，如果宿主的类型为 `Activity`，它会将 `Fragment` 绑定到 `Activity` 通过 `setContentView` 设置的布局中，
+如果为 `Fragment`，它会将 `Fragment` 绑定到 `Fragment.getView` 的布局中。
 
 如果你需要将其绑定到一个自定义的布局中，你可以使用以下方式。
 
 > 示例如下
 
 ```kotlin
-// 假设这就是你的 FragmentActivity
+// 假设这就是你的宿主
 val activity: FragmentActivity
 // 假设这就是你的 Fragment
 val fragment = YourFragment()
 // 绑定 Fragment 到 ID 为 R.id.container 的布局中
-fragment.attachToActivity(activity, R.id.container)
+fragment.attach(activity, R.id.container)
 ```
 
 如果这个自定义的布局不是通过 ID 得到的，而是一个 `View` 对象，你可以使用以下方式。
 
+::: warning
+
+这个 `View` 对象必须已经添加到正在显示的布局中，并建议为其设置一个 ID，未设置 ID 的 `View` 将会使用 `View.generateViewId` 生成一个 ID。
+
+:::
+
 > 示例如下
 
 ```kotlin
-// 假设这就是你的 FragmentActivity
+// 假设这就是你的宿主
 val activity: FragmentActivity
 // 假设这就是你的 View
 val container: View
 // 假设这就是你的 Fragment
 val fragment = YourFragment()
-// 绑定 Fragment 到 container (这个 View 必须有一个 ID)
-fragment.attachToActivity(activity, view = container)
+// 绑定 Fragment 到 container
+fragment.attach(activity, container)
 ```
 
 你还可以方便地为 `Fragment` 设置绑定时的入场动画。
@@ -290,67 +295,33 @@ fragment.attachToActivity(activity, view = container)
 > 示例如下
 
 ```kotlin
-// 假设这就是你的 FragmentActivity
+// 假设这就是你的宿主
 val activity: FragmentActivity
 // 假设这就是你的 Fragment
 val fragment = YourFragment()
 // 绑定 Fragment 并设置入场动画
-fragment.attachToActivity(
-    activity = activity,
-    viewId = R.id.container,
-    animId = R.anim.slide_in_right // 入场动画
+fragment.attach(
+    host = activity,
+    container = R.id.container,
+    customAnimId = R.anim.slide_in_right // 入场动画
 )
 ```
 
-绑定 `Fragment` 到 `Fragment`。
-
-一个 `Fragment` 也可以绑定到另一个 `Fragment` 中，形成嵌套关系。
-
-此时你只需要把 `attachToActivity` 换成 `attachToFragment` 即可。
-
-> 示例如下
-
-```kotlin
-// 假设这就是你的父 Fragment
-val parentFragment = YourParentFragment()
-// 假设这就是你的 Fragment
-val fragment = YourFragment()
-// 绑定 Fragment
-fragment.attachToFragment(parentFragment)
-```
-
-从 `FragmentActivity` 解绑 `Fragment`。
+从宿主解绑 `Fragment`。
 
 你同样可以非常方便地解绑 `Fragment`。
 
 > 示例如下
 
 ```kotlin
-// 假设这就是你的 FragmentActivity
+// 假设这就是你的宿主
 val activity: FragmentActivity
 // 假设这就是你的 Fragment
 val fragment = YourFragment()
-// 从 FragmentActivity 解绑 Fragment
-fragment.detachFromActivity(activity)
-// 如果你不填写参数，则默认获取当前 Fragment 所在的 Activity
-fragment.detachFromActivity()
-```
-
-从 `Fragment` 解绑 `Fragment`。
-
-此时你只需要把 `detachFromActivity` 换成 `detachFromFragment` 即可。
-
-> 示例如下
-
-```kotlin
-// 假设这就是你的父 Fragment
-val parentFragment = YourParentFragment()
-// 假设这就是你的 Fragment
-val fragment = YourFragment()
-// 从父 Fragment 解绑 Fragment
-fragment.detachFromFragment(parentFragment)
-// 如果你不填写参数，则默认获取当前 Fragment 所在的父 Fragment
-fragment.detachFromFragment()
+// 从宿主解绑 Fragment
+fragment.detach(activity)
+// 如果你不填写参数，则默认获取当前 Fragment 所持有的宿主
+fragment.detach()
 ```
 
 除了绑定，你还能够在同一个绑定的布局中替换掉一个 `Fragment`。
@@ -358,70 +329,59 @@ fragment.detachFromFragment()
 > 示例如下
 
 ```kotlin
-// 假设这就是你的 FragmentActivity
+// 假设这就是你的宿主
 val activity: FragmentActivity
 // 假设这就是你的 Fragment
 val fragment = YourFragment()
 // 替换 Fragment 到 ID 为 R.id.container 的布局中
-fragment.replaceFromActivity(activity, R.id.container)
+fragment.replace(activity, R.id.container)
 ```
 
-在 `Fragment` 中替换 `Fragment`。
-
-此时你只需要把 `replaceFromActivity` 换成 `replaceFromFragment` 即可。
+显示、隐藏当前 `Fragment`。
 
 > 示例如下
 
 ```kotlin
-// 假设这就是你的父 Fragment
-val parentFragment = YourParentFragment()
-// 假设这就是你的 Fragment
-val fragment = YourFragment()
-// 替换 Fragment 到 ID 为 R.id.container 的布局中
-fragment.replaceFromFragment(parentFragment, R.id.container)
-```
-
-隐藏当前 `Fragment`。
-
-> 示例如下
-
-```kotlin
-// 假设这就是你的 FragmentActivity
+// 假设这就是你的宿主
 val activity: FragmentActivity
-// 假设这就是你的父 Fragment
-val parentFragment = YourParentFragment()
 // 假设这就是你的 Fragment
 val fragment = YourFragment()
-// 从 FragmentActivity 隐藏 Fragment
-fragment.hide(activity)
-// 从父 Fragment 隐藏 Fragment
-fragment.hide(fragment = parentFragment)
-// 如果你不填写参数，则默认获取当前 Fragment 所在的父 Fragment 或 Activity
-fragment.hide()
-```
-
-显示当前 `Fragment`。
-
-> 示例如下
-
-```kotlin
-// 假设这就是你的 FragmentActivity
-val activity: FragmentActivity
-// 假设这就是你的父 Fragment
-val parentFragment = YourParentFragment()
-// 假设这就是你的 Fragment
-val fragment = YourFragment()
-// 从 FragmentActivity 显示 Fragment
+// 从宿主显示、隐藏 Fragment
 fragment.show(activity)
-// 从父 Fragment 显示 Fragment
-fragment.show(fragment = parentFragment)
-// 如果你不填写参数，则默认获取当前 Fragment 所在的父 Fragment 或 Activity
+fragment.hide(activity)
+// 如果你不填写参数，则默认获取当前 Fragment 所持有的宿主
 fragment.show()
+fragment.hide()
 ```
 
 ::: tip
 
-任何一个绑定、解绑、替换、显示、隐藏操作都可以被设置过渡动画，你可以在这些方法中找到 `animId`、`enterAnimId` 和 `exitAnimId` 参数，默认将不设置动画效果。
+任何一个绑定、解绑、替换、显示、隐藏操作都可以被设置过渡动画，你可以在这些方法中找到 `customAnimId`、`customEnterAnimId` 和 `customExitAnimId` 参数，默认将不设置动画效果。
+
+在所有事务事件中，这些方法都保留了 `body` 参数，你可以继续在其中执行自己的自定义事务。
+
+`BetterAndroid` 还为你提供了 `FragmentTransaction`，你可以使用此方法创建一个模版，并应用在自己的 `body` 中。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的宿主
+val activity: FragmentActivity
+// 假设这就是你的 Fragment
+val fragment = YourFragment()
+// 绑定 Fragment
+fragment.attach(activity) {
+    // 在这里添加一些额外的事务
+    addSharedElement(view, "shared_element")
+}
+// 创建一个事务模版
+val myTransaction = FragmentTransaction {
+    // 在这里添加一些额外的事务
+    addSharedElement(view, "shared_element")
+}
+// 绑定 Fragment
+fragment.attach(activity, body = myTransaction)
+```
 
 :::
 

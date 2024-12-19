@@ -158,21 +158,17 @@ val isInMultiWindowMode = activity.isInMultiWindowModeCompat
 
 [Fragment → findFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/find-fragment)
 
-[Fragment → attachToActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/attach-to-activity)
+[Fragment → FragmentTransaction](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/-fragment-transaction)
 
-[Fragment → attachToFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/attach-to-fragment)
+[Fragment → attach](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/attach)
 
-[Fragment → detachFromActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/detach-from-activity)
+[Fragment → detach](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/detach)
 
-[Fragment → detachFromFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/detach-from-fragment)
-
-[Fragment → replaceFromActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/replace-from-activity)
-
-[Fragment → replaceFromFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/replace-from-fragment)
-
-[Fragment → hide](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/hide)
+[Fragment → replace](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/replace)
 
 [Fragment → show](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/show)
+
+[Fragment → hide](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/hide)
 
 Extensions for `Fragment`.
 
@@ -189,6 +185,8 @@ In order to simplify `Fragment` related operations, `BetterAndroid` provides som
 The `commitTransaction` method in `1.0.2` and previous versions has been deprecated.
 
 In line with the principle of "not reinventing the wheel", please migrate to the `commit` and `commitNow` methods in the `fragment-ktx` dependency.
+
+Starting from version `1.0.5`, we have merged the `...ToActivity` and `...ToFragment` methods and improved their usage, please migrate accordingly.
 
 :::
 
@@ -245,194 +243,155 @@ val fragment = activity.fragmentManager().findFragment<YourFragment>(R.id.contai
 val fragment = activity.fragmentManager().findFragment<YourFragment>("your_fragment_tag")
 ```
 
-Bind `Fragment` to `FragmentActivity`.
+You can attach a `Fragment` to a host (`FragmentActivity` or `Fragment`) without using `FragmentManager.beginTransaction`...`commit`.
 
-You don't need to use something like `FragmentManger.beginTransaction`...`commit`, it will be easier to complete this operation now.
+This operation is now much simpler.
 
 > The following example
 
 ```kotlin
-// Assume this is your FragmentActivity.
+// Assume this is your host.
 val activity: FragmentActivity
-// Assume this is your fragment.
+// Assume this is your Fragment.
 val fragment = YourFragment()
-// Bind fragment.
-fragment.attachToActivity(activity)
+// Attach Fragment.
+fragment.attach(activity)
 ```
 
-Yes, you have completed all binding operations, by default, it will bind `Fragment` to the layout set by `Activity` through `setContentView`.
+Yes, that's all you need to do to complete the attachment.
 
-If you need to bind it to a custom layout, you can use the following method.
+By default, if the host is an `Activity`, it will attach the `Fragment` to the layout set by `setContentView` in the `Activity`.
+
+If it is a `Fragment`, it will attach the `Fragment` to the layout of `Fragment.getView`.
+
+If you need to attach it to a custom layout, you can use the following method.
 
 > The following example
 
 ```kotlin
-// Assume this is your FragmentActivity.
+// Assume this is your host.
 val activity: FragmentActivity
-// Assume this is your fragment.
+// Assume this is your Fragment.
 val fragment = YourFragment()
-// Bind fragment to the layout with ID R.id.container.
-fragment.attachToActivity(activity, R.id.container)
+// Attach Fragment to a layout with ID R.id.container.
+fragment.attach(activity, R.id.container)
 ```
 
-If this custom layout is not obtained by ID, but is a `View` object, you can use the following method.
+If this custom layout is not obtained by ID but is a `View`, you can use the following method.
+
+::: warning
+
+This `View` must already be added to the currently displayed layout, and it is recommended to set an ID for it.
+
+A `View` without an ID will use `View.generateViewId` to generate an ID.
+
+:::
 
 > The following example
 
 ```kotlin
-// Assume this is your FragmentActivity.
+// Assume this is your host.
 val activity: FragmentActivity
-// Assume this is your view.
+// Assume this is your View.
 val container: View
-// Assume this is your fragment.
+// Assume this is your Fragment.
 val fragment = YourFragment()
-// Bind fragment to container. (this View must have an ID)
-fragment.attachToActivity(activity, view = container)
+// Attach Fragment to container.
+fragment.attach(activity, container)
 ```
 
-You can also easily set the entry animation for `Fragment` when binding.
+You can also easily set an entry animation for the `Fragment` when attaching.
 
 > The following example
 
 ```kotlin
-// Assume this is your FragmentActivity.
+// Assume this is your host.
 val activity: FragmentActivity
-// Assume this is your fragment.
+// Assume this is your Fragment.
 val fragment = YourFragment()
-// Bind fragment and set entry animation.
-fragment.attachToActivity(
-    activity = activity,
-    viewId = R.id.container,
-    animId = R.anim.slide_in_right // Entry animation.
+// Attach Fragment and set entry animation.
+fragment.attach(
+    host = activity,
+    container = R.id.container,
+    customAnimId = R.anim.slide_in_right // Entry animation.
 )
 ```
 
-Bind `Fragment` to `Fragment`.
-
-A `Fragment` can also be bound to another `Fragment` to form a nested relationship.
-
-At this point you only need to replace `attachToActivity` with `attachToFragment`.
+You can also easily detach a `Fragment` from the host.
 
 > The following example
 
 ```kotlin
-// Assume this is your parent fragment.
-val parentFragment = YourParentFragment()
-// Assume this is your fragment.
-val fragment = YourFragment()
-// Bind fragment.
-fragment.attachToFragment(parentFragment)
-```
-
-Unbind `Fragment` from `FragmentActivity`.
-
-You can also unbind `Fragment` very easily.
-
-> The following example
-
-```kotlin
-// Assume this is your FragmentActivity.
+// Assume this is your host.
 val activity: FragmentActivity
-// Assume this is your fragment.
+// Assume this is your Fragment.
 val fragment = YourFragment()
-// Unbind fragment from FragmentActivity.
-fragment.detachFromActivity(activity)
-// If you do not fill in the parameters,
-// the activity where the current fragment is located will be obtained by default.
-fragment.detachFromActivity()
+// Detach Fragment from host.
+fragment.detach(activity)
+// If you do not provide a parameter, it will default to the current host held by the Fragment.
+fragment.detach()
 ```
 
-Unbind `Fragment` from `Fragment`.
-
-At this point you only need to replace `detachFromActivity` with `detachFromFragment`.
+In addition to attaching, you can also replace a `Fragment` in the same attached layout.
 
 > The following example
 
 ```kotlin
-// Assume this is your parent fragment.
-val parentFragment = YourParentFragment()
-// Assume this is your fragment.
-val fragment = YourFragment()
-// Unbind dragment from parent fragment.
-fragment.detachFromFragment(parentFragment)
-// If you do not fill in the parameters,
-// the parent fragment where the current fragment is located will be obtained by default.
-fragment.detachFromFragment()
-```
-
-In addition to bindings, you can also replace a `Fragment` within the same bound layout.
-
-> The following example
-
-```kotlin
-// Assume this is your FragmentActivity.
+// Assume this is your host.
 val activity: FragmentActivity
-// Assume this is your fragment.
+// Assume this is your Fragment.
 val fragment = YourFragment()
-// Replace fragment into the layout with ID R.id.container.
-fragment.replaceFromActivity(activity, R.id.container)
+// Replace Fragment in a layout with ID R.id.container.
+fragment.replace(activity, R.id.container)
 ```
 
-Replace `Fragment` in `Fragment`.
-
-At this point you only need to replace `replaceFromActivity` with `replaceFromFragment`.
+Show or hide a `Fragment`.
 
 > The following example
 
 ```kotlin
-// Assume this is your parent fragment.
-val parentFragment = YourParentFragment()
-// Assume this is your fragment.
-val fragment = YourFragment()
-// Replace fragment into the layout with ID R.id.container.
-fragment.replaceFromFragment(parentFragment, R.id.container)
-```
-
-Hide the current `Fragment`.
-
-> The following example
-
-```kotlin
-// Assume this is your FragmentActivity.
+// Assume this is your host.
 val activity: FragmentActivity
-// Assume this is your parent fragment.
-val parentFragment = YourParentFragment()
-// Assume this is your fragment.
+// Assume this is your Fragment.
 val fragment = YourFragment()
-// Hide dragment from FragmentActivity.
-fragment.hide(activity)
-// Hide fragment from parent fragment.
-fragment.hide(fragment = parentFragment)
-// If you do not fill in the parameters,
-// the parent fragment or activity where the current fragment is located will be obtained by default.
-fragment.hide()
-```
-
-Show the current `Fragment`.
-
-> The following example
-
-```kotlin
-// Assume this is your FragmentActivity.
-val activity: FragmentActivity
-// Assume this is your parent fragment.
-val parentFragment = YourParentFragment()
-// Assume this is your fragment.
-val fragment = YourFragment()
-// Show fragment from FragmentActivity.
+// Show/Hide Fragment from host.
 fragment.show(activity)
-// Show fragment from parent fragment.
-fragment.show(fragment = parentFragment)
-// If you do not fill in the parameters,
-// the parent fragment or activity where the current fragment is located will be obtained by default.
+fragment.hide(activity)
+// If you do not provide a parameter, it will default to the current host held by the Fragment.
 fragment.show()
+fragment.hide()
 ```
 
 ::: tip
 
-Any binding, unbinding, replacement, showing, or hiding operation can be set up with a transition animation.
+Any attach, detach, replace, show, or hide operation can be set with transition animations.
 
-You can find the `animId`, `enterAnimId` and `exitAnimId` parameters in these methods, by default, no animation will be set.
+You can find `customAnimId`, `customEnterAnimId`, and `customExitAnimId` parameters in these methods, which by default will not set any animation effects.
+
+In all transaction events, these methods retain the `body` parameter, allowing you to continue executing your custom transactions.
+
+`BetterAndroid` also provides `FragmentTransaction`, which you can use to create a template and apply it in your `body`.
+
+> The following example
+
+```kotlin
+// Assume this is your host.
+val activity: FragmentActivity
+// Assume this is your Fragment.
+val fragment = YourFragment()
+// Attach Fragment.
+fragment.attach(activity) {
+    // Add some extra transactions here.
+    addSharedElement(view, "shared_element")
+}
+// Create a transaction template.
+val myTransaction = FragmentTransaction {
+    // Add some extra transactions here.
+    addSharedElement(view, "shared_element")
+}
+// Attach Fragment.
+fragment.attach(activity, body = myTransaction)
+```
 
 :::
 

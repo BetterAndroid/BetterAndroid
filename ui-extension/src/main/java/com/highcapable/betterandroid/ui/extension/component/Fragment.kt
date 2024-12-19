@@ -19,12 +19,11 @@
  *
  * This file is created by fankes on 2022/11/24.
  */
-@file:Suppress("unused")
+@file:Suppress("unused", "FunctionName")
 @file:JvmName("FragmentUtils")
 
 package com.highcapable.betterandroid.ui.extension.component
 
-import android.app.Activity
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -36,6 +35,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.fragment.app.commitNow
+import androidx.lifecycle.LifecycleOwner
 import com.highcapable.betterandroid.ui.extension.generated.BetterAndroidProperties
 import com.highcapable.betterandroid.ui.extension.view.firstChildOrNull
 import android.R as Android_R
@@ -81,141 +81,313 @@ inline fun <reified T : Fragment> FragmentManager.findFragment(@IdRes id: Int) =
 inline fun <reified T : Fragment> FragmentManager.findFragment(tag: String) = findFragmentByTag(tag) as? T?
 
 /**
- * Attach [Fragment] to [FragmentActivity].
- * @param activity the [FragmentActivity] that needs to be bound to.
- * @param viewId the container view id that needs to be bound to.
- * @param view the container that needs to be bound to, default is [Activity.requireRootView].
- * @param animId the [Fragment] transition animation.
- * @param tag the [Fragment] tag, default is [System.currentTimeMillis].
- * @param addToBackStack whether to add to back stack name, default is null.
- * @param runOnCommit the commit [Runnable], default is null.
- * @param allowStateLoss whether to allow state loss, default true.
- * @throws IllegalStateException if [view] is null.
+ * Create a [FragmentTransaction] body.
+ * @param body the [FragmentTransaction] body.
+ * @return [FragmentTransaction] body.
+ */
+fun FragmentTransaction(body: FragmentTransaction.() -> Unit) = body
+
+/**
+ * Attach [Fragment] to a host.
+ * @receiver the [Fragment] that needs to be bound to.
+ * @param host the host that needs to be bound to, must be [FragmentActivity] or [Fragment].
+ * @param container the container view that needs to be bound to, must be a [View] or view id ([Int]),
+ * default is get the root view from [host].
+ * @param tag the [Fragment] tag, default is random tag.
+ * @param customAnimId the [Fragment] transition animation, see [FragmentTransaction.setCustomAnimations].
+ * @param allowStateLoss whether to allow state loss, default is true.
+ * @param body the commit [FragmentTransaction] body.
+ * @throws IllegalStateException if [host] or [container] unresolved.
  */
 @JvmOverloads
-fun Fragment.attachToActivity(
-    activity: FragmentActivity,
-    @IdRes viewId: Int = View.NO_ID,
-    view: View? = activity.requireRootView(),
-    @AnimRes animId: Int = 0,
-    tag: String = System.currentTimeMillis().toString(),
-    addToBackStack: String? = null,
-    runOnCommit: Runnable? = null,
-    allowStateLoss: Boolean = true
+fun Fragment.attach(
+    host: LifecycleOwner,
+    container: Any? = null,
+    tag: String = generateRandomTag(),
+    @AnimRes customAnimId: Int? = null,
+    allowStateLoss: Boolean = true,
+    body: FragmentTransaction.() -> Unit = {}
 ) {
-    activity.fragmentManager().commit(allowStateLoss) {
-        setCustomAnimations(animId, 0)
-        add(viewId.takeIf { it != View.NO_ID } ?: view?.id ?: error("Fragment need attached to a view."), this@attachToActivity, tag)
-        addToBackStack?.also { addToBackStack(it) }
-        runOnCommit?.also { runOnCommit(it) }
+    host.fragmentManager().commit(allowStateLoss) {
+        val containerViewId = container.resolveFragmentContainer(host.requireRootView())
+        customAnimId?.also { setCustomAnimations(it, 0) }
+        add(containerViewId, this@attach, tag)
+        body()
     }
 }
 
 /**
- * Attach child [Fragment] to [Fragment].
- * @param fragment the [Fragment] that needs to be bound to.
- * @param viewId the container view id that needs to be bound to.
- * @param view the container that needs to be bound to, default is [Fragment.requireRootView].
- * @param animId the [Fragment] transition animation.
- * @param tag the [Fragment] tag, default is [System.currentTimeMillis].
- * @param addToBackStack whether to add to back stack name, default is null.
- * @param runOnCommit the commit [Runnable], default is null.
- * @param allowStateLoss whether to allow state loss, default true.
- * @throws IllegalStateException if [view] is null.
+ * Use the current [Fragment] from host to replace the existing one.
+ * @receiver the [Fragment] that needs to be replace to.
+ * @param host the host that needs to be replace to, must be [FragmentActivity] or [Fragment].
+ * @param container the container view that needs to be replace to, must be a [View] or view id ([Int]),
+ * default is get the root view from [host].
+ * @param tag the [Fragment] tag, default is random tag.
+ * @param customEnterAnimId the [Fragment] transition enter animation, see [FragmentTransaction.setCustomAnimations].
+ * @param customExitAnimId the [Fragment] transition exit animation, see [FragmentTransaction.setCustomAnimations].
+ * @param allowStateLoss whether to allow state loss, default is true.
+ * @param body the commit [FragmentTransaction] body.
+ * @throws IllegalStateException if [host] or [container] unresolved.
  */
 @JvmOverloads
-fun Fragment.attachToFragment(
-    fragment: Fragment,
-    @IdRes viewId: Int = View.NO_ID,
-    view: View? = fragment.requireRootView(),
-    @AnimRes animId: Int = 0,
-    tag: String = System.currentTimeMillis().toString(),
-    addToBackStack: String? = null,
-    runOnCommit: Runnable? = null,
-    allowStateLoss: Boolean = true
+fun Fragment.replace(
+    host: LifecycleOwner,
+    container: Any? = null,
+    tag: String = generateRandomTag(),
+    @AnimRes customEnterAnimId: Int? = null,
+    @AnimRes customExitAnimId: Int? = null,
+    allowStateLoss: Boolean = true,
+    body: FragmentTransaction.() -> Unit = {}
 ) {
-    fragment.fragmentManager().commit(allowStateLoss) {
-        setCustomAnimations(animId, 0)
-        add(viewId.takeIf { it != View.NO_ID } ?: view?.id ?: error("Fragment need attached to a view."), this@attachToFragment, tag)
-        addToBackStack?.also { addToBackStack(it) }
-        runOnCommit?.also { runOnCommit(it) }
-    }
-}
-
-/**
- * Use the current [Fragment] from [FragmentActivity] to replace the existing one.
- * @param activity the [FragmentActivity] that needs to be replace to.
- * @param viewId the container view id that needs to be replace to.
- * @param view the container that needs to be replace to, default is [Activity.requireRootView].
- * @param enterAnimId the [Fragment] enter transition animation.
- * @param exitAnimId the [Fragment] exit transition animation.
- * @param tag the [Fragment] tag, default is [System.currentTimeMillis].
- * @param addToBackStack whether to add to back stack name, default is null.
- * @param runOnCommit the commit [Runnable], default is null.
- * @param allowStateLoss whether to allow state loss, default true.
- * @throws IllegalStateException if [view] is null.
- */
-@JvmOverloads
-fun Fragment.replaceFromActivity(
-    activity: FragmentActivity,
-    @IdRes viewId: Int = View.NO_ID,
-    view: View? = activity.requireRootView(),
-    @AnimRes enterAnimId: Int = 0,
-    @AnimRes exitAnimId: Int = 0,
-    tag: String = System.currentTimeMillis().toString(),
-    addToBackStack: String? = null,
-    runOnCommit: Runnable? = null,
-    allowStateLoss: Boolean = true
-) {
-    activity.fragmentManager().commit(allowStateLoss) {
-        setCustomAnimations(enterAnimId, exitAnimId)
-        replace(viewId.takeIf { it != View.NO_ID } ?: view?.id ?: error("Fragment need attached to a view."), this@replaceFromActivity, tag)
-        addToBackStack?.also { addToBackStack(it) }
-        runOnCommit?.also { runOnCommit(it) }
-    }
-}
-
-/**
- * Use the current child [Fragment] from [Fragment] to replace the existing one.
- * @param fragment the [Fragment] that needs to be replace to.
- * @param viewId the container view id that needs to be replace to.
- * @param view the container that needs to be replace to, default is [Fragment.requireRootView].
- * @param enterAnimId the [Fragment] enter transition animation.
- * @param exitAnimId the [Fragment] exit transition animation.
- * @param tag the [Fragment] tag, default is [System.currentTimeMillis].
- * @param addToBackStack whether to add to back stack name, default is null.
- * @param runOnCommit the commit [Runnable], default is null.
- * @param allowStateLoss whether to allow state loss, default true.
- * @throws IllegalStateException if [view] is null.
- */
-@JvmOverloads
-fun Fragment.replaceFromFragment(
-    fragment: Fragment,
-    @IdRes viewId: Int = View.NO_ID,
-    view: View? = fragment.requireRootView(),
-    @AnimRes enterAnimId: Int = 0,
-    @AnimRes exitAnimId: Int = 0,
-    tag: String = System.currentTimeMillis().toString(),
-    addToBackStack: String? = null,
-    runOnCommit: Runnable? = null,
-    allowStateLoss: Boolean = true
-) {
-    fragment.fragmentManager().commit(allowStateLoss) {
-        setCustomAnimations(enterAnimId, exitAnimId)
-        replace(viewId.takeIf { it != View.NO_ID } ?: view?.id ?: error("Fragment need attached to a view."), this@replaceFromFragment, tag)
-        addToBackStack?.also { addToBackStack(it) }
-        runOnCommit?.also { runOnCommit(it) }
+    host.fragmentManager().commit(allowStateLoss) {
+        val containerViewId = container.resolveFragmentContainer(host.requireRootView())
+        if (customEnterAnimId != null || customExitAnimId != null)
+            setCustomAnimations(customEnterAnimId ?: 0, customExitAnimId ?: 0)
+        replace(containerViewId, this@replace, tag)
+        body()
     }
 }
 
 /**
  * Show the current [Fragment].
- * @param activity the current [FragmentActivity], default is [Fragment.getActivity].
- * @param fragment the current parent [Fragment], default is [Fragment.getParentFragment].
- * @param animId the [Fragment] transition animation.
- * @param runOnCommit the commit [Runnable], default is null.
- * @param allowStateLoss whether to allow state loss, default true.
+ *
+ * If [Fragment.isAdded] returns false, this function will no effect.
+ * @receiver the current [Fragment].
+ * @param host the current host of this [Fragment], must be [FragmentActivity] or [Fragment],
+ * default is current [Fragment.parentFragment] or [Fragment.requireActivity].
+ * @param customAnimId the [Fragment] transition animation.
+ * @param allowStateLoss whether to allow state loss, default is true.
+ * @param body the commit [FragmentTransaction] body.
  */
+@JvmOverloads
+fun Fragment.show(
+    host: LifecycleOwner = parentFragment ?: requireActivity(),
+    @AnimRes customAnimId: Int? = null,
+    allowStateLoss: Boolean = true,
+    body: FragmentTransaction.() -> Unit = {}
+) {
+    if (!checkIsAdded(action = "show")) return
+    host.fragmentManager().commit(allowStateLoss) {
+        customAnimId?.also { setCustomAnimations(it, 0) }
+        show(this@show)
+        body()
+    }
+}
+
+/**
+ * Hide the current [Fragment].
+ *
+ * If [Fragment.isAdded] returns false, this function will no effect.
+ * @receiver the current [Fragment].
+ * @param host the current host of this [Fragment], must be [FragmentActivity] or [Fragment],
+ * default is current [Fragment.parentFragment] or [Fragment.requireActivity].
+ * @param customAnimId the [Fragment] transition animation.
+ * @param allowStateLoss whether to allow state loss, default is true.
+ * @param body the commit [FragmentTransaction] body.
+ */
+@JvmOverloads
+fun Fragment.hide(
+    host: LifecycleOwner = parentFragment ?: requireActivity(),
+    @AnimRes customAnimId: Int? = null,
+    allowStateLoss: Boolean = true,
+    body: FragmentTransaction.() -> Unit = {}
+) {
+    if (!checkIsAdded(action = "hide")) return
+    host.fragmentManager().commit(allowStateLoss) {
+        customAnimId?.also { setCustomAnimations(it, 0) }
+        hide(this@hide)
+        body()
+    }
+}
+
+/**
+ * Detach and remove [Fragment] from host.
+ *
+ * If [Fragment.isAdded] returns false, this function will no effect.
+ * @receiver the [Fragment] that needs to be removed.
+ * @param host the current host of this [Fragment], must be [FragmentActivity] or [Fragment],
+ * default is current [Fragment.parentFragment] or [Fragment.requireActivity].
+ * @param customAnimId the [Fragment] transition animation.
+ * @param allowStateLoss whether to allow state loss, default is true.
+ * @param body the commit [FragmentTransaction] body.
+ */
+@JvmOverloads
+fun Fragment.detach(
+    host: LifecycleOwner = parentFragment ?: requireActivity(),
+    @AnimRes customAnimId: Int? = null,
+    allowStateLoss: Boolean = true,
+    body: FragmentTransaction.() -> Unit = {}
+) {
+    if (!checkIsAdded(action = "detach")) return
+    host.fragmentManager().commit(allowStateLoss) {
+        customAnimId?.also { setCustomAnimations(0, it) }
+        remove(this@detach)
+        body()
+    }
+}
+
+/**
+ * Get the [FragmentManager] from [FragmentActivity] or [Fragment].
+ * @receiver the current [FragmentActivity] or [Fragment].
+ * @return [FragmentManager]
+ * @throws IllegalStateException if the host type is not [FragmentActivity] or [Fragment].
+ */
+private fun LifecycleOwner.fragmentManager() = when (this) {
+    is FragmentActivity -> fragmentManager()
+    is Fragment -> fragmentManager()
+    else -> error("The host type must be FragmentActivity or Fragment, but got ${this.javaClass}.")
+}
+
+/**
+ * Get the root view from current host.
+ * @receiver the current [LifecycleOwner].
+ * @return [ViewGroup]
+ */
+private fun LifecycleOwner.requireRootView() = when (this) {
+    is FragmentActivity -> findViewById<ViewGroup>(Android_R.id.content)?.let {
+        it.firstChildOrNull<ViewGroup>()?.apply { if (id == View.NO_ID) id = View.generateViewId() } ?: it
+    } ?: error("FragmentActivity require a root view that is a ViewGroup, also tried android.R.id.content.")
+    is Fragment -> (requireView() as? ViewGroup?)?.apply { if (id == View.NO_ID) id = View.generateViewId() }
+        ?: error("Fragment require a root view that is a ViewGroup.")
+    else -> error("The host type must be FragmentActivity or Fragment, but got ${this.javaClass}.")
+}
+
+/**
+ * Resolve the [Fragment] container view id.
+ * @receiver the container that needs to be bound to.
+ * @param default the default container view.
+ * @return [Int] container view id.
+ * @throws IllegalStateException if the container view is not resolved.
+ */
+private fun Any?.resolveFragmentContainer(default: View): Int {
+    val containerViewId = when (this) {
+        is Int -> this
+        is View -> this.apply {
+            // If the view id is not set, generate a new id.
+            if (id == View.NO_ID) id = View.generateViewId()
+        }.id
+        null -> default.id
+        else -> error("The container view type must be Int or View, but got ${this.javaClass}.")
+    }.takeIf { it != View.NO_ID }
+    return containerViewId ?: error("Fragment needs to be attached to an existing view.")
+}
+
+/**
+ * Check if the [Fragment] is added to the host.
+ * @receiver the current [Fragment].
+ * @param action the action name.
+ * @return [Boolean]
+ */
+private fun Fragment.checkIsAdded(action: String): Boolean {
+    val mIsAdded = isAdded
+    if (!mIsAdded) Log.w(BetterAndroidProperties.PROJECT_NAME, "[$action] Fragment $this is not added to the host.")
+    return mIsAdded
+}
+
+/**
+ * Generate a random tag for [Fragment].
+ * @receiver the current fragment.
+ * @return [String] random tag.
+ */
+internal fun Fragment.generateRandomTag() = "${this}_${System.currentTimeMillis()}_${(999..9999).random()}"
+
+// The following functions are deprecated, you should not use them.
+
+/**
+ * Attach [Fragment] to [FragmentActivity].
+ *
+ * - This function is deprecated and no effect, use [Fragment.attach] instead.
+ * @see Fragment.attach
+ */
+@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
+@Deprecated(message = "Use Fragment.attach instead.")
+@JvmOverloads
+fun Fragment.attachToActivity(
+    activity: FragmentActivity,
+    @IdRes viewId: Int = View.NO_ID,
+    view: View? = null,
+    @AnimRes animId: Int = 0,
+    tag: String = System.currentTimeMillis().toString(),
+    addToBackStack: String? = null,
+    runOnCommit: Runnable? = null,
+    allowStateLoss: Boolean = true
+) {
+}
+
+/**
+ * Attach child [Fragment] to [Fragment].
+ *
+ * - This function is deprecated and no effect, use [Fragment.attach] instead.
+ * @see Fragment.attach
+ */
+@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
+@Deprecated(message = "Use Fragment.attach instead.")
+@JvmOverloads
+fun Fragment.attachToFragment(
+    fragment: Fragment,
+    @IdRes viewId: Int = View.NO_ID,
+    view: View? = null,
+    @AnimRes animId: Int = 0,
+    tag: String = System.currentTimeMillis().toString(),
+    addToBackStack: String? = null,
+    runOnCommit: Runnable? = null,
+    allowStateLoss: Boolean = true
+) {
+}
+
+/**
+ * Use the current [Fragment] from [FragmentActivity] to replace the existing one.
+ *
+ * - This function is deprecated and no effect, use [Fragment.replace] instead.
+ * @see Fragment.replace
+ */
+@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
+@Deprecated(message = "Use Fragment.replace instead.")
+@JvmOverloads
+fun Fragment.replaceFromActivity(
+    activity: FragmentActivity,
+    @IdRes viewId: Int = View.NO_ID,
+    view: View? = null,
+    @AnimRes enterAnimId: Int = 0,
+    @AnimRes exitAnimId: Int = 0,
+    tag: String = System.currentTimeMillis().toString(),
+    addToBackStack: String? = null,
+    runOnCommit: Runnable? = null,
+    allowStateLoss: Boolean = true
+) {
+}
+
+/**
+ * Use the current child [Fragment] from [Fragment] to replace the existing one.
+ *
+ * - This function is deprecated and no effect, use [Fragment.replace] instead.
+ * @see Fragment.replace
+ */
+@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
+@Deprecated(message = "Use Fragment.replace instead.")
+@JvmOverloads
+fun Fragment.replaceFromFragment(
+    fragment: Fragment,
+    @IdRes viewId: Int = View.NO_ID,
+    view: View? = null,
+    @AnimRes enterAnimId: Int = 0,
+    @AnimRes exitAnimId: Int = 0,
+    tag: String = System.currentTimeMillis().toString(),
+    addToBackStack: String? = null,
+    runOnCommit: Runnable? = null,
+    allowStateLoss: Boolean = true
+) {
+}
+
+/**
+ * Show the current [Fragment].
+ *
+ * - This function is deprecated and no effect, use [Fragment.show] instead.
+ * @see Fragment.show
+ */
+@Suppress("UNUSED_PARAMETER")
+@Deprecated(message = "Use Fragment.show instead.")
+@JvmName("show_Deprecated")
 @JvmOverloads
 fun Fragment.show(
     activity: FragmentActivity? = getActivity(),
@@ -224,25 +396,17 @@ fun Fragment.show(
     runOnCommit: Runnable? = null,
     allowStateLoss: Boolean = true
 ) {
-    /** Begin. */
-    fun FragmentTransaction.begin() {
-        setCustomAnimations(animId, 0)
-        show(this@show)
-        runOnCommit?.also { runOnCommit(it) }
-    }
-    fragment?.fragmentManager()?.commit(allowStateLoss) { begin() }
-        ?: activity?.fragmentManager()?.commit(allowStateLoss) { begin() }
-        ?: Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to show Fragment $this, FragmentActivity or parent Fragment is null.")
 }
 
 /**
  * Hide the current [Fragment].
- * @param activity the current [FragmentActivity], default is [Fragment.getActivity].
- * @param fragment the current parent [Fragment], default is [Fragment.getParentFragment].
- * @param animId the [Fragment] transition animation.
- * @param runOnCommit the commit [Runnable], default is null.
- * @param allowStateLoss whether to allow state loss, default true.
+ *
+ * - This function is deprecated and no effect, use [Fragment.hide] instead.
+ * @see Fragment.hide
  */
+@Suppress("UNUSED_PARAMETER")
+@Deprecated(message = "Use Fragment.hide instead.")
+@JvmName("hide_Deprecated")
 @JvmOverloads
 fun Fragment.hide(
     activity: FragmentActivity? = getActivity(),
@@ -251,24 +415,16 @@ fun Fragment.hide(
     runOnCommit: Runnable? = null,
     allowStateLoss: Boolean = true
 ) {
-    /** Begin. */
-    fun FragmentTransaction.begin() {
-        setCustomAnimations(0, animId)
-        hide(this@hide)
-        runOnCommit?.also { runOnCommit(it) }
-    }
-    fragment?.fragmentManager()?.commit(allowStateLoss) { begin() }
-        ?: activity?.fragmentManager()?.commit(allowStateLoss) { begin() }
-        ?: Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to hide Fragment $this, FragmentActivity or parent Fragment is null.")
 }
 
 /**
  * Detach and remove [Fragment] from [FragmentActivity].
- * @param activity the current [FragmentActivity], default is [Fragment.getActivity].
- * @param animId the [Fragment] transition animation.
- * @param runOnCommit the commit [Runnable], default is null.
- * @param allowStateLoss whether to allow state loss, default true.
+ *
+ * - This function is deprecated and no effect, use [Fragment.detach] instead.
+ * @see Fragment.detach
  */
+@Suppress("UNUSED_PARAMETER")
+@Deprecated(message = "Use Fragment.detach instead.")
 @JvmOverloads
 fun Fragment.detachFromActivity(
     activity: FragmentActivity? = getActivity(),
@@ -276,20 +432,16 @@ fun Fragment.detachFromActivity(
     runOnCommit: Runnable? = null,
     allowStateLoss: Boolean = true
 ) {
-    activity?.fragmentManager()?.commit(allowStateLoss) {
-        setCustomAnimations(0, animId)
-        remove(this@detachFromActivity)
-        runOnCommit?.also { runOnCommit(it) }
-    } ?: Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to remove Fragment $this, FragmentActivity is null.")
 }
 
 /**
  * Detach and remove child [Fragment] from [Fragment].
- * @param fragment the current parent [Fragment], default is [Fragment.getParentFragment].
- * @param animId the [Fragment] transition animation.
- * @param runOnCommit the commit [Runnable], default is null.
- * @param allowStateLoss whether to allow state loss, default true.
+ *
+ * - This function is deprecated and no effect, use [Fragment.detach] instead.
+ * @see Fragment.detach
  */
+@Suppress("UNUSED_PARAMETER")
+@Deprecated(message = "Use Fragment.detach instead.")
 @JvmOverloads
 fun Fragment.detachFromFragment(
     fragment: Fragment? = parentFragment,
@@ -297,34 +449,7 @@ fun Fragment.detachFromFragment(
     runOnCommit: Runnable? = null,
     allowStateLoss: Boolean = true
 ) {
-    fragment?.fragmentManager()?.commit(allowStateLoss) {
-        setCustomAnimations(0, animId)
-        remove(this@detachFromFragment)
-        runOnCommit?.also { runOnCommit(it) }
-    } ?: Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to remove Fragment $this, parent Fragment is null.")
 }
-
-/**
- * Get the root view from current activity.
- * @receiver the current activity.
- * @return [ViewGroup]
- */
-private fun Activity.requireRootView() = findViewById<ViewGroup>(Android_R.id.content).let {
-    it.firstChildOrNull<ViewGroup>()?.apply { if (id == View.NO_ID) id = View.generateViewId() } ?: it
-}
-
-/**
- * Get the root view from current fragment.
- *
- * If the view is no id, it will be add a random id.
- * @receiver the current fragment.
- * @return [ViewGroup]
- * @throws IllegalStateException if the root view is not a [ViewGroup].
- */
-private fun Fragment.requireRootView() = (requireView() as? ViewGroup?)?.apply { if (id == View.NO_ID) id = View.generateViewId() }
-    ?: error("Fragment require a root view that is a ViewGroup.")
-
-// The following functions are deprecated, you should not use them.
 
 /**
  * Start a [Fragment] transaction and commit.
@@ -409,13 +534,13 @@ inline fun <reified T : Fragment> Fragment.findFragment(tag: String) = fragmentM
  *
  * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
  */
-@Suppress("UNUSED_PARAMETER")
+@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
 @Deprecated(message = "No effect and will be removed in the future.")
 @JvmOverloads
 fun FragmentActivity.attachFragments(
     vararg fragments: Fragment,
     @IdRes viewId: Int = View.NO_ID,
-    view: View? = requireRootView(),
+    view: View? = null,
     @AnimRes beginAnimResId: Int = 0,
     @AnimRes finishAnimResId: Int = 0,
     tag: String = System.currentTimeMillis().toString(),
@@ -429,13 +554,13 @@ fun FragmentActivity.attachFragments(
  *
  * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
  */
-@Suppress("UNUSED_PARAMETER")
+@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
 @Deprecated(message = "No effect and will be removed in the future.")
 @JvmOverloads
 fun Fragment.attachFragments(
     vararg fragments: Fragment,
     @IdRes viewId: Int = View.NO_ID,
-    view: View? = requireRootView(),
+    view: View? = null,
     @AnimRes beginAnimResId: Int = 0,
     @AnimRes finishAnimResId: Int = 0,
     tag: String = System.currentTimeMillis().toString(),
