@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2023/10/25.
  */
-@file:Suppress("unused", "FunctionName", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
+@file:Suppress("unused", "FunctionName", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE", "EXTENSION_SHADOWED_BY_MEMBER")
 @file:JvmName("ViewUtils")
 
 package com.highcapable.betterandroid.ui.extension.view
@@ -67,6 +67,30 @@ val View.location
         getLocationInWindow(locations)
         Point(locations[0], locations[1])
     }.getOrNull() ?: Point()
+
+/**
+ * Get the view's tag.
+ * @receiver [View]
+ * @return [T] or null.
+ */
+inline fun <reified T> View.tag() = tag as? T?
+
+/**
+ * Get the view's tag.
+ * @receiver [View]
+ * @param key the key name.
+ * @param default the default value.
+ * @return [T]
+ */
+inline fun <reified T> View.getTag(key: Int, default: T) = getTag<T>(key) ?: default
+
+/**
+ * Get the view's tag.
+ * @receiver [View]
+ * @param key the key name.
+ * @return [T] or null.
+ */
+inline fun <reified T> View.getTag(key: Int) = getTag(key) as? T?
 
 /**
  * Get the view's parent view [VG].

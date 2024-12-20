@@ -1552,6 +1552,10 @@ window.clearScreenBrightness()
 
 [View → location](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/location)
 
+[View → tag](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/tag)
+
+[View → getTag](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/get-tag)
+
 [View → parent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/parent)
 
 [View → parentOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/parent-or-null)
@@ -1625,6 +1629,29 @@ val location = view.location
 val x = location.x
 // Y coordinate.
 val y = location.y
+```
+
+Get the tag of the current `View`.
+
+In traditional writing, we need to use `View.getTag` to get the tag object, and then use `as` to convert it to the type we need.
+
+This way of writing seems very cumbersome, so `BetterAndroid` provides a simpler way for this.
+
+> The following example
+
+```kotlin
+// Assume this is your View object.
+val view: View
+// Specify the type of the tag (if the type is known and determined).
+// The return result can be null.
+val tag = view.tag<String>()
+// Specify the type and ID of the tag (if the type is known and determined).
+// The return result can be null.
+val tag = view.getTag<String>(R.id.my_tag)
+// Specify the type and ID of the tag and set a default value (if the type is known and determined).
+// The return result will not be null,
+// if the type is incorrect or the tag does not exist, the default value will be returned.
+val tag = view.getTag<String>(R.id.my_tag, "Hello World!")
 ```
 
 Get the parent layout of the current `View`.

@@ -1500,6 +1500,10 @@ window.clearScreenBrightness()
 
 [View → location](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/location)
 
+[View → tag](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/tag)
+
+[View → getTag](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/get-tag)
+
 [View → parent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/parent)
 
 [View → parentOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/parent-or-null)
@@ -1573,6 +1577,28 @@ val location = view.location
 val x = location.x
 // Y 坐标
 val y = location.y
+```
+
+获取当前 `View` 的标签 (Tag)。
+
+在传统写法中，我们需要使用 `View.getTag` 获取到标签对象，然后使用 `as` 转换为我们需要的类型。
+
+这种写法看起来非常麻烦，于是 `BetterAndroid` 为此提供了一个更加简单的方式。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 View 对象
+val view: View
+// 指定标签的类型 (如果类型是已知且确定的)
+// 返回结果可为 null
+val tag = view.tag<String>()
+// 指定标签的类型和 ID (如果类型是已知且确定的)
+// 返回结果可为 null
+val tag = view.getTag<String>(R.id.my_tag)
+// 指定标签的类型和 ID 并设置默认值 (如果类型是已知且确定的)
+// 返回结果不会为 null，如果类型错误或标签不存在，将会返回默认值
+val tag = view.getTag<String>(R.id.my_tag, "Hello World!")
 ```
 
 获取当前 `View` 的父布局。
