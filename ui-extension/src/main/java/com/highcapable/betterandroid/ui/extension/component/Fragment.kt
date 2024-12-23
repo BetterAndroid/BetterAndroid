@@ -194,7 +194,7 @@ fun Fragment.hide(
 ) {
     if (!checkIsAdded(action = "hide")) return
     host.fragmentManager().commit(allowStateLoss) {
-        customAnimId?.also { setCustomAnimations(it, 0) }
+        customAnimId?.also { setCustomAnimations(0, it) }
         hide(this@hide)
         body()
     }
