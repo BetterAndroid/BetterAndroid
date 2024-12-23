@@ -315,6 +315,8 @@ val isSystemApp = applicationInfo.hasFlags(ApplicationInfoFlagsWrapper.SYSTEM)
 
 [Broadcast → sendBroadcast](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/send-broadcast)
 
+[BroadcastReceiver](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/-broadcast-receiver)
+
 适用于广播 (Broadcast) 的相关扩展。
 
 :::
@@ -361,14 +363,24 @@ val filter = IntentFilter().apply {
     // 指定发送者的 Action
     addAction("com.example.app.action.KNOCK")
 }
-// 注册广播接收器
+// (方案 1) 直接注册广播接收器
 // 这里的回调为 onReceive 方法，是同步的 (主线程)
-context.registerReceiver(filter) { context, intent ->
+val receiver = context.registerReceiver(filter) { context, intent ->
     // 获取传递的字符串参数
     val greetings = intent.getStringExtra("greetings")
     // 使用 Toast 展示接收到的参数
     context.toast(greetings)
 }
+// (方案 2) 创建广播接收器方法体
+val body = BroadcastReceiver { context, intent ->
+    // 获取传递的字符串参数
+    val greetings = intent.getStringExtra("greetings")
+    // 使用 Toast 展示接收到的参数
+    context.toast(greetings)
+}
+val receiver = context.registerReceiver(filter, body = body)
+// 你可以在不需要接收广播时注销广播接收器
+context.unregisterReceiver(receiver)
 ```
 
 ::: tip

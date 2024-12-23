@@ -327,6 +327,8 @@ Please refer to [Package visibility filtering on Android](https://developer.andr
 
 [Broadcast → sendBroadcast](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/send-broadcast)
 
+[BroadcastReceiver](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/-broadcast-receiver)
+
 Extensions for Broadcast.
 
 :::
@@ -374,14 +376,24 @@ val filter = IntentFilter().apply {
     // Specify the sender's action.
     addAction("com.example.app.action.KNOCK")
 }
-// Register broadcast receiver.
+// (Solution 1) Directly register the broadcast receiver.
 // The callback here is the onReceive method, which is synchronous (main thread).
-context.registerReceiver(filter) { context, intent ->
-    // Get the passed string parameters.
+val receiver = context.registerReceiver(filter) { context, intent ->
+    // Get the passed string parameter.
     val greetings = intent.getStringExtra("greetings")
-    // Use toast to show the received parameters.
+    // Use Toast to display the received parameter.
     context.toast(greetings)
 }
+// (Solution 2) Create the broadcast receiver method body.
+val body = BroadcastReceiver { context, intent ->
+    // Get the passed string parameter.
+    val greetings = intent.getStringExtra("greetings")
+    // Use Toast to display the received parameter.
+    context.toast(greetings)
+}
+val receiver = context.registerReceiver(filter, body = body)
+// You can unregister the broadcast receiver when you no longer need to receive broadcasts.
+context.unregisterReceiver(receiver)
 ```
 
 ::: tip
@@ -783,7 +795,7 @@ The following is a comparison table of constants for currently collected system 
 you are welcome to PR or go to [GitHub Issues](repo://issues) to make suggestions to us.
 
 | `SystemKind` Name | System Kind                                                                                                        |
-|-------------------|--------------------------------------------------------------------------------------------------------------------|
+| ----------------- | ------------------------------------------------------------------------------------------------------------------ |
 | `DEFAULT`         | Default, uncategorized. (Stock Android or AOSP-based Android system and system categories not currently collected) |
 | `HARMONYOS`       | [HarmonyOS](https://www.harmonyos.com/) (Based on AOSP)                                                            |
 | `EMUI`            | [EMUI](https://www.huaweicentral.com/emui)                                                                         |
