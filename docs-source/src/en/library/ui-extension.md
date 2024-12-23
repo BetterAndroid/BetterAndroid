@@ -158,7 +158,7 @@ val isInMultiWindowMode = activity.isInMultiWindowModeCompat
 
 [Fragment → findFragment](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/find-fragment)
 
-[Fragment → FragmentTransaction](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/-fragment-transaction)
+[FragmentTransaction](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/-fragment-transaction)
 
 [Fragment → attach](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/attach)
 
