@@ -9,5 +9,5 @@ actions:
   - text: Changelog
     link: /en/about/changelog
     type: secondary
-footer: Apache-2.0 License | Copyright (C) 2019-2024 HighCapable
+footer: Apache-2.0 License | Copyright (C) 2019 HighCapable
 ---
