@@ -1524,6 +1524,8 @@ window.clearScreenBrightness()
 
 [View → removeSelfInLayout](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/remove-self-in-layout)
 
+[View → tooltipTextCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/tooltip-text-compat)
+
 [View → animate](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/animate)
 
 [View → showIme](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/show-ime)
@@ -1660,6 +1662,24 @@ val view: View
 view.removeSelf()
 // 使用 ViewGroup.removeViewInLayout 方法移除自身
 view.removeSelfInLayout()
+```
+
+设置工具提示文本 (向下兼容)。
+
+在 Android 8.0 (26) 及以上版本中，你可以使用 `View.tooltipText` 来设置工具提示文本，`androidx` 所提供的 `ViewCompat.setTooltipText` 虽然支持在低于 26 的版本中使用，但是低于 26 版本将无效，
+这并没有实质解决这个问题。
+
+所以 `BetterAndroid` 为此提供了一个 `View.tooltipTextCompat` 方法，它会在低版本系统中使用 `Toast` 来模拟工具提示文本并且可以重新获取你设置的文本。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 View 对象
+val view: View
+// 设置工具提示文本
+view.tooltipTextCompat = "Hello World!"
+// 获取工具提示文本
+val tooltipText = view.tooltipTextCompat
 ```
 
 创建动画。

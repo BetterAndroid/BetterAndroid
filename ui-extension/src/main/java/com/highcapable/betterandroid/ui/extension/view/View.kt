@@ -54,6 +54,7 @@ import androidx.core.view.marginTop
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
+import com.highcapable.betterandroid.ui.extension.R
 import com.highcapable.yukireflection.factory.classOf
 
 /**
@@ -368,6 +369,27 @@ fun View.showSoftInput() = showIme()
  */
 @Deprecated(message = "Use View.hideIme instead.", ReplaceWith("hideIme()"))
 fun View.hideSoftInput() = hideIme()
+
+/**
+ * Get or set the view's tooltip text (compat).
+ * 
+ * If the target SDK version is lower than 26,
+ * the tooltip text will be compatible with toast.
+ * @receiver [View]
+ * @return [CharSequence] or null.
+ */
+var View.tooltipTextCompat
+    get() = if (SystemVersion.isHighOrEqualsTo(SystemVersion.O))
+        tooltipText
+    else getTag<CharSequence?>(R.id.tag_better_android_tooltip_text_compat)
+    set(value) {
+        if (SystemVersion.isHighOrEqualsTo(SystemVersion.O))
+            tooltipText = value
+        else value?.let {
+            setTag(R.id.tag_better_android_tooltip_text_compat, it)
+            setOnLongClickListener { _ -> context?.toast(it); true }
+        }
+    }
 
 /**
  * Animate the view.

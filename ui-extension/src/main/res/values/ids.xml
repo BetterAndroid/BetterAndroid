@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The ID of the tooltip text compat tag. -->
+    <id name="tag_better_android_tooltip_text_compat" type="id" />
+</resources>

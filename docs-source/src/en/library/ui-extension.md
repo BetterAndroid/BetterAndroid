@@ -1576,6 +1576,8 @@ window.clearScreenBrightness()
 
 [View → removeSelfInLayout](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/remove-self-in-layout)
 
+[View → tooltipTextCompat](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/tooltip-text-compat)
+
 [View → animate](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/animate)
 
 [View → showIme](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/show-ime)
@@ -1715,6 +1717,24 @@ val view: View
 view.removeSelf()
 // Use the ViewGroup.removeViewInLayout method to remove itself.
 view.removeSelfInLayout()
+```
+
+Set tooltip text (backward compatible).
+
+In Android 8.0 (26) and above, you can use `View.tooltipText` to set the tooltip text. Although `androidx` provides `ViewCompat.setTooltipText` to support usage below version 26,
+it will be ineffective on versions below 26, which does not essentially solve the problem.
+
+Therefore, `BetterAndroid` provides a `View.tooltipTextCompat` method, which will use `Toast` to simulate the tooltip text on lower sdk systems and can retrieve the text you set.
+
+> The following example
+
+```kotlin
+// Assume this is your view.
+val view: View
+// Set tooltip text.
+view.tooltipTextCompat = "Hello World!"
+// Get tooltip text.
+val tooltipText = view.tooltipTextCompat
 ```
 
 Create animations.
