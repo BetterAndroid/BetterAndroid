@@ -3,7 +3,6 @@ import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import org.jetbrains.dokka.gradle.DokkaTask
-import java.time.LocalDate
 
 plugins {
     autowire(libs.plugins.kotlin.multiplatform) apply false
@@ -40,8 +39,7 @@ libraryProjects {
         }
     }
     tasks.withType<DokkaTask>().configureEach {
-        val nowYear = LocalDate.now().year
-        val configuration = """{ "footerMessage": "BetterAndroid | Apache-2.0 License | Copyright (C) 2019-$nowYear HighCapable" }"""
+        val configuration = """{ "footerMessage": "BetterAndroid | Apache-2.0 License | Copyright (C) 2019 HighCapable" }"""
         pluginsMapConfiguration.set(mapOf("org.jetbrains.dokka.base.DokkaBase" to configuration))
     }
     tasks.register("publishKDoc") {
