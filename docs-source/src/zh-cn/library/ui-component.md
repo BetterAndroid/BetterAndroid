@@ -86,6 +86,54 @@ class MainActivity : AppBindingActivity<ActivityMainBinding>() {
 }
 ```
 
+::: tip
+
+如果你需要在视图装载前进行一些自定义操作，在一般情况下，你可能会这样做。
+
+> 示例如下
+
+```kotlin
+class MainActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        doSomething()
+        setContentView(R.layout.activity_main)
+        findViewById<TextView>(R.id.main_text).text = "Hello World!"
+    }
+
+    private fun doSomething() {
+        // Your code here.
+    }
+}
+```
+
+在使用 `AppBindingActivity` 的情况下，你需要这样做。
+
+> 示例如下
+
+```kotlin
+class MainActivity : AppBindingActivity<ActivityMainBinding>() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding.mainText.text = "Hello World!"
+    }
+
+    override fun onPrepareContentView(savedInstanceState: Bundle?): LayoutInflater {
+        doSomething()
+        // 你可以返回经过处理后的 LayoutInflater，这个实例将用于初始化布局
+        return super.onPrepareContentView(savedInstanceState)
+    }
+
+    private fun doSomething() {
+        // Your code here.
+    }
+}
+```
+
+:::
+
 你也可以使用 `AppViewsActivity` 来创建一个基本 `Activity`，使用 `findViewById` 方法来获取 `View`。
 
 > 示例如下

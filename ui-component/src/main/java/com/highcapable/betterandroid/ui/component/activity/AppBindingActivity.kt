@@ -24,6 +24,7 @@
 package com.highcapable.betterandroid.ui.component.activity
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
@@ -62,10 +63,21 @@ open class AppBindingActivity<VB : ViewBinding> : BaseCompatActivity(), IViewBin
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        baseBinding = ViewBindingBuilder.fromGeneric<VB>(this).inflate(layoutInflater)
+        val inflater = onPrepareContentView(savedInstanceState)
+        baseBinding = ViewBindingBuilder.fromGeneric<VB>(this).inflate(inflater)
         super.setContentView(binding.root)
         systemBars.init(binding.root)
     }
+
+    /**
+     * Called before set content view.
+     *
+     * This lifecycle function is called after `super.onCreate(...)` and before `super.setContentView(...)`,
+     * you can override this function to do something before set content view.
+     * @param savedInstanceState the saved instance state.
+     * @return [LayoutInflater]
+     */
+    open fun onPrepareContentView(savedInstanceState: Bundle?) = layoutInflater
 
     @Deprecated(message = "Use binding instead it.", level = DeprecationLevel.ERROR)
     override fun setContentView(layoutResID: Int): Unit = throwUnavailableException()

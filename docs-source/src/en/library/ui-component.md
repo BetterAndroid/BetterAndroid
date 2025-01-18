@@ -86,6 +86,55 @@ class MainActivity : AppBindingActivity<ActivityMainBinding>() {
 }
 ```
 
+::: tip
+
+If you need to perform some custom operations before the view is loaded, in general, you might do this.
+
+> The following example
+
+```kotlin
+class MainActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        doSomething()
+        setContentView(R.layout.activity_main)
+        findViewById<TextView>(R.id.main_text).text = "Hello World!"
+    }
+
+    private fun doSomething() {
+        // Your code here.
+    }
+}
+```
+
+When using `AppBindingActivity`, you need to do this.
+
+> The following example
+
+```kotlin
+class MainActivity : AppBindingActivity<ActivityMainBinding>() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding.mainText.text = "Hello World!"
+    }
+
+    override fun onPrepareContentView(savedInstanceState: Bundle?): LayoutInflater {
+        doSomething()
+        // You can return the processed LayoutInflater instance,
+        // which will be used to initialize the layout.
+        return super.onPrepareContentView(savedInstanceState)
+    }
+
+    private fun doSomething() {
+        // Your code here.
+    }
+}
+```
+
+:::
+
 You can also use `AppViewsActivity` to create a basic `Activity` and use the `findViewById` method to get the `View`.
 
 > The following example
