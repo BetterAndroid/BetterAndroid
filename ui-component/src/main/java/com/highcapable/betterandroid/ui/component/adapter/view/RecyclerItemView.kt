@@ -24,17 +24,19 @@ package com.highcapable.betterandroid.ui.component.adapter.view
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.highcapable.betterandroid.ui.component.adapter.entity.AdapterPosition
 import com.highcapable.betterandroid.ui.component.adapter.view.proxy.IBaseItemView
 import com.highcapable.betterandroid.ui.extension.binding.ViewBindingBuilder
 
 /**
  * [RecyclerView.Adapter] adapter item view, using entity [E].
  * @param viewType the view type.
+ * @param onBindCallback the item view binding callback.
  */
 internal class RecyclerItemView<E>(
     override val bindingBuilder: ViewBindingBuilder<*>? = null,
     override val rootViewResId: Int = -1,
     override val rootView: View? = null,
     val viewType: Int = 0,
-    override val onBindCallback: (ViewBinding?, View?, E, Int) -> Unit
+    val onBindCallback: (ViewBinding?, View?, E, AdapterPosition) -> Unit
 ) : IBaseItemView<E>

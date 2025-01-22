@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.widget.ViewPager2
 import com.highcapable.betterandroid.ui.component.adapter.base.IAdapterBuilder
+import com.highcapable.betterandroid.ui.component.adapter.entity.AdapterPosition
 import com.highcapable.betterandroid.ui.component.adapter.factory.bindAdapter
 import com.highcapable.betterandroid.ui.component.adapter.view.RecyclerItemView
 import com.highcapable.betterandroid.ui.extension.binding.ViewBinding
@@ -293,7 +294,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     @JvmName("onBindViewsTyped")
     inline fun <reified VB : ViewBinding> onBindViews(
         viewType: Int = DEFAULT_VIEW_TYPE,
-        noinline boundItemViews: (binding: VB, entity: E, position: Int) -> Unit = { _, _, _ -> }
+        noinline boundItemViews: (binding: VB, entity: E, position: AdapterPosition) -> Unit = { _, _, _ -> }
     ) = apply {
         boundItemViewsCallbacks.add(RecyclerItemView(ViewBinding<VB>(), viewType = viewType) { binding, _, entity, position ->
             binding?.also { boundItemViews(it as VB, entity, position) }
@@ -312,7 +313,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     fun onBindViews(
         @LayoutRes resId: Int,
         viewType: Int = DEFAULT_VIEW_TYPE,
-        boundItemViews: (view: View, entity: E, position: Int) -> Unit = { _, _, _ -> }
+        boundItemViews: (view: View, entity: E, position: AdapterPosition) -> Unit = { _, _, _ -> }
     ) = apply {
         boundItemViewsCallbacks.add(RecyclerItemView(rootViewResId = resId, viewType = viewType) { _, rootView, entity, position ->
             rootView?.also { boundItemViews(it, entity, position) }
@@ -331,7 +332,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     fun onBindViews(
         view: View,
         viewType: Int = DEFAULT_VIEW_TYPE,
-        boundItemViews: (view: View, entity: E, position: Int) -> Unit = { _, _, _ -> }
+        boundItemViews: (view: View, entity: E, position: AdapterPosition) -> Unit = { _, _, _ -> }
     ) = apply {
         boundItemViewsCallbacks.add(RecyclerItemView(rootView = view, viewType = viewType) { _, rootView, entity, position ->
             rootView?.also { boundItemViews(it, entity, position) }
@@ -419,21 +420,25 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
 
         override fun onBindViewHolder(holder: RecyclerAdapterBuilder<E>.BaseRecyclerHolder, position: Int) {
             when {
-                hasHeaderView && position == 0 || hasFooterView && position == itemCount - 1 -> when (holder) {
-                    is BindingRecyclerHolder ->
-                        boundHeaderItemViewCallback?.onBindCallback?.invoke(holder.binding, holder.binding.root, Any(), position)
-                    is CommonRecyclerHolder ->
-                        boundHeaderItemViewCallback?.onBindCallback?.invoke(null, holder.rootView, Any(), position)
+                hasHeaderView && position == 0 || hasFooterView && position == itemCount - 1 -> {
+                    val dPosition = AdapterPosition.from { holder.adapterPosition }
+                    when (holder) {
+                        is BindingRecyclerHolder ->
+                            boundHeaderItemViewCallback?.onBindCallback?.invoke(holder.binding, holder.binding.root, Any(), dPosition)
+                        is CommonRecyclerHolder ->
+                            boundHeaderItemViewCallback?.onBindCallback?.invoke(null, holder.rootView, Any(), dPosition)
+                    }
                 }
                 else -> {
-                    val sPosition = position.overflowPosition()
+                    val sPosition = holder.adapterPosition.overflowPosition()
+                    val dPosition = AdapterPosition.from { holder.adapterPosition.overflowPosition() }
                     boundItemViewsCallbacks.forEach {
                         if (it.viewType == holder.viewType) when (holder) {
                             is BindingRecyclerHolder -> getCurrentEntity(sPosition)?.let { entity ->
-                                it.onBindCallback(holder.binding, holder.binding.root, entity, sPosition)
+                                it.onBindCallback(holder.binding, holder.binding.root, entity, dPosition)
                             }
                             is CommonRecyclerHolder -> getCurrentEntity(sPosition)?.let { entity ->
-                                it.onBindCallback(null, holder.rootView, entity, sPosition)
+                                it.onBindCallback(null, holder.rootView, entity, dPosition)
                             }
                         }
                     }

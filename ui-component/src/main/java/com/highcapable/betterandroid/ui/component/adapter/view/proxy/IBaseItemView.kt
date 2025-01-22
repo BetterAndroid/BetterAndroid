@@ -23,7 +23,6 @@ package com.highcapable.betterandroid.ui.component.adapter.view.proxy
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.viewbinding.ViewBinding
 import com.highcapable.betterandroid.ui.extension.binding.ViewBindingBuilder
 
 /**
@@ -40,7 +39,4 @@ internal interface IBaseItemView<E> {
 
     /** The item [View]. */
     val rootView: View?
-
-    /** The item view binding callback. */
-    val onBindCallback: (ViewBinding?, View?, E, Int) -> Unit
 }

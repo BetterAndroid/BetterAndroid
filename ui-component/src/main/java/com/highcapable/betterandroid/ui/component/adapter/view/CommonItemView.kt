@@ -30,10 +30,11 @@ import com.highcapable.betterandroid.ui.extension.binding.ViewBindingBuilder
 
 /**
  * [BaseAdapter] or [PagerAdapter] adapter item view, using entity [E].
+ * @param onBindCallback the item view binding callback.
  */
 internal class CommonItemView<E>(
     override val bindingBuilder: ViewBindingBuilder<*>? = null,
     override val rootViewResId: Int = -1,
     override val rootView: View? = null,
-    override val onBindCallback: (ViewBinding?, View?, E, Int) -> Unit
+    val onBindCallback: (ViewBinding?, View?, E, Int) -> Unit
 ) : IBaseItemView<E>

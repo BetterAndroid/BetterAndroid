@@ -277,6 +277,10 @@ Grid vertical list decoration for `RecyclerView`.
 
 Extension methods for the adapter build above.
 
+[AdapterPosition](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.entity/-adapter-position)
+
+Adapter position entity.
+
 :::
 
 From the beginning of `ListView` to the emergence of `RecyclerView`, adapters in Android have always been one of the most troublesome problems for developers.
@@ -507,6 +511,18 @@ val adapter = recyclerView.bindAdapter<CustomBean> {
     }
 }
 ```
+
+::: tip
+
+In `RecyclerView.Adapter`, the `position` type in `onBindViews` is `AdapterPosition` instead of `Int`, which is a new feature introduced in version `1.0.6`.
+
+Since `RecyclerView.Adapter` can perform partial updates, the `onBindViews` of existing items will not be recalled after dynamically adding or deleting items.
+
+In this case, you need a dynamic index instance like `AdapterPosition` to get the correct index of the current item through `position.value`.
+
+`AdapterPosition` overloads operators, so it can directly participate in comparisons and basic arithmetic operations without using `position.value`.
+
+:::
 
 Create the header `View` and the footer `View` for `RecyclerView`.
 

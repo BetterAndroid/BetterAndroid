@@ -276,6 +276,10 @@ class MainFragment : AppViewsFragment(R.layout.fragment_main) {
 
 适用于上述适配器构建的扩展方法。
 
+[AdapterPosition](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.entity/-adapter-position)
+
+动态适配器下标实例。
+
 :::
 
 Android 中的适配器从 `ListView` 开始到 `RecyclerView` 的出现，一直是开发者最头疼的问题之一。
@@ -504,6 +508,17 @@ val adapter = recyclerView.bindAdapter<CustomBean> {
     }
 }
 ```
+
+::: tip
+
+在 `RecyclerView.Adapter` 中，`onBindViews` 中的 `position` 类型为 `AdapterPosition` 而非 `Int`，这是 `1.0.6` 版本中新增的特性。
+
+由于 `RecyclerView.Adapter` 可以局部更新，所以在动态添加或删除条目后，现有条目的 `onBindViews` 并不会重新回调，
+此时你就需要 `AdapterPosition` 这样的动态下标实例，通过 `position.value` 获取到当前条目的正确下标。
+
+`AdapterPosition` 重载了运算符，它可以直接参与比较和基本的四则运算而无需使用 `position.value`。
+
+:::
 
 为 `RecyclerView` 创建头部 `View` 和末位 `View`。
 
