@@ -224,6 +224,10 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
                                 CommonBaseHolder(rootView = itemView)
                             }
                         it.rootView != null -> {
+                            require(it.rootView.parent == null) {
+                                "Cannot bound ViewHolder on ViewHolder on BaseAdapter, " +
+                                    "the $this was already added to a ViewGroup."
+                            }
                             holderView = it.rootView
                             CommonBaseHolder(rootView = it.rootView)
                         }

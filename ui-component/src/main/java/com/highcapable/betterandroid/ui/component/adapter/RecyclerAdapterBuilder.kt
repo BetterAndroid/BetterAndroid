@@ -407,10 +407,21 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
                 when {
                     it.bindingBuilder != null -> {
                         val binding = it.bindingBuilder.inflate(adapterContext.layoutInflater, parent)
+                        require(binding.root.parent == null) {
+                            "Cannot bound ViewHolder on RecyclerAdapter with type $viewType, " +
+                                "the ${it.bindingBuilder} was already added to a ViewGroup."
+                        }
                         BindingRecyclerHolder(binding, binding.root, viewType)
                     }
-                    it.rootViewResId >= 0 -> CommonRecyclerHolder(adapterContext.layoutInflater.inflate(it.rootViewResId, parent), it.viewType)
-                    it.rootView != null -> CommonRecyclerHolder(it.rootView.apply { layoutParams = parent.layoutParams }, it.viewType)
+                    it.rootViewResId >= 0 ->
+                        CommonRecyclerHolder(adapterContext.layoutInflater.inflate(it.rootViewResId, parent, false), it.viewType)
+                    it.rootView != null -> CommonRecyclerHolder(it.rootView.apply {
+                        require(this.parent == null) {
+                            "Cannot bound ViewHolder on RecyclerAdapter with type $viewType, " +
+                                "the $this was already added to a ViewGroup."
+                        }
+                        layoutParams = parent.layoutParams
+                    }, it.viewType)
                     else -> null
                 }
             } ?: error(

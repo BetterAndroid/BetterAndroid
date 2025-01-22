@@ -168,6 +168,10 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
                 when {
                     it.bindingBuilder != null ->
                         it.bindingBuilder.inflate(adapterContext.layoutInflater).let { binding ->
+                            require(binding.root.parent == null) {
+                                "Cannot bound ViewHolder on PagerAdapter, " +
+                                    "the ${it.bindingBuilder} was already added to a ViewGroup."
+                            }
                             container.addView(binding.root)
                             BindingBaseHolder(binding = binding).apply { viewHolders[position] = this }
                         }
@@ -177,6 +181,10 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
                             CommonBaseHolder(rootView = itemView).apply { viewHolders[position] = this }
                         }
                     it.rootView != null -> {
+                        require(it.rootView.parent == null) {
+                            "Cannot bound ViewHolder on PagerAdapter, " +
+                                "the ${it.rootView} was already added to a ViewGroup."
+                        }
                         container.addView(it.rootView)
                         CommonBaseHolder(rootView = it.rootView).apply { viewHolders[position] = this }
                     }
