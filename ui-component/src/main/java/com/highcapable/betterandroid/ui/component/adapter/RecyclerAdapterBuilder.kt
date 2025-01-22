@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2022/11/2.
  */
-@file:Suppress("unused", "MemberVisibilityCanBePrivate", "UNCHECKED_CAST", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
 
 package com.highcapable.betterandroid.ui.component.adapter
 
@@ -107,9 +107,9 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     /**
      * Get the entity [E].
      * @param position the current position.
-     * @return [E]
+     * @return [E] or null.
      */
-    private fun getCurrentEntity(position: Int) = listDataCallback?.invoke()?.get(position) ?: Any() as E
+    private fun getCurrentEntity(position: Int) = listDataCallback?.invoke()?.getOrNull(position)
 
     /**
      * Manually set the total number of data to be displayed.
@@ -429,10 +429,12 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
                     val sPosition = position.overflowPosition()
                     boundItemViewsCallbacks.forEach {
                         if (it.viewType == holder.viewType) when (holder) {
-                            is BindingRecyclerHolder ->
-                                it.onBindCallback(holder.binding, holder.binding.root, getCurrentEntity(sPosition), sPosition)
-                            is CommonRecyclerHolder ->
-                                it.onBindCallback(null, holder.rootView, getCurrentEntity(sPosition), sPosition)
+                            is BindingRecyclerHolder -> getCurrentEntity(sPosition)?.let { entity ->
+                                it.onBindCallback(holder.binding, holder.binding.root, entity, sPosition)
+                            }
+                            is CommonRecyclerHolder -> getCurrentEntity(sPosition)?.let { entity ->
+                                it.onBindCallback(null, holder.rootView, entity, sPosition)
+                            }
                         }
                     }
                     itemViewsOnClickCallbacks.filterKeys {
@@ -444,7 +446,9 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
                     }.also { callbacks ->
                         if (callbacks.isNotEmpty()) holder.rootView.setOnClickListener {
                             val ePosition = holder.adapterPosition.overflowPosition()
-                            callbacks.forEach { (_, callback) -> callback(it, getCurrentEntity(ePosition), ePosition) }
+                            callbacks.forEach { (_, callback) ->
+                                getCurrentEntity(ePosition)?.let { entity -> callback(it, entity, ePosition) }
+                            }
                         }
                     }
                     itemViewsOnLongClickCallbacks.filterKeys {
@@ -458,7 +462,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
                             val ePosition = holder.adapterPosition.overflowPosition()
                             var result = false
                             callbacks.forEach { (_, callback) ->
-                                result = result || callback(it, getCurrentEntity(ePosition), ePosition)
+                                result = result || getCurrentEntity(ePosition)?.let { entity -> callback(it, entity, ePosition) } == true
                             }; result
                         }
                     }
@@ -469,12 +473,14 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
         override fun getItemViewType(position: Int) = when {
             hasHeaderView && position == 0 -> HEADER_VIEW_TYPE
             hasFooterView && position == itemCount - 1 -> FOOTER_VIEW_TYPE
-            else -> entityTypeCallback?.invoke(getCurrentEntity(position.overflowPosition()), position.overflowPosition()) ?: DEFAULT_VIEW_TYPE
+            else -> getCurrentEntity(position.overflowPosition())?.let { entityTypeCallback?.invoke(it, position.overflowPosition()) }
+                ?: DEFAULT_VIEW_TYPE
         }
         override fun getItemId(position: Int) = when {
             hasHeaderView && position == 0 -> HEADER_VIEW_TYPE.toLong()
             hasFooterView && position == itemCount - 1 -> FOOTER_VIEW_TYPE.toLong()
-            else -> entityIdCallback?.invoke(getCurrentEntity(position.overflowPosition()), position.overflowPosition()) ?: position.toLong()
+            else -> getCurrentEntity(position.overflowPosition())?.let { entityIdCallback?.invoke(it, position.overflowPosition()) }
+                ?: position.toLong()
         }
         override fun getItemCount() = (dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: 0) +
             (if (hasHeaderView) 1 else 0) + (if (hasFooterView) 1 else 0)

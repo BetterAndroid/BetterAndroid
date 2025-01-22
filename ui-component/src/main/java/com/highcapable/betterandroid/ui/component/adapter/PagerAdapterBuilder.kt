@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2022/11/22.
  */
-@file:Suppress("unused", "MemberVisibilityCanBePrivate", "UNCHECKED_CAST", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
 
 package com.highcapable.betterandroid.ui.component.adapter
 
@@ -68,9 +68,9 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
     /**
      * Get the entity [E].
      * @param position the current position.
-     * @return [E]
+     * @return [E] or null.
      */
-    private fun getCurrentEntity(position: Int) = listDataCallback?.invoke()?.get(position) ?: Any() as E
+    private fun getCurrentEntity(position: Int) = listDataCallback?.invoke()?.getOrNull(position)
 
     /**
      * Manually set the total number of data to be displayed.
@@ -183,7 +183,7 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
                     else -> null
                 }
             })?.let {
-                getCurrentEntity(position).also { entity ->
+                getCurrentEntity(position)?.let { entity ->
                     boundItemViewsCallbacks(position)?.onBindCallback
                         ?.invoke((it as? BindingBaseHolder?)?.binding, it.rootView, entity, position)
                 }; it.rootView

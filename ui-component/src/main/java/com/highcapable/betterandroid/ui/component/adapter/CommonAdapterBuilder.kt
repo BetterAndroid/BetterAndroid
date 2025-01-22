@@ -95,9 +95,9 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
     /**
      * Get the entity [E].
      * @param position the current position.
-     * @return [E]
+     * @return [E] or null.
      */
-    private fun getCurrentEntity(position: Int) = listDataCallback?.invoke()?.get(position) ?: Any() as E
+    private fun getCurrentEntity(position: Int) = listDataCallback?.invoke()?.getOrNull(position)
 
     /**
      * Manually set the total number of data to be displayed.
@@ -206,7 +206,7 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
         override fun getFilter() = filterCallback?.invoke() ?: emptyFilterCallback()
         override fun getCount() = dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: 0
         override fun getItem(position: Int) = getCurrentEntity(position)
-        override fun getItemId(position: Int) = entityIdCallback?.invoke(getCurrentEntity(position), position) ?: position.toLong()
+        override fun getItemId(position: Int) = getCurrentEntity(position)?.let { entityIdCallback?.invoke(it, position) } ?: position.toLong()
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
             var holderView = convertView
             val holder: CommonAdapterBuilder<E>.BaseViewHolder
@@ -237,7 +237,9 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
                     .filterKeys { it == ITEM_NO_ID || it == getItemId(position) }
                     .also { callbacks ->
                         if (callbacks.isNotEmpty()) setOnClickListener {
-                            callbacks.forEach { (_, callback) -> callback(it, getCurrentEntity(position), position) }
+                            callbacks.forEach { (_, callback) ->
+                                getCurrentEntity(position)?.let { entity -> callback(it, entity, position) }
+                            }
                         }
                     }
                 itemViewsOnLongClickCallbacks
@@ -245,14 +247,17 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
                     .also { callbacks ->
                         if (callbacks.isNotEmpty()) setOnLongClickListener {
                             var result = false
-                            callbacks.forEach { (_, callback) -> result = callback(it, getCurrentEntity(position), position) }
-                            result
+                            callbacks.forEach { (_, callback) -> 
+                                getCurrentEntity(position)?.let { entity -> result = callback(it, entity, position) }
+                            }; result
                         }
                     }
             }
-            boundItemViewsCallback?.onBindCallback?.invoke(
-                (holder as? BindingBaseHolder?)?.binding, holder.rootView, getCurrentEntity(position), position
-            ); return holderView ?: error("Cannot bound ViewHolder on BaseAdapter because got null instance.")
+            getCurrentEntity(position)?.let {
+                boundItemViewsCallback?.onBindCallback?.invoke(
+                    (holder as? BindingBaseHolder?)?.binding, holder.rootView, it, position
+                )
+            }; return holderView ?: error("Cannot bound ViewHolder on BaseAdapter because got null instance.")
         }
     }
 
