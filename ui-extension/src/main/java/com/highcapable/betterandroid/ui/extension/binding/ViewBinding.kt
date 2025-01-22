@@ -276,6 +276,8 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
             )
         }
     }
+
+    override fun toString() = "ViewBinding($bindingClass)"
 }
 
 /**
@@ -302,4 +304,6 @@ class ViewBindingDelegate<VB : ViewBinding> internal constructor(
     private fun bind() = ViewBindingBuilder(bindingClass).inflate(layoutInflater(), parent, attachToParent).also { binding = it }
 
     operator fun getValue(thisRef: Any?, property: Any?) = binding ?: bind()
+
+    override fun toString() = "ViewBinding($bindingClass)"
 }
