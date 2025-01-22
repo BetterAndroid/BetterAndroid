@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2022/11/2.
  */
-@file:Suppress("unused", "MemberVisibilityCanBePrivate", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate", "UNCHECKED_CAST", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
 
 package com.highcapable.betterandroid.ui.component.adapter
 
@@ -110,7 +110,9 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      * @param position the current position.
      * @return [E] or null.
      */
-    private fun getCurrentEntity(position: Int) = listDataCallback?.invoke()?.getOrNull(position)
+    private fun getCurrentEntity(position: Int) = (listDataCallback?.invoke() ?: emptyList()).let {
+        if (it.isEmpty() && dataSetCount > 0) Any() as E else it.getOrNull(position)
+    }
 
     /**
      * Manually set the total number of data to be displayed.

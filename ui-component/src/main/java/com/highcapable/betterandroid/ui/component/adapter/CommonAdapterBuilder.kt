@@ -97,7 +97,9 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
      * @param position the current position.
      * @return [E] or null.
      */
-    private fun getCurrentEntity(position: Int) = listDataCallback?.invoke()?.getOrNull(position)
+    private fun getCurrentEntity(position: Int) = (listDataCallback?.invoke() ?: emptyList()).let {
+        if (it.isEmpty() && dataSetCount > 0) Any() as E else it.getOrNull(position)
+    }
 
     /**
      * Manually set the total number of data to be displayed.
