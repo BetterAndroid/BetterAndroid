@@ -26,7 +26,7 @@ package com.highcapable.betterandroid.ui.component.adapter.recycler.layoutmanage
 import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.RecyclerView
 import com.highcapable.betterandroid.ui.component.adapter.RecyclerAdapterBuilder
-import com.highcapable.betterandroid.ui.component.adapter.factory.typedAdapter
+import com.highcapable.betterandroid.ui.component.adapter.recycler.factory.wrapper
 
 /**
  * An enhanced [RecyclerView.LayoutManager] with the ability to handle the position compatibility.
@@ -64,5 +64,5 @@ abstract class RecyclerLayoutManager : RecyclerView.LayoutManager() {
      * @receiver the current position.
      * @return [Int]
      */
-    protected fun Int.toCompatPosition() = base?.adapter?.typedAdapter?.compatPosition(position = this) ?: this
+    protected fun Int.toCompatPosition() = base?.adapter?.wrapper?.compatPosition(position = this) ?: this
 }

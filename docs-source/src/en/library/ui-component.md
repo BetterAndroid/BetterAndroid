@@ -285,6 +285,10 @@ Enhanced grid layout manager for `RecyclerView`.
 
 Enhanced layout manager base class for `RecyclerView`.
 
+[RecyclerAdapter](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.recycler.factory)
+
+Extension methods for the adapter build of `RecyclerView`.
+
 [CommonAdapter](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.factory)
 
 Extension methods for the adapter build above.
@@ -656,22 +660,22 @@ This is because, by default, the `position` calculated in `onBindViews` will not
 Methods like `RecyclerView.scrollToPosition` and `RecyclerView.smoothScrollToPosition` will also be affected.
 
 Since these methods in `RecyclerView.Adapter` are `final` and cannot be overridden, `BetterAndroid` provides a solution.
-When using `RecyclerView.Adapter`, you can call the `typedAdapter` method to get a `TypedAdapter` instance, which will automatically handle these issues for you.
+When using `RecyclerView.Adapter`, you can call the `wrapper` method to get a wrapper instance, which will automatically handle these issues for you.
 
 > The following example
 
 ```kotlin
 // Assume you have bound the adapter created using RecyclerAdapterBuilder to RecyclerView.
 val recyclerView: RecyclerView
-// Get the TypedAdapter instance, if the target adapter is not created
+// Get the wrapper instance, if the target adapter is not created
 // by RecyclerAdapterBuilder, it will return null.
-val typedAdapter = recyclerView.adapter?.typedAdapter
+val wrapper = recyclerView.adapter?.wrapper
 // Use the notification update methods of RecyclerView.Adapter normally.
-typedAdapter?.notifyItemInserted(0)
-typedAdapter?.notifyItemRemoved(0)
+wrapper?.notifyItemInserted(0)
+wrapper?.notifyItemRemoved(0)
 // Use the following methods to update the header or footer item separately.
-typedAdapter?.notifyHeaderItemChanged()
-typedAdapter?.notifyFooterItemChanged()
+wrapper?.notifyHeaderItemChanged()
+wrapper?.notifyFooterItemChanged()
 ```
 
 Returning to the issue we mentioned earlier, methods like `RecyclerView.scrollToPosition` and `RecyclerView.smoothScrollToPosition` will also be affected.

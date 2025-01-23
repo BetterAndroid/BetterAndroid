@@ -28,7 +28,7 @@ import android.util.AttributeSet
 import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.RecyclerView
 import com.highcapable.betterandroid.ui.component.adapter.RecyclerAdapterBuilder
-import com.highcapable.betterandroid.ui.component.adapter.factory.typedAdapter
+import com.highcapable.betterandroid.ui.component.adapter.recycler.factory.wrapper
 import com.highcapable.betterandroid.ui.component.adapter.recycler.layoutmanager.base.RecyclerLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager as AndroidXLinearLayoutManager
 
@@ -81,5 +81,5 @@ open class LinearLayoutManager : AndroidXLinearLayoutManager {
      * @receiver the current position.
      * @return [Int]
      */
-    protected fun Int.toCompatPosition() = base?.adapter?.typedAdapter?.compatPosition(position = this) ?: this
+    protected fun Int.toCompatPosition() = base?.adapter?.wrapper?.compatPosition(position = this) ?: this
 }

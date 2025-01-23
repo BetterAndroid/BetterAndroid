@@ -342,15 +342,3 @@ inline fun FragmentPagerAdapter(
  */
 inline fun FragmentStateAdapter(instance: Any, initiate: FragmentStateAdapterBuilder.() -> Unit) =
     FragmentStateAdapterBuilder.from(instance).apply(initiate).build()
-
-/**
- * Get the [RecyclerView.Adapter] from [RecyclerAdapterBuilder].
- *
- * If the current adapter is not creating by [RecyclerAdapterBuilder], it will return null.
- * @receiver [RecyclerView.Adapter]
- * @return [RecyclerAdapterBuilder.Instance.TypedAdapter] or null.
- */
-val RecyclerView.Adapter<*>.typedAdapter get() = when (this) {
-    is RecyclerAdapterBuilder<*>.Instance -> this.typedAdapter
-    else -> null
-}

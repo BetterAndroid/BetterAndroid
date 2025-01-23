@@ -284,6 +284,10 @@ class MainFragment : AppViewsFragment(R.layout.fragment_main) {
 
 `RecyclerView` 的增强型布局管理器基类。
 
+[RecyclerAdapter](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.recycler.factory)
+
+适用于 `RecyclerView` 适配器构建的扩展方法。
+
 [CommonAdapter](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.factory)
 
 适用于上述适配器构建的扩展方法。
@@ -644,21 +648,21 @@ recyclerView.invalidateItemDecorations()
 
 当你设置了头部或末位 `View` 时，在使用 `RecyclerView.Adapter` 的 `notifyItemInserted`、`notifyItemRemoved`、`notifyItemChanged`、`notifyItemMoved` 等方法时，下标的位置将会出现问题，因为默认情况下 `onBindViews` 计算出的 `position` 将不包含头部与末位布局，以及 `RecyclerView.scrollToPosition`、`RecyclerView.smoothScrollToPosition` 等方法也会受到影响。
 
-由于这些方法在 `RecyclerView.Adapter` 中均为 `final`，无法重写它们，在这种情况下，`BetterAndroid` 为你提供了一个解决方案，在使用 `RecyclerView.Adapter` 时，你可以调用 `typedAdapter` 方法来获取 `TypedAdapter` 实例，它将会为你自动处理这些问题。
+由于这些方法在 `RecyclerView.Adapter` 中均为 `final`，无法重写它们，在这种情况下，`BetterAndroid` 为你提供了一个解决方案，在使用 `RecyclerView.Adapter` 时，你可以调用 `wrapper` 方法来获取包装实例，它将会为你自动处理这些问题。
 
 > 示例如下
 
 ```kotlin
 // 假设你已将使用 RecyclerAdapterBuilder 创建的 adapter 绑定到 RecyclerView
 val recyclerView: RecyclerView
-// 获取 TypedAdapter 实例，如果目标适配器不是 RecyclerAdapterBuilder 创建的，将会返回 null
-val typedAdapter = recyclerView.adapter?.typedAdapter
+// 获取包装实例，如果目标适配器不是 RecyclerAdapterBuilder 创建的，将会返回 null
+val wrapper = recyclerView.adapter?.wrapper
 // 正常使用 RecyclerView.Adapter 的通知更新方法
-typedAdapter?.notifyItemInserted(0)
-typedAdapter?.notifyItemRemoved(0)
+wrapper?.notifyItemInserted(0)
+wrapper?.notifyItemRemoved(0)
 // 头部或末位布局需要单独使用以下方法更新
-typedAdapter?.notifyHeaderItemChanged()
-typedAdapter?.notifyFooterItemChanged()
+wrapper?.notifyHeaderItemChanged()
+wrapper?.notifyFooterItemChanged()
 ```
 
 回到我们前面说到的问题，`RecyclerView.scrollToPosition`、`RecyclerView.smoothScrollToPosition` 等方法也会受到影响，这种情况你可以使用 `com.highcapable.betterandroid.ui.component.adapter.recycler.layoutmanager` 包名下提供的 `LinearLayoutManager`、`GridLayoutManager` 以及 `RecyclerLayoutManager` 来解决。

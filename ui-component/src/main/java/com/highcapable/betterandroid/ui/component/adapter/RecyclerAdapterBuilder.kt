@@ -100,6 +100,20 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     private val hasFooterView get() = boundFooterItemViewCallback != null
 
     /**
+     * Get the current position of the item view excluding the header view.
+     * @receiver the current position.
+     * @return [Int]
+     */
+    private fun Int.excludingPosition() = if (hasHeaderView) this - 1 else this
+
+    /**
+     * Get the current position of the item view including the header view.
+     * @receiver the current position.
+     * @return [Int]
+     */
+    private fun Int.includingPosition() = if (hasHeaderView) this + 1 else this
+
+    /**
      * Get the entity [E].
      * @param position the current position.
      * @return [E] or null.
@@ -393,25 +407,11 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     inner class Instance internal constructor() : RecyclerView.Adapter<RecyclerAdapterBuilder<E>.BaseRecyclerHolder>() {
 
         /**
-         * Get the current position of the item view excluding the header view.
-         * @receiver the current position.
-         * @return [Int]
-         */
-        private fun Int.excludingPosition() = if (hasHeaderView) this - 1 else this
-
-        /**
-         * Get the current position of the item view including the header view.
-         * @receiver the current position.
-         * @return [Int]
-         */
-        private fun Int.includingPosition() = if (hasHeaderView) this + 1 else this
-
-        /**
-         * The typed adapter of [RecyclerAdapterBuilder].
+         * The adapter wrapper of [RecyclerAdapterBuilder].
          *
          * This is an extension to [RecyclerView.Adapter] to support header and footer layouts.
          */
-        inner class TypedAdapter internal constructor() {
+        inner class Wrapper internal constructor() {
 
             /** The current instance of [RecyclerAdapterBuilder.Instance]. */
             private val instance = this@Instance
@@ -524,10 +524,10 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
         }
 
         /**
-         * Get the typed adapter of [RecyclerAdapterBuilder].
-         * @return [TypedAdapter]
+         * Get the wrapper of [RecyclerView.Adapter].
+         * @return [Wrapper]
          */
-        val typedAdapter = TypedAdapter()
+        val wrapper = Wrapper()
 
         /**
          * Get the current each item function callbacks.
