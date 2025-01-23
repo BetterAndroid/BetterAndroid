@@ -568,12 +568,18 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
             )
 
         override fun onBindViewHolder(holder: RecyclerAdapterBuilder<E>.BaseRecyclerHolder, position: Int) {
+            val isInHeader = hasHeaderView && position == 0
+            val isInFooter = hasFooterView && position == itemCount - 1
             when {
-                hasHeaderView && position == 0 || hasFooterView && position == itemCount - 1 -> when (holder) {
-                    is BindingRecyclerHolder ->
-                        boundHeaderItemViewCallback?.onBindCallback?.invoke(holder.binding, holder.binding.root, Any(), AdapterPosition.none())
-                    is CommonRecyclerHolder ->
-                        boundHeaderItemViewCallback?.onBindCallback?.invoke(null, holder.rootView, Any(), AdapterPosition.none())
+                isInHeader || isInFooter -> when (holder) {
+                    is BindingRecyclerHolder -> when {
+                        isInHeader -> boundHeaderItemViewCallback
+                        else -> boundFooterItemViewCallback
+                    }?.onBindCallback?.invoke(holder.binding, holder.binding.root, Any(), AdapterPosition.none())
+                    is CommonRecyclerHolder -> when {
+                        isInHeader -> boundHeaderItemViewCallback
+                        else -> boundFooterItemViewCallback
+                    }?.onBindCallback?.invoke(null, holder.rootView, Any(), AdapterPosition.none())
                 }
                 else -> {
                     val sPosition = holder.adapterPosition.excludingPosition()
