@@ -273,6 +273,18 @@ Linear vertical list decoration for `RecyclerView`.
 
 Grid vertical list decoration for `RecyclerView`.
 
+[LinearLayoutManager](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.recycler.layoutmanager/-linear-layout-manager)
+
+Enhanced linear layout manager for `RecyclerView`.
+
+[GridLayoutManager](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.recycler.layoutmanager/-grid-layout-manager)
+
+Enhanced grid layout manager for `RecyclerView`.
+
+[RecyclerLayoutManager](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.recycler.layoutmanager.base/-recycler-layout-manager)
+
+Enhanced layout manager base class for `RecyclerView`.
+
 [CommonAdapter](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.factory)
 
 Extension methods for the adapter build above.
@@ -632,6 +644,43 @@ itemDecoration.update(rowSpacing = 15.toPx(context))
 // Then notify recyclerView to update.
 recyclerView.invalidateItemDecorations()
 ```
+
+:::
+
+::: warning
+
+When you set a header or footer `View`, using methods such as `notifyItemInserted`, `notifyItemRemoved`, `notifyItemChanged`,
+`notifyItemMoved` in `RecyclerView.Adapter` will cause issues with the position index.
+
+This is because, by default, the `position` calculated in `onBindViews` will not include the header and footer layouts.
+Methods like `RecyclerView.scrollToPosition` and `RecyclerView.smoothScrollToPosition` will also be affected.
+
+Since these methods in `RecyclerView.Adapter` are `final` and cannot be overridden, `BetterAndroid` provides a solution.
+When using `RecyclerView.Adapter`, you can call the `typedAdapter` method to get a `TypedAdapter` instance, which will automatically handle these issues for you.
+
+> The following example
+
+```kotlin
+// Assume you have bound the adapter created using RecyclerAdapterBuilder to RecyclerView.
+val recyclerView: RecyclerView
+// Get the TypedAdapter instance, if the target adapter is not created
+// by RecyclerAdapterBuilder, it will return null.
+val typedAdapter = recyclerView.adapter?.typedAdapter
+// Use the notification update methods of RecyclerView.Adapter normally.
+typedAdapter?.notifyItemInserted(0)
+typedAdapter?.notifyItemRemoved(0)
+// Use the following methods to update the header or footer item separately.
+typedAdapter?.notifyHeaderItemChanged()
+typedAdapter?.notifyFooterItemChanged()
+```
+
+Returning to the issue we mentioned earlier, methods like `RecyclerView.scrollToPosition` and `RecyclerView.smoothScrollToPosition` will also be affected.
+
+In this case, you can use the `LinearLayoutManager`, `GridLayoutManager`, and `RecyclerLayoutManager` provided under the
+package name `com.highcapable.betterandroid.ui.component.adapter.recycler.layoutmanager` to solve the problem.
+
+These enhanced layout managers will be automatically integrated through the default `RecyclerCosmetic`, and you do not need any manual operations.
+When you need to manually create a `RecyclerView.LayoutManager`, we recommend inheriting from the instances provided under this package name.
 
 :::
 

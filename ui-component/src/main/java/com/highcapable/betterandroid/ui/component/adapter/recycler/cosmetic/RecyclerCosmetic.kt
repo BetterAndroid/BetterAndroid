@@ -26,12 +26,12 @@ package com.highcapable.betterandroid.ui.component.adapter.recycler.cosmetic
 
 import android.content.Context
 import androidx.annotation.Px
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.highcapable.betterandroid.ui.component.adapter.recycler.decoration.GridVerticalItemDecoration
 import com.highcapable.betterandroid.ui.component.adapter.recycler.decoration.LinearHorizontalItemDecoration
 import com.highcapable.betterandroid.ui.component.adapter.recycler.decoration.LinearVerticalItemDecoration
+import com.highcapable.betterandroid.ui.component.adapter.recycler.layoutmanager.GridLayoutManager
+import com.highcapable.betterandroid.ui.component.adapter.recycler.layoutmanager.LinearLayoutManager
 import com.highcapable.betterandroid.ui.extension.component.base.toPx
 
 /**
@@ -86,7 +86,7 @@ class RecyclerCosmetic<RVLM : RecyclerView.LayoutManager, RVID : RecyclerView.It
             @Px rowSpacing: Int = context.defaultSpacingPx(),
             isReverseLayout: Boolean = false
         ) = from(
-            layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.VERTICAL, isReverseLayout),
+            layoutManager = GridLayoutManager(context, spanCount, RecyclerView.VERTICAL, isReverseLayout),
             itemDecoration = GridVerticalItemDecoration(spanCount, columnSpacing, rowSpacing)
         )
 
@@ -121,7 +121,7 @@ class RecyclerCosmetic<RVLM : RecyclerView.LayoutManager, RVID : RecyclerView.It
             @Px bottom: Int = 0,
             isReverseLayout: Boolean = false
         ) = from(
-            layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.VERTICAL, isReverseLayout),
+            layoutManager = GridLayoutManager(context, spanCount, RecyclerView.VERTICAL, isReverseLayout),
             itemDecoration = GridVerticalItemDecoration(spanCount, firstLeft, left, firstTop, top, lastRight, right, lastBottom, bottom)
         )
 
@@ -139,7 +139,7 @@ class RecyclerCosmetic<RVLM : RecyclerView.LayoutManager, RVID : RecyclerView.It
             @Px rowSpacing: Int = context.defaultSpacingPx(),
             isReverseLayout: Boolean = false
         ) = from(
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, isReverseLayout),
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, isReverseLayout),
             itemDecoration = LinearVerticalItemDecoration(rowSpacing)
         )
 
@@ -168,7 +168,7 @@ class RecyclerCosmetic<RVLM : RecyclerView.LayoutManager, RVID : RecyclerView.It
             @Px bottom: Int = 0,
             isReverseLayout: Boolean = false
         ) = from(
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, isReverseLayout),
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, isReverseLayout),
             itemDecoration = LinearVerticalItemDecoration(left, firstTop, top, right, lastBottom, bottom)
         )
 
@@ -186,7 +186,7 @@ class RecyclerCosmetic<RVLM : RecyclerView.LayoutManager, RVID : RecyclerView.It
             @Px columnSpacing: Int = context.defaultSpacingPx(),
             isReverseLayout: Boolean = false
         ) = from(
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, isReverseLayout),
+            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, isReverseLayout),
             itemDecoration = LinearHorizontalItemDecoration(columnSpacing)
         )
 
@@ -215,7 +215,7 @@ class RecyclerCosmetic<RVLM : RecyclerView.LayoutManager, RVID : RecyclerView.It
             @Px bottom: Int = 0,
             isReverseLayout: Boolean = false
         ) = from(
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, isReverseLayout),
+            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, isReverseLayout),
             itemDecoration = LinearHorizontalItemDecoration(firstLeft, left, top, lastRight, right, bottom)
         )
     }

@@ -23,6 +23,7 @@
 
 package com.highcapable.betterandroid.ui.component.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
@@ -97,13 +98,6 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
 
     /** Whether the adapter has a footer view. */
     private val hasFooterView get() = boundFooterItemViewCallback != null
-
-    /**
-     * Get the current position of the item view excluding the header view.
-     * @receiver the current position.
-     * @return [Int]
-     */
-    private fun Int.overflowPosition() = if (hasHeaderView) this - 1 else this
 
     /**
      * Get the entity [E].
@@ -391,7 +385,149 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     @Deprecated(message = "Use onItemViewsLongClick instead.")
     fun onItemViewsLongClick(onLongClick: (view: View, viewType: Int, entity: E, position: Int) -> Boolean) = apply {}
 
-    override fun build() = object : RecyclerView.Adapter<RecyclerAdapterBuilder<E>.BaseRecyclerHolder>() {
+    override fun build() = Instance()
+
+    /**
+     * The [RecyclerAdapterBuilder] instance.
+     */
+    inner class Instance internal constructor() : RecyclerView.Adapter<RecyclerAdapterBuilder<E>.BaseRecyclerHolder>() {
+
+        /**
+         * Get the current position of the item view excluding the header view.
+         * @receiver the current position.
+         * @return [Int]
+         */
+        private fun Int.excludingPosition() = if (hasHeaderView) this - 1 else this
+
+        /**
+         * Get the current position of the item view including the header view.
+         * @receiver the current position.
+         * @return [Int]
+         */
+        private fun Int.includingPosition() = if (hasHeaderView) this + 1 else this
+
+        /**
+         * The typed adapter of [RecyclerAdapterBuilder].
+         *
+         * This is an extension to [RecyclerView.Adapter] to support header and footer layouts.
+         */
+        inner class TypedAdapter internal constructor() {
+
+            /** The current instance of [RecyclerAdapterBuilder.Instance]. */
+            private val instance = this@Instance
+
+            /**
+             * Convert the current position to the compatible position.
+             * @param position the current position.
+             * @return [Int]
+             */
+            internal fun compatPosition(position: Int) = position.includingPosition()
+
+            /**
+             * @see RecyclerView.Adapter.notifyDataSetChanged
+             */
+            @SuppressLint("NotifyDataSetChanged")
+            fun notifyDataSetChanged() = instance.notifyDataSetChanged()
+
+            /**
+             * Notify the header view changed whether it exists, if not will ignore.
+             * @see RecyclerView.Adapter.notifyItemChanged
+             */
+            fun notifyHeaderItemChanged() {
+                if (hasHeaderView) instance.notifyItemChanged(0)
+            }
+
+            /**
+             * Notify the footer view changed whether it exists, if not will ignore.
+             * @see RecyclerView.Adapter.notifyItemChanged
+             */
+            fun notifyFooterItemChanged() {
+                if (hasFooterView) instance.notifyItemChanged(itemCount - 1)
+            }
+
+            /**
+             * @see RecyclerView.Adapter.notifyItemChanged
+             */
+            fun notifyItemChanged(position: Int) {
+                val current = position.includingPosition()
+                instance.notifyItemChanged(current)
+            }
+
+            /**
+             * @see RecyclerView.Adapter.notifyItemChanged
+             */
+            fun notifyItemChanged(position: Int, payload: Any?) {
+                val current = position.includingPosition()
+                instance.notifyItemChanged(current, payload)
+            }
+
+            /**
+             * @see RecyclerView.Adapter.notifyItemRangeChanged
+             */
+            fun notifyItemRangeChanged(positionStart: Int, itemCount: Int) {
+                val start = positionStart.includingPosition()
+                val count = itemCount.includingPosition()
+                instance.notifyItemRangeChanged(start, count)
+            }
+
+            /**
+             * @see RecyclerView.Adapter.notifyItemRangeChanged
+             */
+            fun notifyItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
+                val start = positionStart.includingPosition()
+                val count = itemCount.includingPosition()
+                instance.notifyItemRangeChanged(start, count, payload)
+            }
+
+            /**
+             * @see RecyclerView.Adapter.notifyItemInserted
+             */
+            fun notifyItemInserted(position: Int) {
+                val current = position.includingPosition()
+                instance.notifyItemInserted(current)
+            }
+
+            /**
+             * @see RecyclerView.Adapter.notifyItemMoved
+             */
+            fun notifyItemMoved(fromPosition: Int, toPosition: Int) {
+                val from = fromPosition.includingPosition()
+                val to = toPosition.includingPosition()
+                instance.notifyItemMoved(from, to)
+            }
+
+            /**
+             * @see RecyclerView.Adapter.notifyItemRangeInserted
+             */
+            fun notifyItemRangeInserted(positionStart: Int, itemCount: Int) {
+                val start = positionStart.includingPosition()
+                val count = itemCount.includingPosition()
+                instance.notifyItemRangeInserted(start, count)
+            }
+
+            /**
+             * @see RecyclerView.Adapter.notifyItemRemoved
+             */
+            fun notifyItemRemoved(position: Int) {
+                val current = position.includingPosition()
+                instance.notifyItemRemoved(current)
+            }
+
+            /**
+             * @see RecyclerView.Adapter.notifyItemRangeRemoved
+             */
+            fun notifyItemRangeRemoved(positionStart: Int, itemCount: Int) {
+                val start = positionStart.includingPosition()
+                val count = itemCount.includingPosition()
+                instance.notifyItemRangeRemoved(start, count)
+            }
+        }
+
+        /**
+         * Get the typed adapter of [RecyclerAdapterBuilder].
+         * @return [TypedAdapter]
+         */
+        val typedAdapter = TypedAdapter()
 
         /**
          * Get the current each item function callbacks.
@@ -433,18 +569,15 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
 
         override fun onBindViewHolder(holder: RecyclerAdapterBuilder<E>.BaseRecyclerHolder, position: Int) {
             when {
-                hasHeaderView && position == 0 || hasFooterView && position == itemCount - 1 -> {
-                    val dPosition = AdapterPosition.from { holder.adapterPosition }
-                    when (holder) {
-                        is BindingRecyclerHolder ->
-                            boundHeaderItemViewCallback?.onBindCallback?.invoke(holder.binding, holder.binding.root, Any(), dPosition)
-                        is CommonRecyclerHolder ->
-                            boundHeaderItemViewCallback?.onBindCallback?.invoke(null, holder.rootView, Any(), dPosition)
-                    }
+                hasHeaderView && position == 0 || hasFooterView && position == itemCount - 1 -> when (holder) {
+                    is BindingRecyclerHolder ->
+                        boundHeaderItemViewCallback?.onBindCallback?.invoke(holder.binding, holder.binding.root, Any(), AdapterPosition.none())
+                    is CommonRecyclerHolder ->
+                        boundHeaderItemViewCallback?.onBindCallback?.invoke(null, holder.rootView, Any(), AdapterPosition.none())
                 }
                 else -> {
-                    val sPosition = holder.adapterPosition.overflowPosition()
-                    val dPosition = AdapterPosition.from { holder.adapterPosition.overflowPosition() }
+                    val sPosition = holder.adapterPosition.excludingPosition()
+                    val dPosition = AdapterPosition.from { holder.adapterPosition.excludingPosition() }
                     boundItemViewsCallbacks.forEach {
                         if (it.viewType == holder.viewType) when (holder) {
                             is BindingRecyclerHolder -> getCurrentEntity(sPosition)?.let { entity ->
@@ -463,7 +596,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
                         }
                     }.also { callbacks ->
                         if (callbacks.isNotEmpty()) holder.rootView.setOnClickListener {
-                            val ePosition = holder.adapterPosition.overflowPosition()
+                            val ePosition = holder.adapterPosition.excludingPosition()
                             callbacks.forEach { (_, callback) ->
                                 getCurrentEntity(ePosition)?.let { entity -> callback(it, entity, ePosition) }
                             }
@@ -477,7 +610,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
                         }
                     }.also { callbacks ->
                         if (callbacks.isNotEmpty()) holder.rootView.setOnLongClickListener {
-                            val ePosition = holder.adapterPosition.overflowPosition()
+                            val ePosition = holder.adapterPosition.excludingPosition()
                             var result = false
                             callbacks.forEach { (_, callback) ->
                                 result = result || getCurrentEntity(ePosition)?.let { entity -> callback(it, entity, ePosition) } == true
@@ -491,13 +624,13 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
         override fun getItemViewType(position: Int) = when {
             hasHeaderView && position == 0 -> HEADER_VIEW_TYPE
             hasFooterView && position == itemCount - 1 -> FOOTER_VIEW_TYPE
-            else -> getCurrentEntity(position.overflowPosition())?.let { entityTypeCallback?.invoke(it, position.overflowPosition()) }
+            else -> getCurrentEntity(position.excludingPosition())?.let { entityTypeCallback?.invoke(it, position.excludingPosition()) }
                 ?: DEFAULT_VIEW_TYPE
         }
         override fun getItemId(position: Int) = when {
             hasHeaderView && position == 0 -> HEADER_VIEW_TYPE.toLong()
             hasFooterView && position == itemCount - 1 -> FOOTER_VIEW_TYPE.toLong()
-            else -> getCurrentEntity(position.overflowPosition())?.let { entityIdCallback?.invoke(it, position.overflowPosition()) }
+            else -> getCurrentEntity(position.excludingPosition())?.let { entityIdCallback?.invoke(it, position.excludingPosition()) }
                 ?: position.toLong()
         }
         override fun getItemCount() = (dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: 0) +

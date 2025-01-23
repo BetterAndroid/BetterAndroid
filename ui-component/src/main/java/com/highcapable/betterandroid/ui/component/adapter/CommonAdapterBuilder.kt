@@ -204,7 +204,12 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
     fun onItemViewsLongClick(id: Long = ITEM_NO_ID, onLongClick: (view: View, entity: E, position: Int) -> Boolean) =
         apply { itemViewsOnLongClickCallbacks[id] = onLongClick }
 
-    override fun build(): BaseAdapter = object : BaseAdapter(), Filterable {
+    override fun build() = Instance()
+
+    /**
+     * The [CommonAdapterBuilder] instance.
+     */
+    inner class Instance internal constructor() : BaseAdapter(), Filterable {
         override fun getFilter() = filterCallback?.invoke() ?: emptyFilterCallback()
         override fun getCount() = dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: 0
         override fun getItem(position: Int) = getCurrentEntity(position)
@@ -253,7 +258,7 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
                     .also { callbacks ->
                         if (callbacks.isNotEmpty()) setOnLongClickListener {
                             var result = false
-                            callbacks.forEach { (_, callback) -> 
+                            callbacks.forEach { (_, callback) ->
                                 getCurrentEntity(position)?.let { entity -> result = callback(it, entity, position) }
                             }; result
                         }

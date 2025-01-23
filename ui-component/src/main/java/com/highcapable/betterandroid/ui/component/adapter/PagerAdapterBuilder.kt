@@ -148,7 +148,12 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
         })
     }
 
-    override fun build() = object : PagerAdapter() {
+    override fun build() = Instance()
+
+    /**
+     * The [PagerAdapterBuilder] instance.
+     */
+    inner class Instance internal constructor() : PagerAdapter() {
 
         init {
             if ((dataSetCount > 0 || !listDataCallback?.invoke().isNullOrEmpty()) && boundItemViewsCallbacks.size > 1)
