@@ -40,6 +40,12 @@ class AdapterPosition private constructor() {
         fun from(callback: () -> Int) = AdapterPosition().apply {
             dynamicValueCallback = callback
         }
+
+        /**
+         * Create a new no effect [AdapterPosition].
+         * @return [AdapterPosition]
+         */
+        fun none() = AdapterPosition()
     }
 
     /** The dynamic value callback. */
