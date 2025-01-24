@@ -2257,6 +2257,132 @@ val recyclerView: RecyclerView
 val layoutManager = recyclerView.layoutManager<LinearLayoutManager>()
 ```
 
+### Adapter Extensions
+
+::: tip Contents of This Section
+
+[Adapter → notifyAllItemsInserted](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/notify-all-items-inserted)
+
+[Adapter → notifyAllItemsChanged](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/notify-all-items-changed)
+
+[Adapter → clearAndNotify](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/clear-and-notify)
+
+[Adapter → notifyDataSetChangedIgnore](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/notify-data-set-changed-ignore)
+
+Extensions for adapters.
+
+:::
+
+The adapter extensions introduced in this section are mostly extensions of `RecyclerView.Adapter`.
+
+Usually, we need to use methods like `notifyItemInserted`, `notifyItemChanged`, etc. to notify the adapter that the data has changed.
+
+When we add data to the dataset all at once, we usually need to use `notifyItemRangeInserted` to notify the adapter that the data has changed.
+
+> The following example
+
+```kotlin
+// Assume this is your RecyclerView.Adapter.
+val adapter: RecyclerView.Adapter<*>
+// Assume this is your dataset, initially empty.
+val dataSet: MutableList<MyBean>
+// Add some data to the dataset.
+dataSet.addAll(...)
+// Notify the adapter that the data has changed.
+adapter.notifyItemRangeInserted(0, dataSet.size)
+```
+
+When the data is confirmed to be added from 0, `BetterAndroid` provides you with a simpler way to complete this.
+Now you can use the following method to notify the adapter that the data has changed.
+
+> The following example
+
+```kotlin
+// Assume this is your RecyclerView.Adapter.
+val adapter: RecyclerView.Adapter<*>
+// Assume this is your dataset, initially empty.
+val dataSet: MutableList<MyBean>
+// Add some data to the dataset.
+dataSet.addAll(...)
+// Notify the adapter that the data has changed.
+adapter.notifyAllItemsInserted()
+```
+
+The above method will use `adapter.itemCount` by default to get the size of the dataset, no need to manually specify the range to be updated.
+
+At this time, please ensure that your adapter returns the correct `itemCount`, otherwise, please manually pass in `dataSet`.
+
+> The following example
+
+```kotlin
+// Notify the adapter that the data has changed.
+adapter.notifyAllItemsInserted(dataSet)
+```
+
+Similarly, when the data is confirmed to have all changed (for example, in a multi-select state list, updating the selected and unselected checkbox states),
+you can use the following method to notify the adapter that the data has changed.
+
+> The following example
+
+```kotlin
+// Assume this is your RecyclerView.Adapter.
+val adapter: RecyclerView.Adapter<*>
+// Assume this is your dataset.
+val dataSet: MutableList<MyBean>
+// Simulate operating the dataset (e.g., select all action).
+dataSet.forEach { it.isSelected = true }
+// Notify the adapter that the data has changed.
+adapter.notifyAllItemsChanged()
+```
+
+Similarly, please ensure that your adapter returns the correct `itemCount`, otherwise, please manually pass in `dataSet`.
+
+> The following example
+
+```kotlin
+// Notify the adapter that the data has changed.
+adapter.notifyAllItemsChanged(dataSet)
+```
+
+When we need to clear the dataset and notify the adapter that the data has changed, we usually need to use `notifyItemRangeRemoved` to notify the adapter that the data has changed.
+
+> The following example
+
+```kotlin
+// Assume this is your RecyclerView.Adapter.
+val adapter: RecyclerView.Adapter<*>
+// Assume this is your dataset.
+val dataSet: MutableList<MyBean>
+// Save the current data size.
+val count = dataSet.size
+// Clear the dataset.
+dataSet.clear()
+// Notify the adapter that the data has changed.
+adapter.notifyItemRangeRemoved(0, count)
+```
+
+This process is still cumbersome, `BetterAndroid` provides a simpler way for this. Now you can use the following method to clear the dataset and notify the adapter that the data has changed.
+This method will automatically calculate the size of the dataset.
+
+> The following example
+
+```kotlin
+// Assume this is your RecyclerView.Adapter.
+val adapter: RecyclerView.Adapter<*>
+// Assume this is your dataset.
+val dataSet: MutableList<MyBean>
+// Clear the dataset and notify the adapter that the data has changed.
+adapter.clearAndNotify(dataSet)
+```
+
+::: tip
+
+There are also some other extensions that can be used. `notifyDataSetChangedIgnore` will ignore the Lint warnings given during coding and directly provide you with the use of `notifyDataSetChanged`.
+
+However, this method is still not recommended because it will cause the entire list to refresh, which will cause performance issues in large datasets.
+
+:::
+
 ### ViewBinding Extension
 
 ::: tip Contents of This Section
