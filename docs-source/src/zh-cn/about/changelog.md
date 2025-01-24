@@ -10,7 +10,17 @@
 
 ## ui-component
 
-### 1.0.5 | 2024.03.08 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.6 | 2025.01.25 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- `AppBindingActivity` 中新增 `onPrepareContentView` 方法，可自定义装载布局前的操作
+- 修复适配器构造器中可能出现数据集为空下标越界的问题
+- `RecyclerAdapterBuilder` 中新增 `AdapterPosition` 实现动态下标功能
+- 修复适配器构造器中使用布局 ID 装载时父布局提前装载造成的严重错误
+- 新增自定义的 `RecyclerView` 布局管理器并修改默认的布局管理器以实现在添加了自定义的头部和末位布局时正确处理下标
+- 新增 `RecyclerView.Adapter` 的 `wrapper` 扩展方法，通过包装实例实现在添加了自定义的头部和末位布局时正确处理下标
+- 修复 `RecyclerAdapterBuilder` 中末位布局当做头部布局添加的严重错误
+
+### 1.0.5 | 2024.03.08 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 移除了所有扩展方法 `kt` 文件的 `Factory` 后缀
 - 移除了上一个版本中已作废的文件
@@ -60,7 +70,30 @@
 
 ## ui-extension
 
-### 1.0.4 | 2024.05.05 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.5 | 2025.01.25 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 修复 `TextView` 扩展中的 `updateText` 方法可能在重写了 `setText` 方法后设置的文本光标下标越界的问题
+- 修改 `TextView` 扩展中 `setDigits` 方法的 `inputType` 参数默认从 `TextView` 自身读取
+- 修改 `TextView` 扩展中 `updateTypeface` 方法的 `tf` 参数默认为 `null`，防止设置非预期的字体样式
+- `TextView` 扩展中新增 `textToString`、`hintToString` 方法
+- 修复 `Toast` 扩展中非主线程可能导致无法弹出 `Toast` 的问题
+- `Fragment` 扩展中新增 `parentFragment` 泛型方法
+- `Activity` 扩展中 `startActivity` 方法新增 `options` 参数
+- 新增 `LifecycleOwner` 扩展
+- 新增 `Coroutines` 协程功能相关扩展
+- `View` 扩展中新增 `setIntervalOnClickListener` 方法
+- `View` 扩展中新增 `child`、`childOrNull`、`firstChild`、`firstChildOrNull`、`lastChild`、`lastChildOrNull` 非泛型实现方法
+- 修正 `Resources` 中的方法命名 ~~`isThemeAttrsIdsValueEquals`~~ 为 `areThemeAttrsIdsValueEquals`
+- `Resources` 扩展中新增大量针对 `TypedArray` 的扩展方法
+- **<u>⚠️ 破坏性更新</u>**，大量重构 `Fragment` 扩展中的方法，并独立出 `FragmentTransaction` 方法，**<u>迁移可能需要成本</u>**
+- `Bitmap` 扩展中新增 `FileDescriptor.decodeToBitmap` 和 `FileDescriptor.decodeToBitmapOrNull` 方法
+- 新增 `RecyclerView` 扩展
+- `View` 扩展中新增 `tag`、`setTag`、`animate` 方法
+- `View` 扩展中新增 `tooltipTextCompat` 方法
+- `ViewBindingBuilder` 中的 `toString` 方法现在将返回 `ViewBinding` 所持有的完整对象名称
+- 新增 `Adapter` 扩展
+
+### 1.0.4 | 2024.05.05 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 整合 `Fragment` 扩展中的进入、退出动画方法参数
 - 移除默认的 `Fragment` 扩展中的过渡动画，并删除相关资源文件
@@ -126,7 +159,11 @@
 
 ## system-extension
 
-### 1.0.1 | 2024.01.02 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.2 | 2025.01.25 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- `Broadcast` 扩展中新增 `BroadcastReceiver` 方法并修改 `registerReceiver` 方法的返回值为其自身
+
+### 1.0.1 | 2024.01.02 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 更名 `SystemVersion` 中的部分命名不正确方法
 - `SystemVersion` 中新增 `name` 属性

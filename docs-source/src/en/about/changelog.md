@@ -18,7 +18,17 @@ Time zone of version release date: **UTC+8**
 
 ## ui-component
 
-### 1.0.5 | 2024.03.08 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.6 | 2025.01.25 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Added `onPrepareContentView` method in `AppBindingActivity` to customize operations before loading the layout
+- Fixed the issue of out-of-bounds index when the data set is empty in the adapter builder
+- Added `AdapterPosition` in `RecyclerAdapterBuilder` to implement dynamic index functionality
+- Fixed a critical error caused by the parent layout being loaded prematurely when using layout ID in the adapter builder
+- Added a custom `RecyclerView` layout manager and modified the default layout manager to correctly handle indexes when custom header and footer layouts are added
+- Added `wrapper` extension method for `RecyclerView.Adapter` to correctly handle indexes when custom header and footer layouts are added by wrapping instances
+- Fixed a critical error where the footer layout was added as a header layout in `RecyclerAdapterBuilder`
+
+### 1.0.5 | 2024.03.08 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Removed `Factory` suffix from all extension method `kt` files
 - Removed deprecated files in the previous version
@@ -71,7 +81,30 @@ Time zone of version release date: **UTC+8**
 
 ## ui-extension
 
-### 1.0.4 | 2024.05.05 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.5 | 2025.01.25 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Fixed the issue where the `updateText` method in the `TextView` extension could cause an out-of-bounds cursor index after overriding the `setText` method
+- Modified the `setDigits` method in the `TextView` extension to read the `inputType` parameter from the `TextView` itself by default
+- Modified the `updateTypeface` method in the `TextView` extension to set the `tf` parameter to `null` by default to prevent setting unexpected font styles
+- Added `textToString` and `hintToString` methods in the `TextView` extension
+- Fixed the issue where `Toast` might not pop up in non-main threads in the `Toast` extension
+- Added a generic `parentFragment` method in the `Fragment` extension
+- Added an `options` parameter to the `startActivity` method in the `Activity` extension
+- Added `LifecycleOwner` extension
+- Added `Coroutines` coroutine-related extensions
+- Added `setIntervalOnClickListener` method in the `View` extension
+- Added non-generic implementations of `child`, `childOrNull`, `firstChild`, `firstChildOrNull`, `lastChild`, `lastChildOrNull` methods in the `View` extension
+- Corrected the method name `isThemeAttrsIdsValueEquals` to `areThemeAttrsIdsValueEquals` in `Resources`
+- Added a large number of extension methods for `TypedArray` in the `Resources` extension
+- **<u>⚠️ Breaking Change</u>**, extensively refactored methods in the `Fragment` extension and separated `FragmentTransaction` methods, **<u>migration may require effort</u>**
+- Added `FileDescriptor.decodeToBitmap` and `FileDescriptor.decodeToBitmapOrNull` methods in the `Bitmap` extension
+- Added `RecyclerView` extension
+- Added `tag`, `setTag`, and `animate` methods in the `View` extension
+- Added `tooltipTextCompat` method in the `View` extension
+- The `toString` method in `ViewBindingBuilder` now returns the full object name held by `ViewBinding`
+- Added `Adapter` extension
+
+### 1.0.4 | 2024.05.05 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Integrate the parameters of the entry and exit animation methods in the `Fragment` extension
 - Remove the default transition animation in the `Fragment` extension and delete the related resource files
@@ -137,7 +170,11 @@ Time zone of version release date: **UTC+8**
 
 ## system-extension
 
-### 1.0.1 | 2024.01.02 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.2 | 2025.01.25 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Added `BroadcastReceiver` method in `Broadcast` extension and modified the return value of `registerReceiver` method to itself
+
+### 1.0.1 | 2024.01.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Renamed some incorrectly named methods in `SystemVersion`
 - Added `name` attribute in `SystemVersion`
