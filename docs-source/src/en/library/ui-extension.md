@@ -1985,6 +1985,8 @@ view.layoutParams = layoutParams
 
 [LayoutInflater → inflate](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/inflate)
 
+[LayoutInflater → inflateOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/inflate-or-null)
+
 Extensions for `LayoutInflater`.
 
 :::
@@ -2001,9 +2003,13 @@ val view: ViewGroup
 // Assume this is your context.
 val context: Context
 // You can inflate the layout in ViewGroup using the following method.
-val myView = context.layoutInflater.inflate(R.layout.my_layout, root = view)
-// You can set the attachToRoot parameter to decide whether to add it to the ViewGroup at the same time.
+// If root is not null, attachToRoot defaults to true.
 val myView = context.layoutInflater.inflate(R.layout.my_layout, root = view, attachToRoot = true)
+// You can convert the inflated layout to the specified type without writing an "as".
+val myView = context.layoutInflater.inflate<LinearLayout>(R.layout.my_layout, root = view)
+// You can use the overloaded function to ensure the
+// inflated layout type is correct, inflate failure or type error will return null.
+val myView = context.layoutInflater.inflateOrNull<LinearLayout>(R.layout.my_layout, root = view)
 ```
 
 ### TextView Extension

@@ -54,7 +54,7 @@ val Context.layoutInflater
 inline fun <reified V : View> LayoutInflater.inflate(
     @LayoutRes resource: Int,
     root: ViewGroup? = null,
-    attachToRoot: Boolean = false
+    attachToRoot: Boolean = root != null
 ) = inflate(resource, root, attachToRoot) as? V?
     ?: error("This inflated view ${resource.toHexResourceId()} is not a type of ${classOf<V>()} or is null.")
 
@@ -68,8 +68,8 @@ inline fun <reified V : View> LayoutInflater.inflate(
 inline fun <reified V : View> LayoutInflater.inflateOrNull(
     @LayoutRes resource: Int,
     root: ViewGroup? = null,
-    attachToRoot: Boolean = false
-) = inflate(resource, root, attachToRoot) as? V?
+    attachToRoot: Boolean = root != null
+) = runCatching { inflate(resource, root, attachToRoot) as? V? }.getOrNull()
 
 /**
  * Extension for [LayoutInflater.inflate].
@@ -83,7 +83,7 @@ inline fun <reified V : View> LayoutInflater.inflateOrNull(
 fun LayoutInflater.inflate(
     @LayoutRes resource: Int,
     root: ViewGroup? = null,
-    attachToRoot: Boolean = false
+    attachToRoot: Boolean = root != null
 ) = inflate<View>(resource, root, attachToRoot)
 
 /**
@@ -96,5 +96,5 @@ fun LayoutInflater.inflate(
 fun LayoutInflater.inflateOrNull(
     @LayoutRes resource: Int,
     root: ViewGroup? = null,
-    attachToRoot: Boolean = false
+    attachToRoot: Boolean = root != null
 ) = inflateOrNull<View>(resource, root, attachToRoot)

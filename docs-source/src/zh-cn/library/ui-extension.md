@@ -1920,6 +1920,8 @@ view.layoutParams = layoutParams
 
 [LayoutInflater → inflate](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/inflate)
 
+[LayoutInflater → inflateOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/inflate-or-null)
+
 适用于 `LayoutInflater` 的扩展。
 
 :::
@@ -1938,7 +1940,12 @@ val context: Context
 // 你可以在 ViewGroup 中使用以下方式装载布局
 val myView = context.layoutInflater.inflate(R.layout.my_layout, root = view)
 // 你可以设置 attachToRoot 参数来决定是否同时将其添加到 ViewGroup 中
+// 如果 root 不为 null，attachToRoot 默认为 true
 val myView = context.layoutInflater.inflate(R.layout.my_layout, root = view, attachToRoot = true)
+// 你可以将装载后的布局转换为指定的类型而无需再写一个 "as"
+val myView = context.layoutInflater.inflate<LinearLayout>(R.layout.my_layout, root = view)
+// 你可以使用重载函数以确保装载的布局类型正确，装载失败或类型错误将返回 null
+val myView = context.layoutInflater.inflateOrNull<LinearLayout>(R.layout.my_layout, root = view)
 ```
 
 ### TextView 扩展
