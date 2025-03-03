@@ -38,10 +38,6 @@ import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 import android.view.ViewPropertyAnimator
 import android.view.inputmethod.InputMethodManager
-import android.widget.AbsListView
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import androidx.annotation.Px
 import androidx.core.content.getSystemService
 import androidx.core.view.WindowCompat
@@ -57,7 +53,9 @@ import androidx.core.view.updateMargins
 import androidx.core.view.updatePadding
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 import com.highcapable.betterandroid.ui.extension.R
+import com.highcapable.yukireflection.factory.buildOf
 import com.highcapable.yukireflection.factory.classOf
+import com.highcapable.yukireflection.type.java.IntType
 
 /**
  * Get the view's location on screen.
@@ -700,9 +698,38 @@ inline fun <reified V : View> ViewGroup.inflate(resId: Int, attachToRoot: Boolea
  * @param widthMatchParent set width to [LayoutParamsMatchParent], default false.
  * @param heightMatchParent set height to [LayoutParamsMatchParent], default false.
  * @return [VGLP]
- * @throws IllegalStateException if [VGLP] is not supported.
+ * @throws IllegalStateException if [VGLP] create failed.
  */
 inline fun <reified VGLP : ViewGroup.LayoutParams> ViewLayoutParams(
+    @Px width: Int = LayoutParamsUnspecified,
+    @Px height: Int = LayoutParamsUnspecified,
+    matchParent: Boolean = false,
+    widthMatchParent: Boolean = false,
+    heightMatchParent: Boolean = false
+) = ViewLayoutParams(classOf<VGLP>(), width, height, matchParent, widthMatchParent, heightMatchParent)
+
+/**
+ * Create a new [ViewGroup.LayoutParams].
+ *
+ * Usage:
+ *
+ * ```kotlin
+ * // Create a LinearLayout.LayoutParams with fully WRAP_CONTENT.
+ * val linLayoutParams = ViewLayoutParams(LinearLayout.LayoutParams::class.java)
+ * // Create a FrameLayout.LayoutParams with fully MATCH_PARENT.
+ * val fraLayoutParams = ViewLayoutParams(FrameLayout.LayoutParams::class.java, matchParent = true)
+ * ```
+ * @param width the layout params width (px).
+ * @param height the layout params height (px).
+ * @param matchParent set width and height to [LayoutParamsMatchParent], default false.
+ * @param widthMatchParent set width to [LayoutParamsMatchParent], default false.
+ * @param heightMatchParent set height to [LayoutParamsMatchParent], default false.
+ * @return [VGLP]
+ * @throws IllegalStateException if [VGLP] create failed.
+ */
+@JvmOverloads
+fun <VGLP : ViewGroup.LayoutParams> ViewLayoutParams(
+    lpClass: Class<VGLP>,
     @Px width: Int = LayoutParamsUnspecified,
     @Px height: Int = LayoutParamsUnspecified,
     matchParent: Boolean = false,
@@ -719,15 +746,12 @@ inline fun <reified VGLP : ViewGroup.LayoutParams> ViewLayoutParams(
         matchParent || heightMatchParent -> LayoutParamsMatchParent
         else -> LayoutParamsWrapContent
     }
-    return when (classOf<VGLP>()) {
-        classOf<AbsListView.LayoutParams>() -> AbsListView.LayoutParams(absWidth, absHeight) as VGLP
-        classOf<LinearLayout.LayoutParams>() -> LinearLayout.LayoutParams(absWidth, absHeight) as VGLP
-        classOf<RelativeLayout.LayoutParams>() -> RelativeLayout.LayoutParams(absWidth, absHeight) as VGLP
-        classOf<FrameLayout.LayoutParams>() -> FrameLayout.LayoutParams(absWidth, absHeight) as VGLP
-        classOf<ViewGroup.MarginLayoutParams>() -> ViewGroup.MarginLayoutParams(absWidth, absHeight) as VGLP
-        classOf<ViewGroup.LayoutParams>() -> ViewGroup.LayoutParams(absWidth, absHeight) as VGLP
-        else -> error("Unknown ViewGroup.LayoutParams type ${classOf<VGLP>()}.")
-    }
+    return lpClass.buildOf<VGLP>(absWidth, absHeight) {
+        param(IntType, IntType)
+    } ?: error(
+        "Create ViewGroup.LayoutParams failed. " +
+            "Could not found the default constructor LayoutParams(width, height) in $lpClass."
+    )
 }
 
 /** Reference to [ViewGroup.LayoutParams.MATCH_PARENT]. */
@@ -738,29 +762,3 @@ const val LayoutParamsWrapContent = ViewGroup.LayoutParams.WRAP_CONTENT
 
 /** The unspecified layout params value. */
 private const val LayoutParamsUnspecified = LayoutParamsWrapContent - 1
-
-/**
- * Views layout params tool.
- *
- * - This class is deprecated, use [ViewLayoutParams] function instead.
- */
-@Deprecated(message = "Use ViewLayoutParams function instead.")
-object ViewLayoutParams {
-
-    /**
-     * Create a new [ViewGroup.LayoutParams].
-     *
-     * - This function is deprecated, use [ViewLayoutParams] function instead.
-     */
-    @Deprecated(
-        message = "Use ViewLayoutParams instead.",
-        replaceWith = ReplaceWith("ViewLayoutParams(matchParent, widthMatchParent, heightMatchParent, width, height)")
-    )
-    inline fun <reified VGLP : ViewGroup.LayoutParams> create(
-        matchParent: Boolean = false,
-        widthMatchParent: Boolean = false,
-        heightMatchParent: Boolean = false,
-        @Px width: Int = LayoutParamsUnspecified,
-        @Px height: Int = LayoutParamsUnspecified
-    ) = ViewLayoutParams<VGLP>(width, height, matchParent, widthMatchParent, heightMatchParent)
-}
