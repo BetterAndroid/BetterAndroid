@@ -70,7 +70,15 @@
 
 ## ui-extension
 
-### 1.0.5 | 2025.01.25 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.6 | 2025.03.04 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 调整 `LayoutInflater` 扩展中的 `inflate` 方法和 `attachToParent` 参数的默认行为
+- 修正 `View` 扩展中的 ~~`updateMargin`~~ 方法为 `updateMargins` 并添加 `setMargins` 方法
+- 完全移除旧版 `ViewLayoutParams` 类，现在请使用 `ViewLayoutParams` 方法代替
+- 修复 `ViewLayoutParams` 相关逻辑，现在它可以创建任意基于 `ViewGroup.LayoutParams` 的对象
+- 重载 `ViewLayoutParams` 方法以支持直接传入 `lpClass` 参数
+
+### 1.0.5 | 2025.01.25 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 修复 `TextView` 扩展中的 `updateText` 方法可能在重写了 `setText` 方法后设置的文本光标下标越界的问题
 - 修改 `TextView` 扩展中 `setDigits` 方法的 `inputType` 参数默认从 `TextView` 自身读取

@@ -81,7 +81,15 @@ Time zone of version release date: **UTC+8**
 
 ## ui-extension
 
-### 1.0.5 | 2025.01.25 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.6 | 2025.03.04 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Adjusted the default behavior of the `inflate` method and `attachToParent` parameter in the `LayoutInflater` extension
+- Corrected the `updateMargin` method in the `View` extension to `updateMargins` and added the `setMargins` method
+- Completely removed the old `ViewLayoutParams` class, now please use the `ViewLayoutParams` method instead
+- Fixed the logic related to `ViewLayoutParams`, now it can create any object based on `ViewGroup.LayoutParams`
+- Overloaded the `ViewLayoutParams` method to support directly passing in the `lpClass` parameter
+
+### 1.0.5 | 2025.01.25 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Fixed the issue where the `updateText` method in the `TextView` extension could cause an out-of-bounds cursor index after overriding the `setText` method
 - Modified the `setDigits` method in the `TextView` extension to read the `inputType` parameter from the `TextView` itself by default
