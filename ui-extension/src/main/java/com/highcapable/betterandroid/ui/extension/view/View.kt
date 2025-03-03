@@ -51,7 +51,9 @@ import androidx.core.view.marginBottom
 import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
 import androidx.core.view.marginTop
+import androidx.core.view.setMargins
 import androidx.core.view.updateLayoutParams
+import androidx.core.view.updateMargins
 import androidx.core.view.updatePadding
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 import com.highcapable.betterandroid.ui.extension.R
@@ -464,11 +466,40 @@ fun View.updatePadding(@Px horizontal: Int = -1, @Px vertical: Int = -1) {
 }
 
 /**
- * Updates this view's margin.
+ * Updates this view's margins.
  *
- * Same like [View.updatePadding].
+ * - This function is deprecated, use [View.updateMargins] function instead.
+ */
+@Deprecated(
+    message = "Use View.updateMargins instead.",
+    replaceWith = ReplaceWith("updateMargins(left, top, right, bottom)")
+)
+@JvmOverloads
+fun View.updateMargin(
+    @Px left: Int = marginLeft,
+    @Px top: Int = marginTop,
+    @Px right: Int = marginRight,
+    @Px bottom: Int = marginBottom
+) = updateMargins(left, top, right, bottom)
+
+/**
+ * Updates this view's horizontal or vertical margins.
  *
- * This view layout params need to be a [ViewGroup.MarginLayoutParams].
+ * - This function is deprecated, use [View.updateMargins] function instead.
+ */
+@Deprecated(
+    message = "Use View.updateMargins instead.",
+    replaceWith = ReplaceWith("updateMargins(horizontal, vertical)")
+)
+@JvmOverloads
+@JvmName("updateHVMargin")
+fun View.updateMargin(@Px horizontal: Int = -1, @Px vertical: Int = -1) = updateMargins(horizontal, vertical)
+
+/**
+ * Updates this view's margins.
+ *
+ * This view layout params need to be a [ViewGroup.MarginLayoutParams], if not will be ignored.
+ * @see ViewGroup.MarginLayoutParams.updateMargins
  * @receiver [View]
  * @param left the left margin (px).
  * @param top the top margin (px).
@@ -476,7 +507,7 @@ fun View.updatePadding(@Px horizontal: Int = -1, @Px vertical: Int = -1) {
  * @param bottom the bottom margin (px).
  */
 @JvmOverloads
-fun View.updateMargin(
+fun View.updateMargins(
     @Px left: Int = marginLeft,
     @Px top: Int = marginTop,
     @Px right: Int = marginRight,
@@ -484,28 +515,70 @@ fun View.updateMargin(
 ) {
     if (layoutParams !is ViewGroup.MarginLayoutParams) return
     updateLayoutParams<ViewGroup.MarginLayoutParams> {
-        leftMargin = left
-        topMargin = top
-        rightMargin = right
-        bottomMargin = bottom
+        updateMargins(left, top, right, bottom)
     }
 }
 
 /**
- * Updates this view's horizontal or vertical margin.
+ * Updates this view's horizontal or vertical margins.
  *
- * Same like [View.updatePadding].
- *
- * This view layout params need to be a [ViewGroup.MarginLayoutParams].
+ * This view layout params need to be a [ViewGroup.MarginLayoutParams], if not will be ignored.
+ * @see ViewGroup.MarginLayoutParams.updateMargins
  * @receiver [View]
  * @param horizontal the horizontal margin (px).
  * @param vertical the vertical margin (px).
  */
 @JvmOverloads
-@JvmName("updateHVMargin")
-fun View.updateMargin(@Px horizontal: Int = -1, @Px vertical: Int = -1) {
-    if (horizontal >= 0) updateMargin(left = horizontal, right = horizontal)
-    if (vertical >= 0) updateMargin(top = vertical, bottom = vertical)
+@JvmName("updateHVMargins")
+fun View.updateMargins(@Px horizontal: Int = -1, @Px vertical: Int = -1) {
+    if (horizontal >= 0) updateMargins(left = horizontal, right = horizontal)
+    if (vertical >= 0) updateMargins(top = vertical, bottom = vertical)
+}
+
+/**
+ * Updates this view's horizontal or vertical margins.
+ * @see ViewGroup.MarginLayoutParams.updateMargins
+ * @receiver [ViewGroup.MarginLayoutParams]
+ * @param horizontal the horizontal margin (px).
+ * @param vertical the vertical margin (px).
+ */
+@JvmOverloads
+fun ViewGroup.MarginLayoutParams.updateMargins(@Px horizontal: Int = -1, @Px vertical: Int = -1) {
+    if (horizontal >= 0) updateMargins(left = horizontal, right = horizontal)
+    if (vertical >= 0) updateMargins(top = vertical, bottom = vertical)
+}
+
+/**
+ * Set this view's margins.
+ *
+ * This view layout params need to be a [ViewGroup.MarginLayoutParams], if not will be ignored.
+ * @see ViewGroup.MarginLayoutParams.setMargins
+ * @receiver [View]
+ * @param left the left margin (px).
+ * @param top the top margin (px).
+ * @param right the right margin (px).
+ * @param bottom the bottom margin (px).
+ */
+fun View.setMargins(@Px left: Int, @Px top: Int, @Px right: Int, @Px bottom: Int) {
+    if (layoutParams !is ViewGroup.MarginLayoutParams) return
+    updateLayoutParams<ViewGroup.MarginLayoutParams> {
+        setMargins(left, top, right, bottom)
+    }
+}
+
+/**
+ * Set this view's margins.
+ *
+ * This view layout params need to be a [ViewGroup.MarginLayoutParams], if not will be ignored.
+ * @see ViewGroup.MarginLayoutParams.setMargins
+ * @receiver [View]
+ * @param size the margin size (px).
+ */
+fun View.setMargins(@Px size: Int) {
+    if (layoutParams !is ViewGroup.MarginLayoutParams) return
+    updateLayoutParams<ViewGroup.MarginLayoutParams> {
+        setMargins(size)
+    }
 }
 
 /**

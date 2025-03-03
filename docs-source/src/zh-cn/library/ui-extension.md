@@ -1542,7 +1542,9 @@ window.clearScreenBrightness()
 
 [View → updatePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-padding)
 
-[View → updateMargin](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-margin)
+[View → updateMargins](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-margins)
+
+[View → setMargins](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/set-margins)
 
 [View → walkToRoot](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/walk-to-root)
 
@@ -1812,7 +1814,7 @@ view.updatePadding(horizontal = 10.toPx(context))
 view.updatePadding(vertical = 10.toPx(context))
 ```
 
-`BetterAndroid` 同样提供了一个 `View.updateMargin` 方法，它的使用方式与 `View.updatePadding` 相同。
+`BetterAndroid` 同样提供了一个 `View.updateMargins` 和 `View.setMargins` 方法，它的使用方式与 `View.updatePadding` 相同。
 
 这个方法仅会在 `View` 的 `LayoutParams` 为 `MarginLayoutParams` 时生效，其它情况下均不会有任何作用。
 
@@ -1822,11 +1824,13 @@ view.updatePadding(vertical = 10.toPx(context))
 // 假设这就是你的 View 对象
 val view: View
 // 更新横向方向的 margin
-view.updateMargin(horizontal = 10.toPx(context))
+view.updateMargins(horizontal = 10.toPx(context))
 // 更新纵向方向的 margin
-view.updateMargin(vertical = 10.toPx(context))
+view.updateMargins(vertical = 10.toPx(context))
 // 更新左侧的 margin
-view.updateMargin(left = 10.toPx(context))
+view.updateMargins(left = 10.toPx(context))
+// 设置四个边的 margin
+view.setMargins(10.toPx(context))
 ```
 
 遍历父布局以及所有子布局。

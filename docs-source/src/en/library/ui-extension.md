@@ -1594,7 +1594,9 @@ window.clearScreenBrightness()
 
 [View → updatePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-padding)
 
-[View → updateMargin](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-margin)
+[View → updateMargins](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-margins)
+
+[View → setMargins](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/set-margins)
 
 [View → walkToRoot](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/walk-to-root)
 
@@ -1877,7 +1879,7 @@ view.updatePadding(horizontal = 10.toPx(context))
 view.updatePadding(vertical = 10.toPx(context))
 ```
 
-`BetterAndroid` also provides a `View.updateMargin` method, which is used in the same way as `View.updatePadding`.
+`BetterAndroid` also provides a `View.updateMargins` and `View.setMargins` method, which is used in the same way as `View.updatePadding`.
 
 This method will only take effect when `LayoutParams` of `View` is `MarginLayoutParams`, and will have no effect in other cases.
 
@@ -1887,11 +1889,13 @@ This method will only take effect when `LayoutParams` of `View` is `MarginLayout
 // Assume this is your view.
 val view: View
 // Update the margin in the horizontal direction.
-view.updateMargin(horizontal = 10.toPx(context))
+view.updateMargins(horizontal = 10.toPx(context))
 // Update the margin in the vertical direction.
-view.updateMargin(vertical = 10.toPx(context))
+view.updateMargins(vertical = 10.toPx(context))
 // Update left margin.
-view.updateMargin(left = 10.toPx(context))
+view.updateMargins(left = 10.toPx(context))
+// Set the margin for all 4 sides.
+view.setMargins(10.toPx(context))
 ```
 
 Traverse the parent layout and all child layouts.
