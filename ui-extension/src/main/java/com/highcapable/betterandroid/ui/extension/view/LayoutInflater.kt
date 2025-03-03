@@ -69,7 +69,7 @@ inline fun <reified V : View> LayoutInflater.inflateOrNull(
     @LayoutRes resource: Int,
     root: ViewGroup? = null,
     attachToRoot: Boolean = root != null
-) = runCatching { inflate(resource, root, attachToRoot) as? V? }.getOrNull()
+) = runCatching { inflate<V>(resource, root, attachToRoot) }.getOrNull()
 
 /**
  * Extension for [LayoutInflater.inflate].
