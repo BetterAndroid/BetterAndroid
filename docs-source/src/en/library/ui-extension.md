@@ -1213,7 +1213,7 @@ val bitmap = inputStream.decodeToBitmap()
 
 Load bitmap via `ByteArray`.
 
-If you have an image encrypted via Base64, you can convert it to a byte array and load the bitmap.
+If you have an image encoded via Base64, you can convert it to a byte array and load the bitmap.
 
 > The following example
 
