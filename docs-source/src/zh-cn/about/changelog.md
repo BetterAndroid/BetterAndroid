@@ -10,7 +10,16 @@
 
 ## ui-component
 
-### 1.0.6 | 2025.01.25 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.7 | 2025.03.08 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 移除 Material 依赖并解构为对应依赖
+- 大量重构适配器 (Adapter) 底层相关的 API
+- 移除适配器不合理的 `View` 实例装载条目方法
+- 适配器加入 `ViewHolderDelegate` 以支持自定义布局装载器
+- `AdapterPosition` 现已支持 `layout` 和 `absolute` 下标
+- 其它适配器相关的已知问题修复
+
+### 1.0.6 | 2025.01.25 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - `AppBindingActivity` 中新增 `onPrepareContentView` 方法，可自定义装载布局前的操作
 - 修复适配器构造器中可能出现数据集为空下标越界的问题

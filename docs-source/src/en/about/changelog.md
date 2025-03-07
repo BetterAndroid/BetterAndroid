@@ -18,7 +18,16 @@ Time zone of version release date: **UTC+8**
 
 ## ui-component
 
-### 1.0.6 | 2025.01.25 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.7 | 2025.03.08 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Removed Material dependencies and refactored into corresponding dependencies
+- Extensively refactored adapter (Adapter) underlying APIs
+- Removed unreasonable `View` instance loading methods in adapters
+- Added `ViewHolderDelegate` to adapters to support custom layout inflaters
+- `AdapterPosition` now supports `layout` and `absolute` indexes
+- Other known adapter-related issues fixed
+
+### 1.0.6 | 2025.01.25 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Added `onPrepareContentView` method in `AppBindingActivity` to customize operations before loading the layout
 - Fixed the issue of out-of-bounds index when the data set is empty in the adapter builder
