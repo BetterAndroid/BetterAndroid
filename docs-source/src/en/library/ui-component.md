@@ -295,6 +295,10 @@ Extension methods for the adapter build of `RecyclerView`.
 
 Extension methods for the adapter build above.
 
+[ViewHolderDelegate](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.base/-view-holder-delegate)
+
+Custom `ViewHolder` delegate class.
+
 [AdapterPosition](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.entity/-adapter-position)
 
 Adapter position entity.
@@ -328,12 +332,12 @@ val adapter = listView.bindAdapter<CustomBean> {
     // Bind dataset.
     onBindData { listData }
     // Bind custom adapter layout adapter_custom.xml.
-    onBindViews<AdapterCustomBinding> { binding, bean, position ->
+    onBindItemView<AdapterCustomBinding> { binding, bean, position ->
         binding.iconView.setImageResource(bean.iconRes)
         binding.textView.text = bean.name
     }
     // Set the click event for each item.
-    onItemViewsClick { itemView, bean, position ->
+    onItemViewClick { itemView, bean, position ->
         // Your code here.
     }
 }
@@ -371,7 +375,7 @@ val adapter = viewPager.bindAdapter<CustomBean> {
     // Bind dataset.
     onBindData { listData }
     // Bind custom adapter layout adapter_custom.xml.
-    onBindViews<AdapterCustomBinding> { binding, bean, position ->
+    onBindPageView<AdapterCustomBinding> { binding, bean, position ->
         binding.iconView.setImageResource(bean.iconRes)
         binding.textView.text = bean.name
     }
@@ -388,7 +392,7 @@ val adapter = viewPager.bindAdapter {
     // Manually create two identical pages.
     dataSetCount = 2
     // Bind custom adapter layout adapter_custom.xml.
-    onBindViews<AdapterCustomBinding> { binding, bean, position ->
+    onBindPageView<AdapterCustomBinding> { binding, bean, position ->
         // You can judge the position of the current page by position.
         binding.iconView.setImageResource(bean.iconRes)
         binding.textView.text = bean.name
@@ -396,7 +400,7 @@ val adapter = viewPager.bindAdapter {
 }
 ```
 
-You can also reuse the `onBindViews` method to create multiple different pages.
+You can also reuse the `onBindPageView` method to create multiple different pages.
 
 The order of the pages is determined by the order in which they were created.
 
@@ -406,23 +410,23 @@ The order of the pages is determined by the order in which they were created.
 // Create and bind to a custom PagerAdapter.
 val adapter = viewPager.bindAdapter {
     // Bind custom adapter layout adapter_custom_1.xml.
-    onBindViews<AdapterCustom1Binding> { binding, bean, position ->
+    onBindPageView<AdapterCustom1Binding> { binding, bean, position ->
         binding.iconView.setImageResource(bean.iconRes)
         binding.textView.text = bean.name
     }
     // Bind custom adapter layout adapter_custom_2.xml.
-    onBindViews<AdapterCustom2Binding> { binding, bean, position ->
+    onBindPageView<AdapterCustom2Binding> { binding, bean, position ->
         binding.iconView.setImageResource(bean.iconRes)
         binding.textView.text = bean.name
     }
 }
 ```
 
-The number of pages created is the number of times the `onBindViews` method is reused.
+The number of pages created is the number of times the `onBindPageView` method is reused.
 
 ::: danger
 
-If you reuse the `onBindViews` method to create multiple different pages, you can no longer specify the `dataSetCount` or bind the dataset.
+If you reuse the `onBindPageView` method to create multiple different pages, you can no longer specify the `dataSetCount` or bind the dataset.
 
 :::
 
@@ -482,12 +486,12 @@ val adapter = recyclerView.bindAdapter<CustomBean> {
     // Bind dataset
     onBindData { listData }
     // Bind custom adapter layout adapter_custom.xml.
-    onBindViews<AdapterCustomBinding> { binding, bean, position ->
+    onBindItemView<AdapterCustomBinding> { binding, bean, position ->
         binding.iconView.setImageResource(bean.iconRes)
         binding.textView.text = bean.name
     }
     // Set the click event for each item.
-    onItemViewsClick { itemView, viewType, bean, position ->
+    onItemViewClick { itemView, viewType, bean, position ->
         // Your code here.
     }
 }
@@ -512,19 +516,19 @@ val adapter = recyclerView.bindAdapter<CustomBean> {
     // Bind dataset.
     onBindData { listData }
     // Bind the View type.
-    onBindViewsType { bean, position -> bean.dataType }
+    onBindViewType { bean, position -> bean.dataType }
     // Bind custom adapter layout adapter_custom_1.xml.
-    onBindViews<AdapterCustom1Binding>(viewType = 1) { binding, bean, position ->
+    onBindItemView<AdapterCustom1Binding>(viewType = 1) { binding, bean, position ->
         binding.iconView.setImageResource(bean.iconRes)
         binding.textView.text = bean.name
     }
     // Bind custom adapter layout adapter_custom_2.xml.
-    onBindViews<AdapterCustom2Binding>(viewType = 2) { binding, bean, position ->
+    onBindItemView<AdapterCustom2Binding>(viewType = 2) { binding, bean, position ->
         binding.iconView.setImageResource(bean.iconRes)
         binding.titleView.text = bean.title
     }
     // Set the click event for each item.
-    onItemViewsClick { itemView, viewType, bean, position ->
+    onItemViewClick { itemView, viewType, bean, position ->
         // Your code here.
     }
 }
@@ -532,13 +536,14 @@ val adapter = recyclerView.bindAdapter<CustomBean> {
 
 ::: tip
 
-In `RecyclerView.Adapter`, the `position` type in `onBindViews` is `AdapterPosition` instead of `Int`, which is a new feature introduced in version `1.0.6`.
+In `RecyclerView.Adapter`, the `position` type in `onBindItemView` is `AdapterPosition` instead of `Int`, which is a new feature introduced in version `1.0.6`.
 
-Since `RecyclerView.Adapter` can perform partial updates, the `onBindViews` of existing items will not be recalled after dynamically adding or deleting items.
+Since `RecyclerView.Adapter` can perform partial updates, the `onBindItemView` of existing items will not be recalled after dynamically adding or deleting items.
 
 In this case, you need a dynamic index instance like `AdapterPosition` to get the correct index of the current item through `position.value`.
 
-`AdapterPosition` overloads operators, so it can directly participate in comparisons and basic arithmetic operations without using `position.value`.
+In version `1.0.7`, `AdapterPosition` has merged the `getLayoutPosition`, `getBindingAdapterPosition`, and `getAbsoluteAdapterPosition` methods from `RecyclerView.ViewHolder`.
+Now they correspond to `position.layout`, `position.value`, and `position.absolute`.
 
 :::
 
@@ -546,7 +551,7 @@ Create the header `View` and the footer `View` for `RecyclerView`.
 
 You can use the `onBindHeaderView` and `onBindFooterView` methods to add a header `View` and a footer `View`.
 
-These are two special item layouts, they will not be calculated into the bound data and are passed through the subscript `position` of method callbacks such as `onBindViews` is not affected.
+These are two special item layouts, they will not be calculated into the bound data and are passed through the subscript `position` of method callbacks such as `onBindItemView` is not affected.
 
 ::: warning
 
@@ -577,7 +582,7 @@ val adapter = recyclerView.bindAdapter<CustomBean> {
         binding.someText.text = "Footer"
     }
     // Bind custom adapter layout adapter_custom.xml.
-    onBindViews<AdapterCustomBinding> { binding, bean, position ->
+    onBindItemView<AdapterCustomBinding> { binding, bean, position ->
         binding.iconView.setImageResource(bean.iconRes)
         binding.textView.text = bean.name
     }
@@ -658,7 +663,7 @@ recyclerView.invalidateItemDecorations()
 When you set a header or footer `View`, using methods such as `notifyItemInserted`, `notifyItemRemoved`, `notifyItemChanged`,
 `notifyItemMoved` in `RecyclerView.Adapter` will cause issues with the position index.
 
-This is because, by default, the `position` calculated in `onBindViews` will not include the header and footer layouts.
+This is because, by default, the `position` calculated in `onBindItemView` will not include the header and footer layouts.
 Methods like `RecyclerView.scrollToPosition` and `RecyclerView.smoothScrollToPosition` will also be affected.
 
 Since these methods in `RecyclerView.Adapter` are `final` and cannot be overridden, `BetterAndroid` provides a solution.
@@ -690,22 +695,51 @@ When you need to manually create a `RecyclerView.LayoutManager`, we recommend in
 
 :::
 
-In addition to using `ViewBinding` in the above example, you can also use a traditional `View`
-or a layout resource ID to bind it to the adapter layout.
+In addition to using `ViewBinding` in the above example, you can also use a traditional layout resource ID to bind it to the adapter layout.
 
 > The following example
 
 ```kotlin
 // Bind custom adapter layout adapter_custom.xml.
-onBindViews(R.layout.adapter_custom) { view, bean, position ->
-    view.findViewById<ImageView>(R.id.icon_view).setImageResource(bean.iconRes)
-    view.findViewById<TextView>(R.id.text_view).text = bean.name
+onBindItemView(R.layout.adapter_custom) { itemView, bean, position ->
+    itemView.findViewById<ImageView>(R.id.icon_view).setImageResource(bean.iconRes)
+    itemView.findViewById<TextView>(R.id.text_view).text = bean.name
 }
-// Assume this is your custom view.
-val adapterView: View
-// Bind custom adapter layout with adapterView.
-onBindViews(adapterView) { view, bean, position ->
-    // Your code here.
+```
+
+If none of the layout inflating methods satisfy your needs, you can also create a custom `ViewHolder` delegate class based on `ViewHolderDelegate`.
+
+> The following example
+
+```kotlin
+// Create a delegate class to implement your own layout inflating scheme.
+// Here we assume MyLayoutBinder is your layout binder.
+class MyViewHolderDelegate(@LayoutRes private val resId: Int) : ViewHolderDelegate<MyLayoutBinder>() {
+
+    override fun create(context: Context, parent: ViewGroup?): MyLayoutBinder {
+        // Assume this is how your custom layout binder works.
+        // Remember to pass and implement the parent parameter, as we need the LayoutParams of the parent.
+        val binder = MyLayoutBinder.inflate(context, resId, parent, attachToParent = false)
+        return binder
+    }
+
+    override fun getView(instance: MyLayoutBinder): View {
+        // Get the required view from your layout binder.
+        return instance.root
+    }
+}
+```
+
+Then, use your custom `ViewHolderDelegate`.
+
+> The following example
+
+```kotlin
+// Bind your custom ViewHolderDelegate.
+onBindItemView(MyViewHolderDelegate(R.layout.adapter_custom)) { delegate, bean, position ->
+    // The delegate here is the MyLayoutBinder object, assuming the following methods are implemented by you.
+    delegate.get<ImageView>(R.id.icon_view).setImageResource(bean.iconRes)
+    delegate.get<TextView>(R.id.text_view).text = bean.name
 }
 ```
 

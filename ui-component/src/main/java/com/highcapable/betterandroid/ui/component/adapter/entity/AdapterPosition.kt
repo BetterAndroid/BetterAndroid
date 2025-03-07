@@ -23,6 +23,8 @@
 
 package com.highcapable.betterandroid.ui.component.adapter.entity
 
+import androidx.recyclerview.widget.RecyclerView
+
 /**
  * Adapter dynamic position entity.
  *
@@ -34,46 +36,60 @@ class AdapterPosition private constructor() {
 
         /**
          * Create a new [AdapterPosition].
-         * @param callback the dynamic value callback.
+         * @param layout located in [RecyclerView.ViewHolder.getLayoutPosition]
+         * @param binding located in [RecyclerView.ViewHolder.getBindingAdapterPosition]
+         * @param absolute located in [RecyclerView.ViewHolder.getAbsoluteAdapterPosition]
          * @return [AdapterPosition]
          */
-        fun from(callback: () -> Int) = AdapterPosition().apply {
-            dynamicValueCallback = callback
+        fun from(
+            layout: () -> Int,
+            binding: () -> Int,
+            absolute: () -> Int
+        ) = AdapterPosition().apply {
+            layoutValueCallback = layout
+            bindingValueCallback = binding
+            absoluteValueCallback = absolute
         }
-
-        /**
-         * Create a new no effect [AdapterPosition].
-         * @return [AdapterPosition]
-         */
-        fun none() = AdapterPosition()
     }
 
-    /** The dynamic value callback. */
-    private var dynamicValueCallback: (() -> Int)? = null
+    /** The [RecyclerView.ViewHolder.getLayoutPosition] callback. */
+    private var layoutValueCallback: (() -> Int)? = null
+
+    /** The [RecyclerView.ViewHolder.getBindingAdapterPosition] callback. */
+    private var bindingValueCallback: (() -> Int)? = null
+
+    /** The [RecyclerView.ViewHolder.getAbsoluteAdapterPosition] callback. */
+    private var absoluteValueCallback: (() -> Int)? = null
 
     /**
-     * Get the current position value.
+     * Get the current layout position value.
+     *
+     * Located in [RecyclerView.ViewHolder.getLayoutPosition].
+     * @see value
+     * @see absolute
      * @return [Int]
      */
-    val value get() = dynamicValueCallback?.invoke() ?: -1
+    val layout get() = layoutValueCallback?.invoke() ?: RecyclerView.NO_POSITION
 
-    operator fun plus(other: Int) = value + other
-    operator fun plus(other: AdapterPosition) = value + other.value
-    operator fun minus(other: Int) = value - other
-    operator fun minus(other: AdapterPosition) = value - other.value
-    operator fun times(other: Int) = value * other
-    operator fun times(other: AdapterPosition) = value * other.value
-    operator fun div(other: Int) = value / other
-    operator fun div(other: AdapterPosition) = value / other.value
-    operator fun compareTo(other: Int) = value.compareTo(other)
-    operator fun compareTo(other: AdapterPosition) = value.compareTo(other.value)
+    /**
+     * Get the current binding position value.
+     *
+     * Located in [RecyclerView.ViewHolder.getBindingAdapterPosition].
+     * @see layout
+     * @see absolute
+     * @return [Int]
+     */
+    val value get() = bindingValueCallback?.invoke() ?: RecyclerView.NO_POSITION
 
-    override fun equals(other: Any?) = when {
-        this === other -> true
-        other is Int -> value == other
-        other is AdapterPosition -> value == other.value
-        else -> false
-    }
-    override fun hashCode() = 31 * value
-    override fun toString() = value.toString()
+    /**
+     * Get the current absolute position value.
+     *
+     * Located in [RecyclerView.ViewHolder.getAbsoluteAdapterPosition].
+     * @see layout
+     * @see value
+     * @return [Int]
+     */
+    val absolute get() = absoluteValueCallback?.invoke() ?: RecyclerView.NO_POSITION
+
+    override fun toString() = "AdapterPosition(layout=$layout, value=$value, absolute=$absolute)"
 }

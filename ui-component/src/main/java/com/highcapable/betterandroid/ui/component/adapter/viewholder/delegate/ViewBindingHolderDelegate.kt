@@ -17,24 +17,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file is created by fankes on 2023/5/9.
+ * This file is created by fankes on 2025/3/6.
  */
-package com.highcapable.betterandroid.ui.component.adapter.view
+package com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate
 
-import android.view.View
-import android.widget.BaseAdapter
+import android.content.Context
+import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
-import androidx.viewpager.widget.PagerAdapter
-import com.highcapable.betterandroid.ui.component.adapter.view.proxy.IBaseItemView
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.base.ViewHolderDelegate
 import com.highcapable.betterandroid.ui.extension.binding.ViewBindingBuilder
+import com.highcapable.betterandroid.ui.extension.view.layoutInflater
 
 /**
- * [BaseAdapter] or [PagerAdapter] adapter item view, using entity [E].
- * @param onBindCallback the item view binding callback.
+ * [ViewBinding] type view holder delegate.
+ * @param builder the [ViewBindingBuilder] for inflate the view.
  */
-internal class CommonItemView<E>(
-    override val bindingBuilder: ViewBindingBuilder<*>? = null,
-    override val rootViewResId: Int = -1,
-    override val rootView: View? = null,
-    val onBindCallback: (ViewBinding?, View?, E, Int) -> Unit
-) : IBaseItemView<E>
+class ViewBindingHolderDelegate<VB : ViewBinding> internal constructor(private val builder: ViewBindingBuilder<VB>) : ViewHolderDelegate<VB>() {
+
+    override fun create(context: Context, parent: ViewGroup?) = builder.inflate(context.layoutInflater, parent, attachToParent = false)
+    override fun getView(instance: VB) = instance.root
+}

@@ -19,24 +19,20 @@
  *
  * This file is created by fankes on 2023/5/9.
  */
-package com.highcapable.betterandroid.ui.component.adapter.view
+package com.highcapable.betterandroid.ui.component.adapter.viewholder
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewbinding.ViewBinding
 import com.highcapable.betterandroid.ui.component.adapter.entity.AdapterPosition
-import com.highcapable.betterandroid.ui.component.adapter.view.proxy.IBaseItemView
-import com.highcapable.betterandroid.ui.extension.binding.ViewBindingBuilder
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.base.ViewHolderDelegate
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.proxy.IBaseViewHolder
 
 /**
- * [RecyclerView.Adapter] adapter item view, using entity [E].
+ * [RecyclerView.Adapter] adapter item view holder, using entity [E].
  * @param viewType the view type.
- * @param onBindCallback the item view binding callback.
+ * @param onBindCallback the view holder binding callback.
  */
-internal class RecyclerItemView<E>(
-    override val bindingBuilder: ViewBindingBuilder<*>? = null,
-    override val rootViewResId: Int = -1,
-    override val rootView: View? = null,
-    val viewType: Int = 0,
-    val onBindCallback: (ViewBinding?, View?, E, AdapterPosition) -> Unit
-) : IBaseItemView<E>
+internal class RecyclerViewHolder<E>(
+    override val delegate: ViewHolderDelegate<Any>,
+    val viewType: Int,
+    val onBindCallback: (Any, E?, AdapterPosition) -> Unit
+) : IBaseViewHolder<E>

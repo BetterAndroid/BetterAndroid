@@ -43,6 +43,7 @@ import com.highcapable.betterandroid.ui.component.adapter.RecyclerAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.fragment.FragmentPagerAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.fragment.FragmentStateAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.recycler.cosmetic.RecyclerCosmetic
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.impl.RecyclerViewHolderImpl
 import com.highcapable.yukireflection.factory.current
 import androidx.appcompat.widget.ListPopupWindow as AndroidX_ListPopupWindow
 
@@ -139,13 +140,13 @@ inline fun AndroidX_ListPopupWindow.bindAdapter(context: Context, initiate: Comm
  * @receiver [RecyclerView]
  * @param cosmetic the cosmetic, default is [RecyclerCosmetic.fromLinearVertical].
  * @param initiate the [RecyclerAdapterBuilder] builder body.
- * @return [RecyclerView.Adapter]<[RecyclerAdapterBuilder.BaseRecyclerHolder]>
+ * @return [RecyclerView.Adapter]<[RecyclerViewHolderImpl]>
  */
 @JvmName("bindAdapterTyped")
 inline fun <reified E> RecyclerView.bindAdapter(
     cosmetic: RecyclerCosmetic<*, *> = RecyclerCosmetic.fromLinearVertical(context),
     initiate: RecyclerAdapterBuilder<E>.() -> Unit
-): RecyclerView.Adapter<RecyclerAdapterBuilder<E>.BaseRecyclerHolder> {
+): RecyclerView.Adapter<RecyclerViewHolderImpl<Any>> {
     layoutManager = cosmetic.layoutManager
     addItemDecoration(cosmetic.itemDecoration)
     return RecyclerAdapter<E>(context, initiate).apply { adapter = this }
@@ -167,7 +168,7 @@ inline fun <reified E> RecyclerView.bindAdapter(
  * @receiver [RecyclerView]
  * @param cosmetic the cosmetic, default is [RecyclerCosmetic.fromLinearVertical].
  * @param initiate the [RecyclerAdapterBuilder] builder body.
- * @return [RecyclerView.Adapter]<[RecyclerAdapterBuilder.BaseRecyclerHolder]>
+ * @return [RecyclerView.Adapter]<[RecyclerViewHolderImpl]>
  */
 inline fun RecyclerView.bindAdapter(
     cosmetic: RecyclerCosmetic<*, *> = RecyclerCosmetic.fromLinearVertical(context),
@@ -230,7 +231,7 @@ inline fun ViewPager.bindFragments(
  * Bind the [RecyclerView.Adapter] to [ViewPager2], using entity [E].
  * @receiver [ViewPager2]
  * @param initiate the [RecyclerAdapterBuilder] builder body.
- * @return [RecyclerView.Adapter]<[RecyclerAdapterBuilder.BaseRecyclerHolder]>
+ * @return [RecyclerView.Adapter]<[RecyclerViewHolderImpl]>
  */
 @JvmName("bindAdapterTyped")
 inline fun <reified E> ViewPager2.bindAdapter(initiate: RecyclerAdapterBuilder<E>.() -> Unit) =
@@ -240,7 +241,7 @@ inline fun <reified E> ViewPager2.bindAdapter(initiate: RecyclerAdapterBuilder<E
  * Bind the [RecyclerView.Adapter] to [ViewPager2].
  * @receiver [ViewPager2]
  * @param initiate the [RecyclerAdapterBuilder] builder body.
- * @return [RecyclerView.Adapter]<[RecyclerAdapterBuilder.BaseRecyclerHolder]>
+ * @return [RecyclerView.Adapter]<[RecyclerViewHolderImpl]>
  */
 inline fun ViewPager2.bindAdapter(initiate: RecyclerAdapterBuilder<*>.() -> Unit) = bindAdapter<Any>(initiate)
 
@@ -286,7 +287,7 @@ inline fun CommonAdapter(context: Context, initiate: CommonAdapterBuilder<*>.() 
  * Create a [RecyclerView.Adapter], using entity [E].
  * @param context the current context.
  * @param initiate the [RecyclerAdapterBuilder] builder body.
- * @return [RecyclerView.Adapter]<[RecyclerAdapterBuilder.BaseRecyclerHolder]>
+ * @return [RecyclerView.Adapter]<[RecyclerViewHolderImpl]>
  */
 @JvmName("RecyclerAdapterTyped")
 inline fun <reified E> RecyclerAdapter(context: Context, initiate: RecyclerAdapterBuilder<E>.() -> Unit) =
@@ -296,7 +297,7 @@ inline fun <reified E> RecyclerAdapter(context: Context, initiate: RecyclerAdapt
  * Create a [RecyclerView.Adapter].
  * @param context the current context.
  * @param initiate the [RecyclerAdapterBuilder] builder body.
- * @return [RecyclerView.Adapter]<[RecyclerAdapterBuilder.BaseRecyclerHolder]>
+ * @return [RecyclerView.Adapter]<[RecyclerViewHolderImpl]>
  */
 inline fun RecyclerAdapter(context: Context, initiate: RecyclerAdapterBuilder<*>.() -> Unit) = RecyclerAdapter<Any>(context, initiate)
 

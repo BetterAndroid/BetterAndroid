@@ -294,6 +294,10 @@ class MainFragment : AppViewsFragment(R.layout.fragment_main) {
 
 适用于上述适配器构建的扩展方法。
 
+[ViewHolderDelegate](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.base/-view-holder-delegate)
+
+自定义 `ViewHolder` 代理类。
+
 [AdapterPosition](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.entity/-adapter-position)
 
 动态适配器下标实例。
@@ -327,12 +331,12 @@ val adapter = listView.bindAdapter<CustomBean> {
     // 绑定数据集
     onBindData { listData }
     // 绑定自定义适配器布局 adapter_custom.xml
-    onBindViews<AdapterCustomBinding> { binding, bean, position ->
+    onBindItemView<AdapterCustomBinding> { binding, bean, position ->
         binding.iconView.setImageResource(bean.iconRes)
         binding.textView.text = bean.name
     }
     // 设置每项条目的点击事件
-    onItemViewsClick { itemView, bean, position ->
+    onItemViewClick { itemView, bean, position ->
         // Your code here.
     }
 }
@@ -370,7 +374,7 @@ val adapter = viewPager.bindAdapter<CustomBean> {
     // 绑定数据集
     onBindData { listData }
     // 绑定自定义适配器布局 adapter_custom.xml
-    onBindViews<AdapterCustomBinding> { binding, bean, position ->
+    onBindPageView<AdapterCustomBinding> { binding, bean, position ->
         binding.iconView.setImageResource(bean.iconRes)
         binding.textView.text = bean.name
     }
@@ -387,7 +391,7 @@ val adapter = viewPager.bindAdapter {
     // 手动创建两个相同的页面
     dataSetCount = 2
     // 绑定自定义适配器布局 adapter_custom.xml
-    onBindViews<AdapterCustomBinding> { binding, bean, position ->
+    onBindPageView<AdapterCustomBinding> { binding, bean, position ->
         // 你可以通过 position 判断当前页面的位置
         binding.iconView.setImageResource(bean.iconRes)
         binding.textView.text = bean.name
@@ -395,7 +399,7 @@ val adapter = viewPager.bindAdapter {
 }
 ```
 
-你也可以复用 `onBindViews` 方法来创建多个不同的页面，页面顺序按照创建顺序决定。
+你也可以复用 `onBindPageView` 方法来创建多个不同的页面，页面顺序按照创建顺序决定。
 
 > 示例如下
 
@@ -403,23 +407,23 @@ val adapter = viewPager.bindAdapter {
 // 创建并绑定到自定义的 PagerAdapter
 val adapter = viewPager.bindAdapter {
     // 绑定自定义适配器布局 adapter_custom_1.xml
-    onBindViews<AdapterCustom1Binding> { binding, bean, position ->
+    onBindPageView<AdapterCustom1Binding> { binding, bean, position ->
         binding.iconView.setImageResource(bean.iconRes)
         binding.textView.text = bean.name
     }
     // 绑定自定义适配器布局 adapter_custom_2.xml
-    onBindViews<AdapterCustom2Binding> { binding, bean, position ->
+    onBindPageView<AdapterCustom2Binding> { binding, bean, position ->
         binding.iconView.setImageResource(bean.iconRes)
         binding.textView.text = bean.name
     }
 }
 ```
 
-创建的页面数量为复用 `onBindViews` 方法的次数。
+创建的页面数量为复用 `onBindPageView` 方法的次数。
 
 ::: danger
 
-如果你复用 `onBindViews` 方法创建了多个不同页面，你不能再指定 `dataSetCount` 或绑定数据集。
+如果你复用 `onBindPageView` 方法创建了多个不同页面，你不能再指定 `dataSetCount` 或绑定数据集。
 
 :::
 
@@ -479,12 +483,12 @@ val adapter = recyclerView.bindAdapter<CustomBean> {
     // 绑定数据集
     onBindData { listData }
     // 绑定自定义适配器布局 adapter_custom.xml
-    onBindViews<AdapterCustomBinding> { binding, bean, position ->
+    onBindItemView<AdapterCustomBinding> { binding, bean, position ->
         binding.iconView.setImageResource(bean.iconRes)
         binding.textView.text = bean.name
     }
     // 设置每项条目的点击事件
-    onItemViewsClick { itemView, viewType, bean, position ->
+    onItemViewClick { itemView, viewType, bean, position ->
         // Your code here.
     }
 }
@@ -509,19 +513,19 @@ val adapter = recyclerView.bindAdapter<CustomBean> {
     // 绑定数据集
     onBindData { listData }
     // 绑定 View 类型
-    onBindViewsType { bean, position -> bean.dataType }
+    onBindViewType { bean, position -> bean.dataType }
     // 绑定自定义适配器布局 adapter_custom_1.xml
-    onBindViews<AdapterCustom1Binding>(viewType = 1) { binding, bean, position ->
+    onBindItemView<AdapterCustom1Binding>(viewType = 1) { binding, bean, position ->
         binding.iconView.setImageResource(bean.iconRes)
         binding.textView.text = bean.name
     }
     // 绑定自定义适配器布局 adapter_custom_2.xml
-    onBindViews<AdapterCustom2Binding>(viewType = 2) { binding, bean, position ->
+    onBindItemView<AdapterCustom2Binding>(viewType = 2) { binding, bean, position ->
         binding.iconView.setImageResource(bean.iconRes)
         binding.titleView.text = bean.title
     }
     // 设置每项条目的点击事件
-    onItemViewsClick { itemView, viewType, bean, position ->
+    onItemViewClick { itemView, viewType, bean, position ->
         // Your code here.
     }
 }
@@ -529,18 +533,19 @@ val adapter = recyclerView.bindAdapter<CustomBean> {
 
 ::: tip
 
-在 `RecyclerView.Adapter` 中，`onBindViews` 中的 `position` 类型为 `AdapterPosition` 而非 `Int`，这是 `1.0.6` 版本中新增的特性。
+在 `RecyclerView.Adapter` 中，`onBindItemView` 中的 `position` 类型为 `AdapterPosition` 而非 `Int`，这是 `1.0.6` 版本中新增的特性。
 
-由于 `RecyclerView.Adapter` 可以局部更新，所以在动态添加或删除条目后，现有条目的 `onBindViews` 并不会重新回调，
+由于 `RecyclerView.Adapter` 可以局部更新，所以在动态添加或删除条目后，现有条目的 `onBindItemView` 并不会重新回调，
 此时你就需要 `AdapterPosition` 这样的动态下标实例，通过 `position.value` 获取到当前条目的正确下标。
 
-`AdapterPosition` 重载了运算符，它可以直接参与比较和基本的四则运算而无需使用 `position.value`。
+在 `1.0.7` 版本中，`AdapterPosition` 合入了 `RecyclerView.ViewHolder` 中的 `getLayoutPosition`、`getBindingAdapterPosition`、`getAbsoluteAdapterPosition` 方法，
+现在它们对应为 `position.layout`、`position.value` 和 `position.absolute`。
 
 :::
 
 为 `RecyclerView` 创建头部 `View` 和末位 `View`。
 
-你可以使用 `onBindHeaderView` 和 `onBindFooterView` 方法来添加一个头部 `View` 和末位 `View`，这是两个特殊的条目布局，它们不会被计算入绑定的数据中，且通过 `onBindViews` 等方法回调的下标 `position` 不受影响。
+你可以使用 `onBindHeaderView` 和 `onBindFooterView` 方法来添加一个头部 `View` 和末位 `View`，这是两个特殊的条目布局，它们不会被计算入绑定的数据中，且通过 `onBindItemView` 等方法回调的下标 `position` 不受影响。
 
 ::: warning
 
@@ -571,7 +576,7 @@ val adapter = recyclerView.bindAdapter<CustomBean> {
         binding.someText.text = "Footer"
     }
     // 绑定自定义适配器布局 adapter_custom.xml
-    onBindViews<AdapterCustomBinding> { binding, bean, position ->
+    onBindItemView<AdapterCustomBinding> { binding, bean, position ->
         binding.iconView.setImageResource(bean.iconRes)
         binding.textView.text = bean.name
     }
@@ -648,7 +653,7 @@ recyclerView.invalidateItemDecorations()
 
 ::: warning
 
-当你设置了头部或末位 `View` 时，在使用 `RecyclerView.Adapter` 的 `notifyItemInserted`、`notifyItemRemoved`、`notifyItemChanged`、`notifyItemMoved` 等方法时，下标的位置将会出现问题，因为默认情况下 `onBindViews` 计算出的 `position` 将不包含头部与末位布局，以及 `RecyclerView.scrollToPosition`、`RecyclerView.smoothScrollToPosition` 等方法也会受到影响。
+当你设置了头部或末位 `View` 时，在使用 `RecyclerView.Adapter` 的 `notifyItemInserted`、`notifyItemRemoved`、`notifyItemChanged`、`notifyItemMoved` 等方法时，下标的位置将会出现问题，因为默认情况下 `onBindItemView` 计算出的 `position` 将不包含头部与末位布局，以及 `RecyclerView.scrollToPosition`、`RecyclerView.smoothScrollToPosition` 等方法也会受到影响。
 
 由于这些方法在 `RecyclerView.Adapter` 中均为 `final`，无法重写它们，在这种情况下，`BetterAndroid` 为你提供了一个解决方案，在使用 `RecyclerView.Adapter` 时，你可以调用 `wrapper` 方法来获取包装实例，它将会为你自动处理这些问题。
 
@@ -673,21 +678,51 @@ wrapper?.notifyFooterItemChanged()
 
 :::
 
-除了上述示例中使用 `ViewBinding` 的方式之外，你还可以使用传统的 `View` 或一个布局资源 ID 来绑定其到适配器布局。
+除了上述示例中使用 `ViewBinding` 的方式之外，你还可以使用传统的布局资源 ID 来绑定其到适配器布局。
 
 > 示例如下
 
 ```kotlin
 // 绑定自定义适配器布局 adapter_custom.xml
-onBindViews(R.layout.adapter_custom) { view, bean, position ->
-    view.findViewById<ImageView>(R.id.icon_view).setImageResource(bean.iconRes)
-    view.findViewById<TextView>(R.id.text_view).text = bean.name
+onBindItemView(R.layout.adapter_custom) { itemView, bean, position ->
+    itemView.findViewById<ImageView>(R.id.icon_view).setImageResource(bean.iconRes)
+    itemView.findViewById<TextView>(R.id.text_view).text = bean.name
 }
-// 假设这就是你的自定义 View
-val adapterView: View
-// 绑定自定义适配器布局到 adapterView
-onBindViews(adapterView) { view, bean, position ->
-    // Your code here.
+```
+
+如果所有布局装载方式都不满足你的需求，你还可以基于 `ViewHolderDelegate` 来创建一个自定义的 `ViewHolder` 代理类。
+
+> 示例如下
+
+```kotlin
+// 创建一个代理类，实现自己的布局装载方案
+// 这里我们假设 MyLayoutBinder 就是你的布局装载器
+class MyViewHolderDelegate(@LayoutRes private val resId: Int) : ViewHolderDelegate<MyLayoutBinder>() {
+
+    override fun create(context: Context, parent: ViewGroup?): MyLayoutBinder {
+        // 假设这是你自定义的布局装载器的运作方式
+        // 记得传入并实现 parent 参数，因为我们需要 parent 的 LayoutParams
+        val binder = MyLayoutBinder.inflate(context, resId, parent, attachToParent = false)
+        return binder
+    }
+
+    override fun getView(instance: MyLayoutBinder): View {
+        // 从你的布局装载器中获取需要的 View
+        return instance.root
+    }
+}
+```
+
+然后，使用你的自定义 `ViewHolderDelegate`。
+
+> 示例如下
+
+```kotlin
+// 绑定你的自定义 ViewHolderDelegate
+onBindItemView(MyViewHolderDelegate(R.layout.adapter_custom)) { delegate, bean, position ->
+    // 这里的 delegate 即 MyLayoutBinder 对象，假设下面的方法都是你自己实现的
+    delegate.get<ImageView>(R.id.icon_view).setImageResource(bean.iconRes)
+    delegate.get<TextView>(R.id.text_view).text = bean.name
 }
 ```
 

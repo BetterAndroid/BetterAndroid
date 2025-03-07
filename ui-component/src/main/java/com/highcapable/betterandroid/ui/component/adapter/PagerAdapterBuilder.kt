@@ -33,10 +33,12 @@ import androidx.viewpager.widget.ViewPager
 import com.highcapable.betterandroid.ui.component.adapter.base.IAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.factory.bindAdapter
 import com.highcapable.betterandroid.ui.component.adapter.mediator.PagerMediator
-import com.highcapable.betterandroid.ui.component.adapter.view.CommonItemView
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.CommonViewHolder
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.ViewBindingHolderDelegate
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.XmlLayoutHolderDelegate
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.base.ViewHolderDelegate
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.impl.CommonViewHolderImpl
 import com.highcapable.betterandroid.ui.extension.binding.ViewBinding
-import com.highcapable.betterandroid.ui.extension.view.inflate
-import com.highcapable.betterandroid.ui.extension.view.layoutInflater
 
 /**
  * [PagerAdapter] builder, using entity [E].
@@ -57,7 +59,7 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
     }
 
     /** The current each item function callbacks. */
-    private val boundItemViewsCallbacks = linkedSetOf<CommonItemView<E>>()
+    private val boundViewHolderCallbacks = linkedSetOf<CommonViewHolder<E>>()
 
     /** The current each [PagerMediator] function callback. */
     private var pagerMediatorsCallback: (PagerMediator.() -> Unit)? = null
@@ -71,7 +73,7 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
      * @return [E] or null.
      */
     private fun getCurrentEntity(position: Int) = (listDataCallback?.invoke() ?: emptyList()).let {
-        if (it.isEmpty() && dataSetCount > 0) Any() as E else it.getOrNull(position)
+        if (it.isEmpty() && (dataSetCount > 0 || boundViewHolderCallbacks.size > 0)) Any() as E else it.getOrNull(position)
     }
 
     /**
@@ -111,42 +113,78 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
     fun onBindMediators(initiate: PagerMediator.() -> Unit) = apply { pagerMediatorsCallback = initiate }
 
     /**
-     * Add and create view holder with [VB].
-     * @param boundItemViews callback and return each bound item function.
+     * Create and add view holder from [ViewHolderDelegate]<[VD]>.
+     * @param delegate the custom page view delegate.
+     * @param viewHolder callback and return each bound item function.
      * @return [PagerAdapterBuilder]<[E]>
      */
-    @JvmName("onBindViewsTyped")
+    @JvmOverloads
+    fun <VD : Any> onBindPageView(
+        delegate: ViewHolderDelegate<VD>,
+        viewHolder: (delegate: VD, entity: E, position: Int) -> Unit = { _, _, _ -> }
+    ) = apply {
+        boundViewHolderCallbacks.add(CommonViewHolder(delegate as ViewHolderDelegate<Any>) { delegate, entity, position ->
+            runCatching {
+                viewHolder(delegate as VD, entity, position)
+            }.onFailure {
+                if (it is ClassCastException) error(
+                    "The correct entity type is not provided with onBindData. " +
+                        "Please remove the generic declaration or use onBindData to pass in the corresponding entity type collection."
+                ) else throw it
+            }
+        })
+    }
+
+    /**
+     * Create and add view holder from [ViewBinding]<[VB]>.
+     * @param viewHolder callback and return each bound item function.
+     * @return [PagerAdapterBuilder]<[E]>
+     */
+    inline fun <reified VB : ViewBinding> onBindPageView(
+        noinline viewHolder: (binding: VB, entity: E, position: Int) -> Unit = { _, _, _ -> }
+    ) = onBindPageView(ViewBindingHolderDelegate(ViewBinding<VB>()), viewHolder)
+
+    /**
+     * Create and add view holder from XML layout ID.
+     * @param resId item view layout ID.
+     * @param viewHolder callback and return each bound item function.
+     * @return [PagerAdapterBuilder]<[E]>
+     */
+    fun onBindPageView(
+        @LayoutRes resId: Int,
+        viewHolder: (pageView: View, entity: E, position: Int) -> Unit = { _, _, _ -> }
+    ) = onBindPageView(XmlLayoutHolderDelegate(resId), viewHolder)
+
+    /**
+     * Create and add view holder with [VB].
+     *
+     * - This function is deprecated, use [onBindPageView] instead.
+     */
+    @Deprecated(message = "Use onBindPageView instead.", ReplaceWith("onBindPageView<VB>(boundItemViews)"))
     inline fun <reified VB : ViewBinding> onBindViews(
         noinline boundItemViews: (binding: VB, entity: E, position: Int) -> Unit = { _, _, _ -> }
-    ) = apply {
-        boundItemViewsCallbacks.add(CommonItemView(ViewBinding<VB>()) { binding, _, entity, position ->
-            binding?.also { boundItemViews(it as VB, entity, position) }
-        })
-    }
+    ) = onBindPageView(boundItemViews)
 
     /**
-     * Add and create view holder.
-     * @param resId item view layout ID.
-     * @param boundItemViews callback and return each bound item function.
-     * @return [PagerAdapterBuilder]<[E]>
+     * Create and add view holder from XML layout ID.
+     *
+     * - This function is deprecated, use [onBindPageView] instead.
      */
-    fun onBindViews(@LayoutRes resId: Int, boundItemViews: (view: View, entity: E, position: Int) -> Unit = { _, _, _ -> }) = apply {
-        boundItemViewsCallbacks.add(CommonItemView(rootViewResId = resId) { _, itemView, entity, position ->
-            itemView?.also { boundItemViews(it, entity, position) }
-        })
-    }
+    @Deprecated(message = "Use onBindPageView instead.", ReplaceWith("onBindPageView(resId, boundItemViews)"))
+    fun onBindViews(
+        @LayoutRes resId: Int,
+        boundItemViews: (view: View, entity: E, position: Int) -> Unit = { _, _, _ -> }
+    ) = onBindPageView(resId, boundItemViews)
 
     /**
-     * Add and create view holder.
-     * @param view item [View], there must be no parent layout.
-     * @param boundItemViews callback and return each bound item function.
-     * @return [PagerAdapterBuilder]<[E]>
+     * Create and add view holder.
+     *
+     * - This solution was undesirable, so it was deprecated and no effect, don't use it.
+     * @see ViewHolderDelegate
      */
-    fun onBindViews(view: View, boundItemViews: (view: View, entity: E, position: Int) -> Unit = { _, _, _ -> }) = apply {
-        boundItemViewsCallbacks.add(CommonItemView(rootView = view) { _, itemView, entity, position ->
-            itemView?.also { boundItemViews(it, entity, position) }
-        })
-    }
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(message = "This function is unreasonable and has been deprecated, please use the custom ViewHolderDelegate solution instead.")
+    fun onBindViews(view: View, boundItemViews: (view: View, entity: E, position: Int) -> Unit = { _, _, _ -> }) = this
 
     override fun build() = Instance()
 
@@ -156,78 +194,41 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
     inner class Instance internal constructor() : PagerAdapter() {
 
         init {
-            if ((dataSetCount > 0 || !listDataCallback?.invoke().isNullOrEmpty()) && boundItemViewsCallbacks.size > 1)
-                error("Cannot bound multiple ViewHolders with dataSetCount or entities on PagerAdapter.")
+            require(dataSetCount <= 0 || listDataCallback?.invoke().isNullOrEmpty()) {
+                "You can only use once dataSetCount or entities on PagerAdapter."
+            }
+            require((dataSetCount <= 0 && listDataCallback?.invoke().isNullOrEmpty()) || boundViewHolderCallbacks.size <= 1) {
+                "Cannot bound multiple ViewHolders with dataSetCount or entities on PagerAdapter."
+            }
         }
 
-        /** The current cached [BaseViewHolder]. */
-        private val viewHolders = mutableMapOf<Int, PagerAdapterBuilder<E>.BaseViewHolder>()
+        /** The current cached [CommonViewHolderImpl]. */
+        private val viewHolderImpls = mutableMapOf<Int, CommonViewHolderImpl<Any>>()
 
         /**
          * Get the current each item function callbacks.
          * @param position the current position.
-         * @return [CommonItemView]<[E]> or null.
+         * @return [CommonViewHolder]<[E]> or null.
          */
-        private fun boundItemViewsCallbacks(position: Int) = boundItemViewsCallbacks.toList().let { it.getOrNull(position) ?: it.getOrNull(0) }
+        private fun getCallback(position: Int) = boundViewHolderCallbacks.toList().let { it.getOrNull(position) ?: it.getOrNull(0) }
 
         override fun instantiateItem(container: ViewGroup, position: Int) =
-            (viewHolders[position]?.also { container.addView(it.rootView) } ?: boundItemViewsCallbacks(position)?.let {
-                when {
-                    it.bindingBuilder != null ->
-                        it.bindingBuilder.inflate(adapterContext.layoutInflater).let { binding ->
-                            require(binding.root.parent == null) {
-                                "Cannot bound ViewHolder on PagerAdapter, " +
-                                    "the ${it.bindingBuilder} was already added to a ViewGroup."
-                            }
-                            container.addView(binding.root)
-                            BindingBaseHolder(binding = binding).apply { viewHolders[position] = this }
-                        }
-                    it.rootViewResId >= 0 ->
-                        adapterContext.layoutInflater.inflate(it.rootViewResId).let { itemView ->
-                            container.addView(itemView)
-                            CommonBaseHolder(rootView = itemView).apply { viewHolders[position] = this }
-                        }
-                    it.rootView != null -> {
-                        require(it.rootView.parent == null) {
-                            "Cannot bound ViewHolder on PagerAdapter, " +
-                                "the ${it.rootView} was already added to a ViewGroup."
-                        }
-                        container.addView(it.rootView)
-                        CommonBaseHolder(rootView = it.rootView).apply { viewHolders[position] = this }
-                    }
-                    else -> null
-                }
+            (viewHolderImpls[position] ?: getCallback(position)?.delegate?.let {
+                CommonViewHolderImpl.from(it, adapterContext, container)
             })?.let {
+                container.addView(it.rootView)
                 getCurrentEntity(position)?.let { entity ->
-                    boundItemViewsCallbacks(position)?.onBindCallback
-                        ?.invoke((it as? BindingBaseHolder?)?.binding, it.rootView, entity, position)
+                    getCallback(position)?.onBindCallback
+                        ?.invoke(it.delegateInstance, entity, position)
                 }; it.rootView
-            } ?: error("Cannot bound ViewHolder on PagerAdapter, did you forgot to called onBindViews function?")
+            } ?: error("No ViewHolder found, are you sure you have created one using onBindPageView?")
 
         override fun getPageTitle(position: Int) = PagerMediator(position).let { pagerMediatorsCallback?.invoke(it); it.title }
         override fun getPageWidth(position: Int) = PagerMediator(position).let { pagerMediatorsCallback?.invoke(it); it.width }
-        override fun getCount() = dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: boundItemViewsCallbacks.size
+        override fun getCount() = (dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: boundViewHolderCallbacks.size)
         override fun isViewFromObject(view: View, any: Any) = view == any
         override fun destroyItem(container: ViewGroup, position: Int, any: Any) {
             container.removeView(any as? View?)
         }
     }
-
-    /**
-     * View holder of [ViewBinding].
-     * @param binding the [ViewBinding].
-     */
-    inner class BindingBaseHolder(val binding: ViewBinding) : BaseViewHolder(rootView = binding.root)
-
-    /**
-     * Common view holder.
-     * @param rootView the item view.
-     */
-    inner class CommonBaseHolder(override val rootView: View) : BaseViewHolder(rootView = rootView)
-
-    /**
-     * Base view holder.
-     * @param rootView the item view.
-     */
-    abstract inner class BaseViewHolder(open val rootView: View? = null)
 }

@@ -19,24 +19,15 @@
  *
  * This file is created by fankes on 2022/11/23.
  */
-package com.highcapable.betterandroid.ui.component.adapter.view.proxy
+package com.highcapable.betterandroid.ui.component.adapter.viewholder.proxy
 
-import android.view.View
-import androidx.annotation.LayoutRes
-import com.highcapable.betterandroid.ui.extension.binding.ViewBindingBuilder
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.base.ViewHolderDelegate
 
 /**
- * Base adapter item view, using entity [E].
+ * Base adapter item view holder, using entity [E].
  */
-internal interface IBaseItemView<E> {
+internal interface IBaseViewHolder<E> {
 
-    /** [ViewBindingBuilder] */
-    val bindingBuilder: ViewBindingBuilder<*>?
-
-    /** The item view layout ID. */
-    @get:LayoutRes
-    val rootViewResId: Int
-
-    /** The item [View]. */
-    val rootView: View?
+    /** The view holder delegate. */
+    val delegate: ViewHolderDelegate<Any>
 }

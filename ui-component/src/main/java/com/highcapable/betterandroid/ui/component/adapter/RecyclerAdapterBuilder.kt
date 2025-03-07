@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2022/11/2.
  */
-@file:Suppress("unused", "MemberVisibilityCanBePrivate", "UNCHECKED_CAST", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
+@file:Suppress("unused", "LocalVariableName", "MemberVisibilityCanBePrivate", "UNCHECKED_CAST", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
 
 package com.highcapable.betterandroid.ui.component.adapter
 
@@ -34,9 +34,12 @@ import androidx.viewpager2.widget.ViewPager2
 import com.highcapable.betterandroid.ui.component.adapter.base.IAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.entity.AdapterPosition
 import com.highcapable.betterandroid.ui.component.adapter.factory.bindAdapter
-import com.highcapable.betterandroid.ui.component.adapter.view.RecyclerItemView
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.RecyclerViewHolder
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.ViewBindingHolderDelegate
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.XmlLayoutHolderDelegate
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.base.ViewHolderDelegate
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.impl.RecyclerViewHolderImpl
 import com.highcapable.betterandroid.ui.extension.binding.ViewBinding
-import com.highcapable.betterandroid.ui.extension.view.layoutInflater
 
 /**
  * [RecyclerView.Adapter] builder, using entity [E].
@@ -50,10 +53,10 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
         const val DEFAULT_VIEW_TYPE = 0
 
         /** The header view type. */
-        private const val HEADER_VIEW_TYPE = -10
+        private const val HEADER_VIEW_TYPE = -115 xor -225 xor -335
 
         /** The footer view type. */
-        private const val FOOTER_VIEW_TYPE = -20
+        private const val FOOTER_VIEW_TYPE = -555 xor -665 xor -775
 
         /** The no ID's item ID. */
         private const val ITEM_NO_ID = -1L
@@ -70,19 +73,13 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     }
 
     /** The current each item function callbacks. */
-    private val boundItemViewsCallbacks = linkedSetOf<RecyclerItemView<E>>()
-
-    /** The current header item view callback. */
-    private var boundHeaderItemViewCallback: RecyclerItemView<Any>? = null
-
-    /** The current footer item view callback. */
-    private var boundFooterItemViewCallback: RecyclerItemView<Any>? = null
+    private val boundViewHolderCallbacks = linkedSetOf<RecyclerViewHolder<E>>()
 
     /** The current each item on click event callbacks. */
-    private var itemViewsOnClickCallbacks = mutableMapOf<Any, (View, E, Int) -> Unit>()
+    private var viewHolderOnClickCallbacks = mutableMapOf<Number, (View, E, Int) -> Unit>()
 
     /** The current each item on long click event callbacks. */
-    private var itemViewsOnLongClickCallbacks = mutableMapOf<Any, (View, E, Int) -> Boolean>()
+    private var viewHolderOnLongClickCallbacks = mutableMapOf<Number, (View, E, Int) -> Boolean>()
 
     /** The current [List] data callback. */
     private var listDataCallback: (() -> List<E>)? = null
@@ -94,10 +91,10 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     private var entityTypeCallback: ((E, Int) -> Int)? = null
 
     /** Whether the adapter has a header view. */
-    private val hasHeaderView get() = boundHeaderItemViewCallback != null
+    private val hasHeaderView get() = boundViewHolderCallbacks.any { it.viewType == HEADER_VIEW_TYPE }
 
     /** Whether the adapter has a footer view. */
-    private val hasFooterView get() = boundFooterItemViewCallback != null
+    private val hasFooterView get() = boundViewHolderCallbacks.any { it.viewType == FOOTER_VIEW_TYPE }
 
     /**
      * Get the current position of the item view excluding the header view.
@@ -165,189 +162,181 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      * @param entityType callback the each view type function.
      * @return [RecyclerAdapterBuilder]<[E]>
      */
-    fun onBindViewsType(entityType: (entity: E, position: Int) -> Int) = apply { entityTypeCallback = entityType }
+    fun onBindViewType(entityType: (entity: E, position: Int) -> Int) = apply { entityTypeCallback = entityType }
 
     /**
-     * Add and create view holder for a header view with [VB].
-     *
-     * A header item view is a special item view that is not included in the [dataSetCount] or [onBindData].
-     *
-     * - Note: You can only set one header view.
-     * @see onBindFooterView
-     * @see onBindViews
-     * @param boundHeaderView callback and return each bound item function.
-     * @return [RecyclerAdapterBuilder]<[E]>
-     * @throws IllegalStateException if the header view already exists.
-     */
-    @JvmOverloads
-    @JvmName("onBindHeaderViewTyped")
-    inline fun <reified VB : ViewBinding> onBindHeaderView(noinline boundHeaderView: (binding: VB) -> Unit = {}) = apply {
-        require(!hasHeaderView) { "The header view already exists, you can only set one header view." }
-        boundHeaderItemViewCallback = RecyclerItemView(ViewBinding<VB>(), viewType = HEADER_VIEW_TYPE) { binding, _, _, _ ->
-            binding?.also { boundHeaderView(it as VB) }
-        }
-    }
-
-    /**
-     * Add and create view holder for a header view.
-     *
-     * A header item view is a special item view that is not included in the [dataSetCount] or [onBindData].
-     *
-     * - Note: You can only set one header view.
-     * @see onBindFooterView
-     * @see onBindViews
-     * @param resId item view layout ID.
-     * @param boundHeaderView callback and return each bound item function.
-     * @return [RecyclerAdapterBuilder]<[E]>
-     * @throws IllegalStateException if the header view already exists.
-     */
-    @JvmOverloads
-    fun onBindHeaderView(@LayoutRes resId: Int, boundHeaderView: (view: View) -> Unit = {}) = apply {
-        require(!hasHeaderView) { "The header view already exists, you can only set one header view." }
-        boundHeaderItemViewCallback = RecyclerItemView(rootViewResId = resId, viewType = HEADER_VIEW_TYPE) { _, rootView, _, _ ->
-            rootView?.also { boundHeaderView(it) }
-        }
-    }
-
-    /**
-     * Add and create view holder for a header view.
-     *
-     * A header item view is a special item view that is not included in the [dataSetCount] or [onBindData].
-     *
-     * - Note: You can only set one header view.
-     * @see onBindFooterView
-     * @see onBindViews
-     * @param view item [View], there must be no parent layout.
-     * @param boundHeaderView callback and return each bound item function.
-     * @return [RecyclerAdapterBuilder]<[E]>
-     * @throws IllegalStateException if the header view already exists.
-     */
-    @JvmOverloads
-    fun onBindHeaderView(view: View, boundHeaderView: (view: View) -> Unit = {}) = apply {
-        require(!hasHeaderView) { "The header view already exists, you can only set one header view." }
-        boundHeaderItemViewCallback = RecyclerItemView(rootView = view, viewType = HEADER_VIEW_TYPE) { _, rootView, _, _ ->
-            rootView?.also { boundHeaderView(it) }
-        }
-    }
-
-    /**
-     * Add and create view holder for a footer view with [VB].
-     *
-     * A footer item view is a special item view that is not included in the [dataSetCount] or [onBindData].
-     *
-     * - Note: You can only set one footer view.
-     * @see onBindHeaderView
-     * @see onBindViews
-     * @param boundFooterView callback and return each bound item function.
-     * @return [RecyclerAdapterBuilder]<[E]>
-     * @throws IllegalStateException if the footer view already exists.
-     */
-    @JvmOverloads
-    @JvmName("onBindFooterViewTyped")
-    inline fun <reified VB : ViewBinding> onBindFooterView(noinline boundFooterView: (binding: VB) -> Unit = {}) = apply {
-        require(!hasFooterView) { "The footer view already exists, you can only set one footer view." }
-        boundFooterItemViewCallback = RecyclerItemView(ViewBinding<VB>(), viewType = FOOTER_VIEW_TYPE) { binding, _, _, _ ->
-            binding?.also { boundFooterView(it as VB) }
-        }
-    }
-
-    /**
-     * Add and create view holder for a footer view.
-     *
-     * A footer item view is a special item view that is not included in the [dataSetCount] or [onBindData].
-     *
-     * - Note: You can only set one footer view.
-     * @see onBindHeaderView
-     * @see onBindViews
-     * @param resId item view layout ID.
-     * @param boundFooterView callback and return each bound item function.
-     * @return [RecyclerAdapterBuilder]<[E]>
-     * @throws IllegalStateException if the footer view already exists.
-     */
-    @JvmOverloads
-    fun onBindFooterView(@LayoutRes resId: Int, boundFooterView: (view: View) -> Unit = {}) = apply {
-        require(!hasFooterView) { "The footer view already exists, you can only set one footer view." }
-        boundFooterItemViewCallback = RecyclerItemView(rootViewResId = resId, viewType = FOOTER_VIEW_TYPE) { _, rootView, _, _ ->
-            rootView?.also { boundFooterView(it) }
-        }
-    }
-
-    /**
-     * Add and create view holder for a footer view.
-     *
-     * A footer item view is a special item view that is not included in the [dataSetCount] or [onBindData].
-     *
-     * - Note: You can only set one footer view.
-     * @see onBindHeaderView
-     * @see onBindViews
-     * @param view item [View], there must be no parent layout.
-     * @param boundFooterView callback and return each bound item function.
-     * @return [RecyclerAdapterBuilder]<[E]>
-     * @throws IllegalStateException if the footer view already exists.
-     */
-    @JvmOverloads
-    fun onBindFooterView(view: View, boundFooterView: (view: View) -> Unit = {}) = apply {
-        require(!hasFooterView) { "The footer view already exists, you can only set one footer view." }
-        boundFooterItemViewCallback = RecyclerItemView(rootView = view, viewType = FOOTER_VIEW_TYPE) { _, rootView, _, _ ->
-            rootView?.also { boundFooterView(it) }
-        }
-    }
-
-    /**
-     * Add and create view holder with [VB].
+     * Create and add view holder from [ViewHolderDelegate]<[VD]> (Nullable).
+     * @param delegate the custom item view delegate.
      * @param viewType the view type, default is [DEFAULT_VIEW_TYPE],
-     * you must use [onBindViewsType] to specify the each position of view type.
-     * @param boundItemViews callback and return each bound item function.
+     * you must use [onBindViewType] to specify the each position of view type.
+     * @param viewHolder callback and return each bound item function.
      * @return [RecyclerAdapterBuilder]<[E]>
      */
-    @JvmOverloads
-    @JvmName("onBindViewsTyped")
-    inline fun <reified VB : ViewBinding> onBindViews(
+    private fun <VD : Any> onBindNullableItemView(
+        delegate: ViewHolderDelegate<VD>,
         viewType: Int = DEFAULT_VIEW_TYPE,
-        noinline boundItemViews: (binding: VB, entity: E, position: AdapterPosition) -> Unit = { _, _, _ -> }
+        viewHolder: (delegate: VD, entity: E?, position: AdapterPosition) -> Unit = { _, _, _ -> }
     ) = apply {
-        boundItemViewsCallbacks.add(RecyclerItemView(ViewBinding<VB>(), viewType = viewType) { binding, _, entity, position ->
-            binding?.also { boundItemViews(it as VB, entity, position) }
+        when (viewType) {
+            HEADER_VIEW_TYPE -> require(!hasHeaderView) { "The header view already exists, you can only set one header view." }
+            FOOTER_VIEW_TYPE -> require(!hasFooterView) { "The footer view already exists, you can only set one footer view." }
+        }
+        boundViewHolderCallbacks.add(RecyclerViewHolder(delegate as ViewHolderDelegate<Any>, viewType) { delegate, entity, position ->
+            runCatching {
+                viewHolder(delegate as VD, entity, position)
+            }.onFailure {
+                if (it is ClassCastException) error(
+                    "The correct entity type is not provided with onBindData. " +
+                        "Please remove the generic declaration or use onBindData to pass in the corresponding entity type collection."
+                ) else throw it
+            }
         })
     }
 
     /**
-     * Add and create view holder.
-     * @param resId item view layout ID.
+     * Create and add view holder from [ViewHolderDelegate]<[VD]>.
+     * @param delegate the custom item view delegate.
      * @param viewType the view type, default is [DEFAULT_VIEW_TYPE],
-     * you must use [onBindViewsType] to specify the each position of view type.
-     * @param boundItemViews callback and return each bound item function.
+     * you must use [onBindViewType] to specify the each position of view type.
+     * @param viewHolder callback and return each bound item function.
      * @return [RecyclerAdapterBuilder]<[E]>
      */
     @JvmOverloads
-    fun onBindViews(
+    fun <VD : Any> onBindItemView(
+        delegate: ViewHolderDelegate<VD>,
+        viewType: Int = DEFAULT_VIEW_TYPE,
+        viewHolder: (delegate: VD, entity: E, position: AdapterPosition) -> Unit = { _, _, _ -> }
+    ) = onBindNullableItemView(delegate, viewType) { _delegate, entity, position ->
+        viewHolder(_delegate, entity ?: error("An existing binding object cannot be passed into a null entity."), position)
+    }
+
+    /**
+     * Create and add view holder from [ViewHolderDelegate]<[VD]> for a header view.
+     *
+     * A header item view is a special item view that is not included in the [dataSetCount] or [onBindData].
+     *
+     * - Note: You can only set one header view.
+     * @see onBindFooterView
+     * @see onBindItemView
+     * @param delegate the custom item view delegate.
+     * @param viewHolder callback and return each bound item function.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     * @throws IllegalStateException if the header view already exists.
+     */
+    @JvmOverloads
+    fun <VD : Any> onBindHeaderView(
+        delegate: ViewHolderDelegate<VD>,
+        viewHolder: (delegate: VD) -> Unit = {}
+    ) = onBindNullableItemView(delegate, HEADER_VIEW_TYPE) { _delegate, _, _ -> viewHolder(_delegate) }
+
+    /**
+     * Create and add view holder from [ViewHolderDelegate]<[VD]> for a footer view.
+     *
+     * A footer item view is a special item view that is not included in the [dataSetCount] or [onBindData].
+     *
+     * - Note: You can only set one footer view.
+     * @see onBindHeaderView
+     * @see onBindItemView
+     * @param delegate the custom item view delegate.
+     * @param viewHolder callback and return each bound item function.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     * @throws IllegalStateException if the footer view already exists.
+     */
+    @JvmOverloads
+    fun <VD : Any> onBindFooterView(
+        delegate: ViewHolderDelegate<VD>,
+        viewHolder: (delegate: VD) -> Unit = {}
+    ) = onBindNullableItemView(delegate, FOOTER_VIEW_TYPE) { _delegate, _, _ -> viewHolder(_delegate) }
+
+    /**
+     * Create and add view holder from [ViewBinding]<[VB]> for a header view.
+     *
+     * A header item view is a special item view that is not included in the [dataSetCount] or [onBindData].
+     *
+     * - Note: You can only set one header view.
+     * @see onBindFooterView
+     * @see onBindItemView
+     * @param viewHolder callback and return each bound item function.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     * @throws IllegalStateException if the header view already exists.
+     */
+    inline fun <reified VB : ViewBinding> onBindHeaderView(noinline viewHolder: (binding: VB) -> Unit = {}) =
+        onBindHeaderView(ViewBindingHolderDelegate(ViewBinding<VB>()), viewHolder)
+
+    /**
+     * Create and add view holder from XML layout ID for a header view.
+     *
+     * A header item view is a special item view that is not included in the [dataSetCount] or [onBindData].
+     *
+     * - Note: You can only set one header view.
+     * @see onBindFooterView
+     * @see onBindItemView
+     * @param resId item view layout ID.
+     * @param viewHolder callback and return each bound item function.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     * @throws IllegalStateException if the header view already exists.
+     */
+    @JvmOverloads
+    fun onBindHeaderView(@LayoutRes resId: Int, viewHolder: (view: View) -> Unit = {}) =
+        onBindHeaderView(XmlLayoutHolderDelegate(resId), viewHolder)
+
+    /**
+     * Create and add view holder from [ViewBinding]<[VB]> for a footer view.
+     *
+     * A footer item view is a special item view that is not included in the [dataSetCount] or [onBindData].
+     *
+     * - Note: You can only set one footer view.
+     * @see onBindHeaderView
+     * @see onBindItemView
+     * @param viewHolder callback and return each bound item function.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     * @throws IllegalStateException if the footer view already exists.
+     */
+    inline fun <reified VB : ViewBinding> onBindFooterView(noinline viewHolder: (binding: VB) -> Unit = {}) =
+        onBindFooterView(ViewBindingHolderDelegate(ViewBinding<VB>()), viewHolder)
+
+    /**
+     * Create and add view holder from XML layout ID for a footer view.
+     *
+     * A footer item view is a special item view that is not included in the [dataSetCount] or [onBindData].
+     *
+     * - Note: You can only set one footer view.
+     * @see onBindHeaderView
+     * @see onBindItemView
+     * @param resId item view layout ID.
+     * @param viewHolder callback and return each bound item function.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     * @throws IllegalStateException if the footer view already exists.
+     */
+    @JvmOverloads
+    fun onBindFooterView(@LayoutRes resId: Int, viewHolder: (view: View) -> Unit = {}) =
+        onBindFooterView(XmlLayoutHolderDelegate(resId), viewHolder)
+
+    /**
+     * Create and add view holder from [ViewBinding]<[VB]>.
+     * @param viewType the view type, default is [DEFAULT_VIEW_TYPE],
+     * you must use [onBindViewType] to specify the each position of view type.
+     * @param viewHolder callback and return each bound item function.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     */
+    inline fun <reified VB : ViewBinding> onBindItemView(
+        viewType: Int = DEFAULT_VIEW_TYPE,
+        noinline viewHolder: (binding: VB, entity: E, position: AdapterPosition) -> Unit = { _, _, _ -> }
+    ) = onBindItemView(ViewBindingHolderDelegate(ViewBinding<VB>()), viewType, viewHolder)
+
+    /**
+     * Create and add view holder from XML layout ID.
+     * @param resId item view layout ID.
+     * @param viewType the view type, default is [DEFAULT_VIEW_TYPE],
+     * you must use [onBindViewType] to specify the each position of view type.
+     * @param viewHolder callback and return each bound item function.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     */
+    fun onBindItemView(
         @LayoutRes resId: Int,
         viewType: Int = DEFAULT_VIEW_TYPE,
-        boundItemViews: (view: View, entity: E, position: AdapterPosition) -> Unit = { _, _, _ -> }
-    ) = apply {
-        boundItemViewsCallbacks.add(RecyclerItemView(rootViewResId = resId, viewType = viewType) { _, rootView, entity, position ->
-            rootView?.also { boundItemViews(it, entity, position) }
-        })
-    }
-
-    /**
-     * Add and create view holder.
-     * @param view item [View], there must be no parent layout.
-     * @param viewType the view type, default is [DEFAULT_VIEW_TYPE],
-     * you must use [onBindViewsType] to specify the each position of view type.
-     * @param boundItemViews callback and return each bound item function.
-     * @return [RecyclerAdapterBuilder]<[E]>
-     */
-    @JvmOverloads
-    fun onBindViews(
-        view: View,
-        viewType: Int = DEFAULT_VIEW_TYPE,
-        boundItemViews: (view: View, entity: E, position: AdapterPosition) -> Unit = { _, _, _ -> }
-    ) = apply {
-        boundItemViewsCallbacks.add(RecyclerItemView(rootView = view, viewType = viewType) { _, rootView, entity, position ->
-            rootView?.also { boundItemViews(it, entity, position) }
-        })
-    }
+        viewHolder: (itemView: View, entity: E, position: AdapterPosition) -> Unit = { _, _, _ -> }
+    ) = onBindItemView(XmlLayoutHolderDelegate(resId), viewType, viewHolder)
 
     /**
      * Set the each item view on click events.
@@ -359,9 +348,13 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      * @throws IllegalArgumentException if [id] and [viewType] are used at the same time.
      */
     @JvmOverloads
-    fun onItemViewsClick(id: Long? = null, viewType: Int? = null, onClick: (view: View, entity: E, position: Int) -> Unit) = apply {
-        require(id == null || viewType == null) { "Only one of id and viewType can be used of onItemViewsClick." }
-        itemViewsOnClickCallbacks[id ?: viewType ?: ITEM_NO_ID] = onClick
+    fun onItemViewClick(
+        id: Long? = null,
+        viewType: Int? = null,
+        onClick: (itemView: View, entity: E, position: Int) -> Unit
+    ) = apply {
+        require(id == null || viewType == null) { "Only one of id and viewType can be used of onItemViewClick." }
+        viewHolderOnClickCallbacks[id ?: viewType ?: ITEM_NO_ID] = onClick
     }
 
     /**
@@ -374,37 +367,136 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      * @throws IllegalArgumentException if [id] and [viewType] are used at the same time.
      */
     @JvmOverloads
-    fun onItemViewsLongClick(id: Long? = null, viewType: Int? = null, onLongClick: (view: View, entity: E, position: Int) -> Boolean) = apply {
-        require(id == null || viewType == null) { "Only one of id and viewType can be used of onItemViewsLongClick." }
-        itemViewsOnLongClickCallbacks[id ?: viewType ?: ITEM_NO_ID] = onLongClick
+    fun onItemViewLongClick(
+        id: Long? = null,
+        viewType: Int? = null,
+        onLongClick: (itemView: View, entity: E, position: Int) -> Boolean
+    ) = apply {
+        require(id == null || viewType == null) { "Only one of id and viewType can be used of onItemViewLongClick." }
+        viewHolderOnLongClickCallbacks[id ?: viewType ?: ITEM_NO_ID] = onLongClick
     }
+
+    /**
+     * Bind each view type to [RecyclerView.Adapter].
+     *
+     * - This function is deprecated, use [onBindViewType] instead.
+     */
+    @Deprecated(message = "Use onBindViewType instead.", ReplaceWith("onBindViewType(entityType)"))
+    fun onBindViewsType(entityType: (entity: E, position: Int) -> Int) = onBindViewType(entityType)
+
+    /**
+     * Create and add view holder from [View] for a header view.
+     *
+     * - This solution was undesirable, so it was deprecated and no effect, don't use it.
+     * @see ViewHolderDelegate
+     */
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(message = "This function is unreasonable and has been deprecated, please use the custom ViewHolderDelegate solution instead.")
+    @JvmOverloads
+    fun onBindHeaderView(view: View, boundHeaderView: (view: View) -> Unit = {}) = this
+
+    /**
+     * Create and add view holder from [View] for a footer view.
+     *
+     * - This solution was undesirable, so it was deprecated and no effect, don't use it.
+     * @see ViewHolderDelegate
+     */
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(message = "This function is unreasonable and has been deprecated, please use the custom ViewHolderDelegate solution instead.")
+    @JvmOverloads
+    fun onBindFooterView(view: View, boundFooterView: (view: View) -> Unit = {}) = this
+
+    /**
+     * Create and add view holder from [ViewBinding]<[VB]>.
+     *
+     * - This function is deprecated, use [onBindItemView] instead.
+     */
+    @Deprecated(message = "Use onBindItemView instead.", ReplaceWith("onBindItemView<VB>(viewType, boundItemViews)"))
+    inline fun <reified VB : ViewBinding> onBindViews(
+        viewType: Int = DEFAULT_VIEW_TYPE,
+        noinline boundItemViews: (binding: VB, entity: E, position: AdapterPosition) -> Unit = { _, _, _ -> }
+    ) = onBindItemView<VB>(viewType, boundItemViews)
+
+    /**
+     * Create and add view holder from XML layout ID.
+     *
+     * - This function is deprecated, use [onBindItemView] instead.
+     */
+    @Deprecated(message = "Use onBindItemView instead.", ReplaceWith("onBindItemView(resId, viewType, boundItemViews)"))
+    @JvmOverloads
+    fun onBindViews(
+        @LayoutRes resId: Int,
+        viewType: Int = DEFAULT_VIEW_TYPE,
+        boundItemViews: (view: View, entity: E, position: AdapterPosition) -> Unit = { _, _, _ -> }
+    ) = onBindItemView(resId, viewType, boundItemViews)
+
+    /**
+     * Create and add view holder from [View].
+     *
+     * - This solution was undesirable, so it was deprecated and no effect, don't use it.
+     * @see ViewHolderDelegate
+     */
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(message = "This function is unreasonable and has been deprecated, please use the custom ViewHolderDelegate solution instead.")
+    @JvmOverloads
+    fun onBindViews(
+        view: View,
+        viewType: Int = DEFAULT_VIEW_TYPE,
+        boundItemViews: (view: View, entity: E, position: AdapterPosition) -> Unit = { _, _, _ -> }
+    ) = this
 
     /**
      * Set the each item view on click events.
      *
-     * - This function is deprecated and no effect, use [onItemViewsClick] instead.
-     * @return [RecyclerAdapterBuilder]<[E]>
+     * - This function is deprecated, use [onItemViewClick] instead.
      */
-    @Suppress("UNUSED_PARAMETER", "DeprecatedCallableAddReplaceWith")
-    @Deprecated(message = "Use onItemViewsClick instead.")
-    fun onItemViewsClick(onClick: (view: View, viewType: Int, entity: E, position: Int) -> Unit) = apply {}
+    @Deprecated(message = "Use onItemViewClick instead.", ReplaceWith("onItemViewClick(id, viewType, onClick)"))
+    @JvmOverloads
+    fun onItemViewsClick(
+        id: Long? = null,
+        viewType: Int? = null,
+        onClick: (view: View, entity: E, position: Int) -> Unit
+    ) = onItemViewClick(id, viewType, onClick)
 
     /**
      * Set the each item view on long click events.
      *
-     * - This function is deprecated and no effect, use [onItemViewsLongClick] instead.
+     * - This function is deprecated, use [onItemViewLongClick] instead.
+     */
+    @Deprecated(message = "Use onItemViewLongClick instead.", ReplaceWith("onItemViewLongClick(id, viewType, onLongClick)"))
+    @JvmOverloads
+    fun onItemViewsLongClick(
+        id: Long? = null,
+        viewType: Int? = null,
+        onLongClick: (view: View, entity: E, position: Int) -> Boolean
+    ) = onItemViewLongClick(id, viewType, onLongClick)
+
+    /**
+     * Set the each item view on click events.
+     *
+     * - This function is deprecated and no effect, use [onItemViewClick] instead.
      * @return [RecyclerAdapterBuilder]<[E]>
      */
     @Suppress("UNUSED_PARAMETER", "DeprecatedCallableAddReplaceWith")
-    @Deprecated(message = "Use onItemViewsLongClick instead.")
-    fun onItemViewsLongClick(onLongClick: (view: View, viewType: Int, entity: E, position: Int) -> Boolean) = apply {}
+    @Deprecated(message = "Use onItemViewClick instead.")
+    fun onItemViewsClick(onClick: (view: View, viewType: Int, entity: E, position: Int) -> Unit) = this
+
+    /**
+     * Set the each item view on long click events.
+     *
+     * - This function is deprecated and no effect, use [onItemViewLongClick] instead.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     */
+    @Suppress("UNUSED_PARAMETER", "DeprecatedCallableAddReplaceWith")
+    @Deprecated(message = "Use onItemViewLongClick instead.")
+    fun onItemViewsLongClick(onLongClick: (view: View, viewType: Int, entity: E, position: Int) -> Boolean) = this
 
     override fun build() = Instance()
 
     /**
      * The [RecyclerAdapterBuilder] instance.
      */
-    inner class Instance internal constructor() : RecyclerView.Adapter<RecyclerAdapterBuilder<E>.BaseRecyclerHolder>() {
+    inner class Instance internal constructor() : RecyclerView.Adapter<RecyclerViewHolderImpl<Any>>() {
 
         /**
          * The adapter wrapper of [RecyclerAdapterBuilder].
@@ -523,6 +615,12 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
             }
         }
 
+        init {
+            require(dataSetCount <= 0 || listDataCallback?.invoke().isNullOrEmpty()) {
+                "You can only use once dataSetCount or entities on RecyclerView.Adapter."
+            }
+        }
+
         /**
          * Get the wrapper of [RecyclerView.Adapter].
          * @return [Wrapper]
@@ -530,139 +628,110 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
         val wrapper = Wrapper()
 
         /**
+         * Whether the current position is in the header view holder.
+         * @param position the current position.
+         * @return [Boolean]
+         */
+        private fun isInHeaderViewHolder(position: Int) = hasHeaderView && position == 0
+
+        /**
+         * Whether the current position is in the footer view holder.
+         * @param position the current position.
+         * @return [Boolean]
+         */
+        private fun isInFooterViewHolder(position: Int) = hasFooterView && position == itemCount - 1
+
+        /**
          * Get the current each item function callbacks.
          * @param viewType the current view type。
-         * @return [RecyclerItemView]<[E]> or null.
+         * @return [RecyclerViewHolder]<[E]> or null.
          */
-        private fun boundItemViewsCallbacks(viewType: Int) = when (viewType) {
-            HEADER_VIEW_TYPE -> boundHeaderItemViewCallback
-            FOOTER_VIEW_TYPE -> boundFooterItemViewCallback
-            else -> boundItemViewsCallbacks.firstOrNull { it.viewType == viewType }
-        }
+        private fun getCallback(viewType: Int) = boundViewHolderCallbacks.firstOrNull { it.viewType == viewType }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            boundItemViewsCallbacks(viewType)?.let {
-                when {
-                    it.bindingBuilder != null -> {
-                        val binding = it.bindingBuilder.inflate(adapterContext.layoutInflater, parent)
-                        require(binding.root.parent == null) {
-                            "Cannot bound ViewHolder on RecyclerAdapter with type $viewType, " +
-                                "the ${it.bindingBuilder} was already added to a ViewGroup."
-                        }
-                        BindingRecyclerHolder(binding, binding.root, viewType)
-                    }
-                    it.rootViewResId >= 0 ->
-                        CommonRecyclerHolder(adapterContext.layoutInflater.inflate(it.rootViewResId, parent, false), it.viewType)
-                    it.rootView != null -> CommonRecyclerHolder(it.rootView.apply {
-                        require(this.parent == null) {
-                            "Cannot bound ViewHolder on RecyclerAdapter with type $viewType, " +
-                                "the $this was already added to a ViewGroup."
-                        }
-                        layoutParams = parent.layoutParams
-                    }, it.viewType)
-                    else -> null
-                }
-            } ?: error(
-                "Cannot bound ViewHolder on RecyclerAdapter with type $viewType, " +
-                    "did you forgot to called onBindViews or onBindViewsType function?"
-            )
+            getCallback(viewType)?.delegate?.let {
+                RecyclerViewHolderImpl.from(it, viewType, adapterContext, parent)
+            } ?: error(when {
+                boundViewHolderCallbacks.isNotEmpty() && viewType == DEFAULT_VIEW_TYPE ->
+                    "No default view type $DEFAULT_VIEW_TYPE found, " +
+                        "you need to declare a default view type $DEFAULT_VIEW_TYPE or used onBindViewType to create a processor."
+                boundViewHolderCallbacks.isNotEmpty() ->
+                    "No ViewHolder with type $viewType found, " +
+                        "are you sure you used onBindViewType to create a processor that uses type $viewType " +
+                        "or created one using onBindItemView by type $viewType?"
+                else -> "No ViewHolder found, are you sure you have created one using onBindItemView?"
+            })
 
-        override fun onBindViewHolder(holder: RecyclerAdapterBuilder<E>.BaseRecyclerHolder, position: Int) {
-            val isInHeader = hasHeaderView && position == 0
-            val isInFooter = hasFooterView && position == itemCount - 1
-            when {
-                isInHeader || isInFooter -> when (holder) {
-                    is BindingRecyclerHolder -> when {
-                        isInHeader -> boundHeaderItemViewCallback
-                        else -> boundFooterItemViewCallback
-                    }?.onBindCallback?.invoke(holder.binding, holder.binding.root, Any(), AdapterPosition.none())
-                    is CommonRecyclerHolder -> when {
-                        isInHeader -> boundHeaderItemViewCallback
-                        else -> boundFooterItemViewCallback
-                    }?.onBindCallback?.invoke(null, holder.rootView, Any(), AdapterPosition.none())
+        override fun onBindViewHolder(holder: RecyclerViewHolderImpl<Any>, position: Int) {
+            val isInHeaderOrFooter = isInHeaderViewHolder(position) || isInFooterViewHolder(position)
+            val staticPosition = position.excludingPosition()
+            val dynamicPosition = AdapterPosition.from(
+                layout = { holder.layoutPosition.excludingPosition() },
+                binding = { holder.bindingAdapterPosition.excludingPosition() },
+                absolute = { holder.absoluteAdapterPosition.excludingPosition() }
+            )
+            boundViewHolderCallbacks.filter { it.viewType == holder.viewType }.forEach {
+                // If it is in the header or footer view holder,
+                // use the null value as the placeholder for entity, and null is not allowed in other cases.
+                val entity = if (isInHeaderOrFooter) null else getCurrentEntity(staticPosition) ?: return
+                it.onBindCallback(holder.delegateInstance, entity, dynamicPosition)
+            }
+            // Header and footer view does not handle item view click events.
+            if (isInHeaderOrFooter) return
+            viewHolderOnClickCallbacks.filterKeys {
+                when (it) {
+                    is Long -> it == ITEM_NO_ID || it == getItemId(staticPosition)
+                    is Int -> it == DEFAULT_VIEW_TYPE || it == holder.viewType
+                    else -> false
                 }
-                else -> {
-                    val sPosition = holder.adapterPosition.excludingPosition()
-                    val dPosition = AdapterPosition.from { holder.adapterPosition.excludingPosition() }
-                    boundItemViewsCallbacks.forEach {
-                        if (it.viewType == holder.viewType) when (holder) {
-                            is BindingRecyclerHolder -> getCurrentEntity(sPosition)?.let { entity ->
-                                it.onBindCallback(holder.binding, holder.binding.root, entity, dPosition)
-                            }
-                            is CommonRecyclerHolder -> getCurrentEntity(sPosition)?.let { entity ->
-                                it.onBindCallback(null, holder.rootView, entity, dPosition)
-                            }
-                        }
+            }.takeIf { it.isNotEmpty() }?.also { callbacks ->
+                holder.itemView.setOnClickListener {
+                    callbacks.forEach { (_, callback) ->
+                        val value = dynamicPosition.value
+                        getCurrentEntity(value)?.let { entity -> callback(it, entity, value) }
                     }
-                    itemViewsOnClickCallbacks.filterKeys {
-                        when (it) {
-                            is Long -> it == ITEM_NO_ID || it == getItemId(sPosition)
-                            is Int -> it == DEFAULT_VIEW_TYPE || it == holder.viewType
-                            else -> false
-                        }
-                    }.also { callbacks ->
-                        if (callbacks.isNotEmpty()) holder.rootView.setOnClickListener {
-                            val ePosition = holder.adapterPosition.excludingPosition()
-                            callbacks.forEach { (_, callback) ->
-                                getCurrentEntity(ePosition)?.let { entity -> callback(it, entity, ePosition) }
-                            }
-                        }
-                    }
-                    itemViewsOnLongClickCallbacks.filterKeys {
-                        when (it) {
-                            is Long -> it == ITEM_NO_ID || it == getItemId(sPosition)
-                            is Int -> it == DEFAULT_VIEW_TYPE || it == holder.viewType
-                            else -> false
-                        }
-                    }.also { callbacks ->
-                        if (callbacks.isNotEmpty()) holder.rootView.setOnLongClickListener {
-                            val ePosition = holder.adapterPosition.excludingPosition()
-                            var result = false
-                            callbacks.forEach { (_, callback) ->
-                                result = result || getCurrentEntity(ePosition)?.let { entity -> callback(it, entity, ePosition) } == true
-                            }; result
-                        }
-                    }
+                }
+            }
+            viewHolderOnLongClickCallbacks.filterKeys {
+                when (it) {
+                    is Long -> it == ITEM_NO_ID || it == getItemId(staticPosition)
+                    is Int -> it == DEFAULT_VIEW_TYPE || it == holder.viewType
+                    else -> false
+                }
+            }.takeIf { it.isNotEmpty() }?.also { callbacks ->
+                holder.rootView.setOnLongClickListener {
+                    var result = false
+                    callbacks.forEach { (_, callback) ->
+                        val value = dynamicPosition.value
+                        result = result || getCurrentEntity(value)?.let { entity ->
+                            callback(it, entity, value)
+                        } == true
+                    }; result
                 }
             }
         }
 
         override fun getItemViewType(position: Int) = when {
-            hasHeaderView && position == 0 -> HEADER_VIEW_TYPE
-            hasFooterView && position == itemCount - 1 -> FOOTER_VIEW_TYPE
-            else -> getCurrentEntity(position.excludingPosition())?.let { entityTypeCallback?.invoke(it, position.excludingPosition()) }
-                ?: DEFAULT_VIEW_TYPE
+            isInHeaderViewHolder(position) -> HEADER_VIEW_TYPE
+            isInFooterViewHolder(position) -> FOOTER_VIEW_TYPE
+            else -> getCurrentEntity(position.excludingPosition())?.let {
+                entityTypeCallback?.invoke(it, position.excludingPosition())
+            } ?: DEFAULT_VIEW_TYPE
         }
+
         override fun getItemId(position: Int) = when {
-            hasHeaderView && position == 0 -> HEADER_VIEW_TYPE.toLong()
-            hasFooterView && position == itemCount - 1 -> FOOTER_VIEW_TYPE.toLong()
-            else -> getCurrentEntity(position.excludingPosition())?.let { entityIdCallback?.invoke(it, position.excludingPosition()) }
-                ?: position.toLong()
+            isInHeaderViewHolder(position) -> HEADER_VIEW_TYPE.toLong()
+            isInFooterViewHolder(position) -> FOOTER_VIEW_TYPE.toLong()
+            else -> getCurrentEntity(position.excludingPosition())?.let {
+                entityIdCallback?.invoke(it, position.excludingPosition())
+            } ?: position.toLong()
         }
-        override fun getItemCount() = (dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: 0) +
-            (if (hasHeaderView) 1 else 0) + (if (hasFooterView) 1 else 0)
+
+        override fun getItemCount(): Int {
+            val primaryCount = dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: 0
+            val headerCount = if (hasHeaderView) 1 else 0
+            val footerCount = if (hasFooterView) 1 else 0
+            return primaryCount + headerCount + footerCount
+        }
     }
-
-    /**
-     * [RecyclerView.ViewHolder] of [ViewBinding].
-     * @param binding the [ViewBinding].
-     * @param rootView the item view.
-     * @param viewType the view type。
-     */
-    inner class BindingRecyclerHolder(val binding: ViewBinding, override val rootView: View, override val viewType: Int) :
-        BaseRecyclerHolder(rootView, viewType)
-
-    /**
-     * Common [RecyclerView.ViewHolder].
-     * @param rootView the item view.
-     * @param viewType the view type。
-     */
-    inner class CommonRecyclerHolder(override val rootView: View, override val viewType: Int) : BaseRecyclerHolder(rootView, viewType)
-
-    /**
-     * Base [RecyclerView.ViewHolder].
-     * @param rootView the item view.
-     * @param viewType the view type。
-     */
-    abstract inner class BaseRecyclerHolder(open val rootView: View, open val viewType: Int) : RecyclerView.ViewHolder(rootView)
 }

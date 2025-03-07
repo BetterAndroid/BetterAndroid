@@ -26,6 +26,7 @@ package com.highcapable.betterandroid.ui.component.adapter
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
 import android.widget.BaseAdapter
 import android.widget.Filter
@@ -36,10 +37,12 @@ import androidx.appcompat.widget.ListPopupWindow
 import androidx.viewbinding.ViewBinding
 import com.highcapable.betterandroid.ui.component.adapter.base.IAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.factory.bindAdapter
-import com.highcapable.betterandroid.ui.component.adapter.view.CommonItemView
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.CommonViewHolder
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.ViewBindingHolderDelegate
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.XmlLayoutHolderDelegate
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.base.ViewHolderDelegate
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.impl.CommonViewHolderImpl
 import com.highcapable.betterandroid.ui.extension.binding.ViewBinding
-import com.highcapable.betterandroid.ui.extension.view.inflate
-import com.highcapable.betterandroid.ui.extension.view.layoutInflater
 import androidx.appcompat.widget.ListPopupWindow as AndroidX_ListPopupWindow
 
 /**
@@ -67,13 +70,13 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
     }
 
     /** The current each item function callback. */
-    private var boundItemViewsCallback: CommonItemView<E>? = null
+    private var boundViewHolderCallback: CommonViewHolder<E>? = null
 
     /** The current each item on click event callbacks. */
-    private var itemViewsOnClickCallbacks = mutableMapOf<Long, (View, E, Int) -> Unit>()
+    private var viewHolderOnClickCallbacks = mutableMapOf<Long, (View, E, Int) -> Unit>()
 
     /** The current each item on long click event callbacks. */
-    private var itemViewsOnLongClickCallbacks = mutableMapOf<Long, (View, E, Int) -> Boolean>()
+    private var viewHolderOnLongClickCallbacks = mutableMapOf<Long, (View, E, Int) -> Boolean>()
 
     /** The current [Filter] callback. */
     private var filterCallback: (() -> Filter)? = null
@@ -147,42 +150,47 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
     fun onBindItemId(entityId: (entity: E, position: Int) -> Long) = apply { entityIdCallback = entityId }
 
     /**
-     * Add and create view holder with [VB].
-     * @param boundItemViews callback and return each bound item function.
+     * Create and add view holder from [ViewHolderDelegate]<[VD]>.
+     * @param delegate the custom item view delegate.
+     * @param viewHolder callback and return each bound item function.
      * @return [CommonAdapterBuilder]<[E]>
      */
-    @JvmName("onBindViewsTyped")
-    inline fun <reified VB : ViewBinding> onBindViews(
-        noinline boundItemViews: (binding: VB, entity: E, position: Int) -> Unit = { _, _, _ -> }
+    @JvmOverloads
+    fun <VD : Any> onBindItemView(
+        delegate: ViewHolderDelegate<VD>,
+        viewHolder: (delegate: VD, entity: E, position: Int) -> Unit = { _, _, _ -> }
     ) = apply {
-        boundItemViewsCallback = CommonItemView(ViewBinding<VB>()) { binding, _, entity, position ->
-            binding?.also { boundItemViews(it as VB, entity, position) }
+        boundViewHolderCallback = CommonViewHolder(delegate as ViewHolderDelegate<Any>) { delegate, entity, position ->
+            runCatching {
+                viewHolder(delegate as VD, entity, position)
+            }.onFailure {
+                if (it is ClassCastException) error(
+                    "The correct entity type is not provided with onBindData. " +
+                        "Please remove the generic declaration or use onBindData to pass in the corresponding entity type collection."
+                ) else throw it
+            }
         }
     }
 
     /**
-     * Add and create view holder.
+     * Create and add view holder from [ViewBinding]<[VB]>.
+     * @param viewHolder callback and return each bound item function.
+     * @return [CommonAdapterBuilder]<[E]>
+     */
+    inline fun <reified VB : ViewBinding> onBindItemView(
+        noinline viewHolder: (binding: VB, entity: E, position: Int) -> Unit = { _, _, _ -> }
+    ) = onBindItemView(ViewBindingHolderDelegate(ViewBinding<VB>()), viewHolder)
+
+    /**
+     * Create and add view holder from XML layout ID.
      * @param resId item view layout ID.
-     * @param boundItemViews callback and return each bound item function.
+     * @param viewHolder callback and return each bound item function.
      * @return [CommonAdapterBuilder]<[E]>
      */
-    fun onBindViews(@LayoutRes resId: Int, boundItemViews: (view: View, entity: E, position: Int) -> Unit = { _, _, _ -> }) = apply {
-        boundItemViewsCallback = CommonItemView(rootViewResId = resId) { _, itemView, entity, position ->
-            itemView?.also { boundItemViews(it, entity, position) }
-        }
-    }
-
-    /**
-     * Add and create view holder.
-     * @param view item [View], there must be no parent layout.
-     * @param boundItemViews callback and return each bound item function.
-     * @return [CommonAdapterBuilder]<[E]>
-     */
-    fun onBindViews(view: View, boundItemViews: (view: View, entity: E, position: Int) -> Unit = { _, _, _ -> }) = apply {
-        boundItemViewsCallback = CommonItemView(rootView = view) { _, itemView, entity, position ->
-            itemView?.also { boundItemViews(it, entity, position) }
-        }
-    }
+    fun onBindItemView(
+        @LayoutRes resId: Int,
+        viewHolder: (itemView: View, entity: E, position: Int) -> Unit = { _, _, _ -> }
+    ) = onBindItemView(XmlLayoutHolderDelegate(resId), viewHolder)
 
     /**
      * Set the each item view on click events.
@@ -191,8 +199,8 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
      * @return [CommonAdapterBuilder]<[E]>
      */
     @JvmOverloads
-    fun onItemViewsClick(id: Long = ITEM_NO_ID, onClick: (view: View, entity: E, position: Int) -> Unit) =
-        apply { itemViewsOnClickCallbacks[id] = onClick }
+    fun onItemViewClick(id: Long = ITEM_NO_ID, onClick: (itemView: View, entity: E, position: Int) -> Unit) =
+        apply { viewHolderOnClickCallbacks[id] = onClick }
 
     /**
      * Set the each item view on long click events.
@@ -201,8 +209,59 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
      * @return [CommonAdapterBuilder]<[E]>
      */
     @JvmOverloads
+    fun onItemViewLongClick(id: Long = ITEM_NO_ID, onLongClick: (itemView: View, entity: E, position: Int) -> Boolean) =
+        apply { viewHolderOnLongClickCallbacks[id] = onLongClick }
+
+    /**
+     * Create and add view holder with [VB].
+     *
+     * - This function is deprecated, use [onBindItemView] instead.
+     */
+    @Deprecated(message = "Use onBindItemView instead.", ReplaceWith("onBindItemView<VB>(boundItemViews)"))
+    inline fun <reified VB : ViewBinding> onBindViews(
+        noinline boundItemViews: (binding: VB, entity: E, position: Int) -> Unit = { _, _, _ -> }
+    ) = onBindItemView<VB>(boundItemViews)
+
+    /**
+     * Create and add view holder from XML layout ID.
+     *
+     * - This function is deprecated, use [onBindItemView] instead.
+     */
+    @Deprecated(message = "Use onBindItemView instead.", ReplaceWith("onBindItemView(resId, boundItemViews)"))
+    fun onBindViews(
+        @LayoutRes resId: Int,
+        boundItemViews: (view: View, entity: E, position: Int) -> Unit = { _, _, _ -> }
+    ) = onBindItemView(resId, boundItemViews)
+
+    /**
+     * Create and add view holder.
+     *
+     * - This solution was undesirable, so it was deprecated and no effect, don't use it.
+     * @see ViewHolderDelegate
+     */
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(message = "This function is unreasonable and has been deprecated, please use the custom ViewHolderDelegate solution instead.")
+    fun onBindViews(view: View, boundItemViews: (view: View, entity: E, position: Int) -> Unit = { _, _, _ -> }) = this
+
+    /**
+     * Set the each item view on click events.
+     *
+     * - This function is deprecated, use [onItemViewClick] instead.
+     */
+    @Deprecated(message = "Use onItemViewClick instead.", ReplaceWith("onItemViewClick(id, onClick)"))
+    @JvmOverloads
+    fun onItemViewsClick(id: Long = ITEM_NO_ID, onClick: (view: View, entity: E, position: Int) -> Unit) =
+        onItemViewClick(id, onClick)
+
+    /**
+     * Set the each item view on long click events.
+     *
+     * - This function is deprecated, use [onItemViewLongClick] instead.
+     */
+    @Deprecated(message = "Use onItemViewLongClick instead.", ReplaceWith("onItemViewLongClick(id, onLongClick)"))
+    @JvmOverloads
     fun onItemViewsLongClick(id: Long = ITEM_NO_ID, onLongClick: (view: View, entity: E, position: Int) -> Boolean) =
-        apply { itemViewsOnLongClickCallbacks[id] = onLongClick }
+        onItemViewLongClick(id, onLongClick)
 
     override fun build() = Instance()
 
@@ -210,83 +269,71 @@ class CommonAdapterBuilder<E> private constructor(private val adapterContext: Co
      * The [CommonAdapterBuilder] instance.
      */
     inner class Instance internal constructor() : BaseAdapter(), Filterable {
+
+        init {
+            require(dataSetCount <= 0 || listDataCallback?.invoke().isNullOrEmpty()) {
+                "You can only use once dataSetCount or entities on BaseAdapter."
+            }
+        }
+
         override fun getFilter() = filterCallback?.invoke() ?: emptyFilterCallback()
         override fun getCount() = dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: 0
         override fun getItem(position: Int) = getCurrentEntity(position)
         override fun getItemId(position: Int) = getCurrentEntity(position)?.let { entityIdCallback?.invoke(it, position) } ?: position.toLong()
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-            var holderView = convertView
-            val holder: CommonAdapterBuilder<E>.BaseViewHolder
-            if (convertView == null) {
-                holder = boundItemViewsCallback?.let {
-                    when {
-                        it.bindingBuilder != null ->
-                            it.bindingBuilder.inflate(adapterContext.layoutInflater).let { binding ->
-                                holderView = binding.root
-                                BindingBaseHolder(binding = binding)
-                            }
-                        it.rootViewResId >= 0 ->
-                            adapterContext.layoutInflater.inflate(it.rootViewResId).let { itemView ->
-                                holderView = itemView
-                                CommonBaseHolder(rootView = itemView)
-                            }
-                        it.rootView != null -> {
-                            require(it.rootView.parent == null) {
-                                "Cannot bound ViewHolder on ViewHolder on BaseAdapter, " +
-                                    "the $this was already added to a ViewGroup."
-                            }
-                            holderView = it.rootView
-                            CommonBaseHolder(rootView = it.rootView)
-                        }
-                        else -> null
+            val owner = parent as? AdapterView<*>?
+            var itemView = convertView
+            val viewHolder = if (convertView == null)
+                boundViewHolderCallback?.delegate?.let {
+                    CommonViewHolderImpl.from(it, adapterContext, parent).apply { 
+                        itemView = this.rootView
                     }
-                } ?: error("Cannot bound ViewHolder on BaseAdapter, did you forgot to called onBindViews function?")
-            } else holder = convertView.tag as CommonAdapterBuilder<E>.BaseViewHolder
-            holderView?.apply {
-                tag = holder
-                itemViewsOnClickCallbacks
+                } ?: error("No ViewHolder found, are you sure you have created one using onBindItemView?")
+            else convertView.tag as CommonViewHolderImpl<Any>
+            itemView?.apply {
+                tag = viewHolder
+                viewHolderOnClickCallbacks
                     .filterKeys { it == ITEM_NO_ID || it == getItemId(position) }
-                    .also { callbacks ->
-                        if (callbacks.isNotEmpty()) setOnClickListener {
+                    .takeIf { it.isNotEmpty() }
+                    ?.also { callbacks ->
+                        /**
+                         * Call the onClick event.
+                         * @param position the current position.
+                         */
+                        fun View.doOnClick(position: Int) {
                             callbacks.forEach { (_, callback) ->
-                                getCurrentEntity(position)?.let { entity -> callback(it, entity, position) }
+                                getCurrentEntity(position)?.let { entity ->
+                                    callback(this, entity, position)
+                                }
                             }
                         }
+                        owner?.setOnItemClickListener { _, view, position, _ ->
+                            view.doOnClick(position)
+                        } ?: setOnClickListener { it.doOnClick(position) }
                     }
-                itemViewsOnLongClickCallbacks
+                viewHolderOnLongClickCallbacks
                     .filterKeys { it == ITEM_NO_ID || it == getItemId(position) }
-                    .also { callbacks ->
-                        if (callbacks.isNotEmpty()) setOnLongClickListener {
+                    .takeIf { it.isNotEmpty() }
+                    ?.also { callbacks ->
+                        /**
+                         * Call the onLongClick event.
+                         * @param position the current position.
+                         * @return [Boolean]
+                         */
+                        fun View.doOnLongClick(position: Int): Boolean {
                             var result = false
                             callbacks.forEach { (_, callback) ->
-                                getCurrentEntity(position)?.let { entity -> result = callback(it, entity, position) }
-                            }; result
+                                getCurrentEntity(position)?.let { entity -> result = callback(this, entity, position) }
+                            }; return result
                         }
+                        owner?.setOnItemLongClickListener { _, view, position, _ ->
+                            view.doOnLongClick(position)
+                        } ?: setOnLongClickListener { it.doOnLongClick(position) }
                     }
             }
             getCurrentEntity(position)?.let {
-                boundItemViewsCallback?.onBindCallback?.invoke(
-                    (holder as? BindingBaseHolder?)?.binding, holder.rootView, it, position
-                )
-            }; return holderView ?: error("Cannot bound ViewHolder on BaseAdapter because got null instance.")
+                boundViewHolderCallback?.onBindCallback?.invoke(viewHolder.delegateInstance, it, position)
+            }; return itemView ?: error("ViewHolder create failed.")
         }
     }
-
-    /**
-     * View holder of [ViewBinding].
-     * @param binding the [ViewBinding].
-     */
-    inner class BindingBaseHolder(val binding: ViewBinding) : BaseViewHolder(binding.root)
-
-    /**
-     * Common view holder.
-     * @param rootView the item view.
-     */
-    inner class CommonBaseHolder(override val rootView: View) : BaseViewHolder(rootView)
-
-    /**
-     * Base view holder.
-     * @param rootView the item view.
-     */
-    abstract inner class BaseViewHolder(open val rootView: View)
 }
