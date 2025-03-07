@@ -50,6 +50,15 @@ libraries:
   androidx.appcompat:
     appcompat:
       version: 1.7.0
+  androidx.recyclerview:
+    recyclerview:
+      version: 1.4.0
+  androidx.viewpager:
+    viewpager:
+      version: 1.1.0
+  androidx.viewpager2:
+    viewpager2:
+      version: 1.1.0
   com.google.android.material:
     material:
       # Workaround for a bug in version 1.12.0
