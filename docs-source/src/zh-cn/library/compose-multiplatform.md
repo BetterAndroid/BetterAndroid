@@ -75,6 +75,57 @@ kotlin {
 }
 ```
 
+### Version Catalog
+
+在你的项目 `gradle/libs.versions.toml` 中添加依赖。
+
+```toml
+[versions]
+compose.multiplatform = "<version>"
+
+[libraries]
+# commonMain
+compose.multiplatform = { module = "com.highcapable.betterandroid:compose.multiplatform", version.ref = "compose.multiplatform" }
+# androidMain
+compose.multiplatform-android = { module = "com.highcapable.betterandroid:compose.multiplatform-android", version.ref = "compose.multiplatform" }
+# iosArm64Main
+compose.multiplatform-iosarm64 = { module = "com.highcapable.betterandroid:compose.multiplatform-iosarm64", version.ref = "compose.multiplatform" }
+# iosX64Main
+compose.multiplatform-iosx64 = { module = "com.highcapable.betterandroid:compose.multiplatform-iosx64", version.ref = "compose.multiplatform" }
+# iosSimulatorArm64Main
+compose.multiplatform-iossimulatorarm64 = { module = "com.highcapable.betterandroid:compose.multiplatform-iossimulatorarm64", version.ref = "compose.multiplatform" }
+# desktopMain
+compose.multiplatform-desktop = { module = "com.highcapable.betterandroid:compose.multiplatform-desktop", version.ref = "compose.multiplatform" }
+```
+
+在你的项目 `build.gradle.kts` 中配置依赖。
+
+如果你在普通的项目中使用多平台依赖，你只需要按需部署对应平台后缀的依赖即可。
+
+```kotlin
+implementation(libs.compose.multiplatform.android)
+implementation(libs.compose.multiplatform.iosarm64)
+implementation(libs.compose.multiplatform.iosx64)
+implementation(libs.compose.multiplatform.iossimulatorarm64)
+implementation(libs.compose.multiplatform.desktop)
+```
+
+如果你在多平台项目中使用多平台依赖，你需要在 `commonMain` 中添加 `compose-multiplatform` 依赖。
+
+```kotlin
+kotlin {
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(libs.compose.multiplatform)
+            }
+        }
+    }
+}
+```
+
+请将 `<version>` 修改为此文档顶部显示的版本。
+
 ### 传统方式
 
 在你的项目 `build.gradle.kts` 中配置依赖。

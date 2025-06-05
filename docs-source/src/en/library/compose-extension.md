@@ -69,6 +69,57 @@ kotlin {
 }
 ```
 
+### Version Catalog
+
+Add dependency in your project's `gradle/libs.versions.toml`.
+
+```toml
+[versions]
+compose-extension = "<version>"
+
+[libraries]
+# commonMain
+compose-extension = { module = "com.highcapable.betterandroid:compose-extension", version.ref = "compose-extension" }
+# androidMain
+compose-extension-android = { module = "com.highcapable.betterandroid:compose-extension-android", version.ref = "compose-extension" }
+# iosArm64Main
+compose-extension-iosarm64 = { module = "com.highcapable.betterandroid:compose-extension-iosarm64", version.ref = "compose-extension" }
+# iosX64Main
+compose-extension-iosx64 = { module = "com.highcapable.betterandroid:compose-extension-iosx64", version.ref = "compose-extension" }
+# iosSimulatorArm64Main
+compose-extension-iossimulatorarm64 = { module = "com.highcapable.betterandroid:compose-extension-iossimulatorarm64", version.ref = "compose-extension" }
+# desktopMain
+compose-extension-desktop = { module = "com.highcapable.betterandroid:compose-extension-desktop", version.ref = "compose-extension" }
+```
+
+Configure dependencies in your project `build.gradle.kts`.
+
+If you use multi-platform dependencies in a regular project, you only need to deploy the corresponding platform suffix dependencies as needed.
+
+```kotlin
+implementation(libs.compose.extension.android)
+implementation(libs.compose.extension.iosarm64)
+implementation(libs.compose.extension.iosx64)
+implementation(libs.compose.extension.iossimulatorarm64)
+implementation(libs.compose.extension.desktop)
+```
+
+If you use multi-platform dependencies in a multi-platform project, you need to add the `compose-extension` dependency in `commonMain`.
+
+```kotlin
+kotlin {
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(libs.compose.extension)
+            }
+        }
+    }
+}
+```
+
+Please change `<version>` to the version displayed at the top of this document.
+
 ### Traditional Method
 
 Configure dependencies in your project `build.gradle.kts`.

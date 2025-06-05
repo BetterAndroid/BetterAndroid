@@ -69,6 +69,57 @@ kotlin {
 }
 ```
 
+### Version Catalog
+
+在你的项目 `gradle/libs.versions.toml` 中添加依赖。
+
+```toml
+[versions]
+compose-extension = "<version>"
+
+[libraries]
+# commonMain
+compose-extension = { module = "com.highcapable.betterandroid:compose-extension", version.ref = "compose-extension" }
+# androidMain
+compose-extension-android = { module = "com.highcapable.betterandroid:compose-extension-android", version.ref = "compose-extension" }
+# iosArm64Main
+compose-extension-iosarm64 = { module = "com.highcapable.betterandroid:compose-extension-iosarm64", version.ref = "compose-extension" }
+# iosX64Main
+compose-extension-iosx64 = { module = "com.highcapable.betterandroid:compose-extension-iosx64", version.ref = "compose-extension" }
+# iosSimulatorArm64Main
+compose-extension-iossimulatorarm64 = { module = "com.highcapable.betterandroid:compose-extension-iossimulatorarm64", version.ref = "compose-extension" }
+# desktopMain
+compose-extension-desktop = { module = "com.highcapable.betterandroid:compose-extension-desktop", version.ref = "compose-extension" }
+```
+
+在你的项目 `build.gradle.kts` 中配置依赖。
+
+如果你在普通的项目中使用多平台依赖，你只需要按需部署对应平台后缀的依赖即可。
+
+```kotlin
+implementation(libs.compose.extension.android)
+implementation(libs.compose.extension.iosarm64)
+implementation(libs.compose.extension.iosx64)
+implementation(libs.compose.extension.iossimulatorarm64)
+implementation(libs.compose.extension.desktop)
+```
+
+如果你在多平台项目中使用多平台依赖，你需要在 `commonMain` 中添加 `compose-extension` 依赖。
+
+```kotlin
+kotlin {
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(libs.compose.extension)
+            }
+        }
+    }
+}
+```
+
+请将 `<version>` 修改为此文档顶部显示的版本。
+
 ### 传统方式
 
 在你的项目 `build.gradle.kts` 中配置依赖。

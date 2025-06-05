@@ -29,6 +29,26 @@ libraries:
 implementation(com.highcapable.betterandroid.system.extension)
 ```
 
+### Version Catalog
+
+在你的项目 `gradle/libs.versions.toml` 中添加依赖。
+
+```toml
+[versions]
+system-extension = "<version>"
+
+[libraries]
+system-extension = { module = "com.highcapable.betterandroid:system-extension", version.ref = "system-extension" }
+```
+
+在你的项目 `build.gradle.kts` 中配置依赖。
+
+```kotlin
+implementation(libs.system.extension)
+```
+
+请将 `<version>` 修改为此文档顶部显示的版本。
+
 ### 传统方式
 
 在你的项目 `build.gradle.kts` 中配置依赖。

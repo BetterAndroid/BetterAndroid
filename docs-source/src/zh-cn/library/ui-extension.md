@@ -29,6 +29,26 @@ libraries:
 implementation(com.highcapable.betterandroid.ui.extension)
 ```
 
+### Version Catalog
+
+在你的项目 `gradle/libs.versions.toml` 中添加依赖。
+
+```toml
+[versions]
+ui-extension = "<version>"
+
+[libraries]
+ui-extension = { module = "com.highcapable.betterandroid:ui-extension", version.ref = "ui-extension" }
+```
+
+在你的项目 `build.gradle.kts` 中配置依赖。
+
+```kotlin
+implementation(libs.ui.extension)
+```
+
+请将 `<version>` 修改为此文档顶部显示的版本。
+
 ### 传统方式
 
 在你的项目 `build.gradle.kts` 中配置依赖。
@@ -2411,8 +2431,8 @@ class YourActivity : YourBaseActivity<ActivityMainBinding>() {
 
 ::: tip
 
-你还可以参考 [ui-component → Activity](../library/ui-component.md#activity) 直接使用已经封装好的 `AppBindingActivity` 或参考
-[ui-component → Fragment](../library/ui-component.md#fragment) 直接使用已经封装好的 `AppBindingFragment`。
+你还可以参考 [ui-extension → Activity](../library/ui-extension.md#activity) 直接使用已经封装好的 `AppBindingActivity` 或参考
+[ui-extension → Fragment](../library/ui-extension.md#fragment) 直接使用已经封装好的 `AppBindingFragment`。
 
 :::
 

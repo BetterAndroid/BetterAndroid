@@ -29,6 +29,26 @@ Configure dependency in your project `build.gradle.kts`.
 implementation(com.highcapable.betterandroid.ui.component)
 ```
 
+### Version Catalog
+
+Add dependency in your project's `gradle/libs.versions.toml`.
+
+```toml
+[versions]
+ui-component = "<version>"
+
+[libraries]
+ui-component = { module = "com.highcapable.betterandroid:ui-component", version.ref = "ui-component" }
+```
+
+Configure dependency in your project `build.gradle.kts`.
+
+```kotlin
+implementation(libs.ui.component)
+```
+
+Please change `<version>` to the version displayed at the top of this document.
+
 ### Traditional Method
 
 Configure dependency in your project `build.gradle.kts`.

@@ -77,6 +77,57 @@ kotlin {
 }
 ```
 
+### Version Catalog
+
+Add dependency in your project's `gradle/libs.versions.toml`.
+
+```toml
+[versions]
+compose.multiplatform = "<version>"
+
+[libraries]
+# commonMain
+compose.multiplatform = { module = "com.highcapable.betterandroid:compose.multiplatform", version.ref = "compose.multiplatform" }
+# androidMain
+compose.multiplatform-android = { module = "com.highcapable.betterandroid:compose.multiplatform-android", version.ref = "compose.multiplatform" }
+# iosArm64Main
+compose.multiplatform-iosarm64 = { module = "com.highcapable.betterandroid:compose.multiplatform-iosarm64", version.ref = "compose.multiplatform" }
+# iosX64Main
+compose.multiplatform-iosx64 = { module = "com.highcapable.betterandroid:compose.multiplatform-iosx64", version.ref = "compose.multiplatform" }
+# iosSimulatorArm64Main
+compose.multiplatform-iossimulatorarm64 = { module = "com.highcapable.betterandroid:compose.multiplatform-iossimulatorarm64", version.ref = "compose.multiplatform" }
+# desktopMain
+compose.multiplatform-desktop = { module = "com.highcapable.betterandroid:compose.multiplatform-desktop", version.ref = "compose.multiplatform" }
+```
+
+Configure dependencies in your project `build.gradle.kts`.
+
+If you use multi-platform dependencies in a regular project, you only need to deploy the corresponding platform suffix dependencies as needed.
+
+```kotlin
+implementation(libs.compose.multiplatform.android)
+implementation(libs.compose.multiplatform.iosarm64)
+implementation(libs.compose.multiplatform.iosx64)
+implementation(libs.compose.multiplatform.iossimulatorarm64)
+implementation(libs.compose.multiplatform.desktop)
+```
+
+If you use multi-platform dependencies in a multi-platform project, you need to add the `compose-multiplatform` dependency in `commonMain`.
+
+```kotlin
+kotlin {
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(libs.compose.multiplatform)
+            }
+        }
+    }
+}
+```
+
+Please change `<version>` to the version displayed at the top of this document.
+
 ### Traditional Method
 
 Configure dependencies in your project `build.gradle.kts`.

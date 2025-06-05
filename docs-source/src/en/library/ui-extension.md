@@ -29,6 +29,26 @@ Configure dependency in your project `build.gradle.kts`.
 implementation(com.highcapable.betterandroid.ui.extension)
 ```
 
+### Version Catalog
+
+Add dependency in your project's `gradle/libs.versions.toml`.
+
+```toml
+[versions]
+ui-extension = "<version>"
+
+[libraries]
+ui-extension = { module = "com.highcapable.betterandroid:ui-extension", version.ref = "ui-extension" }
+```
+
+Configure dependency in your project `build.gradle.kts`.
+
+```kotlin
+implementation(libs.ui.extension)
+```
+
+Please change `<version>` to the version displayed at the top of this document.
+
 ### Traditional Method
 
 Configure dependency in your project `build.gradle.kts`.
@@ -2489,8 +2509,8 @@ class YourActivity : YourBaseActivity<ActivityMainBinding>() {
 
 ::: tip
 
-You can also refer to [ui-component → Activity](../library/ui-component.md#activity) to directly use the encapsulated `AppBindingActivity` or refer to
-[ui-component → Fragment](../library/ui-component.md#fragment) directly uses the encapsulated `AppBindingFragment`.
+You can also refer to [ui-extension → Activity](../library/ui-extension.md#activity) to directly use the encapsulated `AppBindingActivity` or refer to
+[ui-extension → Fragment](../library/ui-extension.md#fragment) directly uses the encapsulated `AppBindingFragment`.
 
 :::
 
