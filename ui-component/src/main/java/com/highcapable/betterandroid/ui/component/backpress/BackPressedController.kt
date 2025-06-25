@@ -25,6 +25,7 @@ package com.highcapable.betterandroid.ui.component.backpress
 
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedDispatcher
+import androidx.lifecycle.Lifecycle
 import com.highcapable.betterandroid.ui.component.activity.AppBindingActivity
 import com.highcapable.betterandroid.ui.component.activity.AppComponentActivity
 import com.highcapable.betterandroid.ui.component.activity.AppViewsActivity
@@ -115,7 +116,8 @@ class BackPressedController private constructor(private val activity: ComponentA
      */
     @JvmOverloads
     fun trigger(ignored: Boolean = false) {
-        if (activity.isFinishing || activity.isDestroyed) return
+        // Priority to use of lifecycle destruction events.
+        if (activity.lifecycle.currentState == Lifecycle.State.DESTROYED || activity.isFinishing || activity.isDestroyed) return
         if (ignored) onBackPressedCallbacks.forEach { it.isEnabled = false }
         onBackPressedDispatcher.onBackPressed()
     }
