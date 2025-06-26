@@ -41,7 +41,8 @@ android {
 dependencies {
     implementation(projects.uiExtension)
     implementation(projects.systemExtension)
-    implementation(com.highcapable.yukireflection.api)
+    implementation(com.highcapable.kavaref.kavaref.core)
+    implementation(com.highcapable.kavaref.kavaref.extension)
     implementation(androidx.core.core.ktx)
     implementation(androidx.appcompat.appcompat)
     implementation(androidx.recyclerview.recyclerview)

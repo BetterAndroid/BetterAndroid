@@ -23,7 +23,7 @@
 
 package com.highcapable.betterandroid.system.extension.tool
 
-import com.highcapable.yukireflection.factory.hasClass
+import com.highcapable.kavaref.extension.hasClass
 
 /**
  * Android system kind tool.
@@ -109,33 +109,34 @@ object SystemKind {
      */
     @JvmStatic
     val current by lazy {
-        val harmonyOSKind = "ohos.system.version.SystemVersion".hasClass() && SystemProperties.contains("ro.build.ohos.devicetype") &&
+        fun String.exists() = javaClass.classLoader?.hasClass(this) == true
+        val harmonyOSKind = "ohos.system.version.SystemVersion".exists() && SystemProperties.contains("ro.build.ohos.devicetype") &&
             (SystemProperties.contains("ro.build.hide.matchers") || SystemProperties.contains("ro.build.hide.replacements"))
-        val emuiKind = !harmonyOSKind && ("androidhwext.R".hasClass() || "com.huawei.android.app.HwActivityManager".hasClass())
+        val emuiKind = !harmonyOSKind && ("androidhwext.R".exists() || "com.huawei.android.app.HwActivityManager".exists())
         val propContainsMiOS = SystemProperties.contains("ro.mi.os.version.name")
         val propIsMiui816 = SystemProperties.get("ro.miui.ui.version.name") == "V816"
-        val classHasMiuiR = "android.miui.R".hasClass()
+        val classHasMiuiR = "android.miui.R".exists()
         val miuiKind = classHasMiuiR && !propContainsMiOS && !propIsMiui816
         val hyperOSKind = classHasMiuiR && (propContainsMiOS || propIsMiui816)
-        val colorOSKind = "oppo.R".hasClass() || "oplus.R".hasClass() || "com.color.os.ColorBuild".hasClass()
-        val classHasVivoSysFactory = "com.vivo.VivoSystemFrameworkFactory".hasClass()
-        val classHasVivoR = "vivo.R".hasClass()
+        val colorOSKind = "oppo.R".exists() || "oplus.R".exists() || "com.color.os.ColorBuild".exists()
+        val classHasVivoSysFactory = "com.vivo.VivoSystemFrameworkFactory".exists()
+        val classHasVivoR = "vivo.R".exists()
         val funtouchOSKind = classHasVivoR && !classHasVivoSysFactory
         val originOSKind = classHasVivoR && classHasVivoSysFactory
-        val flymeKind = "flyme.app.IActivityManagerExt".hasClass() || "flyme.config.FlymeFeature".hasClass() ||
-            "com.meizu.server.AppOpsHandle".hasClass()
-        val oneuiKind = "com.samsung.android.ProductPackagesRune".hasClass() || "com.samsung.epic.request".hasClass() ||
-            "knox.security.keystore.KnoxAndroidKeyStoreSpi".hasClass()
-        val zuiKind = "com.zui.internal.app.IAppFaceService".hasClass() || "zuisdk.app.AlertActivity".hasClass() ||
-            "zui.icon.ExtraResources".hasClass()
-        val redmagicOSKind = "cn.nubia.internal.R".hasClass() || "com.nubia.internal.R".hasClass() ||
-            "cn.nubia.tcsystem.INubiaTcSystemCallback".hasClass() || "com.nubia.tcsystem.INubiaTcSystemCallback".hasClass()
-        val nubiauiKind = ("com.zte.PlatformConfig".hasClass() || "com.zte.zsdk.IPolicyManager".hasClass() ||
-            "zpub.res.R".hasClass()) && "nubia.util.BlurUtil".hasClass()
-        val roguiKind = "com.asus.cta.CtaAction".hasClass() || "com.asus.ims.rogproxy.IRogProxy".hasClass()
-        val visionOSKind = "com.hmct.epd.EpdManager".hasClass() || "com.hmct.facelock.IDetectedCallback".hasClass() ||
-            "com.hmct.ThemeUtils.ConfigNotifier".hasClass() || "com.hmct.ThemeUtils.FontUtil".hasClass() ||
-            "com.hmct.ThemeUtils.FontUtilException".hasClass() || "com.hmct.ThemeUtils.ThemeUtil".hasClass()
+        val flymeKind = "flyme.app.IActivityManagerExt".exists() || "flyme.config.FlymeFeature".exists() ||
+            "com.meizu.server.AppOpsHandle".exists()
+        val oneuiKind = "com.samsung.android.ProductPackagesRune".exists() || "com.samsung.epic.request".exists() ||
+            "knox.security.keystore.KnoxAndroidKeyStoreSpi".exists()
+        val zuiKind = "com.zui.internal.app.IAppFaceService".exists() || "zuisdk.app.AlertActivity".exists() ||
+            "zui.icon.ExtraResources".exists()
+        val redmagicOSKind = "cn.nubia.internal.R".exists() || "com.nubia.internal.R".exists() ||
+            "cn.nubia.tcsystem.INubiaTcSystemCallback".exists() || "com.nubia.tcsystem.INubiaTcSystemCallback".exists()
+        val nubiauiKind = ("com.zte.PlatformConfig".exists() || "com.zte.zsdk.IPolicyManager".exists() ||
+            "zpub.res.R".exists()) && "nubia.util.BlurUtil".exists()
+        val roguiKind = "com.asus.cta.CtaAction".exists() || "com.asus.ims.rogproxy.IRogProxy".exists()
+        val visionOSKind = "com.hmct.epd.EpdManager".exists() || "com.hmct.facelock.IDetectedCallback".exists() ||
+            "com.hmct.ThemeUtils.ConfigNotifier".exists() || "com.hmct.ThemeUtils.FontUtil".exists() ||
+            "com.hmct.ThemeUtils.FontUtilException".exists() || "com.hmct.ThemeUtils.ThemeUtil".exists()
         when {
             harmonyOSKind -> HARMONYOS
             emuiKind -> EMUI

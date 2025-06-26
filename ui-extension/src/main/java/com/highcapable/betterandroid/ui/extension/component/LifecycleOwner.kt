@@ -30,7 +30,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
-import com.highcapable.yukireflection.factory.classOf
+import com.highcapable.kavaref.extension.classOf
 
 /**
  * Returns the [Context] this [LifecycleOwner] is attached to, or null if it is not attached to a [Context].

@@ -40,7 +40,8 @@ android {
 
 dependencies {
     implementation(projects.systemExtension)
-    implementation(com.highcapable.yukireflection.api)
+    implementation(com.highcapable.kavaref.kavaref.core)
+    implementation(com.highcapable.kavaref.kavaref.extension)
     api(androidx.fragment.fragment.ktx)
     implementation(androidx.core.core.ktx)
     implementation(androidx.appcompat.appcompat)

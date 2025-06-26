@@ -53,9 +53,8 @@ import androidx.core.view.updateMargins
 import androidx.core.view.updatePadding
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 import com.highcapable.betterandroid.ui.extension.R
-import com.highcapable.yukireflection.factory.buildOf
-import com.highcapable.yukireflection.factory.classOf
-import com.highcapable.yukireflection.type.java.IntType
+import com.highcapable.kavaref.extension.classOf
+import com.highcapable.kavaref.extension.createInstanceOrNull
 
 /**
  * Get the view's location on screen.
@@ -746,9 +745,7 @@ fun <VGLP : ViewGroup.LayoutParams> ViewLayoutParams(
         matchParent || heightMatchParent -> LayoutParamsMatchParent
         else -> LayoutParamsWrapContent
     }
-    return lpClass.buildOf<VGLP>(absWidth, absHeight) {
-        param(IntType, IntType)
-    } ?: error(
+    return lpClass.createInstanceOrNull(absWidth, absHeight) ?: error(
         "Create ViewGroup.LayoutParams failed. " +
             "Could not found the default constructor LayoutParams(width, height) in $lpClass."
     )

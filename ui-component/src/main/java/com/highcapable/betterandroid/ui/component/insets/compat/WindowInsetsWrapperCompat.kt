@@ -32,10 +32,8 @@ import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 import com.highcapable.betterandroid.ui.component.generated.BetterAndroidProperties
 import com.highcapable.betterandroid.ui.component.insets.InsetsWrapper
 import com.highcapable.betterandroid.ui.extension.component.base.toPx
-import com.highcapable.yukireflection.factory.method
-import com.highcapable.yukireflection.factory.toClassOrNull
-import com.highcapable.yukireflection.type.android.WindowClass
-import com.highcapable.yukireflection.type.java.IntType
+import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.extension.toClassOrNull
 
 /**
  * Window insets wrapper's compatible adaptation tool for various devices and systems.
@@ -85,23 +83,31 @@ internal class WindowInsetsWrapperCompat internal constructor(private val window
         if (SystemVersion.isLowOrEqualsTo(SystemVersion.P)) when (SystemKind.current) {
             SystemKind.EMUI -> runCatching {
                 val huaweiRet = "com.huawei.android.util.HwNotchSizeUtil".toClassOrNull()
-                    ?.method { name = "getNotchSize" }?.ignored()?.get()?.invoke() ?: intArrayOf(0, 0)
+                    ?.resolve()
+                    ?.optional(silent = true)
+                    ?.firstMethodOrNull { name = "getNotchSize" }
+                    ?.invoke<IntArray>()
+                    ?: intArrayOf(0, 0)
                 if (huaweiRet[1] != 0)
                     "com.huawei.android.view.LayoutParamsEx".toClassOrNull()
-                        ?.method {
+                        ?.resolve()
+                        ?.optional(silent = true)
+                        ?.firstMethodOrNull {
                             name = "addHwFlags"
-                            param(IntType)
-                        }?.ignored()
-                        ?.get(window?.attributes)
-                        ?.call(0x00010000)
+                            parameters(Int::class)
+                        }
+                        ?.of(window?.attributes)
+                        ?.invokeQuietly(0x00010000)
                 safeInsetTop = huaweiRet[1]
             }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to set display cutout configuration for EMUI.", it) }
             SystemKind.FUNTOUCHOS, SystemKind.ORIGINOS -> runCatching {
                 if ("android.util.FtFeature".toClassOrNull()
-                        ?.method {
+                        ?.resolve()
+                        ?.optional(silent = true)
+                        ?.firstMethodOrNull {
                             name = "isFeatureSupport"
-                            param(IntType)
-                        }?.ignored()?.get()?.boolean(0x00000020) == true
+                            parameters(Int::class)
+                        }?.invokeQuietly<Boolean>(0x00000020) == true
                 ) safeInsetTop = 27.toPx(context)
             }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to set display cutout configuration for FuntouchOS/OriginalOS.", it) }
             SystemKind.COLOROS -> runCatching {
@@ -112,10 +118,11 @@ internal class WindowInsetsWrapperCompat internal constructor(private val window
                 val hasMiuiNotch = SystemProperties.getBoolean("ro.miui.notch")
                 if (hasMiuiNotch) {
                     safeInsetTop = statusBars.top
-                    WindowClass.method {
+                    window?.resolve()?.optional(silent = true)?.firstMethodOrNull {
                         name = "addExtraFlags"
-                        param(IntType)
-                    }.ignored().get(window).call(0x00000100 or 0x00000200 or 0x00000400)
+                        parameters(Int::class)
+                        superclass()
+                    }?.invokeQuietly(0x00000100 or 0x00000200 or 0x00000400)
                 }
             }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to set display cutout configuration for MIUI.", it) }
         }; return InsetsWrapper.of(top = safeInsetTop)

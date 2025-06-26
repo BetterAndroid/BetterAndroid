@@ -35,7 +35,7 @@ import androidx.fragment.app.Fragment
 import com.highcapable.betterandroid.system.extension.component.queryLaunchActivitiesForPackage
 import com.highcapable.betterandroid.system.extension.component.queryLaunchActivitiesForPackageOrNull
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
-import com.highcapable.yukireflection.factory.classOf
+import com.highcapable.kavaref.extension.classOf
 
 /**
  * Determine whether the current activity is in any special mode,

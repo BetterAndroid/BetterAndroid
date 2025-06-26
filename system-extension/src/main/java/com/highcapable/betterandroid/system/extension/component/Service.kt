@@ -30,7 +30,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.annotation.RequiresApi
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
-import com.highcapable.yukireflection.factory.classOf
+import com.highcapable.kavaref.extension.classOf
 
 /**
  * Start a [Service] instance [T].

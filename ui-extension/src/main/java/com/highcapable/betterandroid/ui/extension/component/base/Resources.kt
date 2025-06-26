@@ -59,8 +59,8 @@ import androidx.core.view.get
 import androidx.core.view.isNotEmpty
 import androidx.core.view.size
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
-import com.highcapable.yukireflection.factory.classOf
-import com.highcapable.yukireflection.factory.field
+import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.extension.classOf
 
 /**
  * Whether in non-standard (special) floating window mode.
@@ -78,7 +78,11 @@ val Configuration.isSpecialWindowingMode get() = false
  * @receiver the current context theme wrapper.
  * @return [Int]
  */
-val ContextThemeWrapper.themeResId get() = classOf<ContextThemeWrapper>().field { name = "mThemeResource" }.ignored().get(this).int()
+val ContextThemeWrapper.themeResId
+    get() = resolve().optional().firstFieldOrNull {
+        name = "mThemeResource"
+        superclass()
+    }?.getQuietly<Int>() ?: -1
 
 /**
  * Determine whether the current UI mode is night mode.

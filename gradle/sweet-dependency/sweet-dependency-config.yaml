@@ -7,6 +7,7 @@ repositories:
     scope: PLUGINS
   google:
   maven-central:
+  maven-local:
 
 plugins:
   org.jetbrains.kotlin.multiplatform:
@@ -17,13 +18,13 @@ plugins:
     version-ref: kotlin-multiplatform
   org.jetbrains.compose:
     alias: jetbrains-compose
-    version: 1.7.3
+    version: 1.8.2
   org.jetbrains.kotlin.plugin.compose:
     alias: compose-compiler
     version-ref: kotlin-multiplatform
   com.android.application:
     alias: android-application
-    version: 8.9.0
+    version: 8.9.3
   com.android.library:
     alias: android-library
     version-ref: android-application
@@ -33,24 +34,26 @@ plugins:
     auto-update: false
   com.vanniktech.maven.publish:
     alias: maven-publish
-    version: 0.31.0
+    version: 0.33.0
 
 libraries:
-  com.highcapable.yukireflection:
-    api:
-      version: 1.0.3
+  com.highcapable.kavaref:
+    kavaref-core:
+      version: 1.0.0
+    kavaref-extension:
+      version: 1.0.0
   androidx.core:
     core-ktx:
-      version: 1.15.0
+      version: 1.16.0
   androidx.fragment:
     fragment-ktx:
-      version: 1.8.6
+      version: 1.8.7
   androidx.activity:
     activity:
       version: 1.10.1
   androidx.appcompat:
     appcompat:
-      version: 1.7.0
+      version: 1.7.1
   androidx.recyclerview:
     recyclerview:
       version: 1.4.0

@@ -44,7 +44,7 @@ import com.highcapable.betterandroid.ui.component.adapter.fragment.FragmentPager
 import com.highcapable.betterandroid.ui.component.adapter.fragment.FragmentStateAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.recycler.cosmetic.RecyclerCosmetic
 import com.highcapable.betterandroid.ui.component.adapter.viewholder.impl.RecyclerViewHolderImpl
-import com.highcapable.yukireflection.factory.current
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import androidx.appcompat.widget.ListPopupWindow as AndroidX_ListPopupWindow
 
 /**
@@ -73,7 +73,12 @@ inline fun ListView.bindAdapter(initiate: CommonAdapterBuilder<*>.() -> Unit) = 
  */
 @JvmName("bindAdapterTyped")
 inline fun <reified E> AutoCompleteTextView.bindAdapter(initiate: CommonAdapterBuilder<E>.() -> Unit) =
-    CommonAdapter<E>(context, initiate).also { current(ignored = true).method { name = "setAdapter"; paramCount = 1 }.call(it) }
+    CommonAdapter<E>(context, initiate).also {
+        resolve().optional().firstMethodOrNull {
+            name = "setAdapter"
+            parameterCount = 1
+        }?.invokeQuietly(it)
+    }
 
 /**
  * Bind the [BaseAdapter] to [AutoCompleteTextView].

@@ -38,7 +38,8 @@ android {
 }
 
 dependencies {
-    implementation(com.highcapable.yukireflection.api)
+    implementation(com.highcapable.kavaref.kavaref.core)
+    implementation(com.highcapable.kavaref.kavaref.extension)
     implementation(androidx.appcompat.appcompat)
     testImplementation(junit.junit)
     androidTestImplementation(androidx.test.ext.junit)

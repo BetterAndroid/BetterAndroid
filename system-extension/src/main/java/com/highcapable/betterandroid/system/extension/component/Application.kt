@@ -32,8 +32,8 @@ import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import androidx.annotation.RequiresApi
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
-import com.highcapable.yukireflection.factory.classOf
-import com.highcapable.yukireflection.factory.current
+import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.extension.classOf
 
 /**
  * Get the current component name of this application.
@@ -47,7 +47,7 @@ import com.highcapable.yukireflection.factory.current
  * @receiver the current context.
  * @return [ComponentName]
  */
-inline fun <reified T> Context.getComponentName() = ComponentName(this, classOf<T>())
+inline fun <reified T : Any> Context.getComponentName() = ComponentName(this, classOf<T>())
 
 /**
  * Determine whether the [packageName] was installed.
@@ -232,14 +232,20 @@ val PackageInfo.longVersionCodeCompat get() = versionCodeCompat
  * @receiver [ApplicationInfo]
  * @return [String]
  */
-val ApplicationInfo.primaryCpuAbi get() = current(ignored = true).field { name = "primaryCpuAbi" }.string()
+val ApplicationInfo.primaryCpuAbi
+    get() = resolve().optional()
+        .firstFieldOrNull { name = "primaryCpuAbi" }
+        ?.getQuietly<String>() ?: ""
 
 /**
  * Get the secondary cpu abi for the application.
  * @receiver [ApplicationInfo]
  * @return [String]
  */
-val ApplicationInfo.secondaryCpuAbi get() = current(ignored = true).field { name = "secondaryCpuAbi" }.string()
+val ApplicationInfo.secondaryCpuAbi
+    get() = resolve().optional()
+        .firstFieldOrNull { name = "secondaryCpuAbi" }
+        ?.getQuietly<String>() ?: ""
 
 /**
  * Determine whether the application has given flags.

@@ -28,7 +28,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
-import com.highcapable.yukireflection.factory.classOf
+import com.highcapable.kavaref.extension.classOf
 import java.io.Serializable
 
 /**

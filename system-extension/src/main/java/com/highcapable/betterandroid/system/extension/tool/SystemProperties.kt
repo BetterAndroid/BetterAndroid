@@ -23,12 +23,8 @@
 
 package com.highcapable.betterandroid.system.extension.tool
 
-import com.highcapable.yukireflection.factory.lazyClass
-import com.highcapable.yukireflection.factory.method
-import com.highcapable.yukireflection.type.java.BooleanType
-import com.highcapable.yukireflection.type.java.IntType
-import com.highcapable.yukireflection.type.java.LongType
-import com.highcapable.yukireflection.type.java.StringClass
+import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.extension.lazyClass
 
 /**
  * This is a system properties extension tool mirrored from "android.os.SystemProperties".
@@ -42,6 +38,46 @@ object SystemProperties {
 
     /** The current [Class] instance. */
     private val SystemPropertiesClass by lazyClass("android.os.SystemProperties")
+
+    /** The method used to get system properties key-value. */
+    private val getMethod by lazy {
+        SystemPropertiesClass.resolve()
+            .optional(silent = true)
+            .firstMethodOrNull {
+                name = "get"
+                parameters(String::class, String::class)
+            }
+    }
+
+    /** The method used to get system properties key-value as [Int]. */
+    private val getIntMethod by lazy {
+        SystemPropertiesClass.resolve()
+            .optional(silent = true)
+            .firstMethodOrNull {
+                name = "getInt"
+                parameters(String::class, Int::class)
+            }
+    }
+
+    /** The method used to get system properties key-value as [Long]. */
+    private val getLongMethod by lazy {
+        SystemPropertiesClass.resolve()
+            .optional(silent = true)
+            .firstMethodOrNull {
+                name = "getLong"
+                parameters(String::class, Long::class)
+            }
+    }
+
+    /** The method used to get system properties key-value as [Boolean]. */
+    private val getBooleanMethod by lazy {
+        SystemPropertiesClass.resolve()
+            .optional(silent = true)
+            .firstMethodOrNull {
+                name = "getBoolean"
+                parameters(String::class, Int::class)
+            }
+    }
 
     /**
      * Determine whether system properties contain the specified [key].
@@ -60,10 +96,7 @@ object SystemProperties {
     @JvmStatic
     @JvmOverloads
     fun get(key: String, default: String = "") =
-        SystemPropertiesClass.method {
-            name = "get"
-            param(StringClass, StringClass)
-        }.ignored().get().string(key, default)
+        getMethod?.invokeQuietly<String>(key, default) ?: default
 
     /**
      * Get the system properties key-value, and return as [Int].
@@ -74,10 +107,7 @@ object SystemProperties {
     @JvmStatic
     @JvmOverloads
     fun getInt(key: String, default: Int = 0) =
-        SystemPropertiesClass.method {
-            name = "getInt"
-            param(StringClass, IntType)
-        }.ignored().get().int(key, default)
+        getIntMethod?.invokeQuietly<Int>(key, default) ?: default
 
     /**
      * Get the system properties key-value, and return as [Long].
@@ -88,10 +118,7 @@ object SystemProperties {
     @JvmStatic
     @JvmOverloads
     fun getLong(key: String, default: Long = 0L) =
-        SystemPropertiesClass.method {
-            name = "getLong"
-            param(StringClass, LongType)
-        }.ignored().get().long(key, default)
+        getLongMethod?.invokeQuietly<Long>(key, default) ?: default
 
     /**
      * Get the system properties key-value, and return as [Boolean].
@@ -110,8 +137,5 @@ object SystemProperties {
     @JvmStatic
     @JvmOverloads
     fun getBoolean(key: String, default: Boolean = false) =
-        SystemPropertiesClass.method {
-            name = "getInt"
-            param(StringClass, BooleanType)
-        }.ignored().get().boolean(key, default)
+        getBooleanMethod?.invokeQuietly<Boolean>(key, default) ?: default
 }

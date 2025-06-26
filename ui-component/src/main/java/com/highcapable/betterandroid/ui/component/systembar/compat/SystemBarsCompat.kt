@@ -26,11 +26,8 @@ import android.view.Window
 import com.highcapable.betterandroid.system.extension.tool.SystemKind
 import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 import com.highcapable.betterandroid.ui.component.generated.BetterAndroidProperties
-import com.highcapable.yukireflection.factory.current
-import com.highcapable.yukireflection.factory.field
-import com.highcapable.yukireflection.factory.method
-import com.highcapable.yukireflection.factory.toClassOrNull
-import com.highcapable.yukireflection.type.java.IntType
+import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.extension.toClassOrNull
 
 /**
  * System bars compatible adaptation tool for various devices and systems.
@@ -74,15 +71,17 @@ internal class SystemBarsCompat internal constructor(private val window: Window)
     private fun setStatusBarDarkModeForLegacyMiui(isDarkMode: Boolean) {
         runCatching {
             val darkModeFlag = "android.view.MiuiWindowManager\$LayoutParams".toClassOrNull()
-                ?.field { name = "EXTRA_FLAG_STATUS_BAR_DARK_MODE" }?.ignored()?.get()?.int() ?: 0
+                ?.resolve()
+                ?.firstField { name = "EXTRA_FLAG_STATUS_BAR_DARK_MODE" }
+                ?.get<Int>() ?: 0
             "com.android.internal.policy.impl.MiuiPhoneWindow".toClassOrNull()
-                ?.method {
+                ?.resolve()
+                ?.firstMethod {
                     name = "setExtraFlags"
-                    param(IntType, IntType)
-                    superClass()
-                }?.ignored()
-                ?.get(window)
-                ?.call(if (isDarkMode) darkModeFlag else 0, darkModeFlag)
+                    parameters(Int::class, Int::class)
+                    superclass()
+                }?.of(window)
+                ?.invoke(if (isDarkMode) darkModeFlag else 0, darkModeFlag)
         }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Called setStatusBarDarkModeForLegacyMiui function failed.", it) }
     }
 
@@ -96,10 +95,10 @@ internal class SystemBarsCompat internal constructor(private val window: Window)
      */
     private fun setStatusBarDarkModeForLegacyFlyme(isDarkMode: Boolean) {
         runCatching {
-            window.attributes?.current(ignored = true) {
-                val flags = field { name = "MEIZU_FLAG_DARK_STATUS_BAR_ICON" }.int()
-                val meizuFlagField = field { name = "meizuFlags" }
-                var meizuFlags = meizuFlagField.int()
+            window.attributes?.resolve()?.apply {
+                val flags = firstField { name = "MEIZU_FLAG_DARK_STATUS_BAR_ICON" }.get<Int>() ?: -1
+                val meizuFlagField = firstField { name = "meizuFlags" }
+                var meizuFlags = meizuFlagField.get<Int>() ?: -1
                 val oldFlags = meizuFlags
                 meizuFlags = if (isDarkMode) meizuFlags or flags else meizuFlags and flags.inv()
                 if (oldFlags != meizuFlags) meizuFlagField.set(meizuFlags)

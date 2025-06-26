@@ -31,7 +31,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.highcapable.betterandroid.ui.extension.component.base.toHexResourceId
-import com.highcapable.yukireflection.factory.classOf
+import com.highcapable.kavaref.extension.classOf
 
 /**
  * Get the layout inflater from context.

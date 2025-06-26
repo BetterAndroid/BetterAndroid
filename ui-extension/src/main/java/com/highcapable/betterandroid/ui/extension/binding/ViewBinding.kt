@@ -32,14 +32,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.highcapable.betterandroid.ui.extension.view.layoutInflater
-import com.highcapable.yukireflection.factory.classOf
-import com.highcapable.yukireflection.factory.implements
-import com.highcapable.yukireflection.factory.method
-import com.highcapable.yukireflection.type.android.LayoutInflaterClass
-import com.highcapable.yukireflection.type.android.ViewClass
-import com.highcapable.yukireflection.type.android.ViewGroupClass
-import com.highcapable.yukireflection.type.java.BooleanType
-import java.lang.reflect.ParameterizedType
+import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.extension.classOf
+import com.highcapable.kavaref.extension.genericSuperclassTypeArguments
+import com.highcapable.kavaref.extension.isSubclassOf
+import com.highcapable.kavaref.extension.toClassOrNull
 
 /**
  * Create a [ViewBinding] instance.
@@ -212,7 +209,7 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
                     "Cannot find the generic class from $clazz, if you are using R8, please configure obfuscation rules."
                 else "The $clazz has no super class."
             }
-            require(bindingClass implements classOf<ViewBinding>()) {
+            require(bindingClass isSubclassOf ViewBinding::class) {
                 "The generic class $bindingClass from $clazz must be a ViewBinding."
             }; return ViewBindingBuilder(bindingClass as Class<VB>)
         }
@@ -222,7 +219,7 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
          * @return [Class] or null.
          */
         private fun Class<*>.findSuperGenericClass(): Class<*>? =
-            (genericSuperclass as? ParameterizedType?)?.actualTypeArguments?.getOrNull(0) as? Class<*>?
+            genericSuperclassTypeArguments().firstOrNull()?.toClassOrNull()
                 ?: superclass?.findSuperGenericClass()
     }
 
@@ -233,10 +230,10 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
      * @throws IllegalStateException if the binding failed.
      */
     fun bind(view: View): VB {
-        val binding = bindingClass.method {
+        val binding = bindingClass.resolve().optional(silent = true).firstMethodOrNull {
             name = "bind"
-            param(ViewClass)
-        }.ignored().get().invoke<VB>(view)
+            parameters(View::class)
+        }?.invokeQuietly<VB>(view)
         require(binding != null) {
             "Cannot find the bind(View) method in $bindingClass, if you are using R8, please configure obfuscation rules."
         }; return binding
@@ -253,17 +250,17 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
      */
     @JvmOverloads
     fun inflate(layoutInflater: LayoutInflater, parent: ViewGroup? = null, attachToParent: Boolean = false): VB {
-        val binding = bindingClass.method {
+        val binding = bindingClass.resolve().optional(silent = true).firstMethodOrNull {
             name = "inflate"
-            param(LayoutInflaterClass, ViewGroupClass, BooleanType)
-        }.ignored().get().invoke<VB>(layoutInflater, parent, attachToParent)
+            parameters(LayoutInflater::class, ViewGroup::class, Boolean::class)
+        }?.invokeQuietly<VB>(layoutInflater, parent, attachToParent)
         return when {
             binding != null -> binding
             parent != null ->
-                bindingClass.method {
+                bindingClass.resolve().optional(silent = true).firstMethodOrNull {
                     name = "inflate"
-                    param(LayoutInflaterClass, ViewGroupClass)
-                }.ignored().get().invoke<VB>(layoutInflater, parent) ?: error(
+                    parameters(LayoutInflater::class, ViewGroup::class)
+                }?.invokeQuietly<VB>(layoutInflater, parent) ?: error(
                     "Cannot find the inflate(LayoutInflater, ViewGroup) method in $bindingClass, " +
                         "if you are using R8, please configure obfuscation rules."
                 )
