@@ -80,6 +80,12 @@ object SystemVersion {
     /** Android 14 (34) */
     const val U = Build.VERSION_CODES.UPSIDE_DOWN_CAKE
 
+    /** Android 15 (35) */
+    const val V = Build.VERSION_CODES.VANILLA_ICE_CREAM
+
+    /** Android 16 (36) */
+    const val BAKLAVA = Build.VERSION_CODES.BAKLAVA
+
     /**
      * Get the current Android version name.
      *
