@@ -86,10 +86,18 @@ val ContextThemeWrapper.themeResId
 
 /**
  * Determine whether the current UI mode is night mode.
+ *
+ * Consistent with the official [Configuration.isNightModeActive] method,
+ * but the official method requires Android 11 (30) and above.
+ * @see Configuration.isNightModeActive
  * @receiver the current resources configuration.
  * @return [Boolean]
  */
-inline val Configuration.isUiInNightMode get() = uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+val Configuration.isUiInNightMode
+    get() = SystemVersion.require(
+        SystemVersion.R,
+        uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+    ) { isNightModeActive }
 
 /**
  * Convert integer resource id to hex string.
