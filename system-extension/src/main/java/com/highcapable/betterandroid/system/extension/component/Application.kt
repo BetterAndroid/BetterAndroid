@@ -31,8 +31,8 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import androidx.annotation.RequiresApi
-import com.highcapable.betterandroid.system.extension.tool.SystemVersion
-import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
+import com.highcapable.kavaref.KavaRef.Companion.asResolver
 import com.highcapable.kavaref.extension.classOf
 
 /**
@@ -233,7 +233,7 @@ val PackageInfo.longVersionCodeCompat get() = versionCodeCompat
  * @return [String]
  */
 val ApplicationInfo.primaryCpuAbi
-    get() = resolve().optional()
+    get() = asResolver().optional()
         .firstFieldOrNull { name = "primaryCpuAbi" }
         ?.getQuietly<String>() ?: ""
 
@@ -243,7 +243,7 @@ val ApplicationInfo.primaryCpuAbi
  * @return [String]
  */
 val ApplicationInfo.secondaryCpuAbi
-    get() = resolve().optional()
+    get() = asResolver().optional()
         .firstFieldOrNull { name = "secondaryCpuAbi" }
         ?.getQuietly<String>() ?: ""
 

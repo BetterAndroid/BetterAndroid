@@ -58,8 +58,8 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.get
 import androidx.core.view.isNotEmpty
 import androidx.core.view.size
-import com.highcapable.betterandroid.system.extension.tool.SystemVersion
-import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
+import com.highcapable.kavaref.KavaRef.Companion.asResolver
 import com.highcapable.kavaref.extension.classOf
 
 /**
@@ -79,7 +79,7 @@ val Configuration.isSpecialWindowingMode get() = false
  * @return [Int]
  */
 val ContextThemeWrapper.themeResId
-    get() = resolve().optional().firstFieldOrNull {
+    get() = asResolver().optional().firstFieldOrNull {
         name = "mThemeResource"
         superclass()
     }?.getQuietly<Int>() ?: -1

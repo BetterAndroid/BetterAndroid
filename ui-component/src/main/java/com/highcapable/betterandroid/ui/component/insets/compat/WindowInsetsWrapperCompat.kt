@@ -32,6 +32,7 @@ import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 import com.highcapable.betterandroid.ui.component.generated.BetterAndroidProperties
 import com.highcapable.betterandroid.ui.component.insets.InsetsWrapper
 import com.highcapable.betterandroid.ui.extension.component.base.toPx
+import com.highcapable.kavaref.KavaRef.Companion.asResolver
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.extension.toClassOrNull
 
@@ -118,7 +119,7 @@ internal class WindowInsetsWrapperCompat internal constructor(private val window
                 val hasMiuiNotch = SystemProperties.getBoolean("ro.miui.notch")
                 if (hasMiuiNotch) {
                     safeInsetTop = statusBars.top
-                    window?.resolve()?.optional(silent = true)?.firstMethodOrNull {
+                    window?.asResolver()?.optional(silent = true)?.firstMethodOrNull {
                         name = "addExtraFlags"
                         parameters(Int::class)
                         superclass()

@@ -39,9 +39,9 @@ plugins:
 libraries:
   com.highcapable.kavaref:
     kavaref-core:
-      version: 1.0.0
+      version: 1.0.1
     kavaref-extension:
-      version: 1.0.0
+      version: 1.0.1
   androidx.core:
     core-ktx:
       version: 1.16.0

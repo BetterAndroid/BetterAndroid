@@ -95,7 +95,7 @@ internal class SystemBarsCompat internal constructor(private val window: Window)
      */
     private fun setStatusBarDarkModeForLegacyFlyme(isDarkMode: Boolean) {
         runCatching {
-            window.attributes?.resolve()?.apply {
+            window.attributes?.asResolver()?.apply {
                 val flags = firstField { name = "MEIZU_FLAG_DARK_STATUS_BAR_ICON" }.get<Int>() ?: -1
                 val meizuFlagField = firstField { name = "meizuFlags" }
                 var meizuFlags = meizuFlagField.get<Int>() ?: -1
