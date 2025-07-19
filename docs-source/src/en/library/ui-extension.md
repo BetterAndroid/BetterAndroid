@@ -1597,6 +1597,8 @@ window.clearScreenBrightness()
 
 [View → updateMargins](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-margins)
 
+[View → updateMarginsRelative](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-margins-relative)
+
 [View → setMargins](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/set-margins)
 
 [View → walkToRoot](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/walk-to-root)
@@ -1895,6 +1897,8 @@ view.updateMargins(horizontal = 10.toPx(context))
 view.updateMargins(vertical = 10.toPx(context))
 // Update left margin.
 view.updateMargins(left = 10.toPx(context))
+// Update start margin.
+view.updateMarginsRelative(start = 10.toPx(context))
 // Set the margin for all 4 sides.
 view.setMargins(10.toPx(context))
 ```

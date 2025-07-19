@@ -44,12 +44,15 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
 import androidx.core.view.marginBottom
+import androidx.core.view.marginEnd
 import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
+import androidx.core.view.marginStart
 import androidx.core.view.marginTop
 import androidx.core.view.setMargins
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
+import androidx.core.view.updateMarginsRelative
 import androidx.core.view.updatePadding
 import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
 import com.highcapable.betterandroid.ui.extension.R
@@ -513,6 +516,30 @@ fun View.updateMargins(
     if (layoutParams !is ViewGroup.MarginLayoutParams) return
     updateLayoutParams<ViewGroup.MarginLayoutParams> {
         updateMargins(left, top, right, bottom)
+    }
+}
+
+/**
+ * Updates this view's margins.
+ *
+ * This view layout params need to be a [ViewGroup.MarginLayoutParams], if not will be ignored.
+ * @see ViewGroup.MarginLayoutParams.updateMarginsRelative
+ * @receiver [View]
+ * @param start the start margin (px).
+ * @param top the top margin (px).
+ * @param end the end margin (px).
+ * @param bottom the bottom margin (px).
+ */
+@JvmOverloads
+fun View.updateMarginsRelative(
+    @Px start: Int = marginStart,
+    @Px top: Int = marginTop,
+    @Px end: Int = marginEnd,
+    @Px bottom: Int = marginBottom
+) {
+    if (layoutParams !is ViewGroup.MarginLayoutParams) return
+    updateLayoutParams<ViewGroup.MarginLayoutParams> {
+        updateMarginsRelative(start, top, end, bottom)
     }
 }
 
