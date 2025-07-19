@@ -737,8 +737,6 @@ The naming method of `dp`, `px`, `toPx`, `toDp` may conflict with the naming met
 
 [Resources → getFontOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-font-or-null)
 
-[Resources → obtainStyledAttributes](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/obtain-styled-attributes)
-
 Extensions for `Resources`.
 
 :::
@@ -897,23 +895,6 @@ The following is a comparison table of the original method and the compatibility
 | `Resources.getFloat`          | `Resources.getFloatCompat`          |
 | `Resources.getFont`           | `Context.getFontCompat`             |
 
-For the property-related functions of custom `View`, `BetterAndroid` provides a `TypedArray` extension that can be automatically recycled.
-
-You can directly use the `obtainStyledAttributes` method to create a `TypedArray` object without having to think about when `recycle` should be called.
-
-> The following example
-
-```kotlin
-class MyView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
-
-    init {
-        obtainStyledAttributes(attrs, R.styleable.MyView) {
-            val myType = it.getInteger(R.styleable.MyView_myType, 0)
-        }
-    }
-}
-```
-
 ::: tip
 
 `BetterAndroid` also provides `getStringArray`, `getIntArray` and `getColorOrNull` utility methods for `TypedArray`, which you can find them in **Contents of This Section** above.
@@ -948,16 +929,16 @@ Therefore, `BetterAndroid` provides this encapsulation, allowing you to operate 
 ```
 
 ```kotlin
-obtainStyledAttributes(attrs, R.styleable.MyView) {
+context.withStyledAttributes(attrs, R.styleable.MyView) {
     // If "app:myType" is declared in XML, the value of myType is 0xFF000000, otherwise null.
-    val myType = it.getColorOrNull(R.styleable.MyView_myType)
+    val myType = getColorOrNull(R.styleable.MyView_myType)
     // If "app:myType" is declared in XML, the value of myType is 0xFF000000, otherwise 0xFF232323.
     // The value of myType can be null in any case,
     // so it is not recommended to use !! to assert non-null.
-    val myType = it.getColorOrNull(R.styleable.MyView_myType, 0xFF232323.toInt())
+    val myType = getColorOrNull(R.styleable.MyView_myType, 0xFF232323.toInt())
     // (Recommended) You can ensure that the value of myType is not null
     // by keeping defValue as null.
-    val myType = it.getColorOrNull(R.styleable.MyView_myType) ?: 0xFF232323.toInt()
+    val myType = getColorOrNull(R.styleable.MyView_myType) ?: 0xFF232323.toInt()
     // Or, you can handle the case where myType is null while keeping defValue as null.
     // If not null, the user has set the "app:myType" attribute.
     if (myType != null) {

@@ -721,8 +721,6 @@ class YourActivity : AppCompatActivity(), DisplayDensity {
 
 [Resources → getFontOrNull](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/get-font-or-null)
 
-[Resources → obtainStyledAttributes](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.base/obtain-styled-attributes)
-
 适用于 `Resources` 的扩展。
 
 :::
@@ -875,23 +873,6 @@ val drawable = context.getDrawableCompat<ColorDrawable>(R.drawable.my_background
 | `Resources.getFloat`          | `Resources.getFloatCompat`          |
 | `Resources.getFont`           | `Context.getFontCompat`             |
 
-针对自定义 `View` 的属性相关功能，`BetterAndroid` 提供了一个可自动回收处理的 `TypedArray` 扩展。
-
-你可以直接使用 `obtainStyledAttributes` 方法创建一个 `TypedArray` 对象并无需考虑何时应该调用 `recycle`。
-
-> 示例如下
-
-```kotlin
-class MyView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
-
-    init {
-        obtainStyledAttributes(attrs, R.styleable.MyView) {
-            val myType = it.getInteger(R.styleable.MyView_myType, 0)
-        }
-    }
-}
-```
-
 ::: tip
 
 `BetterAndroid` 还为 `TypedArray` 提供了 `getStringArray`、`getIntArray` 以及 `getColorOrNull` 等实用方法，你可以在上方的 **本节内容** 中找到它们。
@@ -919,14 +900,14 @@ class MyView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 ```
 
 ```kotlin
-obtainStyledAttributes(attrs, R.styleable.MyView) {
+context.withStyledAttributes(attrs, R.styleable.MyView) {
     // 如果 "app:myType" 已被声明于 XML 中，则 myType 的值为 0xFF000000，否则为 null
-    val myType = it.getColorOrNull(R.styleable.MyView_myType)
+    val myType = getColorOrNull(R.styleable.MyView_myType)
     // 如果 "app:myType" 已被声明于 XML 中，则 myType 的值为 0xFF000000，否则为 0xFF232323
     // myType 的值在任何情况下都可能为 null，不建议使用 !! 来绝对确认其不为 null
-    val myType = it.getColorOrNull(R.styleable.MyView_myType, 0xFF232323.toInt())
+    val myType = getColorOrNull(R.styleable.MyView_myType, 0xFF232323.toInt())
     // (推荐) 你可以这样来绝对获得 myType 的值不为 null，保持 defValue 为 null
-    val myType = it.getColorOrNull(R.styleable.MyView_myType) ?: 0xFF232323.toInt()
+    val myType = getColorOrNull(R.styleable.MyView_myType) ?: 0xFF232323.toInt()
     // 或者，你可以在保持 defValue 为 null 时对 myType 为 null 时做出判断
     // 不为 null 即用户设置了 "app:myType" 属性
     if (myType != null) {

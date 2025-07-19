@@ -55,6 +55,7 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.StyleableRes
 import androidx.core.content.res.ColorStateListInflaterCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.content.withStyledAttributes
 import androidx.core.view.get
 import androidx.core.view.isNotEmpty
 import androidx.core.view.size
@@ -626,29 +627,30 @@ fun TypedArray.getDimensionPx(view: View, @StyleableRes index: Int, @Px defValue
 /**
  * Obtain [View] attributes.
  *
- * This function will use View's [Context] call [Context.obtainStyledAttributes]
- * and auto call the [TypedArray.recycle].
+ * - This function is deprecated, use [Context.obtainStyledAttributes] instead.
  *
- * Usage:
+ * Before:
  *
  * ```kotlin
- * class MyView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
- *
- *     init {
- *         obtainStyledAttributes(attrs, R.styleable.MyView) {
- *             val myType = it.getInteger(R.styleable.MyView_myType, 0)
- *         }
- *     }
+ * obtainStyledAttributes(attrs, R.styleable.MyView) {
+ *     val myType = it.getInteger(R.styleable.MyView_myType, 0)
  * }
  * ```
- * @receiver the current view.
- * @param attrs the attribute list.
- * @param styleIds the style ids.
- * @param result callback [TypedArray], will no effect whether if [attrs] is null.
+ *
+ * After:
+ *
+ * ```kotlin
+ * context.withStyledAttributes(attrs, R.styleable.MyView) {
+ *     val myType = getInteger(R.styleable.MyView_myType, 0)
+ * }
  */
+@Deprecated(
+    message = "Use Context.obtainStyledAttributes instead.",
+    ReplaceWith("context.withStyledAttributes(attrs, styleIds) { result(this) }", "androidx.core.content.withStyledAttributes"),
+)
 inline fun View.obtainStyledAttributes(attrs: AttributeSet? = null, styleIds: IntArray, result: (TypedArray) -> Unit) {
     if (attrs == null) return
-    context?.obtainStyledAttributes(attrs, styleIds)?.apply { result(this) }?.recycle()
+    context?.withStyledAttributes(attrs, styleIds) { result(this) }
 }
 
 /**
