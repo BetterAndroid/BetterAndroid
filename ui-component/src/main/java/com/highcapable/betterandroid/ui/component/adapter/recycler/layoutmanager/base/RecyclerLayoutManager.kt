@@ -31,14 +31,14 @@ import com.highcapable.betterandroid.ui.component.adapter.recycler.factory.wrapp
 /**
  * An enhanced [RecyclerView.LayoutManager] with the ability to handle the position compatibility.
  *
- * Call [Int.toCompatPosition] in any scene where you want to use position to convert it
+ * Call [Int.toExcludingPosition] or [Int.toIncludingPosition] in any scene where you want to use position to convert it
  * to get the correct position when using [RecyclerAdapterBuilder].
  *
  * For example:
  *
  * ```kotlin
  * override fun scrollToPosition(position: Int) {
- *    val current = position.toCompatPosition()
+ *    val current = position.toIncludingPosition()
  *    super.scrollToPosition(current)
  * }
  * ```
@@ -60,9 +60,18 @@ abstract class RecyclerLayoutManager : RecyclerView.LayoutManager() {
     }
 
     /**
-     * Convert the current position to the compatible position.
+     * Convert the current position of the item view excluding the header view.
+     * param position the current position.
      * @receiver the current position.
      * @return [Int]
      */
-    protected fun Int.toCompatPosition() = base?.adapter?.wrapper?.compatPosition(position = this) ?: this
+    protected fun Int.toExcludingPosition() = base?.adapter?.wrapper?.excludingPosition(position = this) ?: this
+
+    /**
+     * Convert the current position of the item view excluding the header view.
+     * param position the current position.
+     * @receiver the current position.
+     * @return [Int]
+     */
+    protected fun Int.toIncludingPosition() = base?.adapter?.wrapper?.includingPosition(position = this) ?: this
 }

@@ -307,9 +307,9 @@ Enhanced grid layout manager for `RecyclerView`.
 
 Enhanced layout manager base class for `RecyclerView`.
 
-[RecyclerAdapter](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.recycler.factory)
+[RecyclerView, RecyclerAdapter](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.recycler.factory)
 
-Extension methods for the adapter build of `RecyclerView`.
+Extension methods for `RecyclerView` and its adapter builds.
 
 [CommonAdapter](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.factory)
 
@@ -703,6 +703,10 @@ wrapper?.notifyItemRemoved(0)
 // Use the following methods to update the header or footer item separately.
 wrapper?.notifyHeaderItemChanged()
 wrapper?.notifyFooterItemChanged()
+// Going further, you can manually use the following method
+// to determine whether there is a head and last layout.
+val hasHeaderView = wrapper?.hasHeaderView == true
+val hasFooterView = wrapper?.hasFooterView == true
 ```
 
 Returning to the issue we mentioned earlier, methods like `RecyclerView.scrollToPosition` and `RecyclerView.smoothScrollToPosition` will also be affected.
@@ -712,6 +716,14 @@ package name `com.highcapable.betterandroid.ui.component.adapter.recycler.layout
 
 These enhanced layout managers will be automatically integrated through the default `RecyclerCosmetic`, and you do not need any manual operations.
 When you need to manually create a `RecyclerView.LayoutManager`, we recommend inheriting from the instances provided under this package name.
+
+When you use the `RecyclerView.LayoutManager` provided by `BetterAndroid`, since the head or last layout automatically handles `position`,
+`RecyclerView.scrollToPosition`, `RecyclerView.smoothScrollToPosition`,
+you need to scroll to the top and bottom like this `scrollToPosition(-1)` (top) or `scrollToPosition(lastIndex + 1)` (bottom).
+
+So we always recommend that you use the `scrollToFirstPosition`, `scrollToLastPosition`, `smoothScrollToFirstPosition`, `smoothScrollToLastPosition`,
+and `smoothScrollToLastPosition` methods that automatically deal with this type of problem
+(regardless of whether you use the `RecyclerView.LayoutManager` provided by `BetterAndroid` or not).
 
 :::
 

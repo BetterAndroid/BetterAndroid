@@ -306,9 +306,9 @@ class MainFragment : AppViewsFragment(R.layout.fragment_main) {
 
 `RecyclerView` 的增强型布局管理器基类。
 
-[RecyclerAdapter](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.recycler.factory)
+[RecyclerView、RecyclerAdapter](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.recycler.factory)
 
-适用于 `RecyclerView` 适配器构建的扩展方法。
+适用于 `RecyclerView` 和其适配器构建的扩展方法。
 
 [CommonAdapter](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.adapter.factory)
 
@@ -690,11 +690,18 @@ wrapper?.notifyItemRemoved(0)
 // 头部或末位布局需要单独使用以下方法更新
 wrapper?.notifyHeaderItemChanged()
 wrapper?.notifyFooterItemChanged()
+// 更进一步，你可以手动使用以下方式判断是否存在头部、末位布局
+val hasHeaderView = wrapper?.hasHeaderView == true
+val hasFooterView = wrapper?.hasFooterView == true
 ```
 
 回到我们前面说到的问题，`RecyclerView.scrollToPosition`、`RecyclerView.smoothScrollToPosition` 等方法也会受到影响，这种情况你可以使用 `com.highcapable.betterandroid.ui.component.adapter.recycler.layoutmanager` 包名下提供的 `LinearLayoutManager`、`GridLayoutManager` 以及 `RecyclerLayoutManager` 来解决。
 
 这些封装后的增强型布局管理器将会通过默认的 `RecyclerCosmetic` 自动集成，你无需任何手动操作，当你需要手动创建 `RecyclerView.LayoutManager` 时，我们均建议你继承于这个包名下提供的实例来完成。
+
+当你使用了 `BetterAndroid` 提供的 `RecyclerView.LayoutManager` 时，由于头部或末位布局会自动处理 `position`，因此在使用 `RecyclerView.scrollToPosition`、`RecyclerView.smoothScrollToPosition` 滚动到顶部、底部时，你需要像这样 `scrollToPosition(-1)` (顶部) 或 `scrollToPosition(lastIndex + 1)` (底部)。
+
+所以我们始终建议你在有滚动到顶部、底部需求的情况下，使用 `scrollToFirstPosition`、`scrollToLastPosition`、`smoothScrollToFirstPosition`、`smoothScrollToLastPosition` 方法取代，它们会自动处理这类问题 (无论你是否使用了 `BetterAndroid` 提供的 `RecyclerView.LayoutManager`)。
 
 :::
 

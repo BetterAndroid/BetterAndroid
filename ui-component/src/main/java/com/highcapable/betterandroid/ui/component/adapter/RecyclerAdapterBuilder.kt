@@ -509,11 +509,32 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
             private val instance = this@Instance
 
             /**
-             * Convert the current position to the compatible position.
-             * @param position the current position.
+             * Convert the current position of the item view excluding the header view.
+             * param position the current position.
              * @return [Int]
              */
-            internal fun compatPosition(position: Int) = position.includingPosition()
+            internal fun excludingPosition(position: Int) = position.excludingPosition()
+
+            /**
+             * Convert the current position of the item view including the header view.
+             * param position the current position.
+             * @return [Int]
+             */
+            internal fun includingPosition(position: Int) = position.includingPosition()
+
+            /**
+             * Whether the adapter has a header view.
+             * @see RecyclerAdapterBuilder.hasHeaderView
+             * @return [Boolean]
+             */
+            val hasHeaderView get() = this@RecyclerAdapterBuilder.hasHeaderView
+
+            /**
+             * Whether the adapter has a footer view.
+             * @see RecyclerAdapterBuilder.hasFooterView
+             * @return [Boolean]
+             */
+            val hasFooterView get() = this@RecyclerAdapterBuilder.hasFooterView
 
             /**
              * @see RecyclerView.Adapter.notifyDataSetChanged

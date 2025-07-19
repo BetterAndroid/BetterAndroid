@@ -35,17 +35,25 @@ import androidx.recyclerview.widget.LinearLayoutManager as AndroidXLinearLayoutM
 /**
  * An enhanced [AndroidXLinearLayoutManager] with the ability to handle the position compatibility.
  *
- * Call [Int.toCompatPosition] in any scene where you want to use position to convert it
+ * Call [Int.toExcludingPosition] or [Int.toIncludingPosition] in any scene where you want to use position to convert it
  * to get the correct position when using [RecyclerAdapterBuilder].
  *
- * - Note: The [scrollToPosition] and [smoothScrollToPosition] functions are already overridden to handle the
+ * - Note: The following functions such as
+ *   [findFirstVisibleItemPosition],
+ *   [findFirstCompletelyVisibleItemPosition],
+ *   [findLastVisibleItemPosition],
+ *   [findLastCompletelyVisibleItemPosition],
+ *   [scrollToPosition],
+ *   [scrollToPositionWithOffset],
+ *   [smoothScrollToPosition]
+ *   are already overridden to handle the
  *   compatibility, you should not continue process the position compatibility in these functions.
  * @see RecyclerLayoutManager
  */
 open class LinearLayoutManager : AndroidXLinearLayoutManager {
 
     constructor(context: Context?) : super(context)
-    constructor(context: Context?, @RecyclerView.Orientation orientation: Int, reverseLayout: Boolean) : 
+    constructor(context: Context?, @RecyclerView.Orientation orientation: Int, reverseLayout: Boolean) :
         super(context, orientation, reverseLayout)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) :
         super(context, attrs, defStyleAttr, defStyleRes)
@@ -65,21 +73,48 @@ open class LinearLayoutManager : AndroidXLinearLayoutManager {
     }
 
     @CallSuper
+    override fun findFirstVisibleItemPosition() = super.findFirstVisibleItemPosition().toExcludingPosition()
+
+    @CallSuper
+    override fun findFirstCompletelyVisibleItemPosition() = super.findFirstCompletelyVisibleItemPosition().toExcludingPosition()
+
+    @CallSuper
+    override fun findLastVisibleItemPosition() = super.findLastVisibleItemPosition().toExcludingPosition()
+
+    @CallSuper
+    override fun findLastCompletelyVisibleItemPosition() = super.findLastCompletelyVisibleItemPosition().toExcludingPosition()
+
+    @CallSuper
     override fun scrollToPosition(position: Int) {
-        val current = position.toCompatPosition()
+        val current = position.toIncludingPosition()
         super.scrollToPosition(current)
     }
 
     @CallSuper
+    override fun scrollToPositionWithOffset(position: Int, offset: Int) {
+        val current = position.toIncludingPosition()
+        super.scrollToPositionWithOffset(current, offset)
+    }
+
+    @CallSuper
     override fun smoothScrollToPosition(recyclerView: RecyclerView?, state: RecyclerView.State?, position: Int) {
-        val current = position.toCompatPosition()
+        val current = position.toIncludingPosition()
         super.smoothScrollToPosition(recyclerView, state, current)
     }
 
     /**
-     * Convert the current position to the compatible position.
+     * Convert the current position of the item view excluding the header view.
+     * param position the current position.
      * @receiver the current position.
      * @return [Int]
      */
-    protected fun Int.toCompatPosition() = base?.adapter?.wrapper?.compatPosition(position = this) ?: this
+    protected fun Int.toExcludingPosition() = base?.adapter?.wrapper?.excludingPosition(position = this) ?: this
+
+    /**
+     * Convert the current position of the item view excluding the header view.
+     * param position the current position.
+     * @receiver the current position.
+     * @return [Int]
+     */
+    protected fun Int.toIncludingPosition() = base?.adapter?.wrapper?.includingPosition(position = this) ?: this
 }
