@@ -28,6 +28,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Bundle
 import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
 
 /**
@@ -118,11 +119,21 @@ fun Context.registerReceiver(
  * @receiver the current context.
  * @param packageName the receiverd app's package name, default is empty.
  * @param receiverPermission the receiverd app's permission, default is null.
+ * @param options the [Bundle] options for the broadcast, default is null.
  * @param intent the [Intent] builder body.
  */
 @JvmOverloads
-fun Context.sendBroadcast(packageName: String = "", receiverPermission: String? = null, intent: Intent.() -> Unit = {}) =
-    sendBroadcast(Intent().apply { if (packageName.isNotBlank()) setPackage(packageName) }.apply(intent), receiverPermission)
+fun Context.sendBroadcast(
+    packageName: String = "",
+    receiverPermission: String? = null,
+    options: Bundle? = null,
+    intent: Intent.() -> Unit = {}
+) {
+    val buildIntent = Intent().apply {
+        if (packageName.isNotBlank()) setPackage(packageName)
+    }.apply(intent)
+    sendBroadcast(buildIntent, receiverPermission, options)
+}
 
 /**
  * Create a [BroadcastReceiver] body.
