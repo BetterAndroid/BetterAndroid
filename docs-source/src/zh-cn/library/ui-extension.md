@@ -1130,11 +1130,9 @@ val colorStateList = ColorStateList(
 
 [Bitmap → round](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/round)
 
-[Bitmap → compress](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/compress)
+[Bitmap → shrink](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/shrink)
 
 [Bitmap → reduce](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/reduce)
-
-[Bitmap → zoom](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/zoom)
 
 适用于位图的扩展。
 
@@ -1221,8 +1219,8 @@ val imageFile = File("/storage/emulated/0/DCIM/Camera/IMG_20210901_000000_modifi
 // 将位图保存到文件
 imageFile.writeBitmap(bitmap)
 // 你可以调整 format 和 quality 参数来对其进行配置
-// 默认为 PNG 格式，质量为 100
-imageFile.writeBitmap(bitmap, format = Bitmap.CompressFormat.JPEG, quality = 80)
+// 默认为 JPEG 格式，质量为 100
+imageFile.writeBitmap(bitmap, format = Bitmap.CompressFormat.PNG, quality = 100)
 ```
 
 如果你能实际得到一个 `OutputStream` 对象，你可以使用以下方式将位图写入到输出流中。
@@ -1239,8 +1237,8 @@ outputStream.use {
     // 将位图写入到输出流中
     it.compressBitmap(bitmap)
     // 你可以调整 format 和 quality 参数来对其进行配置
-    // 默认为 PNG 格式，质量为 100
-    it.compressBitmap(bitmap, format = Bitmap.CompressFormat.JPEG, quality = 80)
+    // 默认为 JPEG 格式，质量为 100
+    it.compressBitmap(bitmap, format = Bitmap.CompressFormat.PNG, quality = 100)
 }
 ```
 
@@ -1253,10 +1251,8 @@ outputStream.use {
 ```kotlin
 // 假设这就是你的位图对象
 val bitmap: Bitmap
-// 将位图缩放为 100x100 的大小
-val zoomBitmap = bitmap.zoom(100, 100)
 // 以倍数缩放，默认为 2 倍
-val zoomBitmap = bitmap.reduce(3)
+val scaledBitmap = bitmap.reduce(3)
 ```
 
 压缩位图。
@@ -1267,10 +1263,10 @@ val zoomBitmap = bitmap.reduce(3)
 // 假设这就是你的位图对象
 val bitmap: Bitmap
 // 将位图压缩为 100 KB 的大小
-val compressBitmap = bitmap.compress(maxSize = 100)
+val shrinkedBitmap = bitmap.shrink(maxSize = 100f)
 // 你可以调整 format 和 quality 参数来对其进行配置
-// 默认为 PNG 格式，质量为 100
-val compressBitmap = bitmap.compress(maxSize = 100, format = Bitmap.CompressFormat.JPEG, quality = 80)
+// 默认为 JPEG 格式，质量为 100
+val shrinkedBitmap = bitmap.shrink(maxSize = 100f, format = Bitmap.CompressFormat.PNG, quality = 100)
 ```
 
 圆角化位图。
@@ -1282,6 +1278,8 @@ val compressBitmap = bitmap.compress(maxSize = 100, format = Bitmap.CompressForm
 val bitmap: Bitmap
 // 将位图设置以 10dp 为半径的圆角
 val roundBitmap = bitmap.round(10.toPx(context))
+// 你还可以处理后的位图背景颜色，默认为纯白
+val roundBitmap = bitmap.round(10.toPx(context), backgroundColor = Color.BLACK)
 // 你还可以设置每个角的圆角半径
 val roundBitmap = bitmap.round(
     topLeft = 12.toPx(context),

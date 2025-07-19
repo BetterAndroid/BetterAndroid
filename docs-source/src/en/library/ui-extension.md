@@ -1169,11 +1169,9 @@ val colorStateList = ColorStateList(
 
 [Bitmap → round](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/round)
 
-[Bitmap → compress](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/compress)
+[Bitmap → shrink](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/compress)
 
 [Bitmap → reduce](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/reduce)
-
-[Bitmap → zoom](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.graphics/zoom)
 
 Extensions for bitmap.
 
@@ -1265,8 +1263,8 @@ val imageFile = File("/storage/emulated/0/DCIM/Camera/IMG_20210901_000000_modifi
 // Save bitmap to file.
 imageFile.writeBitmap(bitmap)
 // You can configure it by adjusting the format and quality parameters.
-// Default is PNG format, quality is 100.
-imageFile.writeBitmap(bitmap, format = Bitmap.CompressFormat.JPEG, quality = 80)
+// Default is JPEG format, quality is 100.
+imageFile.writeBitmap(bitmap, format = Bitmap.CompressFormat.PNG, quality = 100)
 ```
 
 If you can actually get an `OutputStream` object, you can write the bitmap to the output stream using the following.
@@ -1283,12 +1281,12 @@ outputStream.use {
     // Write the bitmap to the output stream.
     it.compressBitmap(bitmap)
     // You can configure it by adjusting the format and quality parameters.
-    // Default is PNG format, quality is 100.
-    it.compressBitmap(bitmap, format = Bitmap.CompressFormat.JPEG, quality = 80)
+    // Default is JPEG format, quality is 100.
+    it.compressBitmap(bitmap, format = Bitmap.CompressFormat.PNG, quality = 100)
 }
 ```
 
-The following are extended functions for bitmap scaling, compression, and blur.
+The following are extended functions for bitmap scaling, shrinking, and blur.
 
 Scale bitmap.
 
@@ -1297,24 +1295,22 @@ Scale bitmap.
 ```kotlin
 // Assume this is your bitmap object.
 val bitmap: Bitmap
-// Scale the bitmap to 100x100 size.
-val zoomBitmap = bitmap.zoom(100, 100)
 // Scale by multiple, default is 2 times.
-val zoomBitmap = bitmap.reduce(3)
+val scaledBitmap = bitmap.reduce(3)
 ```
 
-Compressed bitmap.
+Shrink bitmap.
 
 > The following example
 
 ```kotlin
 // Assume this is your bitmap object.
 val bitmap: Bitmap
-// Compress bitmap to 100 KB size.
-val compressBitmap = bitmap.compress(maxSize = 100)
+// Shrink bitmap to 100 KB size.
+val shrinkedBitmap = bitmap.shrink(maxSize = 100f)
 // You can configure it by adjusting the format and quality parameters.
-// Default is PNG format, quality is 100.
-val compressBitmap = bitmap.compress(maxSize = 100, format = Bitmap.CompressFormat.JPEG, quality = 80)
+// Default is JPEG format, quality is 100.
+val shrinkedBitmap = bitmap.shrink(maxSize = 100f, format = Bitmap.CompressFormat.PNG, quality = 100)
 ```
 
 Rounded bitmap.
@@ -1326,6 +1322,8 @@ Rounded bitmap.
 val bitmap: Bitmap
 // Set the bitmap to a rounded corner with a radius of 10dp.
 val roundBitmap = bitmap.round(10.toPx(context))
+// You can also process the bitmap background color, default is pure white.
+val roundBitmap = bitmap.round(10.toPx(context), backgroundColor = Color.BLACK)
 // You can also set the fillet radius for each corner.
 val roundBitmap = bitmap.round(
     topLeft = 12.toPx(context),

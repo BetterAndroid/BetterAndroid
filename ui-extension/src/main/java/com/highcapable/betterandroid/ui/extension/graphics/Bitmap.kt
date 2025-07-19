@@ -29,15 +29,16 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
+import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.Px
+import androidx.core.graphics.scale
 import com.highcapable.betterandroid.ui.extension.component.base.toHexResourceId
 import com.highcapable.betterandroid.ui.extension.graphics.base.BitmapBlurFactory
 import java.io.ByteArrayOutputStream
@@ -200,11 +201,11 @@ fun Resources.createBitmapOrNull(@DrawableRes resId: Int, opts: BitmapFactory.Op
  * @see OutputStream.compressBitmap
  * @receiver [File]
  * @param bitmap the current bitmap.
- * @param format the bitmap format, default is [Bitmap.CompressFormat.PNG].
+ * @param format the bitmap format, default is [Bitmap.CompressFormat.JPEG].
  * @param quality the quality, default is 100.
  */
 @JvmOverloads
-fun File.writeBitmap(bitmap: Bitmap, format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG, quality: Int = 100) {
+fun File.writeBitmap(bitmap: Bitmap, format: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG, quality: Int = 100) {
     createNewFile()
     outputStream().use { it.compressBitmap(bitmap, format, quality) }
 }
@@ -214,12 +215,12 @@ fun File.writeBitmap(bitmap: Bitmap, format: Bitmap.CompressFormat = Bitmap.Comp
  * @see File.writeBitmap
  * @receiver [OutputStream]
  * @param bitmap the current bitmap.
- * @param format the bitmap format, default is [Bitmap.CompressFormat.PNG].
+ * @param format the bitmap format, default is [Bitmap.CompressFormat.JPEG].
  * @param quality the quality, default is 100.
  * @return [Boolean] whether the bitmap compress success.
  */
 @JvmOverloads
-fun OutputStream.compressBitmap(bitmap: Bitmap, format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG, quality: Int = 100) =
+fun OutputStream.compressBitmap(bitmap: Bitmap, format: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG, quality: Int = 100) =
     bitmap.compress(format, quality, this)
 
 /**
@@ -236,18 +237,20 @@ fun Bitmap.blur(radius: Int) = BitmapBlurFactory.process(this, radius)
  * Convert the bitmap to a round corner bitmap.
  * @receiver [Bitmap]
  * @param radii the radius of the 4 corners (px).
+ * @param backgroundColor the background color, default is [Color.WHITE].
+ * @param config the config, default is [Bitmap.Config.ARGB_8888].
  * @return [Bitmap]
  * @throws IllegalArgumentException if the length of the radii array is not 8 or throws by [Bitmap.createBitmap].
  */
 @JvmOverloads
-fun Bitmap.round(@Px radii: FloatArray, config: Bitmap.Config = Bitmap.Config.ARGB_8888): Bitmap {
+fun Bitmap.round(@Px radii: FloatArray, @ColorInt backgroundColor: Int = Color.WHITE, config: Bitmap.Config = Bitmap.Config.ARGB_8888): Bitmap {
     require(radii.size == 8) { "The length of the radii array must be 8." }
     return Bitmap.createBitmap(width, height, config).also { outBitmap ->
         val canvas = Canvas(outBitmap)
         val paint = Paint()
         paint.isAntiAlias = true
         canvas.drawARGB(0, 0, 0, 0)
-        paint.color = Color.WHITE
+        paint.color = backgroundColor
         val path = Path()
         path.addRoundRect(RectF(Rect(0, 0, width, height)), radii, Path.Direction.CW)
         canvas.drawPath(path, paint)
@@ -263,6 +266,7 @@ fun Bitmap.round(@Px radii: FloatArray, config: Bitmap.Config = Bitmap.Config.AR
  * @param topRight the radius of the top-right corner (px).
  * @param bottomLeft the radius of the bottom-right corner (px).
  * @param bottomRight the radius of the bottom-left corner (px).
+ * @param backgroundColor the background color, default is [Color.WHITE].
  * @param config the config, default is [Bitmap.Config.ARGB_8888].
  * @return [Bitmap]
  */
@@ -273,39 +277,46 @@ fun Bitmap.round(
     @Px topRight: Float = 0f,
     @Px bottomLeft: Float = 0f,
     @Px bottomRight: Float = 0f,
+    @ColorInt backgroundColor: Int = Color.WHITE,
     config: Bitmap.Config = Bitmap.Config.ARGB_8888
-) = round(floatArrayOf(topLeft, topLeft, topRight, topRight, bottomRight, bottomRight, bottomLeft, bottomLeft), config)
+) = round(floatArrayOf(topLeft, topLeft, topRight, topRight, bottomRight, bottomRight, bottomLeft, bottomLeft), backgroundColor, config)
 
 /**
  * Convert the bitmap to a round corner bitmap.
  * @receiver [Bitmap]
  * @param radius the round corner (px).
+ * @param backgroundColor the background color, default is [Color.WHITE].
  * @param config the config, default is [Bitmap.Config.ARGB_8888].
  * @return [Bitmap]
  */
 @JvmOverloads
-fun Bitmap.round(@Px radius: Float, config: Bitmap.Config = Bitmap.Config.ARGB_8888) = round(radius, radius, radius, radius, config)
+fun Bitmap.round(
+    @Px radius: Float,
+    @ColorInt backgroundColor: Int = Color.WHITE,
+    config: Bitmap.Config = Bitmap.Config.ARGB_8888
+) = round(radius, radius, radius, radius, backgroundColor, config)
 
 /**
- * Compress the bitmap to reduce its size.
+ * Shrink the bitmap to reduce its size.
  * @receiver [Bitmap]
  * @param maxSize the allowed maximum size.
- * @param format the bitmap format, default is [Bitmap.CompressFormat.PNG].
+ * @param format the bitmap format, default is [Bitmap.CompressFormat.JPEG].
  * @param quality the quality, default is 100.
  * @return [Bitmap]
  */
 @JvmOverloads
-fun Bitmap.compress(maxSize: Float, format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG, quality: Int = 100): Bitmap {
+fun Bitmap.shrink(maxSize: Float, format: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG, quality: Int = 100): Bitmap {
     var outBitmap = this
-    val baos = ByteArrayOutputStream()
-    outBitmap.compress(format, quality, baos)
-    val baosByte = baos.toByteArray()
-    val mid = baosByte.size / 1024.toDouble()
-    if (mid > maxSize) {
-        val size = mid / maxSize
-        val floatWidth = (outBitmap.width / sqrt(size)).toFloat()
-        val floatHeight = (outBitmap.height / sqrt(size)).toFloat()
-        outBitmap = outBitmap.zoom(floatWidth, floatHeight)
+    ByteArrayOutputStream().use {
+        outBitmap.compress(format, quality, it)
+        val baosByte = it.toByteArray()
+        val mid = baosByte.size / 1024.0
+        if (mid > maxSize) {
+            val size = mid / maxSize
+            val floatWidth = (width / sqrt(size)).toFloat()
+            val floatHeight = (height / sqrt(size)).toFloat()
+            outBitmap = outBitmap.scale(floatWidth.toInt(), floatHeight.toInt())
+        }
     }; return outBitmap
 }
 
@@ -318,24 +329,28 @@ fun Bitmap.compress(maxSize: Float, format: Bitmap.CompressFormat = Bitmap.Compr
 @JvmOverloads
 fun Bitmap.reduce(multiple: Int = 2): Bitmap {
     if (multiple <= 1) return this
-    val floatWidth = (width / multiple).toFloat()
-    val floatHeight = (height / multiple).toFloat()
-    return zoom(floatWidth, floatHeight)
+    val sWidth = width / multiple
+    val sHeight = height / multiple
+    return scale(sWidth, sHeight)
 }
 
 /**
- * Zoom the bitmap width and height.
- * @receiver [Bitmap]
- * @param newWidth the new width of the bitmap.
- * @param newHeight the new height of the bitmap.
- * @return [Bitmap]
+ * Compress the bitmap to reduce its size.
+ *
+ * - This function is deprecated, use [Bitmap.shrink] instead.
  */
-fun Bitmap.zoom(newWidth: Float, newHeight: Float): Bitmap {
-    val width = this.width.toFloat()
-    val height = this.height.toFloat()
-    val matrix = Matrix()
-    val scaleWidth = newWidth / width
-    val scaleHeight = newHeight / height
-    matrix.postScale(scaleWidth, scaleHeight)
-    return Bitmap.createBitmap(this, 0, 0, width.toInt(), height.toInt(), matrix, true)
-}
+@Deprecated(message = "Use Bitmap.shrink instead.", ReplaceWith("shrink(maxSize, format, quality)"))
+@JvmOverloads
+fun Bitmap.compress(maxSize: Float, format: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG, quality: Int = 100) =
+    shrink(maxSize, format, quality)
+
+/**
+ * Zoom the bitmap width and height.
+ *
+ * - This function is deprecated, use [Bitmap.scale] instead.
+ */
+@Deprecated(
+    message = "Use Bitmap.scale instead.",
+    ReplaceWith("scale(newWidth.toInt(), newHeight.toInt())", "androidx.core.graphics.scale")
+)
+fun Bitmap.zoom(newWidth: Float, newHeight: Float) = scale(newWidth.toInt(), newHeight.toInt())
