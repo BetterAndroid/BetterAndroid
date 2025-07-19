@@ -17,9 +17,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file is created by fankes on 2023/10/22.
+ * This file is created by fankes on 2025/6/26.
  */
-@file:Suppress("unused", "CovariantEquals", "MemberVisibilityCanBePrivate")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
 
 package com.highcapable.betterandroid.system.extension.tool
 
@@ -168,15 +168,6 @@ object RomType {
      */
     @JvmStatic
     fun matches(@Value type: Int) = current == type
-
-    /**
-     * Determine whether the current ROM is of the specific type.
-     *
-     * - This function is deprecated, use [matches] instead.
-     */
-    @Deprecated(message = "Use matches instead.", ReplaceWith("RomType.matches(type)"))
-    @JvmStatic
-    fun equals(@Value type: Int) = matches(type)
 
     /**
      * A collection of type matchers for identifying the current ROM.

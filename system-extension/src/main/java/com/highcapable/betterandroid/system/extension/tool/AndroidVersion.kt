@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file is created by fankes on 2023/10/22.
+ * This file is created by fankes on 2025/6/26.
  */
 @file:Suppress("unused")
 
@@ -25,7 +25,6 @@ package com.highcapable.betterandroid.system.extension.tool
 
 import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
-import com.highcapable.betterandroid.system.extension.tool.AndroidVersion.isHighOrEqualsTo
 
 /**
  * Android SDK version tool.
@@ -131,7 +130,7 @@ object AndroidVersion {
      */
     @JvmStatic
     @ChecksSdkIntAtLeast(parameter = 0)
-    infix fun isGreaterThan(target: Int) = code > target
+    fun isGreaterThan(target: Int) = code > target
 
     /**
      * At least target sdk. `code >= target`
@@ -147,7 +146,6 @@ object AndroidVersion {
      * @param target the target sdk.
      * @param callback callback when the above conditions are met.
      */
-    @JvmStatic
     @ChecksSdkIntAtLeast(parameter = 0)
     inline fun require(target: Int, callback: () -> Unit) {
         if (isAtLeast(target)) callback()
@@ -161,7 +159,6 @@ object AndroidVersion {
      * @param callback callback when the above conditions are met.
      * @return [T]
      */
-    @JvmStatic
     @ChecksSdkIntAtLeast(parameter = 0)
     inline fun <T : Any> require(target: Int, defaultValue: T, callback: () -> T): T =
         if (isAtLeast(target)) callback() else defaultValue
@@ -173,96 +170,7 @@ object AndroidVersion {
      * @param callback callback when the above conditions are met.
      * @return [T] or null.
      */
-    @JvmStatic
     @ChecksSdkIntAtLeast(parameter = 0)
     inline fun <T : Any?> requireOrNull(target: Int, defaultValue: T?, callback: () -> T?): T? =
         if (isAtLeast(target)) (callback() ?: defaultValue) else defaultValue
-
-    // The following functions are deprecated, you should not use them.
-
-    /**
-     * Between the target sdk.
-     *
-     * - This function is deprecated and no effect and will be removed in the future.
-     *
-     * - The reason is that [ChecksSdkIntAtLeast] cannot handle this complex situation, causing the lint check to make the correct judgment.
-     */
-    @Suppress("UNUSED_PARAMETER", "DeprecatedCallableAddReplaceWith")
-    @Deprecated(message = "Please implement it yourself.")
-    @JvmStatic
-    fun isBetween(target: IntRange) = false
-
-    /**
-     * Between the target sdk.
-     *
-     * - This function is deprecated, use [isBetween] instead.
-     */
-    @Suppress("DEPRECATION")
-    @Deprecated(message = "Use isBetween instead.", ReplaceWith("AndroidVersion.isBetween(target)"))
-    @JvmStatic
-    @ChecksSdkIntAtLeast(parameter = 0)
-    fun isIn(target: IntRange) = isBetween(target)
-
-    /**
-     * Lower than target sdk.
-     *
-     * - This function is deprecated, use [isLessThan] instead.
-     */
-    @Deprecated(message = "Use isLessThan instead.", ReplaceWith("AndroidVersion.isLessThan(target)"))
-    @JvmStatic
-    @ChecksSdkIntAtLeast(parameter = 0)
-    fun isLowTo(target: Int) = isLessThan(target)
-
-    /**
-     * Lower than or equal to target sdk.
-     *
-     * - This function is deprecated, use [isAtMost] instead.
-     */
-    @Deprecated(message = "Use isAtMost instead.", ReplaceWith("AndroidVersion.isAtMost(target)"))
-    @JvmStatic
-    @ChecksSdkIntAtLeast(parameter = 0)
-    fun isLowOrEqualsTo(target: Int) = isAtMost(target)
-
-    /**
-     * Higher than target sdk.
-     *
-     * - This function is deprecated, use [isGreaterThan] instead.
-     * @return [Boolean]
-     */
-    @Deprecated(message = "Use isGreaterThan instead.", ReplaceWith("AndroidVersion.isGreaterThan(target)"))
-    @JvmStatic
-    @ChecksSdkIntAtLeast(parameter = 0)
-    infix fun isHighTo(target: Int) = isGreaterThan(target)
-
-    /**
-     * Higher than or equal to target sdk.
-     *
-     * - This function is deprecated, use [isAtLeast] instead.
-     */
-    @Deprecated(message = "Use isAtLeast instead.", ReplaceWith("AndroidVersion.isAtLeast(target)"))
-    @JvmStatic
-    @ChecksSdkIntAtLeast(parameter = 0)
-    fun isHighOrEqualsTo(target: Int) = isAtLeast(target)
-
-    /**
-     * Lower than or equal to target sdk.
-     *
-     * - This function is deprecated, use [isLowOrEqualsTo] instead.
-     */
-    @Suppress("DEPRECATION")
-    @Deprecated(message = "Use isLowOrEqualsTo instead.", ReplaceWith("AndroidVersion.isLowOrEqualsTo(target)"))
-    @JvmStatic
-    @ChecksSdkIntAtLeast(parameter = 0)
-    fun isLowAndEqualsTo(target: Int) = isLowOrEqualsTo(target)
-
-    /**
-     * Higher than or equal to target sdk.
-     *
-     * - This function is deprecated, use [isHighOrEqualsTo] instead.
-     */
-    @Suppress("DEPRECATION")
-    @Deprecated(message = "Use isHighOrEqualsTo instead.", ReplaceWith("AndroidVersion.isHighOrEqualsTo(target)"))
-    @JvmStatic
-    @ChecksSdkIntAtLeast(parameter = 0)
-    fun isHighAndEqualsTo(target: Int) = isHighOrEqualsTo(target)
 }
