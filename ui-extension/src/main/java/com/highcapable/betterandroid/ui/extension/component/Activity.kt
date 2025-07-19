@@ -34,7 +34,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.highcapable.betterandroid.system.extension.component.queryLaunchActivitiesForPackage
 import com.highcapable.betterandroid.system.extension.component.queryLaunchActivitiesForPackageOrNull
-import com.highcapable.betterandroid.system.extension.tool.SystemVersion
+import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
 import com.highcapable.kavaref.extension.classOf
 
 /**
@@ -54,7 +54,7 @@ val Activity.isInSpecialWindowMode get() = isInMultiWindowModeCompat
  * @receiver the current activty.
  * @return [Boolean]
  */
-val Activity.isInMultiWindowModeCompat get() = SystemVersion.require(SystemVersion.N, false) { isInMultiWindowMode }
+val Activity.isInMultiWindowModeCompat get() = AndroidVersion.require(AndroidVersion.N, false) { isInMultiWindowMode }
 
 /**
  * Start an [Activity] instance [T].

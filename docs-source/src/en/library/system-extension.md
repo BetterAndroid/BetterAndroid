@@ -662,13 +662,13 @@ Please refer to [Background Execution Limits](https://developer.android.com/abou
 
 ::: tip Content of This Section
 
-[SystemVersion](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-system-version)
+[AndroidVersion](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-android-version)
 
-System version tool.
+Android version tool.
 
-[SystemKind](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-system-kind)
+[RomType](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-rom-type)
 
-System kind tool.
+Android ROM type tool.
 
 [SystemProperties](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-system-properties)
 
@@ -699,18 +699,18 @@ Now, you can do this very easily in the following way.
 > The following example
 
 ```kotlin
-SystemVersion.require(SystemVersion.Q) {
+AndroidVersion.require(AndroidVersion.Q) {
     // Execute relevant code.
 }
 // Or use hard-coded API version code.
-SystemVersion.require(29) {
+AndroidVersion.require(29) {
     // Execute relevant code.
 }
 // result will get "target" when API is greater than or equal to 29, otherwise it will be "legacy".
-val result = SystemVersion.require(SystemVersion.Q, "legacy") { "target" }
+val result = AndroidVersion.require(AndroidVersion.Q, "legacy") { "target" }
 // If it is a nullable result, you can use the following method.
 val myData: MyData?
-val result = SystemVersion.requireOrNull(SystemVersion.Q, MyData()) { myData }
+val result = AndroidVersion.requireOrNull(AndroidVersion.Q, MyData()) { myData }
 ```
 
 You can also use the following methods to judge.
@@ -719,47 +719,45 @@ You can also use the following methods to judge.
 
 ```kotlin
 // Determine whether API is less than 29.
-if (SystemVersion.isLowTo(SystemVersion.Q)) {
+if (AndroidVersion.isLessThan(AndroidVersion.Q)) {
     // Execute relevant code.
 }
 // Determine whether API is greater than 29.
-if (SystemVersion.isHighTo(SystemVersion.Q)) {
+if (AndroidVersion.isGreaterThan(AndroidVersion.Q)) {
     // Execute relevant code.
 }
 // Determine whether API is less than or equal to 29.
-if (SystemVersion.isLowOrEqualsTo(SystemVersion.Q)) {
+if (AndroidVersion.isAtMost(AndroidVersion.Q)) {
     // Execute relevant code.
 }
 // Determine whether the API is greater than or equal to 29.
-if (SystemVersion.isHighOrEqualsTo(SystemVersion.Q)) {
-    // Execute relevant code.
-}
-// Determine whether the API is between 26 and 29.
-if (SystemVersion.isBetween(SystemVersion.O..SystemVersion.Q)) {
+if (AndroidVersion.isAtLeast(AndroidVersion.Q)) {
     // Execute relevant code.
 }
 ```
 
 The following is the constant mapping comparison table for each API, after Android version update, `BetterAndroid` will update these constants synchronously.
 
-| API Level | `SystemVersion` Name | `Build.VERSION_CODES` Name | Corresponding System Version |
-| --------- | -------------------- | -------------------------- | ---------------------------- |
-| 19        | `K`                  | `KITKAT`                   | 4.4.3, 4.4.4                 |
-| 20        | `K_W`                | `KITKAT_WATCH`             | 4.4W                         |
-| 21        | `L`                  | `LOLLIPOP`                 | 5.0, 5.0.2                   |
-| 22        | `L_MR1`              | `LOLLIPOP_MR1`             | 5.1, 5.1.1                   |
-| 23        | `M`                  | `M`                        | 6.0, 6.0.1                   |
-| 24        | `N`                  | `N`                        | 7.0                          |
-| 25        | `N_MR1`              | `N_MR1`                    | 7.1, 7.1.1, 7.1.2            |
-| 26        | `O`                  | `O`                        | 8.0                          |
-| 27        | `O_MR1`              | `O_MR1`                    | 8.1                          |
-| 28        | `P`                  | `P`                        | 9                            |
-| 29        | `Q`                  | `Q`                        | 10                           |
-| 30        | `R`                  | `R`                        | 11                           |
-| 31        | `S`                  | `S`                        | 12                           |
-| 32        | `S_V2`               | `S_V2`                     | 12.1, 12L                    |
-| 33        | `T`                  | `TIRAMISU`                 | 13                           |
-| 34        | `U`                  | `UPSIDE_DOWN_CAKE`         | 14                           |
+| API Level | `AndroidVersion` Name | `Build.VERSION_CODES` Name | Corresponding System Version |
+| --------- | --------------------- | -------------------------- | ---------------------------- |
+| 19        | `K`                   | `KITKAT`                   | 4.4.3, 4.4.4                 |
+| 20        | `K_W`                 | `KITKAT_WATCH`             | 4.4W                         |
+| 21        | `L`                   | `LOLLIPOP`                 | 5.0, 5.0.2                   |
+| 22        | `L_MR1`               | `LOLLIPOP_MR1`             | 5.1, 5.1.1                   |
+| 23        | `M`                   | `M`                        | 6.0, 6.0.1                   |
+| 24        | `N`                   | `N`                        | 7.0                          |
+| 25        | `N_MR1`               | `N_MR1`                    | 7.1, 7.1.1, 7.1.2            |
+| 26        | `O`                   | `O`                        | 8.0                          |
+| 27        | `O_MR1`               | `O_MR1`                    | 8.1                          |
+| 28        | `P`                   | `P`                        | 9                            |
+| 29        | `Q`                   | `Q`                        | 10                           |
+| 30        | `R`                   | `R`                        | 11                           |
+| 31        | `S`                   | `S`                        | 12                           |
+| 32        | `S_V2`                | `S_V2`                     | 12.1, 12L                    |
+| 33        | `T`                   | `TIRAMISU`                 | 13                           |
+| 34        | `U`                   | `UPSIDE_DOWN_CAKE`         | 14                           |
+| 35        | `V`                   | `VANILLA_ICE_CREAM`        | 15                           |
+| 36        | `BAKLAVA`             | `BAKLAVA`                  | 16                           |
 
 In addition to judging the API level, you can also use the following method to get the current Android version name.
 
@@ -769,70 +767,78 @@ In addition to judging the API level, you can also use the following method to g
 // Get the current Android version name.
 // It is equivalent to Build.VERSION.RELEASE.
 // For example, the version name of Android 10 is the string "10".
-val versionName = SystemVersion.name
+val versionName = AndroidVersion.name
 ```
 
-As various manufacturers have successively released more and more deeply customized Android systems for their own brand Android mobile phones,
-sometimes it is very necessary for us to make targeted adaptations for the different functions of each customized version of the system,
-but how to judge the type of these systems is a big question.
+You can also use `code` directly to get the current Android API level.
+
+```kotlin
+// Get the current Android API level.
+// Its function is equivalent to Build.VERSION.SDK_INT.
+// For example, the API level of Android 10 is integer 29.
+val targetSdk = AndroidVersion.code
+```
+
+With more and more Android systems for deeply customized Android phones released by manufacturers in mainland China and other countries,
+it is very necessary for us to target the different functions of each customized version of the system, but how to judge the types of these systems is a big problem.
 
 Usually, everyone’s solution is to determine the model of the device to determine what kind of customized system it is,
 however, if the current device is not running the customized system you judged, such as the case where the user flashes the phone by himself, then this solution is will fail.
 
 `BetterAndroid` provides you with a simple, fast and efficient solution by collecting corresponding features of various common custom systems.
 
-The following is a simple example to determine the type of current system.
+The following is a simple example to determine the type of current ROM.
 
 > The following example
 
 ```kotlin
-// Determine whether the current system kind is MIUI.
-if (SystemKind.equals(SystemKind.MIUI)) {
+// Determine whether the current ROM type is MIUI.
+if (RomType.equals(RomType.MIUI)) {
     // Execute relevant code.
 }
 ```
 
-Yes, it's that simple, if you need to judge multiple system types at the same time, you can also use the following method.
+Yes, it's that simple, if you need to judge multiple ROM types at the same time, you can also use the following method.
 
 > The following example
 
 ```kotlin
-// Get the current system kind.
-val kind = SystemKind.current
-// Determine the current system kind in batches.
-when (kind) {
-    SystemKind.MIUI -> {
+// Get the current ROM type.
+val type = RomType.current
+// Determine the current ROM type in batches.
+when (type) {
+    RomType.MIUI -> {
         // Execute relevant code.
     }
-    SystemKind.COLOROS -> {
+    RomType.COLOROS -> {
         // Execute relevant code.
     }
-    SystemKind.ORIGINOS -> {
+    RomType.ORIGINOS -> {
         // Execute relevant code.
     }
 }
 ```
 
-The following is a comparison table of constants for currently collected system kinds, if you have features for more system kinds,
+The following is a comparison table of constants for currently collected ROM types, if you have features for more ROM types,
 you are welcome to PR or go to [GitHub Issues](repo://issues) to make suggestions to us.
 
-| `SystemKind` Name | System Kind                                                                                                        |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `DEFAULT`         | Default, uncategorized. (Stock Android or AOSP-based Android system and system categories not currently collected) |
-| `HARMONYOS`       | [HarmonyOS](https://www.harmonyos.com/) (Based on AOSP)                                                            |
-| `EMUI`            | [EMUI](https://www.huaweicentral.com/emui)                                                                         |
-| `MIUI`            | [MIUI](https://home.miui.com/)                                                                                     |
-| `HYPEROS`         | [HyperOS](https://hyperos.mi.com/)                                                                                 |
-| `COLOROS`         | [ColorOS](https://www.coloros.com/)                                                                                |
-| `FUNTOUCHOS`      | [FuntouchOS](https://www.vivo.com/funtouchos)                                                                      |
-| `ORIGINOS`        | [OriginOS](https://www.vivo.com/originos)                                                                          |
-| `FLYME`           | [Flyme](https://flyme.com/)                                                                                        |
-| `ONEUI`           | [OneUI](https://www.samsung.com/one-ui)                                                                            |
-| `ZUI`             | [ZUI](https://zui.com/)                                                                                            |
-| `REDMAGICOS`      | [RedMagicOS](https://www.nubia.com/)                                                                               |
-| `NUBIAUI`         | [NubiaUI](https://www.nubia.com/)                                                                                  |
-| `ROGUI`           | [RogUI](https://www.asus.com/)                                                                                     |
-| `VISIONOS`        | [VisionOS](https://fans.hisense.com/forum-269-1.html)                                                              |
+| `RomType` Name | ROM Type                                                                                                 |
+| -------------- | -------------------------------------------------------------------------------------------------------- |
+| `DEFAULT`      | Default, uncategorized. (Stock Android or AOSP-based Android system or ROM type not currently collected) |
+| `HARMONYOS`    | [HarmonyOS](https://www.harmonyos.com/) (Based on AOSP)                                                  |
+| `EMUI`         | [EMUI](https://www.huaweicentral.com/emui)                                                               |
+| `MIUI`         | [MIUI](https://home.miui.com/)                                                                           |
+| `HYPEROS`      | [HyperOS](https://hyperos.mi.com/)                                                                       |
+| `COLOROS`      | [ColorOS](https://www.coloros.com/)                                                                      |
+| `FUNTOUCHOS`   | [FuntouchOS](https://www.vivo.com/funtouchos)                                                            |
+| `ORIGINOS`     | [OriginOS](https://www.vivo.com/originos)                                                                |
+| `FLYME`        | [Flyme](https://flyme.com/)                                                                              |
+| `ONEUI`        | [OneUI](https://www.samsung.com/one-ui)                                                                  |
+| `ZUI`          | [ZUI](https://zui.com/)                                                                                  |
+| `REDMAGICOS`   | [RedMagicOS](https://www.nubia.com/)                                                                     |
+| `NUBIAUI`      | [NubiaUI](https://www.nubia.com/)                                                                        |
+| `ROGUI`        | [RogUI](https://www.asus.com/)                                                                           |
+| `VISIONOS`     | [VisionOS](https://fans.hisense.com/forum-269-1.html)                                                    |
 
 `SystemProperties` is a tool provided by Android that can read the contents of `build.prop` during runtime, but this function is not open to developers.
 

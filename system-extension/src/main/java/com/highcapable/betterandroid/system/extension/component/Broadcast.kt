@@ -28,7 +28,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import com.highcapable.betterandroid.system.extension.tool.SystemVersion
+import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
 
 /**
  * Register a broadcast receiver.
@@ -85,7 +85,7 @@ fun Context.registerReceiver(
     if (exported)
         receiverFlags = if (receiverFlags == null) Context.RECEIVER_EXPORTED
         else receiverFlags or Context.RECEIVER_EXPORTED
-    if (SystemVersion.isHighOrEqualsTo(SystemVersion.O))
+    if (AndroidVersion.isAtLeast(AndroidVersion.O))
         if (receiverFlags != null)
             registerReceiver(receiver, filter, receiverFlags)
         else registerReceiver(receiver, filter)

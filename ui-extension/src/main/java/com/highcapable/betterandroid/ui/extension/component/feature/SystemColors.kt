@@ -26,7 +26,7 @@ package com.highcapable.betterandroid.ui.extension.component.feature
 import android.content.Context
 import android.graphics.Color
 import com.google.android.material.color.DynamicColors
-import com.highcapable.betterandroid.system.extension.tool.SystemVersion
+import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
 import com.highcapable.betterandroid.ui.extension.component.base.getColorCompat
 import android.R as Android_R
 import com.google.android.material.R as Material_R
@@ -69,7 +69,7 @@ class SystemColors private constructor(private val context: Context) {
      */
     @JvmOverloads
     @JvmName("getSystemAccentPrimary")
-    fun systemAccentPrimary(value: Int = 0) = SystemVersion.require(SystemVersion.S, Color.TRANSPARENT) {
+    fun systemAccentPrimary(value: Int = 0) = AndroidVersion.require(AndroidVersion.S, Color.TRANSPARENT) {
         context.getColorCompat(when (value) {
             0 -> Android_R.color.system_accent1_0
             10 -> Android_R.color.system_accent1_10
@@ -98,7 +98,7 @@ class SystemColors private constructor(private val context: Context) {
      */
     @JvmOverloads
     @JvmName("getSystemAccentSecondary")
-    fun systemAccentSecondary(value: Int = 0) = SystemVersion.require(SystemVersion.S, Color.TRANSPARENT) {
+    fun systemAccentSecondary(value: Int = 0) = AndroidVersion.require(AndroidVersion.S, Color.TRANSPARENT) {
         context.getColorCompat(when (value) {
             0 -> Android_R.color.system_accent2_0
             10 -> Android_R.color.system_accent2_10
@@ -127,7 +127,7 @@ class SystemColors private constructor(private val context: Context) {
      */
     @JvmOverloads
     @JvmName("getSystemAccentTertiary")
-    fun systemAccentTertiary(value: Int = 0) = SystemVersion.require(SystemVersion.S, Color.TRANSPARENT) {
+    fun systemAccentTertiary(value: Int = 0) = AndroidVersion.require(AndroidVersion.S, Color.TRANSPARENT) {
         context.getColorCompat(when (value) {
             0 -> Android_R.color.system_accent3_0
             10 -> Android_R.color.system_accent3_10
@@ -156,7 +156,7 @@ class SystemColors private constructor(private val context: Context) {
      */
     @JvmOverloads
     @JvmName("getSystemNeutralPrimary")
-    fun systemNeutralPrimary(value: Int = 0) = SystemVersion.require(SystemVersion.S, Color.TRANSPARENT) {
+    fun systemNeutralPrimary(value: Int = 0) = AndroidVersion.require(AndroidVersion.S, Color.TRANSPARENT) {
         context.getColorCompat(when (value) {
             0 -> Android_R.color.system_neutral1_0
             10 -> Android_R.color.system_neutral1_10
@@ -185,7 +185,7 @@ class SystemColors private constructor(private val context: Context) {
      */
     @JvmOverloads
     @JvmName("getSystemNeutralSecondary")
-    fun systemNeutralSecondary(value: Int = 0) = SystemVersion.require(SystemVersion.S, Color.TRANSPARENT) {
+    fun systemNeutralSecondary(value: Int = 0) = AndroidVersion.require(AndroidVersion.S, Color.TRANSPARENT) {
         context.getColorCompat(when (value) {
             0 -> Android_R.color.system_neutral2_0
             10 -> Android_R.color.system_neutral2_10
@@ -214,7 +214,7 @@ class SystemColors private constructor(private val context: Context) {
      */
     @JvmOverloads
     @JvmName("getMaterialDynamicPrimary")
-    fun materialDynamicPrimary(value: Int = 0) = SystemVersion.require(SystemVersion.S, Color.TRANSPARENT) {
+    fun materialDynamicPrimary(value: Int = 0) = AndroidVersion.require(AndroidVersion.S, Color.TRANSPARENT) {
         context.getColorCompat(when (value) {
             0 -> Material_R.color.material_dynamic_primary0
             10 -> Material_R.color.material_dynamic_primary10
@@ -243,7 +243,7 @@ class SystemColors private constructor(private val context: Context) {
      */
     @JvmOverloads
     @JvmName("getMaterialDynamicSecondary")
-    fun materialDynamicSecondary(value: Int = 0) = SystemVersion.require(SystemVersion.S, Color.TRANSPARENT) {
+    fun materialDynamicSecondary(value: Int = 0) = AndroidVersion.require(AndroidVersion.S, Color.TRANSPARENT) {
         context.getColorCompat(when (value) {
             0 -> Material_R.color.material_dynamic_secondary0
             10 -> Material_R.color.material_dynamic_secondary10
@@ -272,7 +272,7 @@ class SystemColors private constructor(private val context: Context) {
      */
     @JvmOverloads
     @JvmName("getMaterialDynamicTertiary")
-    fun materialDynamicTertiary(value: Int = 0) = SystemVersion.require(SystemVersion.S, Color.TRANSPARENT) {
+    fun materialDynamicTertiary(value: Int = 0) = AndroidVersion.require(AndroidVersion.S, Color.TRANSPARENT) {
         context.getColorCompat(when (value) {
             0 -> Material_R.color.material_dynamic_tertiary0
             10 -> Material_R.color.material_dynamic_tertiary10
@@ -301,7 +301,7 @@ class SystemColors private constructor(private val context: Context) {
      */
     @JvmOverloads
     @JvmName("getMaterialDynamicNeutral")
-    fun materialDynamicNeutral(value: Int = 0) = SystemVersion.require(SystemVersion.S, Color.TRANSPARENT) {
+    fun materialDynamicNeutral(value: Int = 0) = AndroidVersion.require(AndroidVersion.S, Color.TRANSPARENT) {
         context.getColorCompat(when (value) {
             0 -> Material_R.color.material_dynamic_neutral0
             10 -> Material_R.color.material_dynamic_neutral10
@@ -330,7 +330,7 @@ class SystemColors private constructor(private val context: Context) {
      */
     @JvmOverloads
     @JvmName("getMaterialDynamicNeutralVariant")
-    fun materialDynamicNeutralVariant(value: Int = 0) = SystemVersion.require(SystemVersion.S, Color.TRANSPARENT) {
+    fun materialDynamicNeutralVariant(value: Int = 0) = AndroidVersion.require(AndroidVersion.S, Color.TRANSPARENT) {
         context.getColorCompat(when (value) {
             0 -> Material_R.color.material_dynamic_neutral_variant0
             10 -> Material_R.color.material_dynamic_neutral_variant10

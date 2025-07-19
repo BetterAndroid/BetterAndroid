@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2022/10/12.
  */
-@file:Suppress("unused", "MemberVisibilityCanBePrivate", "SwitchIntDef", "DEPRECATION")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate", "SwitchIntDef")
 
 package com.highcapable.betterandroid.ui.component.systembar
 
@@ -38,7 +38,7 @@ import androidx.annotation.Px
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import com.highcapable.betterandroid.system.extension.tool.SystemVersion
+import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
 import com.highcapable.betterandroid.ui.component.activity.AppBindingActivity
 import com.highcapable.betterandroid.ui.component.activity.AppComponentActivity
 import com.highcapable.betterandroid.ui.component.activity.AppViewsActivity
@@ -250,14 +250,16 @@ class SystemBarsController private constructor(private val window: Window) {
         var isNavigationBarContrastEnforced = false
         var navigationBarDividerColor = Color.TRANSPARENT
         var layoutInDisplayCutoutMode = 0
-        SystemVersion.require(SystemVersion.Q) {
+        @Suppress("DEPRECATION")
+        AndroidVersion.require(AndroidVersion.Q) {
             isStatusBarContrastEnforced = window.isStatusBarContrastEnforced == true
             isNavigationBarContrastEnforced = window.isNavigationBarContrastEnforced == true
             // Remove system-made masking of forced contrast colors.
             window.isStatusBarContrastEnforced = false
             window.isNavigationBarContrastEnforced = false
         }
-        SystemVersion.require(SystemVersion.P) {
+        @Suppress("DEPRECATION")
+        AndroidVersion.require(AndroidVersion.P) {
             navigationBarDividerColor = window.navigationBarDividerColor
             layoutInDisplayCutoutMode = window.attributes?.layoutInDisplayCutoutMode ?: 0
             // Set the notch area not to interfere with the current UI.
@@ -268,6 +270,7 @@ class SystemBarsController private constructor(private val window: Window) {
             window.navigationBarDividerColor = Color.TRANSPARENT
         }
         // Save the original system bars params.
+        @Suppress("DEPRECATION")
         originalSystemBarParams = SystemBarParams(
             statusBarColor = window.statusBarColor,
             navigationBarColor = window.navigationBarColor,
@@ -390,6 +393,7 @@ class SystemBarsController private constructor(private val window: Window) {
         val backgroundColor = style.color ?: defaultColor
         val darkContent = style.darkContent ?: !isUiInNightMode
         val lightApperance = darkContent && backgroundColor == Color.TRANSPARENT || backgroundColor.isBrightColor
+        @Suppress("DEPRECATION")
         when (type) {
             SystemBars.STATUS_BARS -> {
                 enableDrawsSystemBarBackgrounds()
@@ -398,7 +402,7 @@ class SystemBarsController private constructor(private val window: Window) {
                 // Some systems, such as MIUI based on Android 5,
                 // will automatically adapt to their own set of inverse color schemes.
                 window.statusBarColor =
-                    if (SystemVersion.isLowTo(SystemVersion.M) && !systemBarsCompat.isLegacySystem && lightApperance)
+                    if (AndroidVersion.isLessThan(AndroidVersion.M) && !systemBarsCompat.isLegacySystem && lightApperance)
                         mixColorOf(backgroundColor, Color.BLACK)
                     else backgroundColor
                 if (systemBarsCompat.isLegacySystem) systemBarsCompat.setStatusBarDarkMode(darkContent)
@@ -409,7 +413,7 @@ class SystemBarsController private constructor(private val window: Window) {
                 // Below Android 8.0 will add a transparent mask,
                 // because the system does not support inverting colors.
                 window.navigationBarColor =
-                    if (SystemVersion.isLowTo(SystemVersion.O) && lightApperance)
+                    if (AndroidVersion.isLessThan(AndroidVersion.O) && lightApperance)
                         mixColorOf(backgroundColor, Color.BLACK)
                     else backgroundColor
                 rootInsetsController?.isAppearanceLightNavigationBars = darkContent
@@ -439,15 +443,16 @@ class SystemBarsController private constructor(private val window: Window) {
     fun destroy() {
         if (!isInitOnce || rootView == null) return
         // Restore to default sets.
+        @Suppress("DEPRECATION")
         originalSystemBarParams?.also {
             WindowCompat.setDecorFitsSystemWindows(window, true)
             window.statusBarColor = it.statusBarColor
             window.navigationBarColor = it.navigationBarColor
-            SystemVersion.require(SystemVersion.Q) {
+            AndroidVersion.require(AndroidVersion.Q) {
                 window.isStatusBarContrastEnforced = it.isStatusBarContrastEnforced
                 window.isNavigationBarContrastEnforced = it.isNavigationBarContrastEnforced
             }
-            SystemVersion.require(SystemVersion.P) {
+            AndroidVersion.require(AndroidVersion.P) {
                 window.navigationBarDividerColor = it.navigationBarDividerColor
                 window.updateLayoutParams { layoutInDisplayCutoutMode = it.layoutInDisplayCutoutMode }
             }

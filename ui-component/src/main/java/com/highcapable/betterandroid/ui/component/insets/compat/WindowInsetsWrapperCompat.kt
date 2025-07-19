@@ -19,16 +19,14 @@
  *
  * This file is created by fankes on 2023/12/21.
  */
-@file:Suppress("DEPRECATION")
-
 package com.highcapable.betterandroid.ui.component.insets.compat
 
 import android.util.Log
 import android.view.View
 import android.view.Window
-import com.highcapable.betterandroid.system.extension.tool.SystemKind
+import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
+import com.highcapable.betterandroid.system.extension.tool.RomType
 import com.highcapable.betterandroid.system.extension.tool.SystemProperties
-import com.highcapable.betterandroid.system.extension.tool.SystemVersion
 import com.highcapable.betterandroid.ui.component.generated.BetterAndroidProperties
 import com.highcapable.betterandroid.ui.component.insets.InsetsWrapper
 import com.highcapable.betterandroid.ui.extension.component.base.toPx
@@ -46,6 +44,7 @@ internal class WindowInsetsWrapperCompat internal constructor(private val window
      * Get the status bar visibility.
      * @return [Boolean]
      */
+    @Suppress("DEPRECATION")
     internal val isStatusBarShowing: Boolean
         get() {
             // We need to keep default value still to true because the default behavior is show.
@@ -58,6 +57,7 @@ internal class WindowInsetsWrapperCompat internal constructor(private val window
      * Get the navigation bar visibility.
      * @return [Boolean]
      */
+    @Suppress("DEPRECATION")
     internal val isNavigationBarShowing: Boolean
         get() {
             // We need to keep default value still to true because the default behavior is show.
@@ -81,8 +81,8 @@ internal class WindowInsetsWrapperCompat internal constructor(private val window
     internal fun createLegacyDisplayCutoutInsets(statusBars: InsetsWrapper): InsetsWrapper {
         val context = window?.context ?: return InsetsWrapper.NONE
         var safeInsetTop = 0
-        if (SystemVersion.isLowOrEqualsTo(SystemVersion.P)) when (SystemKind.current) {
-            SystemKind.EMUI -> runCatching {
+        if (AndroidVersion.isAtMost(AndroidVersion.P)) when (RomType.current) {
+            RomType.EMUI -> runCatching {
                 val huaweiRet = "com.huawei.android.util.HwNotchSizeUtil".toClassOrNull()
                     ?.resolve()
                     ?.optional(silent = true)
@@ -101,7 +101,7 @@ internal class WindowInsetsWrapperCompat internal constructor(private val window
                         ?.invokeQuietly(0x00010000)
                 safeInsetTop = huaweiRet[1]
             }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to set display cutout configuration for EMUI.", it) }
-            SystemKind.FUNTOUCHOS, SystemKind.ORIGINOS -> runCatching {
+            RomType.FUNTOUCHOS, RomType.ORIGINOS -> runCatching {
                 if ("android.util.FtFeature".toClassOrNull()
                         ?.resolve()
                         ?.optional(silent = true)
@@ -111,11 +111,11 @@ internal class WindowInsetsWrapperCompat internal constructor(private val window
                         }?.invokeQuietly<Boolean>(0x00000020) == true
                 ) safeInsetTop = 27.toPx(context)
             }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to set display cutout configuration for FuntouchOS/OriginalOS.", it) }
-            SystemKind.COLOROS -> runCatching {
+            RomType.COLOROS -> runCatching {
                 if (context.packageManager.hasSystemFeature("com.oppo.feature.screen.heteromorphism"))
                     safeInsetTop = 80
             }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to set display cutout configuration for ColorOS.", it) }
-            SystemKind.MIUI -> runCatching {
+            RomType.MIUI -> runCatching {
                 val hasMiuiNotch = SystemProperties.getBoolean("ro.miui.notch")
                 if (hasMiuiNotch) {
                     safeInsetTop = statusBars.top

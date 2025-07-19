@@ -51,7 +51,7 @@ import androidx.core.view.setMargins
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
 import androidx.core.view.updatePadding
-import com.highcapable.betterandroid.system.extension.tool.SystemVersion
+import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
 import com.highcapable.betterandroid.ui.extension.R
 import com.highcapable.kavaref.extension.classOf
 import com.highcapable.kavaref.extension.createInstanceOrNull
@@ -329,7 +329,7 @@ fun View.showIme() {
             ?.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
     }
     val windowFromActivity = (context as? Activity?)?.window
-    if (SystemVersion.isHighOrEqualsTo(SystemVersion.R) && windowFromActivity != null)
+    if (AndroidVersion.isAtLeast(AndroidVersion.R) && windowFromActivity != null)
         WindowCompat.getInsetsController(windowFromActivity, this).show(WindowInsetsCompat.Type.ime())
     else showSoftInput()
 }
@@ -348,7 +348,7 @@ fun View.hideIme() {
             ?.also { if (it.isActive) it.hideSoftInputFromWindow(applicationWindowToken, 0) }
     }
     val windowFromActivity = (context as? Activity?)?.window
-    if (SystemVersion.isHighOrEqualsTo(SystemVersion.R) && windowFromActivity != null)
+    if (AndroidVersion.isAtLeast(AndroidVersion.R) && windowFromActivity != null)
         WindowCompat.getInsetsController(windowFromActivity, this).hide(WindowInsetsCompat.Type.ime())
     else hideSoftInput()
 }
@@ -378,11 +378,11 @@ fun View.hideSoftInput() = hideIme()
  * @return [CharSequence] or null.
  */
 var View.tooltipTextCompat
-    get() = if (SystemVersion.isHighOrEqualsTo(SystemVersion.O))
+    get() = if (AndroidVersion.isAtLeast(AndroidVersion.O))
         tooltipText
     else getTag<CharSequence?>(R.id.tag_better_android_tooltip_text_compat)
     set(value) {
-        if (SystemVersion.isHighOrEqualsTo(SystemVersion.O))
+        if (AndroidVersion.isAtLeast(AndroidVersion.O))
             tooltipText = value
         else value?.let {
             setTag(R.id.tag_better_android_tooltip_text_compat, it)

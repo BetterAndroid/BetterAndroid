@@ -36,7 +36,7 @@ import androidx.core.app.NotificationCompat.BubbleMetadata
 import androidx.core.content.LocusIdCompat
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.graphics.drawable.IconCompat
-import com.highcapable.betterandroid.system.extension.tool.SystemVersion
+import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
 import com.highcapable.betterandroid.ui.component.R
 import com.highcapable.betterandroid.ui.component.notification.factory.createNotification
 import com.highcapable.betterandroid.ui.component.notification.proxy.INotificationBuilder
@@ -194,7 +194,7 @@ class NotificationBuilder private constructor(internal val context: Context, int
      *   You can see [here](https://github.com/fankes/AndroidNotifyIconAdapt) for more info.
      * @see NotificationCompat.Builder.setSmallIcon
      */
-    @RequiresApi(SystemVersion.M)
+    @RequiresApi(AndroidVersion.M)
     var smallIcon: IconCompat? = null
 
     /** @see NotificationCompat.Builder.setExtras */
@@ -472,7 +472,7 @@ class NotificationBuilder private constructor(internal val context: Context, int
      * @param smallIcon
      * @return [NotificationBuilder]
      */
-    @RequiresApi(SystemVersion.M)
+    @RequiresApi(AndroidVersion.M)
     fun smallIcon(smallIcon: IconCompat) = apply { this.smallIcon = smallIcon }
 
     /**

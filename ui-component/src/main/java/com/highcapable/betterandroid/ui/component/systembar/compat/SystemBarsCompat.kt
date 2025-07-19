@@ -23,9 +23,10 @@ package com.highcapable.betterandroid.ui.component.systembar.compat
 
 import android.util.Log
 import android.view.Window
-import com.highcapable.betterandroid.system.extension.tool.SystemKind
-import com.highcapable.betterandroid.system.extension.tool.SystemVersion
+import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
+import com.highcapable.betterandroid.system.extension.tool.RomType
 import com.highcapable.betterandroid.ui.component.generated.BetterAndroidProperties
+import com.highcapable.kavaref.KavaRef.Companion.asResolver
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.extension.toClassOrNull
 
@@ -45,13 +46,13 @@ internal class SystemBarsCompat internal constructor(private val window: Window)
      * Returns true if a legacy MIUI system.
      * @return [Boolean]
      */
-    private val isLegacyMiui get() = SystemVersion.isLowTo(SystemVersion.M) && SystemKind.equals(SystemKind.MIUI)
+    private val isLegacyMiui get() = AndroidVersion.isLessThan(AndroidVersion.M) && RomType.matches(RomType.MIUI)
 
     /**
      * Returns true if a legacy Flyme system.
      * @return [Boolean]
      */
-    private val isLegacyFlyme get() = SystemVersion.isLowTo(SystemVersion.M) && SystemKind.equals(SystemKind.FLYME)
+    private val isLegacyFlyme get() = AndroidVersion.isLessThan(AndroidVersion.M) && RomType.matches(RomType.FLYME)
 
     /**
      * Set the legacy system status bar dark mode.

@@ -29,7 +29,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import androidx.annotation.RequiresApi
-import com.highcapable.betterandroid.system.extension.tool.SystemVersion
+import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
 import com.highcapable.kavaref.extension.classOf
 
 /**
@@ -47,7 +47,7 @@ inline fun <reified T : Service> Context.startService(initiate: Intent.() -> Uni
  * @param initiate the [Intent] builder body, default is empty.
  * @return [ComponentName] or null.
  */
-@RequiresApi(SystemVersion.O)
+@RequiresApi(AndroidVersion.O)
 inline fun <reified T : Service> Context.startForegroundService(initiate: Intent.() -> Unit = {}) =
     startForegroundService(Intent(this, classOf<T>()).apply(initiate))
 
@@ -70,7 +70,7 @@ inline fun Context.startService(packageName: String, serviceClass: String, initi
  * @param initiate the [Intent] builder body, default is empty.
  * @return [ComponentName] or null.
  */
-@RequiresApi(SystemVersion.O)
+@RequiresApi(AndroidVersion.O)
 inline fun Context.startForegroundService(packageName: String, serviceClass: String, initiate: Intent.() -> Unit = {}) =
     startForegroundService(Intent().apply { component = ComponentName(packageName, serviceClass) }.apply(initiate))
 
@@ -89,7 +89,7 @@ inline fun <reified T : Service> Context.startServiceOrElse(initiate: Intent.() 
  * @param initiate the [Intent] builder body, default is empty.
  * @return [Boolean] whether succeed.
  */
-@RequiresApi(SystemVersion.O)
+@RequiresApi(AndroidVersion.O)
 inline fun <reified T : Service> Context.startForegroundServiceOrElse(initiate: Intent.() -> Unit = {}) =
     runCatching { startForegroundService<T>(initiate) }.isSuccess
 
@@ -112,7 +112,7 @@ inline fun Context.startServiceOrElse(packageName: String, serviceClass: String,
  * @param initiate the [Intent] builder body, default is empty.
  * @return [Boolean] whether succeed.
  */
-@RequiresApi(SystemVersion.O)
+@RequiresApi(AndroidVersion.O)
 inline fun Context.startForegroundServiceOrElse(packageName: String, serviceClass: String, initiate: Intent.() -> Unit = {}) =
     runCatching { startForegroundService(packageName, serviceClass, initiate) }.isSuccess
 
@@ -130,5 +130,5 @@ fun Context.startServiceOrElse(intent: Intent) = runCatching { startService(inte
  * @param intent the intent to start.
  * @return [Boolean] whether succeed.
  */
-@RequiresApi(SystemVersion.O)
+@RequiresApi(AndroidVersion.O)
 fun Context.startForegroundServiceOrElse(intent: Intent) = runCatching { startForegroundService(intent) }.isSuccess

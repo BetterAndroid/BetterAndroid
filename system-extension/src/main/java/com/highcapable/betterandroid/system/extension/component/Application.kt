@@ -217,7 +217,7 @@ fun PackageManager.resetComponent(componentName: ComponentName, vararg flags: In
  */
 val PackageInfo.versionCodeCompat
     @Suppress("DEPRECATION")
-    get() = SystemVersion.require(SystemVersion.P, versionCode.toLong()) { longVersionCode }
+    get() = AndroidVersion.require(AndroidVersion.P, versionCode.toLong()) { longVersionCode }
 
 /**
  * Get the long version code of package info (compat).
@@ -318,7 +318,7 @@ enum class PackageInfoFlagsWrapper(val original: Int) {
     GET_SIGNATURES(PackageManager.GET_SIGNATURES),
 
     /** @see PackageManager.GET_SIGNING_CERTIFICATES */
-    @RequiresApi(SystemVersion.P)
+    @RequiresApi(AndroidVersion.P)
     GET_SIGNING_CERTIFICATES(PackageManager.GET_SIGNING_CERTIFICATES),
 
     /** @see PackageManager.MATCH_UNINSTALLED_PACKAGES */

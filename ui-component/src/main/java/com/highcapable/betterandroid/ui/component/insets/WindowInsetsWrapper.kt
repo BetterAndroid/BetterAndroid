@@ -34,7 +34,7 @@ import androidx.core.graphics.Insets
 import androidx.core.view.DisplayCutoutCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.highcapable.betterandroid.system.extension.tool.SystemVersion
+import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
 import com.highcapable.betterandroid.ui.component.insets.compat.WindowInsetsWrapperCompat
 import com.highcapable.betterandroid.ui.component.insets.factory.createWrapper
 import com.highcapable.betterandroid.ui.component.insets.factory.toWrapper
@@ -347,7 +347,7 @@ class WindowInsetsWrapper private constructor(private val windowInsets: WindowIn
      * @return [InsetsWrapper]
      */
     fun displayCutout() =
-        SystemVersion.require(SystemVersion.P, wrapperCompat.createLegacyDisplayCutoutInsets(statusBars(ignoringVisibility = true))) {
+        AndroidVersion.require(AndroidVersion.P, wrapperCompat.createLegacyDisplayCutoutInsets(statusBars(ignoringVisibility = true))) {
             getInsets(typeMask = WindowInsetsCompat.Type.displayCutout())
         }
 
@@ -419,7 +419,7 @@ class WindowInsetsWrapper private constructor(private val windowInsets: WindowIn
         var isVisible = windowInsets.isVisible(typeMask)
         var insets = if (ignoringVisibility) windowInsets.getInsetsIgnoringVisibility(typeMask) else windowInsets.getInsets(typeMask)
         // Workaround for the visible state of the system bars below Android 11.
-        if (SystemVersion.isLowTo(SystemVersion.R) && window != null)
+        if (AndroidVersion.isLessThan(AndroidVersion.R) && window != null)
             when (typeMask) {
                 WindowInsetsCompat.Type.systemBars() -> {
                     isVisible = wrapperCompat.isStatusBarShowing && wrapperCompat.isNavigationBarShowing

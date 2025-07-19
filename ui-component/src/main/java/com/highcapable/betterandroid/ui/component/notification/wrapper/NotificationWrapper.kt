@@ -24,7 +24,7 @@ package com.highcapable.betterandroid.ui.component.notification.wrapper
 import android.media.AudioAttributes
 import android.media.AudioManager
 import androidx.core.app.NotificationCompat
-import com.highcapable.betterandroid.system.extension.tool.SystemVersion
+import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
 import com.highcapable.betterandroid.ui.component.R
 import com.highcapable.betterandroid.ui.component.notification.NotificationBuilder
 import com.highcapable.betterandroid.ui.component.notification.NotificationChannelBuilder
@@ -121,11 +121,11 @@ class NotificationWrapper internal constructor(internal var builder: Notificatio
             builder.shortcutInfo?.also { setShortcutInfo(it) }
             builder.isAllowSystemGeneratedContextualActions?.also { setAllowSystemGeneratedContextualActions(it) }
             builder.smallIconResId?.also { setSmallIcon(it) }
-            SystemVersion.require(SystemVersion.M) { builder.smallIcon?.also { setSmallIcon(it) } }
-            if (builder.smallIconResId == null && SystemVersion.requireOrNull(SystemVersion.M, null) { builder.smallIcon } == null)
+            AndroidVersion.require(AndroidVersion.M) { builder.smallIcon?.also { setSmallIcon(it) } }
+            if (builder.smallIconResId == null && AndroidVersion.requireOrNull(AndroidVersion.M, null) { builder.smallIcon } == null)
                 setSmallIcon(R.drawable.ic_simple_notification)
             builder.extras?.also { setExtras(it) }
-            if (SystemVersion.isLowTo(SystemVersion.O))
+            if (AndroidVersion.isLessThan(AndroidVersion.O))
                 builder.channel.builder.also { channel ->
                     channel.sound?.also { setSound(it.first, it.second.toStreamType()) }
                     channel.vibrationPattern?.also { setVibrate(it) }

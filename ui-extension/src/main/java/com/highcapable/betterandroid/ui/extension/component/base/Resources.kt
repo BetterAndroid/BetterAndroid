@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2022/10/11.
  */
-@file:Suppress("unused", "DEPRECATION", "UseCompatLoadingForDrawables", "UseCompatLoadingForColorStateLists", "RestrictedApi")
+@file:Suppress("unused", "UseCompatLoadingForDrawables", "UseCompatLoadingForColorStateLists", "RestrictedApi")
 @file:JvmName("ResourcesUtils")
 
 package com.highcapable.betterandroid.ui.extension.component.base
@@ -94,8 +94,8 @@ val ContextThemeWrapper.themeResId
  * @return [Boolean]
  */
 val Configuration.isUiInNightMode
-    get() = SystemVersion.require(
-        SystemVersion.R,
+    get() = AndroidVersion.require(
+        AndroidVersion.R,
         uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
     ) { isNightModeActive }
 
@@ -170,7 +170,7 @@ fun Resources.getFloatCompat(@DimenRes id: Int) = ResourcesCompat.getFloat(this,
  * @throws Resources.NotFoundException if the resource is not found.
  */
 fun Context.getFontCompat(@FontRes id: Int) =
-    SystemVersion.requireOrNull(SystemVersion.O, ResourcesCompat.getFont(this, id)) { resources.getFont(id) }
+    AndroidVersion.requireOrNull(AndroidVersion.O, ResourcesCompat.getFont(this, id)) { resources.getFont(id) }
 
 /**
  * Get [Drawable] from [Context.getResources] (compat).
@@ -200,7 +200,7 @@ inline fun <reified T : Drawable> Context.getDrawableCompat(@DrawableRes id: Int
  * @throws Resources.NotFoundException if the resource is not found.
  */
 fun Context.getColorStateListCompat(@ColorRes id: Int) =
-    SystemVersion.require(SystemVersion.M, resources.getColorStateListCompat(id, theme)) { getColorStateList(id) }
+    AndroidVersion.require(AndroidVersion.M, resources.getColorStateListCompat(id, theme)) { getColorStateList(id) }
 
 /**
  * Get color from [Context.getResources] (compat).
@@ -209,7 +209,7 @@ fun Context.getColorStateListCompat(@ColorRes id: Int) =
  * @return [Int]
  * @throws Resources.NotFoundException if the resource is not found.
  */
-fun Context.getColorCompat(@ColorRes id: Int) = SystemVersion.require(SystemVersion.M, resources.getColorCompat(id, theme)) { getColor(id) }
+fun Context.getColorCompat(@ColorRes id: Int) = AndroidVersion.require(AndroidVersion.M, resources.getColorCompat(id, theme)) { getColor(id) }
 
 /**
  * Get the resource ID of the attribute resource list
@@ -600,7 +600,7 @@ fun TypedArray.getDrawableOrNull(@StyleableRes index: Int, defValue: Drawable? =
  * @param defValue the default value, default is null.
  * @return [Typeface] or null.
  */
-@RequiresApi(SystemVersion.O)
+@RequiresApi(AndroidVersion.O)
 @JvmOverloads
 fun TypedArray.getFontOrNull(@StyleableRes index: Int, defValue: Typeface? = null) =
     if (hasValue(index)) getFont(index) ?: defValue else defValue
@@ -668,7 +668,7 @@ private object ColorStateListCompat {
      * @throws Resources.NotFoundException if the resource is not found.
      */
     fun get(resources: Resources, @ColorRes id: Int, theme: Theme?) =
-        SystemVersion.require(SystemVersion.M, createFromXml(resources, id, theme)) { resources.getColorStateList(id, theme) }
+        AndroidVersion.require(AndroidVersion.M, createFromXml(resources, id, theme)) { resources.getColorStateList(id, theme) }
 
     /**
      * Create a new [ColorStateList] through [ColorStateListInflaterCompat.createFromXml].
@@ -677,6 +677,7 @@ private object ColorStateListCompat {
      * @param theme the given theme.
      * @throws Resources.NotFoundException if the resource is not found.
      */
+    @Suppress("DEPRECATION")
     private fun createFromXml(resources: Resources, id: Int, theme: Theme?) =
         sColorStateCaches.get(id) ?: runCatching {
             ColorStateListInflaterCompat.createFromXml(resources, resources.getXml(id), theme).also { sColorStateCaches.put(id, it) }

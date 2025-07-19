@@ -31,7 +31,7 @@ import android.text.method.DigitsKeyListener
 import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.ColorInt
-import com.highcapable.betterandroid.system.extension.tool.SystemVersion
+import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
 import java.util.Locale
 
 /**
@@ -169,16 +169,17 @@ fun TextView.setDigits(
     inputType: Int = this.inputType,
     locale: Locale = Locale.ROOT
 ) {
-    @Suppress("DEPRECATION")
     keyListener = when {
-        SystemVersion.isHighOrEqualsTo(SystemVersion.O) ->
+        AndroidVersion.isAtLeast(AndroidVersion.O) ->
             object : DigitsKeyListener(locale) {
                 override fun getInputType() = inputType
                 override fun getAcceptedChars() = acceptedChars.toCharArray()
             }
-        else -> object : DigitsKeyListener() {
-            override fun getInputType() = inputType
-            override fun getAcceptedChars() = acceptedChars.toCharArray()
-        }
+        else ->
+            @Suppress("DEPRECATION")
+            object : DigitsKeyListener() {
+                override fun getInputType() = inputType
+                override fun getAcceptedChars() = acceptedChars.toCharArray()
+            }
     }
 }

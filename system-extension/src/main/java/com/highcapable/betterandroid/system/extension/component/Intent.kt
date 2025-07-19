@@ -27,7 +27,7 @@ package com.highcapable.betterandroid.system.extension.component
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import com.highcapable.betterandroid.system.extension.tool.SystemVersion
+import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
 import com.highcapable.kavaref.extension.classOf
 import java.io.Serializable
 
@@ -38,7 +38,7 @@ import java.io.Serializable
  * @return [T] or null.
  */
 inline fun <reified T : Serializable> Intent.getSerializableExtraCompat(name: String) =
-    SystemVersion.requireOrNull(SystemVersion.T, getSerializableExtra(name) as? T?) { getSerializableExtra(name, classOf<T>()) }
+    AndroidVersion.requireOrNull(AndroidVersion.T, getSerializableExtra(name) as? T?) { getSerializableExtra(name, classOf<T>()) }
 
 /**
  * Get the [Serializable] data (compat).
@@ -47,7 +47,7 @@ inline fun <reified T : Serializable> Intent.getSerializableExtraCompat(name: St
  * @return [T] or null.
  */
 inline fun <reified T : Serializable> Bundle.getSerializableCompat(name: String) =
-    SystemVersion.requireOrNull(SystemVersion.T, getSerializable(name) as? T?) { getSerializable(name, classOf<T>()) }
+    AndroidVersion.requireOrNull(AndroidVersion.T, getSerializable(name) as? T?) { getSerializable(name, classOf<T>()) }
 
 /**
  * Get the [Parcelable] data (compat).
@@ -56,7 +56,7 @@ inline fun <reified T : Serializable> Bundle.getSerializableCompat(name: String)
  * @return [T] or null.
  */
 inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(name: String) =
-    SystemVersion.requireOrNull(SystemVersion.T, getParcelableExtra(name) as? T?) { getParcelableExtra(name, classOf<T>()) }
+    AndroidVersion.requireOrNull(AndroidVersion.T, getParcelableExtra(name) as? T?) { getParcelableExtra(name, classOf<T>()) }
 
 /**
  * Get the [Parcelable] data (compat).
@@ -65,4 +65,4 @@ inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(name: String
  * @return [T] or null.
  */
 inline fun <reified T : Parcelable> Bundle.getParcelableCompat(name: String) =
-    SystemVersion.requireOrNull(SystemVersion.T, getParcelable(name) as? T?) { getParcelable(name, classOf<T>()) }
+    AndroidVersion.requireOrNull(AndroidVersion.T, getParcelable(name) as? T?) { getParcelable(name, classOf<T>()) }
