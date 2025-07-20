@@ -48,8 +48,10 @@ import com.highcapable.betterandroid.ui.component.notification.wrapper.Notificat
  * @param context the current context.
  * @param channel the current notification channel wrapper.
  */
-class NotificationBuilder private constructor(internal val context: Context, internal val channel: NotificationChannelWrapper) :
-    INotificationBuilder {
+class NotificationBuilder private constructor(
+    internal val context: Context,
+    internal val channel: NotificationChannelWrapper
+) : INotificationBuilder {
 
     companion object {
 
