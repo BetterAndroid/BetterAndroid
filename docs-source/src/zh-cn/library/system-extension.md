@@ -35,16 +35,16 @@ implementation(com.highcapable.betterandroid.system.extension)
 
 ```toml
 [versions]
-system-extension = "<version>"
+betterandroid-system-extension = "<version>"
 
 [libraries]
-system-extension = { module = "com.highcapable.betterandroid:system-extension", version.ref = "system-extension" }
+betterandroid-system-extension = { module = "com.highcapable.betterandroid:system-extension", version.ref = "betterandroid-system-extension" }
 ```
 
 在你的项目 `build.gradle.kts` 中配置依赖。
 
 ```kotlin
-implementation(libs.system.extension)
+implementation(libs.betterandroid.system.extension)
 ```
 
 请将 `<version>` 修改为此文档顶部显示的版本。

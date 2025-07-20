@@ -35,16 +35,16 @@ implementation(com.highcapable.betterandroid.ui.component)
 
 ```toml
 [versions]
-ui-component = "<version>"
+betterandroid-ui-component = "<version>"
 
 [libraries]
-ui-component = { module = "com.highcapable.betterandroid:ui-component", version.ref = "ui-component" }
+betterandroid-ui-component = { module = "com.highcapable.betterandroid:ui-component", version.ref = "betterandroid-ui-component" }
 ```
 
 在你的项目 `build.gradle.kts` 中配置依赖。
 
 ```kotlin
-implementation(libs.ui.component)
+implementation(libs.betterandroid.ui.component)
 ```
 
 请将 `<version>` 修改为此文档顶部显示的版本。

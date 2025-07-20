@@ -35,16 +35,16 @@ Add dependency in your project's `gradle/libs.versions.toml`.
 
 ```toml
 [versions]
-ui-extension = "<version>"
+betterandroid-ui-extension = "<version>"
 
 [libraries]
-ui-extension = { module = "com.highcapable.betterandroid:ui-extension", version.ref = "ui-extension" }
+betterandroid-ui-extension = { module = "com.highcapable.betterandroid:ui-extension", version.ref = "betterandroid-ui-extension" }
 ```
 
 Configure dependency in your project `build.gradle.kts`.
 
 ```kotlin
-implementation(libs.ui.extension)
+implementation(libs.betterandroid.ui.extension)
 ```
 
 Please change `<version>` to the version displayed at the top of this document.

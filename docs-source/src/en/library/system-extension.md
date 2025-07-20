@@ -35,16 +35,16 @@ Add dependency in your project's `gradle/libs.versions.toml`.
 
 ```toml
 [versions]
-system-extension = "<version>"
+betterandroid-system-extension = "<version>"
 
 [libraries]
-system-extension = { module = "com.highcapable.betterandroid:system-extension", version.ref = "system-extension" }
+betterandroid-system-extension = { module = "com.highcapable.betterandroid:system-extension", version.ref = "betterandroid-system-extension" }
 ```
 
 Configure dependency in your project `build.gradle.kts`.
 
 ```kotlin
-implementation(libs.system.extension)
+implementation(libs.betterandroid.system.extension)
 ```
 
 Please change `<version>` to the version displayed at the top of this document.
