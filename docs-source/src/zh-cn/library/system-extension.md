@@ -679,10 +679,6 @@ if (Build.VERSION.SDK_INT >= 29) {
 AndroidVersion.require(AndroidVersion.Q) {
     // 执行相关代码
 }
-// 或者使用硬编码 API 版本号的方式
-AndroidVersion.require(29) {
-    // 执行相关代码
-}
 // result 在 API 大于等于 29 时将会得到 "target"，否则为 "legacy"
 val result = AndroidVersion.require(AndroidVersion.Q, "legacy") { "target" }
 // 如果是一个可为 null 的结果，你可以使用以下方式
@@ -717,6 +713,24 @@ if (AndroidVersion.isAtLeast(AndroidVersion.Q)) {
 
 | API 等级 | `AndroidVersion` 名称 | `Build.VERSION_CODES` 名称 | 对应系统版本      |
 | -------- | --------------------- | -------------------------- | ----------------- |
+| 1        | `B`                   | `BASE`                     | 1.0               |
+| 2        | `B_1_1`               | `BASE_1_1`                 | 1.1               |
+| 3        | `C`                   | `CUPCAKE`                  | 1.5               |
+| 4        | `D`                   | `DONUT`                    | 1.6               |
+| 5        | `E`                   | `ECLAIR`                   | 2.0               |
+| 6        | `E_0_1`               | `ECLAIR_0_1`               | 2.0.1             |
+| 7        | `E_MR1`               | `ECLAIR_MR1`               | 2.1               |
+| 8        | `F`                   | `FROYO`                    | 2.2               |
+| 9        | `G`                   | `GINGERBREAD`              | 2.3               |
+| 10       | `G_MR1`               | `GINGERBREAD_MR1`          | 2.3.3             |
+| 11       | `H`                   | `HONEYCOMB`                | 3.0               |
+| 12       | `H_MR1`               | `HONEYCOMB_MR1`            | 3.1               |
+| 13       | `H_MR2`               | `HONEYCOMB_MR2`            | 3.2               |
+| 14       | `I`                   | `ICE_CREAM_SANDWICH`       | 4.0               |
+| 15       | `I_MR1`               | `ICE_CREAM_SANDWICH_MR1`   | 4.03              |
+| 16       | `J`                   | `JELLY_BEAN`               | 4.1               |
+| 17       | `J_MR1`               | `JELLY_BEAN_MR1`           | 4.2               |
+| 18       | `J_MR2`               | `JELLY_BEAN_MR2`           | 4.3               |
 | 19       | `K`                   | `KITKAT`                   | 4.4.3、4.4.4      |
 | 20       | `K_W`                 | `KITKAT_WATCH`             | 4.4W              |
 | 21       | `L`                   | `LOLLIPOP`                 | 5.0、5.0.2        |

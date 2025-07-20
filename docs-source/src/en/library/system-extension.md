@@ -702,10 +702,6 @@ Now, you can do this very easily in the following way.
 AndroidVersion.require(AndroidVersion.Q) {
     // Execute relevant code.
 }
-// Or use hard-coded API version code.
-AndroidVersion.require(29) {
-    // Execute relevant code.
-}
 // result will get "target" when API is greater than or equal to 29, otherwise it will be "legacy".
 val result = AndroidVersion.require(AndroidVersion.Q, "legacy") { "target" }
 // If it is a nullable result, you can use the following method.
@@ -740,6 +736,24 @@ The following is the constant mapping comparison table for each API, after Andro
 
 | API Level | `AndroidVersion` Name | `Build.VERSION_CODES` Name | Corresponding System Version |
 | --------- | --------------------- | -------------------------- | ---------------------------- |
+| 1         | `B`                   | `BASE`                     | 1.0                          |
+| 2         | `B_1_1`               | `BASE_1_1`                 | 1.1                          |
+| 3         | `C`                   | `CUPCAKE`                  | 1.5                          |
+| 4         | `D`                   | `DONUT`                    | 1.6                          |
+| 5         | `E`                   | `ECLAIR`                   | 2.0                          |
+| 6         | `E_0_1`               | `ECLAIR_0_1`               | 2.0.1                        |
+| 7         | `E_MR1`               | `ECLAIR_MR1`               | 2.1                          |
+| 8         | `F`                   | `FROYO`                    | 2.2                          |
+| 9         | `G`                   | `GINGERBREAD`              | 2.3                          |
+| 10        | `G_MR1`               | `GINGERBREAD_MR1`          | 2.3.3                        |
+| 11        | `H`                   | `HONEYCOMB`                | 3.0                          |
+| 12        | `H_MR1`               | `HONEYCOMB_MR1`            | 3.1                          |
+| 13        | `H_MR2`               | `HONEYCOMB_MR2`            | 3.2                          |
+| 14        | `I`                   | `ICE_CREAM_SANDWICH`       | 4.0                          |
+| 15        | `I_MR1`               | `ICE_CREAM_SANDWICH_MR1`   | 4.03                         |
+| 16        | `J`                   | `JELLY_BEAN`               | 4.1                          |
+| 17        | `J_MR1`               | `JELLY_BEAN_MR1`           | 4.2                          |
+| 18        | `J_MR2`               | `JELLY_BEAN_MR2`           | 4.3                          |
 | 19        | `K`                   | `KITKAT`                   | 4.4.3, 4.4.4                 |
 | 20        | `K_W`                 | `KITKAT_WATCH`             | 4.4W                         |
 | 21        | `L`                   | `LOLLIPOP`                 | 5.0, 5.0.2                   |
