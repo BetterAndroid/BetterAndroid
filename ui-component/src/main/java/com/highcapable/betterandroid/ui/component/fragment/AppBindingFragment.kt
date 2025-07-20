@@ -73,13 +73,14 @@ open class AppBindingFragment<VB : ViewBinding> : BaseFragment(), IViewBinding<V
 
     @CallSuper
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        baseBinding = ViewBindingBuilder.fromGeneric<VB>(this).inflate(inflater, container)
+        baseBinding = ViewBindingBuilder.fromGeneric<VB>(this).inflate(inflater, container, attachToParent = false)
         return baseBinding?.root
     }
 
     @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (baseBinding == null) baseBinding = ViewBindingBuilder.fromGeneric<VB>(this).inflate(layoutInflater, view.parentOrNull())
+        if (baseBinding == null) baseBinding = 
+            ViewBindingBuilder.fromGeneric<VB>(this).inflate(layoutInflater, view.parentOrNull(), attachToParent = false)
     }
 }
