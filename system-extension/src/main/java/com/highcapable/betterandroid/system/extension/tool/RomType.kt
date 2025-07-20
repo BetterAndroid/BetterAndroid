@@ -99,7 +99,7 @@ object RomType {
     /** [OneUI](https://www.samsung.com/one-ui) */
     const val ONEUI = 1009
 
-    /** [ZUI](https://zui.com/) */
+    /** [ZUI](https://zui.com/) / [ZUXOS](https://zuxos.com/) */
     const val ZUI = 1010
 
     /** [RedMagicOS](https://www.nubia.com/) */
@@ -214,7 +214,7 @@ object RomType {
 
         val ZUi by lazy {
             "com.zui.internal.app.IAppFaceService".exists() || "zuisdk.app.AlertActivity".exists() ||
-                "zui.icon.ExtraResources".exists()
+                "zui.icon.ExtraResources".exists() || "com.zui.internal.app.ZuiShutdownActivity".exists()
         }
 
         val RedmagicOS by lazy {
