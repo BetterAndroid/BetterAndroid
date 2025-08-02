@@ -30,7 +30,7 @@ import com.highcapable.betterandroid.ui.component.adapter.viewholder.proxy.IBase
  * [BaseAdapter] or [PagerAdapter] adapter item view holder, using entity [E].
  * @param onBindCallback the view holder binding callback.
  */
-internal class CommonViewHolder<E>(
+internal class BaseViewHolder<E>(
     override val delegate: ViewHolderDelegate<Any>,
     val onBindCallback: (Any, E, Int) -> Unit
 ) : IBaseViewHolder<E>

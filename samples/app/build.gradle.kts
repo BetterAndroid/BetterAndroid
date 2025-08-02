@@ -41,6 +41,7 @@ android {
 
 dependencies {
     implementation(projects.uiComponent)
+    implementation(projects.uiComponentAdapter)
     implementation(projects.uiExtension)
     implementation(projects.systemExtension)
     implementation(androidx.core.core.ktx)

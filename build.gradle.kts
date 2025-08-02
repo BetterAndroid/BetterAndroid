@@ -60,6 +60,7 @@ libraryProjects {
 fun libraryProjects(action: Action<in Project>) {
     val libraries = listOf(
         Libraries.UI_COMPONENT,
+        Libraries.UI_COMPONENT_ADAPTER,
         Libraries.UI_EXTENSION,
         Libraries.SYSTEM_EXTENSION,
         Libraries.COMPOSE_EXTENSION,
@@ -70,6 +71,7 @@ fun libraryProjects(action: Action<in Project>) {
 
 object Libraries {
     const val UI_COMPONENT = "ui-component"
+    const val UI_COMPONENT_ADAPTER = "ui-component-adapter"
     const val UI_EXTENSION = "ui-extension"
     const val SYSTEM_EXTENSION = "system-extension"
     const val COMPOSE_EXTENSION = "compose-extension"

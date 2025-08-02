@@ -28,11 +28,11 @@ import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.ba
 import com.highcapable.betterandroid.ui.component.adapter.viewholder.impl.proxy.IViewHolderImpl
 
 /**
- * Implement the view holder for common adapter view.
+ * Implement the view holder for base adapter view.
  * @param delegateInstance the delegate instance.
  * @param rootView the item root view.
  */
-class CommonViewHolderImpl<VD : Any> private constructor(
+class BaseViewHolderImpl<VD : Any> private constructor(
     override val delegateInstance: VD,
     override val rootView: View
 ) : IViewHolderImpl<VD> {
@@ -40,20 +40,20 @@ class CommonViewHolderImpl<VD : Any> private constructor(
     internal companion object {
 
         /**
-         * Create a new [CommonViewHolderImpl]<[VD]> from [delegate] and [context].
+         * Create a new [BaseViewHolderImpl]<[VD]> from [delegate] and [context].
          * @param delegate the view holder delegate.
          * @param context the current context.
          * @param parent the parent view group.
-         * @return [CommonViewHolderImpl]<[VD]>
+         * @return [BaseViewHolderImpl]<[VD]>
          */
         fun <VD : Any> from(
             delegate: ViewHolderDelegate<VD>,
             context: Context,
             parent: ViewGroup?
-        ): CommonViewHolderImpl<VD> {
+        ): BaseViewHolderImpl<VD> {
             val instance = delegate.create(context, parent)
             val itemView = delegate.getView(instance)
-            return CommonViewHolderImpl(instance, itemView)
+            return BaseViewHolderImpl(instance, itemView)
         }
     }
 }

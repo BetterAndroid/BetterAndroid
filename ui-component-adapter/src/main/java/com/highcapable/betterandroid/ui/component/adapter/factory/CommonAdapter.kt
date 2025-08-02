@@ -37,7 +37,7 @@ import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.highcapable.betterandroid.ui.component.adapter.CommonAdapterBuilder
+import com.highcapable.betterandroid.ui.component.adapter.BaseAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.PagerAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.RecyclerAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.fragment.FragmentPagerAdapterBuilder
@@ -50,30 +50,30 @@ import androidx.appcompat.widget.ListPopupWindow as AndroidX_ListPopupWindow
 /**
  * Bind the [BaseAdapter] to [ListView], using entity [E].
  * @receiver [ListView]
- * @param initiate the [CommonAdapterBuilder] builder body.
+ * @param body the [BaseAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
 @JvmName("bindAdapterTyped")
-inline fun <reified E> ListView.bindAdapter(initiate: CommonAdapterBuilder<E>.() -> Unit) =
-    CommonAdapter<E>(context, initiate).apply { adapter = this }
+inline fun <reified E> ListView.bindAdapter(body: BaseAdapterBuilder<E>.() -> Unit) =
+    BaseAdapter<E>(context, body).apply { adapter = this }
 
 /**
  * Bind the [BaseAdapter] to [ListView].
  * @receiver [ListView]
- * @param initiate the [CommonAdapterBuilder] builder body.
+ * @param body the [BaseAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
-inline fun ListView.bindAdapter(initiate: CommonAdapterBuilder<*>.() -> Unit) = bindAdapter<Any>(initiate)
+inline fun ListView.bindAdapter(body: BaseAdapterBuilder<*>.() -> Unit) = bindAdapter<Any>(body)
 
 /**
  * Bind the [BaseAdapter] to [AutoCompleteTextView], using entity [E].
  * @receiver [AutoCompleteTextView]
- * @param initiate the [CommonAdapterBuilder] builder body.
+ * @param body the [BaseAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
 @JvmName("bindAdapterTyped")
-inline fun <reified E> AutoCompleteTextView.bindAdapter(initiate: CommonAdapterBuilder<E>.() -> Unit) =
-    CommonAdapter<E>(context, initiate).also {
+inline fun <reified E> AutoCompleteTextView.bindAdapter(body: BaseAdapterBuilder<E>.() -> Unit) =
+    BaseAdapter<E>(context, body).also {
         asResolver().optional().firstMethodOrNull {
             name = "setAdapter"
             parameterCount = 1
@@ -83,51 +83,51 @@ inline fun <reified E> AutoCompleteTextView.bindAdapter(initiate: CommonAdapterB
 /**
  * Bind the [BaseAdapter] to [AutoCompleteTextView].
  * @receiver [AutoCompleteTextView]
- * @param initiate the [CommonAdapterBuilder] builder body.
+ * @param body the [BaseAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
-inline fun AutoCompleteTextView.bindAdapter(initiate: CommonAdapterBuilder<*>.() -> Unit) = bindAdapter<Any>(initiate)
+inline fun AutoCompleteTextView.bindAdapter(body: BaseAdapterBuilder<*>.() -> Unit) = bindAdapter<Any>(body)
 
 /**
  * Bind the [BaseAdapter] to [ListPopupWindow], using entity [E].
  * @receiver [ListPopupWindow]
  * @param context the current context.
- * @param initiate the [CommonAdapterBuilder] builder body.
+ * @param body the [BaseAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
 @JvmName("bindAdapterTyped")
-inline fun <reified E> ListPopupWindow.bindAdapter(context: Context, initiate: CommonAdapterBuilder<E>.() -> Unit) =
-    CommonAdapter<E>(context, initiate).apply { setAdapter(this) }
+inline fun <reified E> ListPopupWindow.bindAdapter(context: Context, body: BaseAdapterBuilder<E>.() -> Unit) =
+    BaseAdapter<E>(context, body).apply { setAdapter(this) }
 
 /**
  * Bind the [BaseAdapter] to [ListPopupWindow].
  * @receiver [ListPopupWindow]
  * @param context the current context.
- * @param initiate the [CommonAdapterBuilder] builder body.
+ * @param body the [BaseAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
-inline fun ListPopupWindow.bindAdapter(context: Context, initiate: CommonAdapterBuilder<*>.() -> Unit) = bindAdapter<Any>(context, initiate)
+inline fun ListPopupWindow.bindAdapter(context: Context, body: BaseAdapterBuilder<*>.() -> Unit) = bindAdapter<Any>(context, body)
 
 /**
  * Bind the [BaseAdapter] to [AndroidX_ListPopupWindow], using entity [E].
  * @receiver [AndroidX_ListPopupWindow]
  * @param context the current context.
- * @param initiate the [CommonAdapterBuilder] builder body.
+ * @param body the [BaseAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
 @JvmName("bindAdapterTyped")
-inline fun <reified E> AndroidX_ListPopupWindow.bindAdapter(context: Context, initiate: CommonAdapterBuilder<E>.() -> Unit) =
-    CommonAdapter<E>(context, initiate).apply { setAdapter(this) }
+inline fun <reified E> AndroidX_ListPopupWindow.bindAdapter(context: Context, body: BaseAdapterBuilder<E>.() -> Unit) =
+    BaseAdapter<E>(context, body).apply { setAdapter(this) }
 
 /**
  * Bind the [BaseAdapter] to [AndroidX_ListPopupWindow].
  * @receiver [AndroidX_ListPopupWindow]
  * @param context the current context.
- * @param initiate the [CommonAdapterBuilder] builder body.
+ * @param body the [BaseAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
-inline fun AndroidX_ListPopupWindow.bindAdapter(context: Context, initiate: CommonAdapterBuilder<*>.() -> Unit) =
-    bindAdapter<Any>(context, initiate)
+inline fun AndroidX_ListPopupWindow.bindAdapter(context: Context, body: BaseAdapterBuilder<*>.() -> Unit) =
+    bindAdapter<Any>(context, body)
 
 /**
  * Bind the [RecyclerView.Adapter] to [RecyclerView], using entity [E].
@@ -144,17 +144,17 @@ inline fun AndroidX_ListPopupWindow.bindAdapter(context: Context, initiate: Comm
  * @see RecyclerCosmetic.from
  * @receiver [RecyclerView]
  * @param cosmetic the cosmetic, default is [RecyclerCosmetic.fromLinearVertical].
- * @param initiate the [RecyclerAdapterBuilder] builder body.
+ * @param body the [RecyclerAdapterBuilder] builder body.
  * @return [RecyclerView.Adapter]<[RecyclerViewHolderImpl]>
  */
 @JvmName("bindAdapterTyped")
 inline fun <reified E> RecyclerView.bindAdapter(
     cosmetic: RecyclerCosmetic<*, *> = RecyclerCosmetic.fromLinearVertical(context),
-    initiate: RecyclerAdapterBuilder<E>.() -> Unit
+    body: RecyclerAdapterBuilder<E>.() -> Unit
 ): RecyclerView.Adapter<RecyclerViewHolderImpl<Any>> {
     layoutManager = cosmetic.layoutManager
     addItemDecoration(cosmetic.itemDecoration)
-    return RecyclerAdapter<E>(context, initiate).apply { adapter = this }
+    return RecyclerAdapter<E>(context, body).apply { adapter = this }
 }
 
 /**
@@ -172,31 +172,31 @@ inline fun <reified E> RecyclerView.bindAdapter(
  * @see RecyclerCosmetic.from
  * @receiver [RecyclerView]
  * @param cosmetic the cosmetic, default is [RecyclerCosmetic.fromLinearVertical].
- * @param initiate the [RecyclerAdapterBuilder] builder body.
+ * @param body the [RecyclerAdapterBuilder] builder body.
  * @return [RecyclerView.Adapter]<[RecyclerViewHolderImpl]>
  */
 inline fun RecyclerView.bindAdapter(
     cosmetic: RecyclerCosmetic<*, *> = RecyclerCosmetic.fromLinearVertical(context),
-    initiate: RecyclerAdapterBuilder<*>.() -> Unit
-) = bindAdapter<Any>(cosmetic, initiate)
+    body: RecyclerAdapterBuilder<*>.() -> Unit
+) = bindAdapter<Any>(cosmetic, body)
 
 /**
  * Bind the [PagerAdapter] to [ViewPager], using entity [E].
  * @receiver [ViewPager]
- * @param initiate the [PagerAdapterBuilder] builder body.
+ * @param body the [PagerAdapterBuilder] builder body.
  * @return [PagerAdapter]
  */
 @JvmName("bindAdapterTyped")
-inline fun <reified E> ViewPager.bindAdapter(initiate: PagerAdapterBuilder<E>.() -> Unit) =
-    PagerAdapter<E>(context, initiate).apply { adapter = this }
+inline fun <reified E> ViewPager.bindAdapter(body: PagerAdapterBuilder<E>.() -> Unit) =
+    PagerAdapter<E>(context, body).apply { adapter = this }
 
 /**
  * Bind the [PagerAdapter] to [ViewPager].
  * @receiver [ViewPager]
- * @param initiate the [PagerAdapterBuilder] builder body.
+ * @param body the [PagerAdapterBuilder] builder body.
  * @return [PagerAdapter]
  */
-inline fun ViewPager.bindAdapter(initiate: PagerAdapterBuilder<*>.() -> Unit) = bindAdapter<Any>(initiate)
+inline fun ViewPager.bindAdapter(body: PagerAdapterBuilder<*>.() -> Unit) = bindAdapter<Any>(body)
 
 /**
  * Bind the [FragmentPagerAdapter] to [ViewPager].
@@ -206,14 +206,14 @@ inline fun ViewPager.bindAdapter(initiate: PagerAdapterBuilder<*>.() -> Unit) = 
  * @receiver [ViewPager]
  * @param activity the current activity.
  * @param behavior the current behavior, default is [FragmentPagerAdapter.BEHAVIOR_SET_USER_VISIBLE_HINT].
- * @param initiate the [FragmentPagerAdapterBuilder] builder body.
+ * @param body the [FragmentPagerAdapterBuilder] builder body.
  * @return [FragmentPagerAdapter]
  */
 inline fun ViewPager.bindFragments(
     activity: FragmentActivity,
     behavior: Int = FragmentPagerAdapter.BEHAVIOR_SET_USER_VISIBLE_HINT,
-    initiate: FragmentPagerAdapterBuilder.() -> Unit
-) = FragmentPagerAdapter(activity, behavior, initiate).apply { adapter = this }
+    body: FragmentPagerAdapterBuilder.() -> Unit
+) = FragmentPagerAdapter(activity, behavior, body).apply { adapter = this }
 
 /**
  * Bind the [FragmentPagerAdapter] to [ViewPager].
@@ -223,106 +223,106 @@ inline fun ViewPager.bindFragments(
  * @receiver [ViewPager]
  * @param fragment the current fragment.
  * @param behavior the current behavior, default is [FragmentPagerAdapter.BEHAVIOR_SET_USER_VISIBLE_HINT].
- * @param initiate the [FragmentPagerAdapterBuilder] builder body.
+ * @param body the [FragmentPagerAdapterBuilder] builder body.
  * @return [FragmentPagerAdapter]
  */
 inline fun ViewPager.bindFragments(
     fragment: Fragment,
     behavior: Int = FragmentPagerAdapter.BEHAVIOR_SET_USER_VISIBLE_HINT,
-    initiate: FragmentPagerAdapterBuilder.() -> Unit
-) = FragmentPagerAdapter(fragment, behavior, initiate).apply { adapter = this }
+    body: FragmentPagerAdapterBuilder.() -> Unit
+) = FragmentPagerAdapter(fragment, behavior, body).apply { adapter = this }
 
 /**
  * Bind the [RecyclerView.Adapter] to [ViewPager2], using entity [E].
  * @receiver [ViewPager2]
- * @param initiate the [RecyclerAdapterBuilder] builder body.
+ * @param body the [RecyclerAdapterBuilder] builder body.
  * @return [RecyclerView.Adapter]<[RecyclerViewHolderImpl]>
  */
 @JvmName("bindAdapterTyped")
-inline fun <reified E> ViewPager2.bindAdapter(initiate: RecyclerAdapterBuilder<E>.() -> Unit) =
-    RecyclerAdapter<E>(context, initiate = initiate).apply { adapter = this }
+inline fun <reified E> ViewPager2.bindAdapter(body: RecyclerAdapterBuilder<E>.() -> Unit) =
+    RecyclerAdapter<E>(context, body).apply { adapter = this }
 
 /**
  * Bind the [RecyclerView.Adapter] to [ViewPager2].
  * @receiver [ViewPager2]
- * @param initiate the [RecyclerAdapterBuilder] builder body.
+ * @param body the [RecyclerAdapterBuilder] builder body.
  * @return [RecyclerView.Adapter]<[RecyclerViewHolderImpl]>
  */
-inline fun ViewPager2.bindAdapter(initiate: RecyclerAdapterBuilder<*>.() -> Unit) = bindAdapter<Any>(initiate)
+inline fun ViewPager2.bindAdapter(body: RecyclerAdapterBuilder<*>.() -> Unit) = bindAdapter<Any>(body)
 
 /**
  * Bind the [FragmentStateAdapter] to [ViewPager2].
  * @receiver [ViewPager2]
  * @param activity the current activity.
- * @param initiate the [FragmentStateAdapterBuilder] builder body.
+ * @param body the [FragmentStateAdapterBuilder] builder body.
  * @return [FragmentStateAdapter]
  */
-inline fun ViewPager2.bindFragments(activity: FragmentActivity, initiate: FragmentStateAdapterBuilder.() -> Unit) =
-    FragmentStateAdapter(activity, initiate).apply { adapter = this }
+inline fun ViewPager2.bindFragments(activity: FragmentActivity, body: FragmentStateAdapterBuilder.() -> Unit) =
+    FragmentStateAdapter(activity, body).apply { adapter = this }
 
 /**
  * Bind the [FragmentStateAdapter] to [ViewPager2].
  * @receiver [ViewPager2]
  * @param fragment the current fragment.
- * @param initiate the [FragmentStateAdapterBuilder] builder body.
+ * @param body the [FragmentStateAdapterBuilder] builder body.
  * @return [FragmentStateAdapter]
  */
-inline fun ViewPager2.bindFragments(fragment: Fragment, initiate: FragmentStateAdapterBuilder.() -> Unit) =
-    FragmentStateAdapter(fragment, initiate).apply { adapter = this }
+inline fun ViewPager2.bindFragments(fragment: Fragment, body: FragmentStateAdapterBuilder.() -> Unit) =
+    FragmentStateAdapter(fragment, body).apply { adapter = this }
 
 /**
  * Create a [BaseAdapter], using entity [E].
  * @param context the current context.
- * @param initiate the [CommonAdapterBuilder] builder body.
+ * @param body the [BaseAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
-@JvmName("CommonAdapterTyped")
-inline fun <reified E> CommonAdapter(context: Context, initiate: CommonAdapterBuilder<E>.() -> Unit) =
-    CommonAdapterBuilder.from<E>(context).apply(initiate).build()
+@JvmName("BaseAdapterTyped")
+inline fun <reified E> BaseAdapter(context: Context, body: BaseAdapterBuilder<E>.() -> Unit) =
+    BaseAdapterBuilder.from<E>(context).apply(body).build()
 
 /**
  * Create a [BaseAdapter].
  * @param context the current context.
- * @param initiate the [CommonAdapterBuilder] builder body.
+ * @param body the [BaseAdapterBuilder] builder body.
  * @return [BaseAdapter]
  */
-inline fun CommonAdapter(context: Context, initiate: CommonAdapterBuilder<*>.() -> Unit) = CommonAdapter<Any>(context, initiate)
+inline fun BaseAdapter(context: Context, body: BaseAdapterBuilder<*>.() -> Unit) = BaseAdapter<Any>(context, body)
 
 /**
  * Create a [RecyclerView.Adapter], using entity [E].
  * @param context the current context.
- * @param initiate the [RecyclerAdapterBuilder] builder body.
+ * @param body the [RecyclerAdapterBuilder] builder body.
  * @return [RecyclerView.Adapter]<[RecyclerViewHolderImpl]>
  */
 @JvmName("RecyclerAdapterTyped")
-inline fun <reified E> RecyclerAdapter(context: Context, initiate: RecyclerAdapterBuilder<E>.() -> Unit) =
-    RecyclerAdapterBuilder.from<E>(context).apply(initiate).build()
+inline fun <reified E> RecyclerAdapter(context: Context, body: RecyclerAdapterBuilder<E>.() -> Unit) =
+    RecyclerAdapterBuilder.from<E>(context).apply(body).build()
 
 /**
  * Create a [RecyclerView.Adapter].
  * @param context the current context.
- * @param initiate the [RecyclerAdapterBuilder] builder body.
+ * @param body the [RecyclerAdapterBuilder] builder body.
  * @return [RecyclerView.Adapter]<[RecyclerViewHolderImpl]>
  */
-inline fun RecyclerAdapter(context: Context, initiate: RecyclerAdapterBuilder<*>.() -> Unit) = RecyclerAdapter<Any>(context, initiate)
+inline fun RecyclerAdapter(context: Context, body: RecyclerAdapterBuilder<*>.() -> Unit) = RecyclerAdapter<Any>(context, body)
 
 /**
  * Create a [PagerAdapter], using entity [E].
  * @param context the current context.
- * @param initiate the [PagerAdapterBuilder] builder body.
+ * @param body the [PagerAdapterBuilder] builder body.
  * @return [PagerAdapter]
  */
 @JvmName("PagerAdapterTyped")
-inline fun <reified E> PagerAdapter(context: Context, initiate: PagerAdapterBuilder<E>.() -> Unit) =
-    PagerAdapterBuilder.from<E>(context).apply(initiate).build()
+inline fun <reified E> PagerAdapter(context: Context, body: PagerAdapterBuilder<E>.() -> Unit) =
+    PagerAdapterBuilder.from<E>(context).apply(body).build()
 
 /**
  * Create a [PagerAdapter].
  * @param context the current context.
- * @param initiate the [PagerAdapterBuilder] builder body.
+ * @param body the [PagerAdapterBuilder] builder body.
  * @return [PagerAdapter]
  */
-inline fun PagerAdapter(context: Context, initiate: PagerAdapterBuilder<*>.() -> Unit) = PagerAdapter<Any>(context, initiate)
+inline fun PagerAdapter(context: Context, body: PagerAdapterBuilder<*>.() -> Unit) = PagerAdapter<Any>(context, body)
 
 /**
  * Create a [FragmentPagerAdapter].
@@ -331,20 +331,20 @@ inline fun PagerAdapter(context: Context, initiate: PagerAdapterBuilder<*>.() ->
  *   the recommended approach is to start using [ViewPager2] and use [ViewPager2.bindFragments].
  * @param instance the current instance, only can be [Context] or [Fragment].
  * @param behavior the current behavior, default is [FragmentPagerAdapter.BEHAVIOR_SET_USER_VISIBLE_HINT].
- * @param initiate the [FragmentPagerAdapterBuilder] builder body.
+ * @param body the [FragmentPagerAdapterBuilder] builder body.
  * @return [FragmentPagerAdapter]
  */
 inline fun FragmentPagerAdapter(
     instance: Any,
     behavior: Int = FragmentPagerAdapter.BEHAVIOR_SET_USER_VISIBLE_HINT,
-    initiate: FragmentPagerAdapterBuilder.() -> Unit
-) = FragmentPagerAdapterBuilder.from(instance, behavior).apply(initiate).build()
+    body: FragmentPagerAdapterBuilder.() -> Unit
+) = FragmentPagerAdapterBuilder.from(instance, behavior).apply(body).build()
 
 /**
  * Create a [FragmentStateAdapter].
  * @param instance the current instance, only can be [Context] or [Fragment].
- * @param initiate the [FragmentStateAdapterBuilder] builder body.
+ * @param body the [FragmentStateAdapterBuilder] builder body.
  * @return [FragmentStateAdapter]
  */
-inline fun FragmentStateAdapter(instance: Any, initiate: FragmentStateAdapterBuilder.() -> Unit) =
-    FragmentStateAdapterBuilder.from(instance).apply(initiate).build()
+inline fun FragmentStateAdapter(instance: Any, body: FragmentStateAdapterBuilder.() -> Unit) =
+    FragmentStateAdapterBuilder.from(instance).apply(body).build()

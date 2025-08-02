@@ -35,7 +35,7 @@ import androidx.recyclerview.widget.LinearLayoutManager as AndroidXLinearLayoutM
 /**
  * An enhanced [AndroidXLinearLayoutManager] with the ability to handle the position compatibility.
  *
- * Call [Int.toExcludingPosition] or [Int.toIncludingPosition] in any scene where you want to use position to convert it
+ * Call [excludingPosition] or [includingPosition] in any scene where you want to use position to convert it
  * to get the correct position when using [RecyclerAdapterBuilder].
  *
  * - Note: The following functions such as
@@ -52,13 +52,14 @@ import androidx.recyclerview.widget.LinearLayoutManager as AndroidXLinearLayoutM
  */
 open class LinearLayoutManager : AndroidXLinearLayoutManager {
 
+    /** The current held [RecyclerView] instance. */
+    protected var base: RecyclerView? = null
+
     constructor(context: Context?) : super(context)
     constructor(context: Context?, @RecyclerView.Orientation orientation: Int, reverseLayout: Boolean) :
         super(context, orientation, reverseLayout)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) :
         super(context, attrs, defStyleAttr, defStyleRes)
-
-    private var base: RecyclerView? = null
 
     @CallSuper
     override fun onAttachedToWindow(view: RecyclerView) {
@@ -73,48 +74,48 @@ open class LinearLayoutManager : AndroidXLinearLayoutManager {
     }
 
     @CallSuper
-    override fun findFirstVisibleItemPosition() = super.findFirstVisibleItemPosition().toExcludingPosition()
+    override fun findFirstVisibleItemPosition() = excludingPosition(super.findFirstVisibleItemPosition())
 
     @CallSuper
-    override fun findFirstCompletelyVisibleItemPosition() = super.findFirstCompletelyVisibleItemPosition().toExcludingPosition()
+    override fun findFirstCompletelyVisibleItemPosition() = excludingPosition(super.findFirstCompletelyVisibleItemPosition())
 
     @CallSuper
-    override fun findLastVisibleItemPosition() = super.findLastVisibleItemPosition().toExcludingPosition()
+    override fun findLastVisibleItemPosition() = excludingPosition(super.findLastVisibleItemPosition())
 
     @CallSuper
-    override fun findLastCompletelyVisibleItemPosition() = super.findLastCompletelyVisibleItemPosition().toExcludingPosition()
+    override fun findLastCompletelyVisibleItemPosition() = excludingPosition(super.findLastCompletelyVisibleItemPosition())
 
     @CallSuper
     override fun scrollToPosition(position: Int) {
-        val current = position.toIncludingPosition()
+        val current = includingPosition(position)
         super.scrollToPosition(current)
     }
 
     @CallSuper
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {
-        val current = position.toIncludingPosition()
+        val current = includingPosition(position)
         super.scrollToPositionWithOffset(current, offset)
     }
 
     @CallSuper
     override fun smoothScrollToPosition(recyclerView: RecyclerView?, state: RecyclerView.State?, position: Int) {
-        val current = position.toIncludingPosition()
+        val current = includingPosition(position)
         super.smoothScrollToPosition(recyclerView, state, current)
     }
 
     /**
-     * Convert the current position of the item view excluding the header view.
+     * Convert the current position of the item view excluding the header view
      * param position the current position.
-     * @receiver the current position.
+     * @param position the current position.
      * @return [Int]
      */
-    protected fun Int.toExcludingPosition() = base?.adapter?.wrapper?.excludingPosition(position = this) ?: this
+    protected fun excludingPosition(position: Int) = base?.adapter?.wrapper?.excludingPosition(position) ?: position
 
     /**
-     * Convert the current position of the item view excluding the header view.
+     * Convert the current position of the item view excluding the header view
      * param position the current position.
-     * @receiver the current position.
+     * @param position the current position.
      * @return [Int]
      */
-    protected fun Int.toIncludingPosition() = base?.adapter?.wrapper?.includingPosition(position = this) ?: this
+    protected fun includingPosition(position: Int) = base?.adapter?.wrapper?.includingPosition(position) ?: position
 }

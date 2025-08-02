@@ -31,21 +31,22 @@ import com.highcapable.betterandroid.ui.component.adapter.recycler.factory.wrapp
 /**
  * An enhanced [RecyclerView.LayoutManager] with the ability to handle the position compatibility.
  *
- * Call [Int.toExcludingPosition] or [Int.toIncludingPosition] in any scene where you want to use position to convert it
+ * Call [excludingPosition] or [includingPosition] in any scene where you want to use position to convert it
  * to get the correct position when using [RecyclerAdapterBuilder].
  *
  * For example:
  *
  * ```kotlin
  * override fun scrollToPosition(position: Int) {
- *    val current = position.toIncludingPosition()
+ *    val current = includingPosition(position)
  *    super.scrollToPosition(current)
  * }
  * ```
  */
 abstract class RecyclerLayoutManager : RecyclerView.LayoutManager() {
 
-    private var base: RecyclerView? = null
+    /** The current held [RecyclerView] instance. */
+    protected var base: RecyclerView? = null
 
     @CallSuper
     override fun onAttachedToWindow(view: RecyclerView) {
@@ -60,18 +61,18 @@ abstract class RecyclerLayoutManager : RecyclerView.LayoutManager() {
     }
 
     /**
-     * Convert the current position of the item view excluding the header view.
+     * Convert the current position of the item view excluding the header view
      * param position the current position.
-     * @receiver the current position.
+     * @param position the current position.
      * @return [Int]
      */
-    protected fun Int.toExcludingPosition() = base?.adapter?.wrapper?.excludingPosition(position = this) ?: this
+    protected fun excludingPosition(position: Int) = base?.adapter?.wrapper?.excludingPosition(position) ?: position
 
     /**
-     * Convert the current position of the item view excluding the header view.
+     * Convert the current position of the item view excluding the header view
      * param position the current position.
-     * @receiver the current position.
+     * @param position the current position.
      * @return [Int]
      */
-    protected fun Int.toIncludingPosition() = base?.adapter?.wrapper?.includingPosition(position = this) ?: this
+    protected fun includingPosition(position: Int) = base?.adapter?.wrapper?.includingPosition(position) ?: position
 }

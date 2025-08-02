@@ -77,6 +77,7 @@ you can choose the modules you want to introduce as dependencies and apply them 
 You can click on the corresponding modules below to view detailed function introduction.
 
 - [ui-component](../library/ui-component.md)
+- [ui-component-adapter](../library/ui-component-adapter.md)
 - [ui-extension](../library/ui-extension.md)
 - [system-extension](../library/system-extension.md)
 - [permission-extension](../library/permission-extension.md)

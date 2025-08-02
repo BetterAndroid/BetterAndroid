@@ -73,6 +73,7 @@ android {
 你可以点击下方对应的模块前往查看详细的功能介绍。
 
 - [ui-component](../library/ui-component.md)
+- [ui-component-adapter](../library/ui-component-adapter.md)
 - [ui-extension](../library/ui-extension.md)
 - [system-extension](../library/system-extension.md)
 - [permission-extension](../library/permission-extension.md)

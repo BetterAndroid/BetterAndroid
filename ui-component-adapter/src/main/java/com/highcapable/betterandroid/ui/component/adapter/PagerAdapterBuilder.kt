@@ -33,11 +33,11 @@ import androidx.viewpager.widget.ViewPager
 import com.highcapable.betterandroid.ui.component.adapter.base.IAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.factory.bindAdapter
 import com.highcapable.betterandroid.ui.component.adapter.mediator.PagerMediator
-import com.highcapable.betterandroid.ui.component.adapter.viewholder.CommonViewHolder
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.BaseViewHolder
 import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.ViewBindingHolderDelegate
 import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.XmlLayoutHolderDelegate
 import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.base.ViewHolderDelegate
-import com.highcapable.betterandroid.ui.component.adapter.viewholder.impl.CommonViewHolderImpl
+import com.highcapable.betterandroid.ui.component.adapter.viewholder.impl.BaseViewHolderImpl
 import com.highcapable.betterandroid.ui.extension.binding.ViewBinding
 
 /**
@@ -59,7 +59,7 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
     }
 
     /** The current each item function callbacks. */
-    private val boundViewHolderCallbacks = linkedSetOf<CommonViewHolder<E>>()
+    private val boundViewHolderCallbacks = linkedSetOf<BaseViewHolder<E>>()
 
     /** The current each [PagerMediator] function callback. */
     private var pagerMediatorsCallback: (PagerMediator.() -> Unit)? = null
@@ -123,7 +123,7 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
         delegate: ViewHolderDelegate<VD>,
         viewHolder: (delegate: VD, entity: E, position: Int) -> Unit = { _, _, _ -> }
     ) = apply {
-        boundViewHolderCallbacks.add(CommonViewHolder(delegate as ViewHolderDelegate<Any>) { delegate, entity, position ->
+        boundViewHolderCallbacks.add(BaseViewHolder(delegate as ViewHolderDelegate<Any>) { delegate, entity, position ->
             runCatching {
                 viewHolder(delegate as VD, entity, position)
             }.onFailure {
@@ -155,37 +155,6 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
         viewHolder: (pageView: View, entity: E, position: Int) -> Unit = { _, _, _ -> }
     ) = onBindPageView(XmlLayoutHolderDelegate(resId), viewHolder)
 
-    /**
-     * Create and add view holder with [VB].
-     *
-     * - This function is deprecated, use [onBindPageView] instead.
-     */
-    @Deprecated(message = "Use onBindPageView instead.", ReplaceWith("onBindPageView<VB>(boundItemViews)"))
-    inline fun <reified VB : ViewBinding> onBindViews(
-        noinline boundItemViews: (binding: VB, entity: E, position: Int) -> Unit = { _, _, _ -> }
-    ) = onBindPageView(boundItemViews)
-
-    /**
-     * Create and add view holder from XML layout ID.
-     *
-     * - This function is deprecated, use [onBindPageView] instead.
-     */
-    @Deprecated(message = "Use onBindPageView instead.", ReplaceWith("onBindPageView(resId, boundItemViews)"))
-    fun onBindViews(
-        @LayoutRes resId: Int,
-        boundItemViews: (view: View, entity: E, position: Int) -> Unit = { _, _, _ -> }
-    ) = onBindPageView(resId, boundItemViews)
-
-    /**
-     * Create and add view holder.
-     *
-     * - This solution was undesirable, so it was deprecated and no effect, don't use it.
-     * @see ViewHolderDelegate
-     */
-    @Suppress("DeprecatedCallableAddReplaceWith")
-    @Deprecated(message = "This function is unreasonable and has been deprecated, please use the custom ViewHolderDelegate solution instead.")
-    fun onBindViews(view: View, boundItemViews: (view: View, entity: E, position: Int) -> Unit = { _, _, _ -> }) = this
-
     override fun build() = Instance()
 
     /**
@@ -202,19 +171,19 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
             }
         }
 
-        /** The current cached [CommonViewHolderImpl]. */
-        private val viewHolderImpls = mutableMapOf<Int, CommonViewHolderImpl<Any>>()
+        /** The current cached [BaseViewHolderImpl]. */
+        private val viewHolderImpls = mutableMapOf<Int, BaseViewHolderImpl<Any>>()
 
         /**
          * Get the current each item function callbacks.
          * @param position the current position.
-         * @return [CommonViewHolder]<[E]> or null.
+         * @return [BaseViewHolder]<[E]> or null.
          */
         private fun getCallback(position: Int) = boundViewHolderCallbacks.toList().let { it.getOrNull(position) ?: it.getOrNull(0) }
 
         override fun instantiateItem(container: ViewGroup, position: Int) =
             (viewHolderImpls[position] ?: getCallback(position)?.delegate?.let {
-                CommonViewHolderImpl.from(it, adapterContext, container)
+                BaseViewHolderImpl.from(it, adapterContext, container)
             })?.let {
                 container.addView(it.rootView)
                 getCurrentEntity(position)?.let { entity ->

@@ -17,16 +17,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file is created by fankes on 2025/1/25.
+ * This file is created by fankes on 2025/1/24.
  */
 @file:Suppress("unused")
-@file:JvmName("AdapterUtils")
+@file:JvmName("RecyclerAdapterUtils")
 
-package com.highcapable.betterandroid.ui.extension.view
+package com.highcapable.betterandroid.ui.component.adapter.recycler.factory
 
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
-import com.highcapable.betterandroid.ui.extension.generated.BetterAndroidProperties
+import com.highcapable.betterandroid.ui.component.adapter.RecyclerAdapterBuilder
+import com.highcapable.betterandroid.ui.component.adapter.generated.BetterAndroidProperties
+import com.highcapable.betterandroid.ui.component.adapter.recycler.wrapper.RecyclerAdapterWrapper
+
+/**
+ * Get the [RecyclerView.Adapter] wrapper from [RecyclerAdapterBuilder].
+ *
+ * If the current adapter is not creating by [RecyclerAdapterBuilder], it will return null.
+ * @receiver [RecyclerView.Adapter]
+ * @return [RecyclerAdapterWrapper] or null.
+ */
+val RecyclerView.Adapter<*>.wrapper get() = when (this) {
+    is RecyclerAdapterBuilder<*>.Instance -> this.wrapper
+    else -> null
+}
 
 /**
  * Notify that all items in the adapter have been inserted.
@@ -56,7 +70,7 @@ fun RecyclerView.Adapter<*>.notifyAllItemsInserted(dataSet: Collection<*>? = nul
  * Notify that all items in the adapter have been updated.
  *
  * Usage:
- * 
+ *
  * ```kotlin
  * // The [dataSet] must belong to the adapter and reflected in [itemCount].
  * dataSet.forEach {

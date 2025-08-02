@@ -12,6 +12,7 @@ const navigationLinks = {
     ],
     library: [
         '/library/ui-component',
+        '/library/ui-component-adapter',
         '/library/ui-extension',
         '/library/system-extension',
         '/library/permission-extension',

@@ -6,10 +6,10 @@ plugins {
 }
 
 group = property.project.groupName
-version = property.project.ui.component.version
+version = property.project.ui.component.adapter.version
 
 android {
-    namespace = property.project.ui.component.namespace
+    namespace = property.project.ui.component.adapter.namespace
     compileSdk = property.project.android.compileSdk
 
     defaultConfig {
@@ -45,6 +45,9 @@ dependencies {
     implementation(com.highcapable.kavaref.kavaref.extension)
     implementation(androidx.core.core.ktx)
     implementation(androidx.appcompat.appcompat)
+    implementation(androidx.recyclerview.recyclerview)
+    implementation(androidx.viewpager.viewpager)
+    implementation(androidx.viewpager2.viewpager2)
     testImplementation(junit.junit)
     androidTestImplementation(androidx.test.ext.junit)
     androidTestImplementation(androidx.test.espresso.espresso.core)
