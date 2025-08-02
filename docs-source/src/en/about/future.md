@@ -1,4 +1,4 @@
-# Looking for Future
+# Looking Toward the Future
 
 > The future is bright and uncertain, let us look forward to the future development space of `BetterAndroid`.
 
@@ -6,11 +6,11 @@
 
 > Features that `BetterAndroid` may add later are included here.
 
-### Project Templates Visualization Creation Tool
+### Project Template Visualization Creation Tool
 
 Because the template creation projects provided by Android Studio are too redundant, we may launch a project template creation tool that integrates `BetterAndroid` related dependencies in the future. 
 
-Currently, only [Project Template](../guide/quick-start.md#project-template) has been completed, it may exist as a plugin for IntelliJ IDEA.
+Currently, only [Project Template](../guide/quick-start.md#project-template) has been completed. It may exist as a plugin for IntelliJ IDEA.
 
 This feature will support the creation of native Android projects and Jetpack Compose Multiplatform projects.
 

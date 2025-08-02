@@ -18,7 +18,7 @@ This is a Kotlin Multiplatform dependency, you need the `org.jetbrains.kotlin.mu
 
 ### SweetDependency (Recommended)
 
-Add dependencies to your project `SweetDependency` configuration file.
+Add dependencies to your project's `SweetDependency` configuration file.
 
 ```yaml
 libraries:
@@ -43,7 +43,7 @@ libraries:
       version-ref: <this>::compose-extension
 ```
 
-Configure dependencies in your project `build.gradle.kts`.
+Configure dependencies in your project's `build.gradle.kts`.
 
 If you use multi-platform dependencies in a regular project, you only need to deploy the corresponding platform suffix dependencies as needed.
 
@@ -92,7 +92,7 @@ betterandroid-compose-extension-iossimulatorarm64 = { module = "com.highcapable.
 betterandroid-compose-extension-desktop = { module = "com.highcapable.betterandroid:compose-extension-desktop", version.ref = "betterandroid-compose-extension" }
 ```
 
-Configure dependencies in your project `build.gradle.kts`.
+Configure dependencies in your project's `build.gradle.kts`.
 
 If you use multi-platform dependencies in a regular project, you only need to deploy the corresponding platform suffix dependencies as needed.
 
@@ -122,7 +122,7 @@ Please change `<version>` to the version displayed at the top of this document.
 
 ### Traditional Method
 
-Configure dependencies in your project `build.gradle.kts`.
+Configure dependencies in your project's `build.gradle.kts`.
 
 If you use multi-platform dependencies in a regular project, you only need to deploy the corresponding platform suffix dependencies as needed.
 

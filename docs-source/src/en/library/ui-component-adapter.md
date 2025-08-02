@@ -23,7 +23,7 @@ libraries:
       version: +
 ```
 
-Configure dependency in your project `build.gradle.kts`.
+Configure dependency in your project's `build.gradle.kts`.
 
 ```kotlin
 implementation(com.highcapable.betterandroid.ui.component.adapter)
@@ -41,7 +41,7 @@ betterandroid-ui-component-adapter = "<version>"
 betterandroid-ui-component-adapter = { module = "com.highcapable.betterandroid:ui-component-adapter", version.ref = "betterandroid-ui-component-adapter" }
 ```
 
-Configure dependency in your project `build.gradle.kts`.
+Configure dependency in your project's `build.gradle.kts`.
 
 ```kotlin
 implementation(libs.betterandroid.ui.component.adapter)
@@ -51,7 +51,7 @@ Please change `<version>` to the version displayed at the top of this document.
 
 ### Traditional Method
 
-Configure dependency in your project `build.gradle.kts`.
+Configure dependency in your project's `build.gradle.kts`.
 
 ```kotlin
 implementation("com.highcapable.betterandroid:ui-component-adapter:<version>")
@@ -63,7 +63,7 @@ Please change `<version>` to the version displayed at the top of this document.
 
 You can view the KDoc [click here](kdoc://ui-component-adapter).
 
-::: tip Content List
+::: tip Contents of This Section
 
 [CommonAdapterBuilder](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter/-common-adapter-builder)
 

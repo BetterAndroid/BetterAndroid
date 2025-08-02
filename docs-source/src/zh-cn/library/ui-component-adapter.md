@@ -63,7 +63,7 @@ implementation("com.highcapable.betterandroid:ui-component-adapter:<version>")
 
 你可以 [点击这里](kdoc://ui-component-adapter) 查看 KDoc。
 
-::: tip 内容一览
+::: tip 本节内容
 
 [CommonAdapterBuilder](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter/-common-adapter-builder)
 

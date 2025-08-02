@@ -68,7 +68,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(com.highcapable.betterandroid.compose.extension)
+                implementation(com.highcapable.betterandroid.compose.multiplatform)
             }
         }
     }

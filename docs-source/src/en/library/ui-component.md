@@ -23,7 +23,7 @@ libraries:
       version: +
 ```
 
-Configure dependency in your project `build.gradle.kts`.
+Configure dependency in your project's `build.gradle.kts`.
 
 ```kotlin
 implementation(com.highcapable.betterandroid.ui.component)
@@ -41,7 +41,7 @@ betterandroid-ui-component = "<version>"
 betterandroid-ui-component = { module = "com.highcapable.betterandroid:ui-component", version.ref = "betterandroid-ui-component" }
 ```
 
-Configure dependency in your project `build.gradle.kts`.
+Configure dependency in your project's `build.gradle.kts`.
 
 ```kotlin
 implementation(libs.betterandroid.ui.component)
@@ -51,7 +51,7 @@ Please change `<version>` to the version displayed at the top of this document.
 
 ### Traditional Method
 
-Configure dependency in your project `build.gradle.kts`.
+Configure dependency in your project's `build.gradle.kts`.
 
 ```kotlin
 implementation("com.highcapable.betterandroid:ui-component:<version>")
@@ -75,15 +75,15 @@ Adapter related features have been separated into an independent module [ui-comp
 
 [AppBindingActivity](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.activity/-app-binding-activity)
 
-`Activity` with view binding (inherited from `AppCompatActivtiy`).
+`Activity` with view binding (inherited from `AppCompatActivity`).
 
 [AppViewsActivity](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.activity/-app-views-activity)
 
-Base view component `Activity` (inherited from `AppCompatActivtiy`).
+Base view component `Activity` (inherited from `AppCompatActivity`).
 
 [AppComponentActivity](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.activity/-app-component-activity)
 
-Basic component `Activity` (inherited from `ComponentActivtiy`).
+Basic component `Activity` (inherited from `ComponentActivity`).
 
 Available for Jetpack Compose projects.
 
@@ -219,7 +219,7 @@ Base view component `Fragment`.
 ::: tip
 
 The preset components below all implement [IBackPressedController](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.proxy/-i-back-pressed-controller),
-[ISystemBarsController](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.proxy/-i-system-bars-controller) interface.
+[ISystemBarsController](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.proxy/-i-system-bars-controller) interfaces.
 
 You can find detailed usage methods in [System Event](#system-event) and [System Bars (Status Bars, Navigation Bars, etc)](#system-bars-status-bars-navigation-bars-etc) below.
 
@@ -245,7 +245,7 @@ class MainFragment : AppBindingFragment<FragmentMainBinding>() {
 
 You can also use `AppViewsFragment` to create a basic `Fragment`.
 
-Similarly, you don't need to overriding the `onCreateView` method, just fill in the layout resource ID that needs to be bound directly into the constructor.
+Similarly, you don't need to override the `onCreateView` method, just fill in the layout resource ID that needs to be bound directly into the constructor.
 
 > The following example
 
@@ -672,7 +672,7 @@ mainstream brands of cutout display devices below Android 9.
 
 If you need to be compatible with older devices, you can pass in an optional `Window` object in the method parameter.
 
-If your apps only needs to adapt to Android 9 and above devices, you can ignore this parameter.
+If your app only needs to adapt to Android 9 and above devices, you can ignore this parameter.
 
 > The following example
 

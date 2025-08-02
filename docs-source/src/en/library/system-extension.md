@@ -23,7 +23,7 @@ libraries:
       version: +
 ```
 
-Configure dependency in your project `build.gradle.kts`.
+Configure dependency in your project's `build.gradle.kts`.
 
 ```kotlin
 implementation(com.highcapable.betterandroid.system.extension)
@@ -41,7 +41,7 @@ betterandroid-system-extension = "<version>"
 betterandroid-system-extension = { module = "com.highcapable.betterandroid:system-extension", version.ref = "betterandroid-system-extension" }
 ```
 
-Configure dependency in your project `build.gradle.kts`.
+Configure dependency in your project's `build.gradle.kts`.
 
 ```kotlin
 implementation(libs.betterandroid.system.extension)
@@ -51,7 +51,7 @@ Please change `<version>` to the version displayed at the top of this document.
 
 ### Traditional Method
 
-Configure dependency in your project `build.gradle.kts`.
+Configure dependency in your project's `build.gradle.kts`.
 
 ```kotlin
 implementation("com.highcapable.betterandroid:system-extension:<version>")
@@ -65,7 +65,7 @@ You can view the KDoc [click here](kdoc://system-extension).
 
 ### Application Extension
 
-::: tip Content of This Section
+::: tip Contents of This Section
 
 [PackageInfoFlagsWrapper](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/-package-info-flags-wrapper)
 
@@ -130,7 +130,7 @@ val context: Context
 val componentName = context.getComponentName<MainActivity>()
 ```
 
-Determine whether the apps has been installed.
+Determine whether the app has been installed.
 
 > The following example
 
@@ -141,7 +141,7 @@ val context: Context
 val hasChrome = context.packageManager.hasPackage("com.android.chrome")
 ```
 
-Determine whether the apps has a startable `Activity`.
+Determine whether the app has a launchable `Activity`.
 
 This function is mainly used to determine whether the app has an `Activity` that can be launched from the launcher.
 
@@ -161,7 +161,7 @@ its icon may still be displayed on the launcher, and clicking it will open the a
 
 :::
 
-Get apps package information.
+Get app's package information.
 
 `BetterAndroid` provides an overloaded method with the same name for `getPackageInfo`, you don’t need to consider compatibility issues, just use `PackageInfoFlagsWrapper` as the parameter of `flags`.
 
@@ -189,7 +189,7 @@ so that if the acquisition fails, `null` will be returned instead of throwing an
 
 :::
 
-Get a list of installed apps package information.
+Get a list of installed apps' package information.
 
 `BetterAndroid` also provides an overloaded method with the same name for `getInstalledPackages`. You don't need to consider compatibility issues, just use `PackageInfoFlagsWrapper` as the parameter of `flags`.
 
@@ -198,7 +198,7 @@ Get a list of installed apps package information.
 ```kotlin
 // Assume this is your context.
 val context: Context
-// Get a list of all installed apps package information.
+// Get a list of all installed apps' package information.
 val packageInfos = context.packageManager.getInstalledPackages()
 // Similarly, you can pass in one or more PackageInfoFlagsWrapper objects
 // in the second parameter to set flags.
@@ -343,7 +343,7 @@ Please refer to [Package visibility filtering on Android](https://developer.andr
 
 ### Broadcast Extension
 
-::: tip Content of This Section
+::: tip Contents of This Section
 
 [Broadcast → registerReceiver](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/register-receiver)
 
@@ -428,8 +428,8 @@ If your broadcast is not open to the outside apps, you can set it to `false`.
 
 ::: warning
 
-In Android 14 or higher, a runtime-registered broadcast receiver must specify an exported behavior to receive broadcasts from another apps, if the current targets Android version 14 and above,
-you must ensure that the `exported` parameter is `true` to receive broadcasts from another apps, otherwise an exception will be thrown directly.
+In Android 14 or higher, a runtime-registered broadcast receiver must specify an exported behavior to receive broadcasts from other apps. If the current target Android version is 14 and above,
+you must ensure that the `exported` parameter is `true` to receive broadcasts from other apps, otherwise an exception will be thrown directly.
 
 Please refer to [Runtime-registered broadcasts receivers must specify export behavior](https://developer.android.com/about/versions/14/behavior-changes-14#runtime-receivers-exported).
 
@@ -437,7 +437,7 @@ Please refer to [Runtime-registered broadcasts receivers must specify export beh
 
 ### Clipboard Extension
 
-::: tip Content of This Section
+::: tip Contents of This Section
 
 [ClipDataItemBuilder](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/-clip-data-item-builder)
 

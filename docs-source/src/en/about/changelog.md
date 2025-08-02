@@ -4,7 +4,7 @@
 
 ::: danger
 
-We will only maintain the latest dependencies, if you are using outdate dependencies, you voluntarily renounce any possibility of maintenance.
+We will only maintain the latest dependencies. If you are using outdated dependencies, you voluntarily renounce any possibility of maintenance.
 
 :::
 

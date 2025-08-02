@@ -14,7 +14,7 @@ Currently supported platforms: Android, iOS, Desktop (JVM).
 
 This module is still under development and testing, and the API may change before the `1.0.0` version is officially released.
 
-We are welcome you to make suggestions to us at [GitHub Issues](repo://issues).
+We welcome you to make suggestions to us at [GitHub Issues](repo://issues).
 
 :::
 
@@ -26,7 +26,7 @@ This is a Kotlin Multiplatform dependency, you need the `org.jetbrains.kotlin.mu
 
 ### SweetDependency (Recommended)
 
-Add dependencies to your project `SweetDependency` configuration file.
+Add dependencies to your project's `SweetDependency` configuration file.
 
 ```yaml
 libraries:
@@ -51,7 +51,7 @@ libraries:
       version-ref: <this>::compose-multiplatform
 ```
 
-Configure dependencies in your project `build.gradle.kts`.
+Configure dependencies in your project's `build.gradle.kts`.
 
 If you use multi-platform dependencies in a regular project, you only need to deploy the corresponding platform suffix dependencies as needed.
 
@@ -70,7 +70,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(com.highcapable.betterandroid.compose.extension)
+                implementation(com.highcapable.betterandroid.compose.multiplatform)
             }
         }
     }
@@ -100,7 +100,7 @@ betterandroid-compose-multiplatform-iossimulatorarm64 = { module = "com.highcapa
 betterandroid-compose-multiplatform-desktop = { module = "com.highcapable.betterandroid:compose.multiplatform-desktop", version.ref = "betterandroid-compose-multiplatform" }
 ```
 
-Configure dependencies in your project `build.gradle.kts`.
+Configure dependencies in your project's `build.gradle.kts`.
 
 If you use multi-platform dependencies in a regular project, you only need to deploy the corresponding platform suffix dependencies as needed.
 
@@ -130,7 +130,7 @@ Please change `<version>` to the version displayed at the top of this document.
 
 ### Traditional Method
 
-Configure dependencies in your project `build.gradle.kts`.
+Configure dependencies in your project's `build.gradle.kts`.
 
 If you use multi-platform dependencies in a regular project, you only need to deploy the corresponding platform suffix dependencies as needed.
 

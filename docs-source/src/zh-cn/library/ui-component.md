@@ -75,15 +75,15 @@ implementation("com.highcapable.betterandroid:ui-component:<version>")
 
 [AppBindingActivity](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.activity/-app-binding-activity)
 
-带有视图绑定的 `Activity` (继承于 `AppCompatActivtiy`)。
+带有视图绑定的 `Activity` (继承于 `AppCompatActivity`)。
 
 [AppViewsActivity](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.activity/-app-views-activity)
 
-基础视图组件 `Activity` (继承于 `AppCompatActivtiy`)。
+基础视图组件 `Activity` (继承于 `AppCompatActivity`)。
 
 [AppComponentActivity](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.activity/-app-component-activity)
 
-基础组件 `Activity` (继承于 `ComponentActivtiy`)。
+基础组件 `Activity` (继承于 `ComponentActivity`)。
 
 可用于 Jetpack Compose 项目。
 

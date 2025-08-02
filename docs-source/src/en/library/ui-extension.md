@@ -23,7 +23,7 @@ libraries:
       version: +
 ```
 
-Configure dependency in your project `build.gradle.kts`.
+Configure dependency in your project's `build.gradle.kts`.
 
 ```kotlin
 implementation(com.highcapable.betterandroid.ui.extension)
@@ -41,7 +41,7 @@ betterandroid-ui-extension = "<version>"
 betterandroid-ui-extension = { module = "com.highcapable.betterandroid:ui-extension", version.ref = "betterandroid-ui-extension" }
 ```
 
-Configure dependency in your project `build.gradle.kts`.
+Configure dependency in your project's `build.gradle.kts`.
 
 ```kotlin
 implementation(libs.betterandroid.ui.extension)
@@ -51,7 +51,7 @@ Please change `<version>` to the version displayed at the top of this document.
 
 ### Traditional Method
 
-Configure dependency in your project `build.gradle.kts`.
+Configure dependency in your project's `build.gradle.kts`.
 
 ```kotlin
 implementation("com.highcapable.betterandroid:ui-extension:<version>")

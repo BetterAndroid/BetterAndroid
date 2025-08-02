@@ -4,19 +4,19 @@
 
 ## Project Requirements
 
-The project needs to be created using `Android Studio` or `IntelliJ IDEA` and be of type Android or Kotlin Multiplatform
-project and have integrated Kotlin environment dependencies.
+The project needs to be created using `Android Studio` or `IntelliJ IDEA` and be of Android or Kotlin Multiplatform
+type with integrated Kotlin environment dependencies.
 
-- Android Studio (It is recommended to get the latest version [from here](https://developer.android.com/studio))
+- Android Studio (It is recommended to get the latest version from [here](https://developer.android.com/studio))
 
-- IntelliJ IDEA (It is recommended to get the latest version [from here](https://www.jetbrains.com/idea))
+- IntelliJ IDEA (It is recommended to get the latest version from [here](https://www.jetbrains.com/idea))
 
 - Kotlin 1.9.0+, Gradle 8+, Java 17+, Android Gradle Plugin 8+
 
 ### Configure Repositories
 
-The dependencies of `BetterAndroid` are published in **Maven Central** and our public repository,
-you can use the following method to configure repositories.
+The dependencies of `BetterAndroid` are published in **Maven Central** and our public repository.
+You can use the following method to configure repositories.
 
 We recommend using Kotlin DSL as the Gradle build script language and [SweetDependency](https://github.com/HighCapable/SweetDependency)
 to manage dependencies.
@@ -38,7 +38,7 @@ repositories:
 
 #### Traditional Method
 
-Configure repositories in your project `build.gradle.kts`.
+Configure repositories in your project's `build.gradle.kts`.
 
 ```kotlin
 repositories {
@@ -53,7 +53,7 @@ repositories {
 
 ### Configure Java Version
 
-Modify the Java version of Kotlin in your project `build.gradle.kts` to 17 or above.
+Modify the Java version of Kotlin in your project's `build.gradle.kts` to 17 or above.
 
 > Kotlin DSL
 
@@ -74,7 +74,7 @@ android {
 The entire project is divided into multiple modules, these modules can exist independently of each other or depend on each other,
 you can choose the modules you want to introduce as dependencies and apply them to your project.
 
-You can click on the corresponding modules below to view detailed function introduction.
+You can click on the corresponding modules below to view detailed functionality introductions.
 
 - [ui-component](../library/ui-component.md)
 - [ui-component-adapter](../library/ui-component-adapter.md)
@@ -94,10 +94,10 @@ You can use the project template we provide to quickly create a project that int
 
 ## Demo
 
-You can find some samples [here](repo://tree/main/samples) view the corresponding demo project to better understand how these functions work and quickly
-select the functions you need.
+You can find some samples [here](repo://tree/main/samples) to view the corresponding demo project to better understand how these functions work and quickly
+select the functionality you need.
 
-At present, the demo function is not yet complete, and may be gradually improved in the future.
+Currently, the demo functionality is not yet complete, and may be gradually improved in the future.
 
 But you can directly read the existing documents, which are sufficient to introduce related functions.
 

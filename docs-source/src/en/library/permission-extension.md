@@ -6,7 +6,7 @@
 
 This is a dependency for app permission management, authorization and other related extensions.
 
-This function is still in the development stage and will be gradually improved in the later stages.
+This functionality is still in the development stage and will be gradually improved in later stages.
 
 There is actually a very mature framework for this
-function, you can [click here](https://github.com/getActivity/XXPermissions) to view it.
+functionality. You can [click here](https://github.com/getActivity/XXPermissions) to view it.
