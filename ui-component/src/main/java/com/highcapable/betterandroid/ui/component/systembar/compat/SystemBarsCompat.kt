@@ -75,6 +75,7 @@ internal class SystemBarsCompat internal constructor(private val window: Window)
                 ?.resolve()
                 ?.firstField { name = "EXTRA_FLAG_STATUS_BAR_DARK_MODE" }
                 ?.get<Int>() ?: 0
+
             "com.android.internal.policy.impl.MiuiPhoneWindow".toClassOrNull()
                 ?.resolve()
                 ?.firstMethod {
@@ -98,9 +99,11 @@ internal class SystemBarsCompat internal constructor(private val window: Window)
         runCatching {
             window.attributes?.asResolver()?.apply {
                 val flags = firstField { name = "MEIZU_FLAG_DARK_STATUS_BAR_ICON" }.get<Int>() ?: -1
+
                 val meizuFlagField = firstField { name = "meizuFlags" }
                 var meizuFlags = meizuFlagField.get<Int>() ?: -1
                 val oldFlags = meizuFlags
+
                 meizuFlags = if (isDarkMode) meizuFlags or flags else meizuFlags and flags.inv()
                 if (oldFlags != meizuFlags) meizuFlagField.set(meizuFlags)
             }

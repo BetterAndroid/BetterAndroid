@@ -45,6 +45,7 @@ import com.highcapable.betterandroid.ui.extension.binding.ViewBindingBuilder
  *
  *     override fun onCreate(savedInstanceState: Bundle?) {
  *         super.onCreate(savedInstanceState)
+ *
  *         binding.mainText.text = "Hello World!"
  *         binding.enterFullScreen.setOnClickListener {
  *             systemBars.hide(SystemBars.ALL)
@@ -63,8 +64,10 @@ open class AppBindingActivity<VB : ViewBinding> : BaseCompatActivity(), IViewBin
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val inflater = onPrepareContentView(savedInstanceState)
         baseBinding = ViewBindingBuilder.fromGeneric<VB>(this).inflate(inflater)
+
         super.setContentView(binding.root)
         systemBars.init(binding.root)
     }

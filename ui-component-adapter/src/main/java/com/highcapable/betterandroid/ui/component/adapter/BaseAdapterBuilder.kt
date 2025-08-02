@@ -229,8 +229,10 @@ class BaseAdapterBuilder<E> private constructor(private val adapterContext: Cont
         override fun getCount() = dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: 0
         override fun getItem(position: Int) = getCurrentEntity(position)
         override fun getItemId(position: Int) = getCurrentEntity(position)?.let { entityIdCallback?.invoke(it, position) } ?: position.toLong()
+
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
             val owner = parent as? AdapterView<*>?
+
             var itemView = convertView
             val viewHolder = if (convertView == null)
                 boundViewHolderCallback?.delegate?.let {
@@ -239,8 +241,10 @@ class BaseAdapterBuilder<E> private constructor(private val adapterContext: Cont
                     }
                 } ?: error("No ViewHolder found, are you sure you have created one using onBindItemView?")
             else convertView.tag as BaseViewHolderImpl<Any>
+
             itemView?.apply {
                 tag = viewHolder
+
                 viewHolderOnClickCallbacks
                     .filterKeys { it == ITEM_NO_ID || it == getItemId(position) }
                     .takeIf { it.isNotEmpty() }
@@ -256,6 +260,7 @@ class BaseAdapterBuilder<E> private constructor(private val adapterContext: Cont
                                 }
                             }
                         }
+
                         owner?.setOnItemClickListener { _, view, position, _ ->
                             view.doOnClick(position)
                         } ?: setOnClickListener { it.doOnClick(position) }
@@ -271,10 +276,14 @@ class BaseAdapterBuilder<E> private constructor(private val adapterContext: Cont
                          */
                         fun View.doOnLongClick(position: Int): Boolean {
                             var result = false
+
                             callbacks.forEach { (_, callback) ->
                                 getCurrentEntity(position)?.let { entity -> result = callback(this, entity, position) }
-                            }; return result
+                            }
+
+                            return result
                         }
+
                         owner?.setOnItemLongClickListener { _, view, position, _ ->
                             view.doOnLongClick(position)
                         } ?: setOnLongClickListener { it.doOnLongClick(position) }
@@ -282,7 +291,9 @@ class BaseAdapterBuilder<E> private constructor(private val adapterContext: Cont
             }
             getCurrentEntity(position)?.let {
                 boundViewHolderCallback?.onBindCallback?.invoke(viewHolder.delegateInstance, it, position)
-            }; return itemView ?: error("ViewHolder create failed.")
+            }
+
+            return itemView ?: error("ViewHolder create failed.")
         }
     }
 }

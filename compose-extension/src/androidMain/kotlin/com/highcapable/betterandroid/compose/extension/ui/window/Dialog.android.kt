@@ -58,6 +58,7 @@ actual fun Dialog(
     ) {
         var windowProvider by remember { mutableStateOf<DialogWindowProvider?>(null) }
         if (windowProvider == null) windowProvider = LocalView.current.parent as? DialogWindowProvider?
+
         windowProvider?.window?.setDimAmount(properties.scrimColor.alpha)
         content()
     }

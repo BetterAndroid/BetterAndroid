@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.isUnspecified
 @Stable
 val Color.isBrightColor get() = runCatching {
     if (isUnspecified) return@runCatching false
+
     ((299 * red + 587 * green + 114 * blue) / 1000) >= 0.5f
 }.getOrNull() ?: false
 
@@ -47,10 +48,12 @@ val Color.isBrightColor get() = runCatching {
 @Stable
 fun Color.toHexColor() = runCatching {
     if (isUnspecified) return@runCatching "#00000000"
+
     val a = (alpha * 255).toInt().toString(16).padStart(2, '0')
     val r = (red * 255).toInt().toString(16).padStart(2, '0')
     val g = (green * 255).toInt().toString(16).padStart(2, '0')
     val b = (blue * 255).toInt().toString(16).padStart(2, '0')
+
     "#${a.uppercase()}${r.uppercase()}${g.uppercase()}${b.uppercase()}"
 }.getOrNull() ?: "#00000000"
 
@@ -64,7 +67,9 @@ fun Color.toHexColor() = runCatching {
 @Stable
 fun mixColorOf(color1: Color, color2: Color, ratio: Float = 0.5f): Color {
     if (color1.isUnspecified || color2.isUnspecified) return Color.Unspecified
+
     val inverseRatio = 1 - ratio
+
     return Color(
         alpha = color1.alpha * inverseRatio + color2.alpha * ratio,
         red = color1.red * inverseRatio + color2.red * ratio,

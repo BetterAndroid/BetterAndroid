@@ -47,20 +47,26 @@ fun AdaptiveRow(
     content: @Composable () -> Unit
 ) {
     val density = LocalDensity.current
+
     SubcomposeLayout(modifier = modifier) { constraints ->
         var subcomposeIndex = 0
+
         var placeables = subcompose(subcomposeIndex++, content).map { it.measure(constraints) }
         val coerceCount = placeables.size.coerceAtLeast(1)
         val spaceBetweenComponents = if (coerceCount > 1) with(density) { spacingBetween.roundToPx() } else 0
+
         var maxWidth = 0
         var maxHeight = 0
+
         var layoutWidth: Int
         placeables.forEach { placeable: Placeable ->
             maxWidth = placeable.width.coerceAtLeast(maxWidth)
                 .coerceAtMost(((constraints.maxWidth - spaceBetweenComponents) / coerceCount))
             maxHeight = placeable.height.coerceAtLeast(maxHeight)
         }
+
         layoutWidth = maxWidth
+
         // Remeasure every element using width of longest item using it as min width.
         // Our max width is half of the remaining area after we subtract space between components.
         // and we constraint its maximum width to half width minus space between.
@@ -74,12 +80,15 @@ fun AdaptiveRow(
                     )
                 )
             }
+
             layoutWidth = (placeables.sumOf { it.width } + spaceBetweenComponents)
                 .coerceAtMost(constraints.maxWidth)
             maxHeight = placeables.maxOf { it.height }
         }
+
         layout(layoutWidth, maxHeight) {
             var xPos = 0
+
             placeables.forEach { placeable ->
                 placeable.placeRelative(xPos, 0)
                 xPos += placeable.width + spaceBetweenComponents
@@ -104,20 +113,26 @@ fun AdaptiveColumn(
     content: @Composable () -> Unit
 ) {
     val density = LocalDensity.current
+
     SubcomposeLayout(modifier = modifier) { constraints ->
         var subcomposeIndex = 0
+
         var placeables = subcompose(subcomposeIndex++, content).map { it.measure(constraints) }
         val coerceCount = placeables.size.coerceAtLeast(1)
         val spaceBetweenComponents = if (coerceCount > 1) with(density) { spacingBetween.roundToPx() } else 0
+
         var maxWidth = 0
         var maxHeight = 0
+
         var layoutHeight: Int
         placeables.forEach { placeable: Placeable ->
             maxWidth = placeable.width.coerceAtLeast(maxWidth)
             maxHeight = placeable.height.coerceAtLeast(maxHeight)
                 .coerceAtMost(((constraints.maxHeight - spaceBetweenComponents) / coerceCount))
         }
+
         layoutHeight = maxHeight
+
         // Remeasure every element using height of longest item using it as min height.
         // Our max height is half of the remaining area after we subtract space between components.
         // and we constraint its maximum height to half height minus space between.
@@ -131,12 +146,15 @@ fun AdaptiveColumn(
                     )
                 )
             }
+
             layoutHeight = (placeables.sumOf { it.height } + spaceBetweenComponents)
                 .coerceAtMost(constraints.maxHeight)
             maxWidth = placeables.maxOf { it.width }
         }
+
         layout(maxWidth, layoutHeight) {
             var yPos = 0
+
             placeables.forEach { placeable ->
                 placeable.placeRelative(0, yPos)
                 yPos += placeable.height + spaceBetweenComponents

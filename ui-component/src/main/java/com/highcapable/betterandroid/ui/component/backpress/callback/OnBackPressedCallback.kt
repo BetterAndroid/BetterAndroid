@@ -44,6 +44,7 @@ class OnBackPressedCallback(enabled: Boolean = true, private val handleOnBackPre
     fun trigger(controller: BackPressedController, removed: Boolean = false) {
         isEnabled = false
         controller.trigger()
+
         if (removed) controller.removeCallback(callback = this)
         else isEnabled = true
     }

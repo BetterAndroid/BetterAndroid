@@ -55,6 +55,7 @@ class BackPressedController private constructor(private val activity: ComponentA
          *
          *     override fun onCreate(savedInstanceState: Bundle?) {
          *         super.onCreate(savedInstanceState)
+         *
          *         setContentView(R.layout.activity_main)
          *         // Create a back pressed callback.
          *         val callback = backPressed.addCallback {
@@ -65,10 +66,11 @@ class BackPressedController private constructor(private val activity: ComponentA
          *     }
          *
          *     override fun onDestroy() {
-         *         super.onDestroy()
          *         // Destroy the back pressed controller.
          *         // Optional, prevent memory leaks.
          *         backPressed.destroy()
+         *
+         *         super.onDestroy()
          *     }
          * }
          * ```
@@ -118,6 +120,7 @@ class BackPressedController private constructor(private val activity: ComponentA
     fun trigger(ignored: Boolean = false) {
         // Priority to use of lifecycle destruction events.
         if (activity.lifecycle.currentState == Lifecycle.State.DESTROYED || activity.isFinishing || activity.isDestroyed) return
+
         if (ignored) onBackPressedCallbacks.forEach { it.isEnabled = false }
         onBackPressedDispatcher.onBackPressed()
     }

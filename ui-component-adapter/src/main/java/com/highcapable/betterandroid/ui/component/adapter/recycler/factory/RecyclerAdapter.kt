@@ -63,7 +63,9 @@ fun RecyclerView.Adapter<*>.notifyAllItemsInserted(dataSet: Collection<*>? = nul
     if (count <= 0) {
         Log.w(BetterAndroidProperties.PROJECT_NAME, "notifyAllItemsInserted called with count <= 0.")
         return
-    }; notifyItemRangeInserted(0, count)
+    }
+
+    notifyItemRangeInserted(0, count)
 }
 
 /**
@@ -90,7 +92,9 @@ fun RecyclerView.Adapter<*>.notifyAllItemsChanged(dataSet: Collection<*>? = null
     if (count <= 0) {
         Log.w(BetterAndroidProperties.PROJECT_NAME, "notifyAllItemsChanged called with count <= 0.")
         return
-    }; notifyItemRangeChanged(0, count)
+    }
+
+    notifyItemRangeChanged(0, count)
 }
 
 /**
@@ -111,7 +115,9 @@ fun RecyclerView.Adapter<*>.clearAndNotify(dataSet: MutableCollection<*>) {
     if (count <= 0) {
         Log.w(BetterAndroidProperties.PROJECT_NAME, "clearAndNotify called with dataSet.size <= 0.")
         return
-    }; dataSet.clear()
+    }
+
+    dataSet.clear()
     notifyItemRangeRemoved(0, count)
 }
 

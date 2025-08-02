@@ -62,9 +62,12 @@ import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
 actual fun BackHandler(enabled: Boolean, onBack: () -> Unit) {
     val backPressed = rememberBackPressedController()
     val currentOnBack by rememberUpdatedState(onBack)
+
     val backCallback = remember { OnBackPressedCallback { currentOnBack() } }
+
     // On every successful composition, update the callback with the `enabled` value.
     SideEffect { backCallback.isEnabled = enabled }
+
     // Destroy the callback when the effect leaves the composition.
     DisposableEffect(backPressed) {
         backPressed.addCallback(backCallback)
@@ -80,6 +83,7 @@ actual fun BackHandler(enabled: Boolean, onBack: () -> Unit) {
 private fun rememberBackPressedController(): BackPressedController {
     val activity = LocalContext.current as? ComponentActivity? ?: error("No ComponentActivity provided of composables.")
     var backPressed by remember { mutableStateOf<BackPressedController?>(null) }
+
     if (backPressed == null) backPressed = activity.resolveBackPressedController()
     return backPressed ?: error("No BackPressedController provided of composables.")
 }

@@ -31,7 +31,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.interop.LocalUIViewController
+import androidx.compose.ui.uikit.LocalUIViewController
 import com.highcapable.betterandroid.compose.extension.ui.toComposeColor
 import com.highcapable.betterandroid.compose.extension.ui.toPlatformColor
 import com.highcapable.betterandroid.compose.multiplatform.platform.AppComponentUIViewController
@@ -125,14 +125,19 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
 actual fun rememberSystemBarsController(): PlatformSystemBarsController {
     val controller = LocalUIViewController.current
     var systemBars by remember { mutableStateOf(DefaultPlatformSystemBarsController) }
+
     if (systemBars.actual == null) {
         val nativeSystemBars = controller.resolveSystemBarsController()
+
         SideEffect {
             // If the controller is not initialized, initialize it.
             if (nativeSystemBars?.isDestroyed == true) nativeSystemBars.init()
         }
+
         systemBars = PlatformSystemBarsController(nativeSystemBars)
-    }; return systemBars
+    }
+
+    return systemBars
 }
 
 /**
@@ -153,6 +158,7 @@ private fun UIViewController.resolveSystemBarsController() = resolveAppComponent
     val invalidMessage = "You need to use AppComponentUIViewController to use the system bars related functions of composables.\n" +
         "Please visit https://github.com/BetterAndroid/BetterAndroid for more help."
     println("BetterAndroid: $invalidMessage")
+
     null
 }
 

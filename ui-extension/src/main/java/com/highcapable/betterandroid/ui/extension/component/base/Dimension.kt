@@ -225,6 +225,7 @@ private fun <N : Number> N.convertToPx(resources: Resources): N {
      * @throws IllegalStateException if the number type is not supported.
      */
     fun Float.convert() = if (this >= 0f) this * resources.displayMetrics.density else this
+
     return when (this) {
         is Int -> toFloat().convert().toInt() as N
         is Long -> toFloat().convert().toLong() as N
@@ -248,6 +249,7 @@ private fun <N : Number> N.convertToDp(resources: Resources): N {
      * @throws IllegalStateException if the number type is not supported.
      */
     fun Float.convert() = if (this >= 0f) this / resources.displayMetrics.density + 0.5f else this
+
     return when (this) {
         is Int -> toFloat().convert().toInt() as N
         is Long -> toFloat().convert().toLong() as N

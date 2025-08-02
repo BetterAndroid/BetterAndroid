@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView
  */
 fun RecyclerView.scrollToFirstPosition() {
     val position = calculateFirstPosition() ?: return
+
     scrollToPosition(position)
 }
 
@@ -41,6 +42,7 @@ fun RecyclerView.scrollToFirstPosition() {
  */
 fun RecyclerView.scrollToLastPosition() {
     val position = calculateLastPosition() ?: return
+
     scrollToPosition(position)
 }
 
@@ -50,6 +52,7 @@ fun RecyclerView.scrollToLastPosition() {
  */
 fun RecyclerView.smoothScrollToFirstPosition() {
     val position = calculateFirstPosition() ?: return
+
     smoothScrollToPosition(position)
 }
 
@@ -59,17 +62,20 @@ fun RecyclerView.smoothScrollToFirstPosition() {
  */
 fun RecyclerView.smoothScrollToLastPosition() {
     val position = calculateLastPosition() ?: return
+
     smoothScrollToPosition(position)
 }
 
 private fun RecyclerView.calculateFirstPosition(): Int? {
     if (adapter == null) return null
+
     val hasHeaderView = adapter?.wrapper?.hasHeaderView == true
     return if (hasHeaderView) -1 else 0
 }
 
 private fun RecyclerView.calculateLastPosition(): Int? {
     if (adapter == null) return null
+
     val hasFooterView = adapter?.wrapper?.hasFooterView == true
     val count = adapter?.itemCount ?: 0
     return if (hasFooterView) count else count - 1

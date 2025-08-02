@@ -112,6 +112,7 @@ fun Fragment.attach(
         val containerViewId = container.resolveFragmentContainer(host.requireRootView())
         customAnimId?.also { setCustomAnimations(it, 0) }
         add(containerViewId, this@attach, tag)
+
         body()
     }
 }
@@ -141,9 +142,11 @@ fun Fragment.replace(
 ) {
     host.fragmentManager().commit(allowStateLoss) {
         val containerViewId = container.resolveFragmentContainer(host.requireRootView())
+
         if (customEnterAnimId != null || customExitAnimId != null)
             setCustomAnimations(customEnterAnimId ?: 0, customExitAnimId ?: 0)
         replace(containerViewId, this@replace, tag)
+
         body()
     }
 }
@@ -167,9 +170,11 @@ fun Fragment.show(
     body: FragmentTransaction.() -> Unit = {}
 ) {
     if (!checkIsAdded(action = "show")) return
+
     host.fragmentManager().commit(allowStateLoss) {
         customAnimId?.also { setCustomAnimations(it, 0) }
         show(this@show)
+
         body()
     }
 }
@@ -193,9 +198,11 @@ fun Fragment.hide(
     body: FragmentTransaction.() -> Unit = {}
 ) {
     if (!checkIsAdded(action = "hide")) return
+
     host.fragmentManager().commit(allowStateLoss) {
         customAnimId?.also { setCustomAnimations(0, it) }
         hide(this@hide)
+
         body()
     }
 }
@@ -219,9 +226,11 @@ fun Fragment.detach(
     body: FragmentTransaction.() -> Unit = {}
 ) {
     if (!checkIsAdded(action = "detach")) return
+
     host.fragmentManager().commit(allowStateLoss) {
         customAnimId?.also { setCustomAnimations(0, it) }
         remove(this@detach)
+
         body()
     }
 }
@@ -269,6 +278,7 @@ private fun Any?.resolveFragmentContainer(default: View): Int {
         null -> default.id
         else -> error("The container view type must be Int or View, but got ${this.javaClass}.")
     }.takeIf { it != View.NO_ID }
+
     return containerViewId ?: error("Fragment needs to be attached to an existing view.")
 }
 
@@ -281,6 +291,7 @@ private fun Any?.resolveFragmentContainer(default: View): Int {
 private fun Fragment.checkIsAdded(action: String): Boolean {
     val mIsAdded = isAdded
     if (!mIsAdded) Log.w(BetterAndroidProperties.PROJECT_NAME, "[$action] Fragment $this is not added to the host.")
+
     return mIsAdded
 }
 

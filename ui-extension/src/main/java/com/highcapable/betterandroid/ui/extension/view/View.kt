@@ -67,6 +67,7 @@ import com.highcapable.kavaref.extension.createInstanceOrNull
 val View.location
     get() = runCatching {
         val locations = IntArray(2)
+
         getLocationInWindow(locations)
         Point(locations[0], locations[1])
     }.getOrNull() ?: Point()
@@ -331,7 +332,9 @@ fun View.showIme() {
         context?.getSystemService<InputMethodManager>()
             ?.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
     }
+
     val windowFromActivity = (context as? Activity?)?.window
+
     if (AndroidVersion.isAtLeast(AndroidVersion.R) && windowFromActivity != null)
         WindowCompat.getInsetsController(windowFromActivity, this).show(WindowInsetsCompat.Type.ime())
     else showSoftInput()
@@ -350,7 +353,9 @@ fun View.hideIme() {
         context?.getSystemService<InputMethodManager>()
             ?.also { if (it.isActive) it.hideSoftInputFromWindow(applicationWindowToken, 0) }
     }
+
     val windowFromActivity = (context as? Activity?)?.window
+
     if (AndroidVersion.isAtLeast(AndroidVersion.R) && windowFromActivity != null)
         WindowCompat.getInsetsController(windowFromActivity, this).hide(WindowInsetsCompat.Type.ime())
     else hideSoftInput()
@@ -425,10 +430,13 @@ fun View.performKeyPressed(keyCode: Int, duration: Long = 150) {
  */
 fun View.performTouch(downX: Float, downY: Float, upX: Float, upY: Float, duration: Long) {
     val metaState = 0
+
     val downTime = System.currentTimeMillis()
     val eventTime = downTime + duration
     val motionEventDown = MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_DOWN, downX, downY, metaState)
+
     dispatchTouchEvent(motionEventDown)
+
     val motionEventUp = MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_UP, upX, upY, metaState)
     dispatchTouchEvent(motionEventUp)
 }
@@ -443,10 +451,12 @@ fun View.performTouch(downX: Float, downY: Float, upX: Float, upY: Float, durati
 @JvmOverloads
 fun View.setIntervalOnClickListener(timeMillis: Long = 300L, listener: View.OnClickListener) {
     var lastClickTime = 0L
+
     setOnClickListener { view ->
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastClickTime < timeMillis)
             return@setOnClickListener
+
         lastClickTime = currentTime
         listener.onClick(view)
     }
@@ -514,6 +524,7 @@ fun View.updateMargins(
     @Px bottom: Int = marginBottom
 ) {
     if (layoutParams !is ViewGroup.MarginLayoutParams) return
+
     updateLayoutParams<ViewGroup.MarginLayoutParams> {
         updateMargins(left, top, right, bottom)
     }
@@ -538,6 +549,7 @@ fun View.updateMarginsRelative(
     @Px bottom: Int = marginBottom
 ) {
     if (layoutParams !is ViewGroup.MarginLayoutParams) return
+
     updateLayoutParams<ViewGroup.MarginLayoutParams> {
         updateMarginsRelative(start, top, end, bottom)
     }
@@ -585,6 +597,7 @@ fun ViewGroup.MarginLayoutParams.updateMargins(@Px horizontal: Int = -1, @Px ver
  */
 fun View.setMargins(@Px left: Int, @Px top: Int, @Px right: Int, @Px bottom: Int) {
     if (layoutParams !is ViewGroup.MarginLayoutParams) return
+
     updateLayoutParams<ViewGroup.MarginLayoutParams> {
         setMargins(left, top, right, bottom)
     }
@@ -600,6 +613,7 @@ fun View.setMargins(@Px left: Int, @Px top: Int, @Px right: Int, @Px bottom: Int
  */
 fun View.setMargins(@Px size: Int) {
     if (layoutParams !is ViewGroup.MarginLayoutParams) return
+
     updateLayoutParams<ViewGroup.MarginLayoutParams> {
         setMargins(size)
     }
@@ -613,10 +627,13 @@ fun View.setMargins(@Px size: Int) {
 fun View.walkToRoot(): List<View> {
     val views = mutableListOf<View>()
     var current: View? = this
+
     while (current != null) {
         views.add(current)
         current = current.parentOrNull()
-    }; return views
+    }
+
+    return views
 }
 
 /**
@@ -626,10 +643,13 @@ fun View.walkToRoot(): List<View> {
  */
 fun ViewGroup.walkThroughChildren(): List<View> {
     val children = mutableListOf<View>()
+
     this.children.forEach { child ->
         children.add(child)
         if (child is ViewGroup) children.addAll(child.walkThroughChildren())
-    }; return children
+    }
+
+    return children
 }
 
 /**
@@ -772,6 +792,7 @@ fun <VGLP : ViewGroup.LayoutParams> ViewLayoutParams(
         matchParent || heightMatchParent -> LayoutParamsMatchParent
         else -> LayoutParamsWrapContent
     }
+
     return lpClass.createInstanceOrNull(absWidth, absHeight) ?: error(
         "Create ViewGroup.LayoutParams failed. " +
             "Could not found the default constructor LayoutParams(width, height) in $lpClass."

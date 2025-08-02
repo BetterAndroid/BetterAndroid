@@ -53,6 +53,7 @@ class BaseViewHolderImpl<VD : Any> private constructor(
         ): BaseViewHolderImpl<VD> {
             val instance = delegate.create(context, parent)
             val itemView = delegate.getView(instance)
+
             return BaseViewHolderImpl(instance, itemView)
         }
     }

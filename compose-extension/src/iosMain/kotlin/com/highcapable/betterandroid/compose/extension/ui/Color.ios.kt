@@ -60,6 +60,7 @@ fun UIColor.toComposeColor(): Color {
     val green = nativeHeap.alloc<CGFloatVar>()
     val blue = nativeHeap.alloc<CGFloatVar>()
     val alpha = nativeHeap.alloc<CGFloatVar>()
+
     return if (getRed(red.ptr, green.ptr, blue.ptr, alpha.ptr)) Color(
         red = red.value.toFloat(),
         green = green.value.toFloat(),

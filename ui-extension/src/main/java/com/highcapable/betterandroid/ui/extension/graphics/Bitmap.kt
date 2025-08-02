@@ -245,14 +245,18 @@ fun Bitmap.blur(radius: Int) = BitmapBlurFactory.process(this, radius)
 @JvmOverloads
 fun Bitmap.round(@Px radii: FloatArray, @ColorInt backgroundColor: Int = Color.WHITE, config: Bitmap.Config = Bitmap.Config.ARGB_8888): Bitmap {
     require(radii.size == 8) { "The length of the radii array must be 8." }
+
     return Bitmap.createBitmap(width, height, config).also { outBitmap ->
         val canvas = Canvas(outBitmap)
         val paint = Paint()
+
         paint.isAntiAlias = true
         canvas.drawARGB(0, 0, 0, 0)
         paint.color = backgroundColor
+
         val path = Path()
         path.addRoundRect(RectF(Rect(0, 0, width, height)), radii, Path.Direction.CW)
+
         canvas.drawPath(path, paint)
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
         canvas.drawBitmap(this, Rect(0, 0, width, height), Rect(0, 0, width, height), paint)
@@ -307,21 +311,28 @@ fun Bitmap.round(
 @JvmOverloads
 fun Bitmap.shrink(maxSize: Float, format: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG, quality: Int = 100): Bitmap {
     var outBitmap = this
+
     ByteArrayOutputStream().use {
         outBitmap.compress(format, quality, it)
+
         val baosByte = it.toByteArray()
         val mid = baosByte.size / 1024.0
+
         if (mid > maxSize) {
             val size = mid / maxSize
+
             val floatWidth = (width / sqrt(size)).toFloat()
             val floatHeight = (height / sqrt(size)).toFloat()
             outBitmap = outBitmap.scale(floatWidth.toInt(), floatHeight.toInt())
         }
-    }; return outBitmap
+    }
+
+    return outBitmap
 }
 
 /**
  * Reduce the bitmap width and height.
+ * @see Bitmap.scale
  * @receiver [Bitmap]
  * @param multiple the reduce multiple, default is 2.
  * @return [Bitmap]
@@ -329,8 +340,10 @@ fun Bitmap.shrink(maxSize: Float, format: Bitmap.CompressFormat = Bitmap.Compres
 @JvmOverloads
 fun Bitmap.reduce(multiple: Int = 2): Bitmap {
     if (multiple <= 1) return this
+
     val sWidth = width / multiple
     val sHeight = height / multiple
+
     return scale(sWidth, sHeight)
 }
 

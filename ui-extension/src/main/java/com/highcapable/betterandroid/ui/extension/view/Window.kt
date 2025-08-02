@@ -34,6 +34,7 @@ import android.view.WindowManager
  */
 inline fun Window.updateLayoutParams(initiate: WindowManager.LayoutParams.() -> Unit) {
     val params = attributes
+
     initiate(params)
     attributes = params
 }

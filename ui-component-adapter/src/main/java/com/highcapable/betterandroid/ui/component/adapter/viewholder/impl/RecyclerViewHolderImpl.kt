@@ -58,6 +58,7 @@ class RecyclerViewHolderImpl<VD : Any> private constructor(
         ): RecyclerViewHolderImpl<VD> {
             val instance = delegate.create(context, parent)
             val itemView = delegate.getView(instance)
+
             return RecyclerViewHolderImpl(instance, viewType, itemView)
         }
     }

@@ -94,6 +94,7 @@ class InsetsWrapper private constructor(
      */
     infix fun or(other: InsetsWrapper): InsetsWrapper {
         val isVisible = isVisible || other.isVisible
+
         return Insets.max(toInsets(), other.toInsets()).toWrapper(isVisible)
     }
 
@@ -105,6 +106,7 @@ class InsetsWrapper private constructor(
      */
     infix fun and(other: InsetsWrapper): InsetsWrapper {
         val isVisible = isVisible && other.isVisible
+
         return Insets.min(toInsets(), other.toInsets()).toWrapper(isVisible)
     }
 
@@ -116,6 +118,7 @@ class InsetsWrapper private constructor(
      */
     operator fun plus(other: InsetsWrapper): InsetsWrapper {
         val isVisible = isVisible || other.isVisible
+
         return Insets.add(toInsets(), other.toInsets()).toWrapper(isVisible)
     }
 
@@ -127,6 +130,7 @@ class InsetsWrapper private constructor(
      */
     operator fun minus(other: InsetsWrapper): InsetsWrapper {
         val isVisible = isVisible && other.isVisible
+
         return Insets.subtract(toInsets(), other.toInsets()).toWrapper(isVisible)
     }
 

@@ -133,28 +133,38 @@ fun <V : View> V.handleOnWindowInsetsChanged(
 ) {
     // To avoid redundant listening, so remove them before adding.
     removeWindowInsetsListener()
+
     val self = this
     val windowFromActivity = (context as? Activity?)?.window
     var isAnimating = false
+
     ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets ->
         // Ignored when the animation is running.
         if (!isAnimating) onChange(self, insets.createWrapper(windowFromActivity))
+
         if (consumed) WindowInsetsCompat.CONSUMED else insets
     }
+
     if (animated) ViewCompat.setWindowInsetsAnimationCallback(this, object : WindowInsetsAnimationCompat.Callback(animationDispatchMode) {
+
         override fun onPrepare(animation: WindowInsetsAnimationCompat) {
             super.onPrepare(animation)
+
             isAnimating = true
         }
+
         override fun onEnd(animation: WindowInsetsAnimationCompat) {
             super.onEnd(animation)
+
             isAnimating = false
         }
+
         override fun onProgress(
             insets: WindowInsetsCompat,
             runningAnimations: MutableList<WindowInsetsAnimationCompat>
         ): WindowInsetsCompat {
             onChange(self, insets.createWrapper(windowFromActivity))
+
             return if (consumed) WindowInsetsCompat.CONSUMED else insets
         }
     })

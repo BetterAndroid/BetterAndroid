@@ -204,6 +204,7 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
         fun <VB : ViewBinding> fromGeneric(clazz: Class<*>, onlySuperClass: Boolean = false): ViewBindingBuilder<VB> {
             val currentClass = if (onlySuperClass) clazz.superclass else clazz
             val bindingClass = currentClass?.findSuperGenericClass()
+
             require(bindingClass != null) {
                 if (currentClass != null)
                     "Cannot find the generic class from $clazz, if you are using R8, please configure obfuscation rules."
@@ -211,7 +212,9 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
             }
             require(bindingClass isSubclassOf ViewBinding::class) {
                 "The generic class $bindingClass from $clazz must be a ViewBinding."
-            }; return ViewBindingBuilder(bindingClass as Class<VB>)
+            }
+
+            return ViewBindingBuilder(bindingClass as Class<VB>)
         }
 
         /**
@@ -234,9 +237,12 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
             name = "bind"
             parameters(View::class)
         }?.invokeQuietly<VB>(view)
+
         require(binding != null) {
             "Cannot find the bind(View) method in $bindingClass, if you are using R8, please configure obfuscation rules."
-        }; return binding
+        }
+
+        return binding
     }
 
     /**
@@ -254,6 +260,7 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
             name = "inflate"
             parameters(LayoutInflater::class, ViewGroup::class, Boolean::class)
         }?.invokeQuietly<VB>(layoutInflater, parent, attachToParent)
+
         return when {
             binding != null -> binding
             parent != null ->

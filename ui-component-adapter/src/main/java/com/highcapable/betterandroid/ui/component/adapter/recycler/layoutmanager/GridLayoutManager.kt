@@ -65,12 +65,14 @@ open class GridLayoutManager : AndroidXGridLayoutManager {
     @CallSuper
     override fun onAttachedToWindow(view: RecyclerView) {
         super.onAttachedToWindow(view)
+
         this.base = view
     }
 
     @CallSuper
     override fun onDetachedFromWindow(view: RecyclerView, recycler: RecyclerView.Recycler?) {
         super.onDetachedFromWindow(view, recycler)
+
         this.base = null
     }
 
@@ -89,18 +91,21 @@ open class GridLayoutManager : AndroidXGridLayoutManager {
     @CallSuper
     override fun scrollToPosition(position: Int) {
         val current = includingPosition(position)
+
         super.scrollToPosition(current)
     }
 
     @CallSuper
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {
         val current = includingPosition(position)
+
         super.scrollToPositionWithOffset(current, offset)
     }
 
     @CallSuper
     override fun smoothScrollToPosition(recyclerView: RecyclerView?, state: RecyclerView.State?, position: Int) {
         val current = includingPosition(position)
+
         super.smoothScrollToPosition(recyclerView, state, current)
     }
 

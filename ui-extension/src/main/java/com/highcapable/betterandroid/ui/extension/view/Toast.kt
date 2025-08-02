@@ -49,8 +49,10 @@ import androidx.fragment.app.Fragment
 @JvmName("showToast")
 fun Context.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT, allowBackground: Boolean = false) {
     fun continueToast() = Toast.makeText(this, message, duration).show()
+
     if (Looper.myLooper() != Looper.getMainLooper()) {
         if (!allowBackground) error("Not allowed to show a toast from non-main thread, if you must do this, please set allowBackground to true.")
+
         if (this is Activity) runOnUiThread { continueToast() }
         else Thread {
             Looper.prepare()

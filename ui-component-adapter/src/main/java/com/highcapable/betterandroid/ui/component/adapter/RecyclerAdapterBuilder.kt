@@ -185,6 +185,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
             HEADER_VIEW_TYPE -> require(!hasHeaderView) { "The header view already exists, you can only set one header view." }
             FOOTER_VIEW_TYPE -> require(!hasFooterView) { "The footer view already exists, you can only set one footer view." }
         }
+
         boundViewHolderCallbacks.add(RecyclerViewHolder(delegate as ViewHolderDelegate<Any>, viewType) { delegate, entity, position ->
             runCatching {
                 viewHolder(delegate as VD, entity, position)
@@ -358,6 +359,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
         onClick: (itemView: View, entity: E, position: Int) -> Unit
     ) = apply {
         require(id == null || viewType == null) { "Only one of id and viewType can be used of onItemViewClick." }
+
         viewHolderOnClickCallbacks[id ?: viewType ?: ITEM_NO_ID] = onClick
     }
 
@@ -377,6 +379,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
         onLongClick: (itemView: View, entity: E, position: Int) -> Boolean
     ) = apply {
         require(id == null || viewType == null) { "Only one of id and viewType can be used of onItemViewLongClick." }
+
         viewHolderOnLongClickCallbacks[id ?: viewType ?: ITEM_NO_ID] = onLongClick
     }
 
@@ -436,20 +439,24 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
 
         override fun onBindViewHolder(holder: RecyclerViewHolderImpl<Any>, position: Int) {
             val isInHeaderOrFooter = isInHeaderViewHolder(position) || isInFooterViewHolder(position)
+
             val staticPosition = excludingPosition(position)
             val dynamicPosition = AdapterPosition.from(
                 layout = { excludingPosition(holder.layoutPosition) },
                 binding = { excludingPosition(holder.bindingAdapterPosition) },
                 absolute = { excludingPosition(holder.absoluteAdapterPosition) }
             )
+
             boundViewHolderCallbacks.filter { it.viewType == holder.viewType }.forEach {
                 // If it is in the header or footer view holder,
                 // use the null value as the placeholder for entity, and null is not allowed in other cases.
                 val entity = if (isInHeaderOrFooter) null else getCurrentEntity(staticPosition) ?: return
                 it.onBindCallback(holder.delegateInstance, entity, dynamicPosition)
             }
+
             // Header and footer view does not handle item view click events.
             if (isInHeaderOrFooter) return
+
             viewHolderOnClickCallbacks.filterKeys {
                 when (it) {
                     is Long -> it == ITEM_NO_ID || it == getItemId(staticPosition)
@@ -473,12 +480,16 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
             }.takeIf { it.isNotEmpty() }?.also { callbacks ->
                 holder.rootView.setOnLongClickListener {
                     var result = false
+
                     callbacks.forEach { (_, callback) ->
                         val value = dynamicPosition.value
+
                         result = result || getCurrentEntity(value)?.let { entity ->
                             callback(it, entity, value)
                         } == true
-                    }; result
+                    }
+
+                    result
                 }
             }
         }
@@ -503,6 +514,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
             val primaryCount = dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: 0
             val headerCount = if (hasHeaderView) 1 else 0
             val footerCount = if (hasFooterView) 1 else 0
+
             return primaryCount + headerCount + footerCount
         }
     }

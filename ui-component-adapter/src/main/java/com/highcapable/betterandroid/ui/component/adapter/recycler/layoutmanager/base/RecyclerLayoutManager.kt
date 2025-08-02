@@ -39,6 +39,7 @@ import com.highcapable.betterandroid.ui.component.adapter.recycler.factory.wrapp
  * ```kotlin
  * override fun scrollToPosition(position: Int) {
  *    val current = includingPosition(position)
+ *
  *    super.scrollToPosition(current)
  * }
  * ```
@@ -51,12 +52,14 @@ abstract class RecyclerLayoutManager : RecyclerView.LayoutManager() {
     @CallSuper
     override fun onAttachedToWindow(view: RecyclerView) {
         super.onAttachedToWindow(view)
+
         this.base = view
     }
 
     @CallSuper
     override fun onDetachedFromWindow(view: RecyclerView, recycler: RecyclerView.Recycler?) {
         super.onDetachedFromWindow(view, recycler)
+
         this.base = null
     }
 

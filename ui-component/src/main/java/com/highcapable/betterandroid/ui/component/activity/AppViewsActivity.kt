@@ -40,6 +40,7 @@ import android.R as Android_R
  *
  *     override fun onCreate(savedInstanceState: Bundle?) {
  *         super.onCreate(savedInstanceState)
+ *
  *         setContentView(R.layout.activity_main)
  *         findViewById<TextView>(R.id.main_text).text = "Hello World!"
  *         findViewById<Button>(R.id.enter_full_screen).setOnClickListener {
@@ -54,6 +55,7 @@ open class AppViewsActivity : BaseCompatActivity() {
     @CallSuper
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)
+
         val rootView = findViewById<ViewGroup>(Android_R.id.content).firstChild<View>()
         systemBars.init(rootView)
     }
@@ -61,12 +63,14 @@ open class AppViewsActivity : BaseCompatActivity() {
     @CallSuper
     override fun setContentView(view: View?) {
         super.setContentView(view)
+
         systemBars.init(view)
     }
 
     @CallSuper
     override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
         super.setContentView(view, params)
+
         systemBars.init(view)
     }
 }

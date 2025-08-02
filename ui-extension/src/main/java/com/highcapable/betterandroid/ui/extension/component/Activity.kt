@@ -157,6 +157,7 @@ inline fun Context.startActivity(
 ) {
     val className = packageManager?.queryLaunchActivitiesForPackage(packageName)?.firstOrNull()?.activityInfo?.name
         ?: error("No launch activities found for package \"$packageName\".")
+
     startActivity(packageName, className, newTask, options, intent)
 }
 

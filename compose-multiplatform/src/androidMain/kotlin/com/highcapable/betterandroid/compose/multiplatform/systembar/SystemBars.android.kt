@@ -125,16 +125,21 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
 actual fun rememberSystemBarsController(): PlatformSystemBarsController {
     val activity = LocalContext.current as? ComponentActivity? ?: error("No ComponentActivity provided of composables.")
     var systemBars by remember { mutableStateOf(DefaultPlatformSystemBarsController) }
+
     if (systemBars.actual == null) {
         val nativeSystemBars = activity.resolveSystemBarsController()
+
         SideEffect {
             // Find the current [ComposeView].
             val existingComposeView = activity.findViewById<ViewGroup>(Android_R.id.content)?.getChildAt(0) as? ComposeView?
             // If the controller is not initialized, initialize it with [existingComposeView].
             if (nativeSystemBars.isDestroyed) nativeSystemBars.init(existingComposeView, edgeToEdgeInsets = null)
         }
+
         systemBars = PlatformSystemBarsController(nativeSystemBars)
-    }; return systemBars
+    }
+
+    return systemBars
 }
 
 /**

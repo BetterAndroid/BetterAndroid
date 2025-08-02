@@ -32,6 +32,7 @@ abstract class BaseRecyclerItemDecoration internal constructor() : RecyclerView.
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         super.getItemOffsets(outRect, view, parent, state)
+
         val dataSetCount = parent.adapter?.itemCount ?: 0
         if (dataSetCount >= 0) onCalculateItemOffsets(outRect, parent.getChildAdapterPosition(view), dataSetCount)
     }

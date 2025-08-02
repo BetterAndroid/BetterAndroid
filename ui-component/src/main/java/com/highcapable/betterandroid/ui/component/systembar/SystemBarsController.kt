@@ -82,6 +82,7 @@ class SystemBarsController private constructor(private val window: Window) {
          *
          *     override fun onCreate(savedInstanceState: Bundle?) {
          *         super.onCreate(savedInstanceState)
+         *
          *         // Create your binding.
          *         val binding = ActivityMainBinding.inflate(layoutInflater)
          *         setContentView(binding.root)
@@ -90,10 +91,11 @@ class SystemBarsController private constructor(private val window: Window) {
          *     }
          *
          *     override fun onDestroy() {
-         *         super.onDestroy()
          *         // Destroy the system bars controller.
          *         // Optional, prevent memory leaks.
          *         systemBars.destroy()
+         *
+         *         super.onDestroy()
          *     }
          * }
          * ```
@@ -204,6 +206,7 @@ class SystemBarsController private constructor(private val window: Window) {
     /** Initialize the system bars defaults. */
     private fun initializeDefaults() {
         behavior = SystemBarBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE
+
         setStyle(SystemBarStyle.AutoTransparent)
     }
 
@@ -231,6 +234,7 @@ class SystemBarsController private constructor(private val window: Window) {
     @JvmOverloads
     fun init(rootView: View? = null, edgeToEdgeInsets: (WindowInsetsWrapper.() -> InsetsWrapper)? = { safeDrawingIgnoringIme }) {
         if (isInitOnce) return
+
         var throwable: Throwable? = null
         val absRootView = rootView ?: runCatching { window.findViewById<ViewGroup>(Android_R.id.content) }.onFailure {
             throwable = it
@@ -240,20 +244,26 @@ class SystemBarsController private constructor(private val window: Window) {
                 "please set the rootView parameter manually and init the SystemBarsController in Activity's onCreate method." +
                 (throwable?.message?.let { "\nCaused by: $it" } ?: "")
         )
+
         require(absRootView is ViewGroup) { "The rootView $absRootView must inherit from a ViewGroup." }
         requireNotNull(absRootView.parent) { "The rootView $absRootView must have a parent." }
+
         isInitOnce = true
         this.rootView = absRootView
+
         rootInsetsController = WindowCompat.getInsetsController(window, absRootView)
         hasEdgeToEdgeInsets = edgeToEdgeInsets != null
+
         var isStatusBarContrastEnforced = false
         var isNavigationBarContrastEnforced = false
         var navigationBarDividerColor = Color.TRANSPARENT
         var layoutInDisplayCutoutMode = 0
+
         @Suppress("DEPRECATION")
         AndroidVersion.require(AndroidVersion.Q) {
             isStatusBarContrastEnforced = window.isStatusBarContrastEnforced == true
             isNavigationBarContrastEnforced = window.isNavigationBarContrastEnforced == true
+
             // Remove system-made masking of forced contrast colors.
             window.isStatusBarContrastEnforced = false
             window.isNavigationBarContrastEnforced = false
@@ -262,6 +272,7 @@ class SystemBarsController private constructor(private val window: Window) {
         AndroidVersion.require(AndroidVersion.P) {
             navigationBarDividerColor = window.navigationBarDividerColor
             layoutInDisplayCutoutMode = window.attributes?.layoutInDisplayCutoutMode ?: 0
+
             // Set the notch area not to interfere with the current UI.
             window.updateLayoutParams {
                 this.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
@@ -269,6 +280,7 @@ class SystemBarsController private constructor(private val window: Window) {
             // Remove the color of the navigation bars divider.
             window.navigationBarDividerColor = Color.TRANSPARENT
         }
+
         // Save the original system bars params.
         @Suppress("DEPRECATION")
         originalSystemBarParams = SystemBarParams(
@@ -281,9 +293,11 @@ class SystemBarsController private constructor(private val window: Window) {
             isAppearanceLightNavigationBars = rootInsetsController?.isAppearanceLightNavigationBars == true,
             layoutInDisplayCutoutMode = layoutInDisplayCutoutMode
         )
+
         // Set the layout overlay to status bars and navigation bars.
         WindowCompat.setDecorFitsSystemWindows(window, false)
         initializeDefaults()
+
         // If has [edgeToEdgeInsets],
         // the controller will handle the root window insets by default.
         edgeToEdgeInsets?.also {
@@ -336,6 +350,7 @@ class SystemBarsController private constructor(private val window: Window) {
     var statusBarStyle = SystemBarStyle.AutoTransparent
         set(value) {
             field = value
+
             applyStyle(SystemBars.STATUS_BARS, value)
         }
 
@@ -348,6 +363,7 @@ class SystemBarsController private constructor(private val window: Window) {
     var navigationBarStyle = SystemBarStyle.AutoTransparent
         set(value) {
             field = value
+
             applyStyle(SystemBars.NAVIGATION_BARS, value)
         }
 
@@ -389,14 +405,18 @@ class SystemBarsController private constructor(private val window: Window) {
      */
     private fun applyStyle(type: SystemBars, style: SystemBarStyle) {
         val isUiInNightMode = window.context.resources.configuration.isUiInNightMode
+
         val defaultColor = if (isUiInNightMode) Color.BLACK else Color.WHITE
         val backgroundColor = style.color ?: defaultColor
+
         val darkContent = style.darkContent ?: !isUiInNightMode
         val lightApperance = darkContent && backgroundColor == Color.TRANSPARENT || backgroundColor.isBrightColor
+
         @Suppress("DEPRECATION")
         when (type) {
             SystemBars.STATUS_BARS -> {
                 enableDrawsSystemBarBackgrounds()
+
                 // Below Android 6.0 will add a translucent mask,
                 // as the system does not support inverting colors.
                 // Some systems, such as MIUI based on Android 5,
@@ -405,17 +425,20 @@ class SystemBarsController private constructor(private val window: Window) {
                     if (AndroidVersion.isLessThan(AndroidVersion.M) && !systemBarsCompat.isLegacySystem && lightApperance)
                         mixColorOf(backgroundColor, Color.BLACK)
                     else backgroundColor
+
                 if (systemBarsCompat.isLegacySystem) systemBarsCompat.setStatusBarDarkMode(darkContent)
                 else rootInsetsController?.isAppearanceLightStatusBars = darkContent
             }
             SystemBars.NAVIGATION_BARS -> {
                 enableDrawsSystemBarBackgrounds()
+
                 // Below Android 8.0 will add a transparent mask,
                 // because the system does not support inverting colors.
                 window.navigationBarColor =
                     if (AndroidVersion.isLessThan(AndroidVersion.O) && lightApperance)
                         mixColorOf(backgroundColor, Color.BLACK)
                     else backgroundColor
+
                 rootInsetsController?.isAppearanceLightNavigationBars = darkContent
             }
             else -> {}
@@ -442,12 +465,15 @@ class SystemBarsController private constructor(private val window: Window) {
      */
     fun destroy() {
         if (!isInitOnce || rootView == null) return
+
         // Restore to default sets.
         @Suppress("DEPRECATION")
         originalSystemBarParams?.also {
             WindowCompat.setDecorFitsSystemWindows(window, true)
+
             window.statusBarColor = it.statusBarColor
             window.navigationBarColor = it.navigationBarColor
+
             AndroidVersion.require(AndroidVersion.Q) {
                 window.isStatusBarContrastEnforced = it.isStatusBarContrastEnforced
                 window.isNavigationBarContrastEnforced = it.isNavigationBarContrastEnforced
@@ -456,10 +482,12 @@ class SystemBarsController private constructor(private val window: Window) {
                 window.navigationBarDividerColor = it.navigationBarDividerColor
                 window.updateLayoutParams { layoutInDisplayCutoutMode = it.layoutInDisplayCutoutMode }
             }
+
             rootInsetsController?.isAppearanceLightStatusBars = it.isAppearanceLightStatusBars
             rootInsetsController?.isAppearanceLightNavigationBars = it.isAppearanceLightNavigationBars
         }
         if (hasEdgeToEdgeInsets) rootView?.removeWindowInsetsListener()
+
         rootInsetsController = null
         rootView = null
         hasEdgeToEdgeInsets = false

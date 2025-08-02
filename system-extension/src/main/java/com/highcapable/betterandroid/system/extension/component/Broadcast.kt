@@ -83,14 +83,17 @@ fun Context.registerReceiver(
         }
     }
     var receiverFlags = flags
+
     if (exported)
         receiverFlags = if (receiverFlags == null) Context.RECEIVER_EXPORTED
         else receiverFlags or Context.RECEIVER_EXPORTED
+
     if (AndroidVersion.isAtLeast(AndroidVersion.O))
         if (receiverFlags != null)
             registerReceiver(receiver, filter, receiverFlags)
         else registerReceiver(receiver, filter)
     else registerReceiver(receiver, filter)
+
     return receiver
 }
 
@@ -132,6 +135,7 @@ fun Context.sendBroadcast(
     val buildIntent = Intent().apply {
         if (packageName.isNotBlank()) setPackage(packageName)
     }.apply(intent)
+
     sendBroadcast(buildIntent, receiverPermission, options)
 }
 

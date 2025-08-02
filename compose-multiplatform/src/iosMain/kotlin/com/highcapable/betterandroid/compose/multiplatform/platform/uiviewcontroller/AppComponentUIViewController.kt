@@ -86,6 +86,7 @@ class AppComponentUIViewController : UIViewController, UIViewControllerWithOverr
     internal var isStatusBarHidden = false
         set(value) {
             field = value
+
             setNeedsStatusBarAppearanceUpdate()
         }
 
@@ -93,6 +94,7 @@ class AppComponentUIViewController : UIViewController, UIViewControllerWithOverr
     internal var isHomeIndicatorAutoHidden = false
         set(value) {
             field = value
+
             setNeedsUpdateOfHomeIndicatorAutoHidden()
         }
 
@@ -100,6 +102,7 @@ class AppComponentUIViewController : UIViewController, UIViewControllerWithOverr
     internal var screenEdgesDeferringSystemGestures = UIRectEdgeNone
         set(value) {
             field = value
+
             setNeedsUpdateOfScreenEdgesDeferringSystemGestures()
         }
 
@@ -107,6 +110,7 @@ class AppComponentUIViewController : UIViewController, UIViewControllerWithOverr
     internal var statusBarStyle = UIStatusBarStyleDefault
         set(value) {
             field = value
+
             setNeedsStatusBarAppearanceUpdate()
         }
 
@@ -117,8 +121,10 @@ class AppComponentUIViewController : UIViewController, UIViewControllerWithOverr
 
     override fun loadView() {
         super.loadView()
+
         if (childController != null && childView != null)
             error("Only one of child controller and child view can be set for AppComponentUIViewController.")
+
         childController?.also { loadViewFromChildController(it) }
         childView?.also { loadViewFromChildView(it) }
     }
@@ -129,13 +135,17 @@ class AppComponentUIViewController : UIViewController, UIViewControllerWithOverr
      */
     private fun loadViewFromChildController(childController: UIViewController) {
         val rootView = UIView()
+
         addChildViewController(childController)
         rootView.addSubview(childController.view)
         rootView.setAutoresizesSubviews(true)
+
         childController.view.setFlexibleAutoresizingMask()
         view = rootView
+
         // Move to parent view controller.
         childController.didMoveToParentViewController(this)
+
         systemBars.init()
     }
 
@@ -145,10 +155,13 @@ class AppComponentUIViewController : UIViewController, UIViewControllerWithOverr
      */
     private fun loadViewFromChildView(childView: UIView) {
         val rootView = UIView()
+
         rootView.addSubview(childView)
         rootView.setAutoresizesSubviews(true)
+
         childView.setFlexibleAutoresizingMask()
         view = rootView
+
         systemBars.init()
     }
 
@@ -161,6 +174,7 @@ class AppComponentUIViewController : UIViewController, UIViewControllerWithOverr
 
     override fun viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+
         onViewDidLayoutSubviewsCallback?.invoke()
     }
 }

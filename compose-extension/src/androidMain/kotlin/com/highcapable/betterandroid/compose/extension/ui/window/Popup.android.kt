@@ -62,6 +62,7 @@ actual fun Popup(
         properties = properties,
         content = content
     )
+
     // Emulate onPreviewKeyEvent, onKeyEvent on Android.
     if (onPreviewKeyEvent != null || onKeyEvent != null)
         LocalView.current.setOnKeyListener { _, _, event ->

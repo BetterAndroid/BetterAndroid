@@ -94,6 +94,7 @@ class RecyclerAdapterWrapper internal constructor(
      */
     fun notifyItemChanged(position: Int) {
         val current = includingPosition(position)
+
         instance.notifyItemChanged(current)
     }
 
@@ -102,6 +103,7 @@ class RecyclerAdapterWrapper internal constructor(
      */
     fun notifyItemChanged(position: Int, payload: Any?) {
         val current = includingPosition(position)
+
         instance.notifyItemChanged(current, payload)
     }
 
@@ -111,6 +113,7 @@ class RecyclerAdapterWrapper internal constructor(
     fun notifyItemRangeChanged(positionStart: Int, itemCount: Int) {
         val start = includingPosition(positionStart)
         val count = includingPosition(itemCount)
+
         instance.notifyItemRangeChanged(start, count)
     }
 
@@ -120,6 +123,7 @@ class RecyclerAdapterWrapper internal constructor(
     fun notifyItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
         val start = includingPosition(positionStart)
         val count = includingPosition(itemCount)
+
         instance.notifyItemRangeChanged(start, count, payload)
     }
 
@@ -128,6 +132,7 @@ class RecyclerAdapterWrapper internal constructor(
      */
     fun notifyItemInserted(position: Int) {
         val current = includingPosition(position)
+
         instance.notifyItemInserted(current)
     }
 
@@ -137,6 +142,7 @@ class RecyclerAdapterWrapper internal constructor(
     fun notifyItemMoved(fromPosition: Int, toPosition: Int) {
         val from = includingPosition(fromPosition)
         val to = includingPosition(toPosition)
+
         instance.notifyItemMoved(from, to)
     }
 
@@ -146,6 +152,7 @@ class RecyclerAdapterWrapper internal constructor(
     fun notifyItemRangeInserted(positionStart: Int, itemCount: Int) {
         val start = includingPosition(positionStart)
         val count = includingPosition(itemCount)
+
         instance.notifyItemRangeInserted(start, count)
     }
 
@@ -154,6 +161,7 @@ class RecyclerAdapterWrapper internal constructor(
      */
     fun notifyItemRemoved(position: Int) {
         val current = includingPosition(position)
+
         instance.notifyItemRemoved(current)
     }
 
@@ -163,6 +171,7 @@ class RecyclerAdapterWrapper internal constructor(
     fun notifyItemRangeRemoved(positionStart: Int, itemCount: Int) {
         val start = includingPosition(positionStart)
         val count = includingPosition(itemCount)
+
         instance.notifyItemRangeRemoved(start, count)
     }
 }

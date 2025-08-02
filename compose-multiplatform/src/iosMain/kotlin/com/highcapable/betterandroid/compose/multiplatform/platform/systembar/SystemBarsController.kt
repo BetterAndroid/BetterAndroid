@@ -65,6 +65,7 @@ class SystemBarsController private constructor(private val controller: UIViewCon
          */
         fun from(controller: UIViewController): SystemBarsController {
             if (controller !is AppComponentUIViewController) error("Only AppComponentUIViewController is supported for now.")
+
             return SystemBarsController(controller)
         }
     }
@@ -163,6 +164,7 @@ class SystemBarsController private constructor(private val controller: UIViewCon
      */
     private fun updateSystemBarViewsHeight(insets: UIEdgeInsetsWrapper?) {
         insets ?: return
+
         systemBarViews[0].updateHeight(insets.top)
         systemBarViews[1].updateHeight(insets.bottom)
     }
@@ -171,6 +173,7 @@ class SystemBarsController private constructor(private val controller: UIViewCon
     private fun bindSystemBarViews() {
         controller.view.addSubview(systemBarViews[0].current)
         controller.view.addSubview(systemBarViews[1].current)
+
         NSLayoutConstraint.activateConstraints(systemBarViews[0].createConstraints(controller.view, Direction.TOP))
         NSLayoutConstraint.activateConstraints(systemBarViews[1].createConstraints(controller.view, Direction.BOTTOM))
     }
@@ -189,9 +192,12 @@ class SystemBarsController private constructor(private val controller: UIViewCon
      */
     fun init() {
         if (isInitOnce) return
+
         isInitOnce = true
+
         bindSystemBarViews()
         initializeDefaults()
+
         appController.onViewDidLayoutSubviewsCallback = {
             val safeAreaInsets = UIEdgeInsetsWrapper.from(controller.view.safeAreaInsets)
             updateSystemBarViewsHeight(safeAreaInsets)
@@ -223,7 +229,9 @@ class SystemBarsController private constructor(private val controller: UIViewCon
             }
             SystemBars.STATUS_BARS -> appController.isStatusBarHidden = false
             SystemBars.HOME_INDICATOR -> appController.isHomeIndicatorAutoHidden = false
-        }; refreshBehavior()
+        }
+
+        refreshBehavior()
     }
 
     /**
@@ -238,7 +246,9 @@ class SystemBarsController private constructor(private val controller: UIViewCon
             }
             SystemBars.STATUS_BARS -> appController.isStatusBarHidden = true
             SystemBars.HOME_INDICATOR -> appController.isHomeIndicatorAutoHidden = true
-        }; refreshBehavior()
+        }
+
+        refreshBehavior()
     }
 
     /**
@@ -250,6 +260,7 @@ class SystemBarsController private constructor(private val controller: UIViewCon
     var statusBarStyle = SystemBarStyle.AutoTransparent
         set(value) {
             field = value
+
             applyStyle(SystemBars.STATUS_BARS, value)
         }
 
@@ -262,6 +273,7 @@ class SystemBarsController private constructor(private val controller: UIViewCon
     var homeIndicatorStyle = SystemBarStyle.AutoTransparent
         set(value) {
             field = value
+
             applyStyle(SystemBars.HOME_INDICATOR, value)
         }
 
@@ -301,15 +313,19 @@ class SystemBarsController private constructor(private val controller: UIViewCon
      */
     private fun applyStyle(type: SystemBars, style: SystemBarStyle) {
         val isUiInNightMode = controller.traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark
+
         val defaultColor = if (isUiInNightMode) UIColor.blackColor else UIColor.whiteColor
         val backgroundColor = style.color ?: defaultColor
+
         when (type) {
             SystemBars.STATUS_BARS -> {
                 appController.statusBarStyle = when (style.darkContent) {
                     null -> UIStatusBarStyleDefault
                     true -> UIStatusBarStyleDarkContent
                     else -> UIStatusBarStyleLightContent
-                }; systemBarViews[0].setBackgroundColor(backgroundColor)
+                }
+
+                systemBarViews[0].setBackgroundColor(backgroundColor)
             }
             // Home indicator is not supported change its content color.
             SystemBars.HOME_INDICATOR -> systemBarViews[1].setBackgroundColor(backgroundColor)

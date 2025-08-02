@@ -82,6 +82,7 @@ fun Modifier.clickable(
     }
 ) {
     val rememberInteractionSource = interactionSource ?: remember { MutableInteractionSource() }
+
     foundationClickable(
         interactionSource = rememberInteractionSource,
         indication = indication,
@@ -123,6 +124,7 @@ fun Modifier.combinedClickable(
     }
 ) {
     val rememberInteractionSource = interactionSource ?: remember { MutableInteractionSource() }
+
     foundationCombinedClickable(
         interactionSource = rememberInteractionSource,
         indication = indication,
@@ -161,6 +163,7 @@ fun Modifier.toggleable(
     }
 ) {
     val rememberInteractionSource = interactionSource ?: remember { MutableInteractionSource() }
+
     foundationToggleable(
         value = value,
         interactionSource = rememberInteractionSource,
@@ -196,6 +199,7 @@ fun Modifier.selectable(
     }
 ) {
     val rememberInteractionSource = interactionSource ?: remember { MutableInteractionSource() }
+
     foundationSelectable(
         selected = selected,
         interactionSource = rememberInteractionSource,
@@ -232,6 +236,7 @@ fun HapticFeedback(
     handler: () -> Unit
 ): () -> Unit {
     val hapticFeedback = LocalHapticFeedback.current
+
     return {
         handler()
         hapticFeedback.performHapticFeedback(type)

@@ -83,10 +83,12 @@ class ClipDataItemBuilder internal constructor() {
     fun addUri(uri: Uri, resolver: ContentResolver? = null) {
         // Use ClipData.newUri to make a new clip data for getting the uri's mime type.
         val description = resolver?.let { ClipData.newUri(it, null, uri).description }
+
         if (description != null && description.mimeTypeCount > 0)
             for (i in 0 until description.mimeTypeCount)
                 mimeTypes.add(description.getMimeType(i))
         else mimeTypes.add(ClipDescription.MIMETYPE_TEXT_URILIST)
+
         dataItems.add(ClipData.Item(uri))
     }
 
@@ -107,6 +109,7 @@ class ClipDataItemBuilder internal constructor() {
 fun ClipData(label: CharSequence? = null, initiate: ClipDataItemBuilder.() -> Unit): ClipData {
     val data = ClipDataItemBuilder().apply(initiate).build()
     require(data.second.isEmpty()) { "ClipData must have at least one item." }
+
     return ClipData(label, data.first, data.second[0]).apply { data.second.drop(1).forEach { addItem(it) } }
 }
 

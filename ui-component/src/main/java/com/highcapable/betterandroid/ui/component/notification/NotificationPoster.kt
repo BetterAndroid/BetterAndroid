@@ -69,15 +69,19 @@ class NotificationPoster internal constructor(private val notification: Notifica
     @JvmOverloads
     fun post(id: Int = 0, tag: String = "") = apply {
         val channel = notification.builder.channel
+
         val channelGroup = channel.builder.group?.instance
         channelGroup?.also { manager.createNotificationChannelGroup(it) }
+
         manager.createNotificationChannel(channel.instance)
         notification.instance.also {
             if (tag.isNotBlank())
                 manager.notify(tag, id, it)
             else manager.notify(id, it)
+
             shownId = id
             shownTag = tag
+
             // Compat the [NotificationCompat.Builder.setTimeoutAfter].
             if (AndroidVersion.isLessThan(AndroidVersion.O))
                 notification.builder.timeoutAfter?.also { timeoutAfter ->
@@ -93,6 +97,7 @@ class NotificationPoster internal constructor(private val notification: Notifica
      */
     fun cancel() = apply {
         if (isCanceled) return@apply
+
         val currentShownId = shownId ?: return@apply
         if (shownTag.isNotBlank())
             manager.cancel(shownTag, currentShownId)

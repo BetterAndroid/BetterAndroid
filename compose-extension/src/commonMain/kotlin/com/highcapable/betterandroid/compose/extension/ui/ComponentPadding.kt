@@ -184,6 +184,7 @@ private class ComponentPaddingImpl(
 
     override fun equals(other: Any?): Boolean {
         if (other !is ComponentPadding) return false
+
         return start == other.start &&
             top == other.top &&
             end == other.end &&

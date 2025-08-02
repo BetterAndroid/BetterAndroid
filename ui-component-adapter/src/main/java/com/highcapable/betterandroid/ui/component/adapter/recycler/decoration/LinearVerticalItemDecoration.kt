@@ -111,6 +111,7 @@ class LinearVerticalItemDecoration : BaseRecyclerItemDecoration {
      */
     fun update(@Px rowSpacing: Int = this.rowSpacing) {
         rowColumnRect = null
+
         this.rowSpacing = rowSpacing
     }
 

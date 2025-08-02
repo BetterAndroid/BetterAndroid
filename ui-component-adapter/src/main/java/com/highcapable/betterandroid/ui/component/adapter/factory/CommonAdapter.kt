@@ -154,6 +154,7 @@ inline fun <reified E> RecyclerView.bindAdapter(
 ): RecyclerView.Adapter<RecyclerViewHolderImpl<Any>> {
     layoutManager = cosmetic.layoutManager
     addItemDecoration(cosmetic.itemDecoration)
+
     return RecyclerAdapter<E>(context, body).apply { adapter = this }
 }
 

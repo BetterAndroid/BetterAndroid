@@ -56,6 +56,7 @@ abstract class BaseCompatActivity internal constructor() : AppCompatActivity(), 
     override fun onDestroy() {
         systemBars.destroy()
         backPressed.destroy()
+
         super.onDestroy()
     }
 }

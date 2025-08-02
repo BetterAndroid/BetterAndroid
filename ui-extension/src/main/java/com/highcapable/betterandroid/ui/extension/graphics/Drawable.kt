@@ -125,6 +125,7 @@ fun Drawable.updatePadding(
     @Px bottom: Int = -1
 ) {
     val padding = Rect()
+
     getPadding(padding)
     setPadding(
         left = if (left < 0) padding.left else left,

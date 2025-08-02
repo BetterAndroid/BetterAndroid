@@ -48,9 +48,11 @@ fun @receiver:ColorInt Int.toHexColor() = runCatching {
     var r = Integer.toHexString(Color.red(this))
     var g = Integer.toHexString(Color.green(this))
     var b = Integer.toHexString(Color.blue(this))
+
     r = if (r.length == 1) "0$r" else r
     g = if (g.length == 1) "0$g" else g
     b = if (b.length == 1) "0$b" else b
+
     buildString {
         append("#")
         append(r.uppercase())
@@ -109,10 +111,12 @@ fun @receiver:ColorInt Int.toNullableColorStateList() = if (this == Color.TRANSP
 @JvmOverloads
 fun mixColorOf(@ColorInt color1: Int, @ColorInt color2: Int, ratio: Float = 0.5f): Int {
     val inverse = 1 - ratio
+
     val a = (color1 ushr 24) * inverse + (color2 ushr 24) * ratio
     val r = (color1 shr 16 and 0xFF) * inverse + (color2 shr 16 and 0xFF) * ratio
     val g = (color1 shr 8 and 0xFF) * inverse + (color2 shr 8 and 0xFF) * ratio
     val b = (color1 and 0xFF) * inverse + (color2 and 0xFF) * ratio
+
     return a.toInt() shl 24 or (r.toInt() shl 16) or (g.toInt() shl 8) or b.toInt()
 }
 
@@ -181,8 +185,14 @@ object AttrState {
 fun ColorStateList(vararg statesAndColors: Pair<Int, Int>): ColorStateList {
     val states = mutableListOf<IntArray>()
     val colors = mutableListOf<Int>()
+
     statesAndColors.toMap().forEach { (state, color) ->
-        if (state == AttrState.NORMAL) states.add(intArrayOf()) else states.add(intArrayOf(state))
+        if (state == AttrState.NORMAL)
+            states.add(intArrayOf())
+        else states.add(intArrayOf(state))
+
         colors.add(color)
-    }; return ColorStateList(states.toTypedArray(), colors.toIntArray())
+    }
+
+    return ColorStateList(states.toTypedArray(), colors.toIntArray())
 }

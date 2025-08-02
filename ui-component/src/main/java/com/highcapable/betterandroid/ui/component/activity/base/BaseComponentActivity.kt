@@ -56,6 +56,7 @@ abstract class BaseComponentActivity internal constructor() : ComponentActivity(
     override fun onDestroy() {
         systemBars.destroy()
         backPressed.destroy()
+
         super.onDestroy()
     }
 }

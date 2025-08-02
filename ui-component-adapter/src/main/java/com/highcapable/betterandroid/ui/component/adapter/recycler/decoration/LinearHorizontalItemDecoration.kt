@@ -111,6 +111,7 @@ class LinearHorizontalItemDecoration : BaseRecyclerItemDecoration {
      */
     fun update(@Px columnSpacing: Int = this.columnSpacing) {
         rowColumnRect = null
+
         this.columnSpacing = columnSpacing
     }
 

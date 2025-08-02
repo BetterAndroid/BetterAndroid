@@ -114,6 +114,7 @@ actual class PlatformSystemBarsController internal actual constructor(internal a
 actual fun rememberSystemBarsController(): PlatformSystemBarsController {
     // Platform desktop: No-op.
     val systemBars by remember { mutableStateOf(DefaultPlatformSystemBarsController) }
+
     return systemBars
 }
 

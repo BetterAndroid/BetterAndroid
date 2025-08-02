@@ -186,6 +186,7 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
                 BaseViewHolderImpl.from(it, adapterContext, container)
             })?.let {
                 container.addView(it.rootView)
+
                 getCurrentEntity(position)?.let { entity ->
                     getCallback(position)?.onBindCallback
                         ?.invoke(it.delegateInstance, entity, position)
@@ -196,6 +197,7 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
         override fun getPageWidth(position: Int) = PagerMediator(position).let { pagerMediatorsCallback?.invoke(it); it.width }
         override fun getCount() = (dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: boundViewHolderCallbacks.size)
         override fun isViewFromObject(view: View, any: Any) = view == any
+
         override fun destroyItem(container: ViewGroup, position: Int, any: Any) {
             container.removeView(any as? View?)
         }

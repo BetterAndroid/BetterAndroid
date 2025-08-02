@@ -119,6 +119,7 @@ val View.lifecycleOwner: LifecycleOwner?
         val byFragment = (context as? FragmentActivity?)?.fragmentManager()?.fragments?.lastOrNull()
         // Query the lifecycle owner from the activity.
         val byOwner = context as? LifecycleOwner?
+
         return byFragment ?: byOwner
     }
 

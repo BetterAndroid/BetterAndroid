@@ -142,6 +142,7 @@ class GridVerticalItemDecoration : BaseRecyclerItemDecoration {
         @Px rowSpacing: Int = this.rowSpacing
     ) {
         rowColumnRect = null
+
         this.spanCount = spanCount
         this.columnSpacing = columnSpacing
         this.rowSpacing = rowSpacing
@@ -150,11 +151,13 @@ class GridVerticalItemDecoration : BaseRecyclerItemDecoration {
     override fun onCalculateItemOffsets(outRect: Rect, position: Int, itemCount: Int) {
         rowColumnRect?.apply {
             val fullyLastIndex = itemCount - (itemCount % spanCount) - 1
+
             val isFirstColumn = position % spanCount == 0
             val isLastColumn = (position + 1) % spanCount == 0
             val isFirstRow = position < spanCount
             val isLastRow = position > fullyLastIndex || ((fullyLastIndex == itemCount - 1) &&
                 (position in itemCount - spanCount..itemCount))
+
             outRect.set(
                 if (isFirstColumn) firstLeft else left,
                 if (isFirstRow) firstTop else top,
@@ -163,6 +166,7 @@ class GridVerticalItemDecoration : BaseRecyclerItemDecoration {
             )
         } ?: run {
             val columnIndex = position % spanCount
+
             outRect.left = columnIndex * columnSpacing / spanCount
             outRect.right = columnSpacing - (columnIndex + 1) * columnSpacing / spanCount
             if (position >= spanCount) outRect.top = rowSpacing

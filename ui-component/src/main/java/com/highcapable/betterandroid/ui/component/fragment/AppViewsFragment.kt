@@ -45,6 +45,7 @@ import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
  *
  *     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
  *         super.onViewCreated(view, savedInstanceState)
+ *
  *         view.findViewById<TextView>(R.id.main_text).text = "Hello World!"
  *         view.findViewById<Button>(R.id.enter_full_screen).setOnClickListener {
  *             systemBars.hide(SystemBars.ALL)

@@ -50,10 +50,12 @@ class NotificationWrapper internal constructor(internal var builder: Notificatio
      */
     private fun NotificationChannelBuilder.getCompatDefaults(): Int {
         var defaults = 0
+
         if (isLightsEnabled == true) defaults = defaults or NotificationCompat.DEFAULT_LIGHTS
         if (isVibrationEnabled == true) defaults = defaults or NotificationCompat.DEFAULT_VIBRATE
         if (sound != null) defaults = defaults or NotificationCompat.DEFAULT_SOUND
         if (defaults == 0) defaults = NotificationCompat.DEFAULT_ALL
+
         return defaults
     }
 

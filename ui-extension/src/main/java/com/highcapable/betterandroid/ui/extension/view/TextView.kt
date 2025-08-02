@@ -99,6 +99,7 @@ fun TextView.hintToString() = hint?.toString() ?: ""
  */
 fun EditText.updateText(text: CharSequence?) {
     setText(text)
+
     // The [setText] can be overridden by user,
     // so here we should use [getText] to get the text again.
     val afterText = getText() ?: return

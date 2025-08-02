@@ -50,6 +50,7 @@ internal class WindowInsetsWrapperCompat internal constructor(private val window
             // We need to keep default value still to true because the default behavior is show.
             val decorView = window?.decorView ?: return true
             val uiOptions = decorView.systemUiVisibility
+
             return (uiOptions or View.SYSTEM_UI_FLAG_FULLSCREEN) != uiOptions
         }
 
@@ -63,6 +64,7 @@ internal class WindowInsetsWrapperCompat internal constructor(private val window
             // We need to keep default value still to true because the default behavior is show.
             val decorView = window?.decorView ?: return true
             val uiOptions = decorView.systemUiVisibility
+
             return (uiOptions or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != uiOptions
         }
 
@@ -81,6 +83,7 @@ internal class WindowInsetsWrapperCompat internal constructor(private val window
     internal fun createLegacyDisplayCutoutInsets(statusBars: InsetsWrapper): InsetsWrapper {
         val context = window?.context ?: return InsetsWrapper.NONE
         var safeInsetTop = 0
+
         if (AndroidVersion.isAtMost(AndroidVersion.P)) when (RomType.current) {
             RomType.EMUI -> runCatching {
                 val huaweiRet = "com.huawei.android.util.HwNotchSizeUtil".toClassOrNull()
@@ -89,6 +92,7 @@ internal class WindowInsetsWrapperCompat internal constructor(private val window
                     ?.firstMethodOrNull { name = "getNotchSize" }
                     ?.invoke<IntArray>()
                     ?: intArrayOf(0, 0)
+
                 if (huaweiRet[1] != 0)
                     "com.huawei.android.view.LayoutParamsEx".toClassOrNull()
                         ?.resolve()
@@ -99,8 +103,10 @@ internal class WindowInsetsWrapperCompat internal constructor(private val window
                         }
                         ?.of(window?.attributes)
                         ?.invokeQuietly(0x00010000)
+
                 safeInsetTop = huaweiRet[1]
             }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to set display cutout configuration for EMUI.", it) }
+
             RomType.FUNTOUCHOS, RomType.ORIGINOS -> runCatching {
                 if ("android.util.FtFeature".toClassOrNull()
                         ?.resolve()
@@ -111,14 +117,18 @@ internal class WindowInsetsWrapperCompat internal constructor(private val window
                         }?.invokeQuietly<Boolean>(0x00000020) == true
                 ) safeInsetTop = 27.toPx(context)
             }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to set display cutout configuration for FuntouchOS/OriginalOS.", it) }
+
             RomType.COLOROS -> runCatching {
                 if (context.packageManager.hasSystemFeature("com.oppo.feature.screen.heteromorphism"))
                     safeInsetTop = 80
             }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to set display cutout configuration for ColorOS.", it) }
+
             RomType.MIUI -> runCatching {
                 val hasMiuiNotch = SystemProperties.getBoolean("ro.miui.notch")
+
                 if (hasMiuiNotch) {
                     safeInsetTop = statusBars.top
+
                     window?.asResolver()?.optional(silent = true)?.firstMethodOrNull {
                         name = "addExtraFlags"
                         parameters(Int::class)
@@ -126,6 +136,8 @@ internal class WindowInsetsWrapperCompat internal constructor(private val window
                     }?.invokeQuietly(0x00000100 or 0x00000200 or 0x00000400)
                 }
             }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to set display cutout configuration for MIUI.", it) }
-        }; return InsetsWrapper.of(top = safeInsetTop)
+        }
+
+        return InsetsWrapper.of(top = safeInsetTop)
     }
 }
