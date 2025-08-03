@@ -65,7 +65,7 @@ implementation("com.highcapable.betterandroid:ui-component-adapter:<version>")
 
 ::: tip 本节内容
 
-[CommonAdapterBuilder](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter/-common-adapter-builder)
+[BaseAdapterBuilder](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter/-base-adapter-builder)
 
 可用于构建一个 `BaseAdapter`。
 

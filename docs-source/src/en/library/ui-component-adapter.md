@@ -65,7 +65,7 @@ You can view the KDoc [click here](kdoc://ui-component-adapter).
 
 ::: tip Contents of This Section
 
-[CommonAdapterBuilder](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter/-common-adapter-builder)
+[BaseAdapterBuilder](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter/-base-adapter-builder)
 
 Can be used to build a `BaseAdapter`.
 
