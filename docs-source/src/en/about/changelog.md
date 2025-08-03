@@ -18,7 +18,12 @@ Time zone of version release date: **UTC+8**
 
 ## ui-component
 
-### 1.0.7 | 2025.03.08 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.8 | 2025.08.03 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Remove adapter-related functions and merge them into [ui-component-adapter](#ui-component-adapter)
+- Migrate Java reflection-related behavior from [YukiReflection](https://github.com/HighCapable/YukiReflection) to [KavaRef](https://github.com/HighCapable/KavaRef)
+
+### 1.0.7 | 2025.03.08 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Removed Material dependencies and refactored into corresponding dependencies
 - Extensively refactored adapter (Adapter) underlying APIs
@@ -88,9 +93,26 @@ Time zone of version release date: **UTC+8**
 
 - The first version is submitted to Maven
 
+## ui-component-adapter
+
+### 1.0.0 | 2025.08.03 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- The first version is submitted to Maven
+
 ## ui-extension
 
-### 1.0.6 | 2025.03.04 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.7 | 2025.08.03 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Remove the `Adapter` related extension and merge it into [ui-component-adapter](#ui-component-adapter)
+- Migrate Java reflection-related behavior from [YukiReflection](https://github.com/HighCapable/YukiReflection) to [KavaRef](https://github.com/HighCapable/KavaRef)
+- `Resources` adjustment in the extension `isUiInNightMode` the underlying logic is connected to the `isNightModeActive` method
+- ~~`obtainStyledAttributes`~~ method in the `Resources` extension is now recommended to migrate to Jetpack's `withStyledAttributes`
+- `View` extension adds `updateMarginsRelative` method
+- The ~~`zoom`~~ method in the `Bitmap` extension is invalid. It is now recommended to migrate to Jetpack's `scale` method
+- Added `backgroundColor` parameter to `round` in the `Bitmap` extension
+- ~~`compress`~~ in the `Bitmap` extension, please use the `shrink` method instead
+
+### 1.0.6 | 2025.03.04 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Adjusted the default behavior of the `inflate` method and `attachToParent` parameter in the `LayoutInflater` extension
 - Corrected the `updateMargin` method in the `View` extension to `updateMargins` and added the `setMargins` method
@@ -187,7 +209,14 @@ Time zone of version release date: **UTC+8**
 
 ## system-extension
 
-### 1.0.2 | 2025.01.25 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.3 | 2025.08.03 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Migrate Java reflection-related behavior from [YukiReflection](https://github.com/HighCapable/YukiReflection) to [KavaRef](https://github.com/HighCapable/KavaRef)
+- ~~`SystemVersion`~~ renamed to `AndroidVersion` and added Android 15, 16 and 1-4.3 version constants, and functional adjustments are made at the same time
+- ~~`SystemKind`~~ rename it to `RomType` and make functional adjustments
+- Added the `options` parameter of the `sendBroadcast` method to the `options` extension
+
+### 1.0.2 | 2025.01.25 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Added `BroadcastReceiver` method in `Broadcast` extension and modified the return value of `registerReceiver` method to itself
 

@@ -10,7 +10,12 @@
 
 ## ui-component
 
-### 1.0.7 | 2025.03.08 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.8 | 2025.08.03 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 移除适配器相关功能，统一合并至 [ui-component-adapter](#ui-component-adapter)
+- 将 Java 反射相关行为由 [YukiReflection](https://github.com/HighCapable/YukiReflection) 迁移至 [KavaRef](https://github.com/HighCapable/KavaRef)
+
+### 1.0.7 | 2025.03.08 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 移除 Material 依赖并解构为对应依赖
 - 大量重构适配器 (Adapter) 底层相关的 API
@@ -77,9 +82,26 @@
 
 - 首个版本提交至 Maven
 
+## ui-component-adapter
+
+### 1.0.0 | 2025.08.03 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 首个版本提交至 Maven
+
 ## ui-extension
 
-### 1.0.6 | 2025.03.04 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.7 | 2025.08.03 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 移除 `Adapter` 相关扩展，统一合并至 [ui-component-adapter](#ui-component-adapter)
+- 将 Java 反射相关行为由 [YukiReflection](https://github.com/HighCapable/YukiReflection) 迁移至 [KavaRef](https://github.com/HighCapable/KavaRef)
+- `Resources` 扩展中调整 `isUiInNightMode` 底层逻辑对接到 `isNightModeActive` 方法
+- 作废 `Resources` 扩展中的 ~~`obtainStyledAttributes`~~ 方法，现在推荐迁移到 Jetpack 的 `withStyledAttributes`
+- `View` 扩展新增 `updateMarginsRelative` 方法
+- 作废 `Bitmap` 扩展中的 ~~`zoom`~~ 方法，现在推荐迁移到 Jetpack 的 `scale` 方法
+- `Bitmap` 扩展中对 `round` 新增 `backgroundColor` 参数
+- 作废 `Bitmap` 扩展中的 ~~`compress`~~ 请使用 `shrink` 方法代替
+
+### 1.0.6 | 2025.03.04 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 调整 `LayoutInflater` 扩展中的 `inflate` 方法和 `attachToParent` 参数的默认行为
 - 修正 `View` 扩展中的 ~~`updateMargin`~~ 方法为 `updateMargins` 并添加 `setMargins` 方法
@@ -176,7 +198,14 @@
 
 ## system-extension
 
-### 1.0.2 | 2025.01.25 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.3 | 2025.08.03 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 将 Java 反射相关行为由 [YukiReflection](https://github.com/HighCapable/YukiReflection) 迁移至 [KavaRef](https://github.com/HighCapable/KavaRef)
+- ~~`SystemVersion`~~ 重命名为 `AndroidVersion` 并新增 Android 15、16 以及 1-4.3 的版本常量，同时进行功能性调整
+- ~~`SystemKind`~~ 重命名为 `RomType` 并进行功能性调整
+- `Broadcast` 扩展中新增 `sendBroadcast` 方法的 `options` 参数
+
+### 1.0.2 | 2025.01.25 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - `Broadcast` 扩展中新增 `BroadcastReceiver` 方法并修改 `registerReceiver` 方法的返回值为其自身
 
