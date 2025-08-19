@@ -38,10 +38,10 @@ import com.highcapable.betterandroid.ui.component.insets.factory.toWrapper
  * @param isVisible the visibility state.
  */
 class InsetsWrapper private constructor(
-    @Px val left: Int,
-    @Px val top: Int,
-    @Px val right: Int,
-    @Px val bottom: Int,
+    @param:Px val left: Int,
+    @param:Px val top: Int,
+    @param:Px val right: Int,
+    @param:Px val bottom: Int,
     val isVisible: Boolean
 ) {
 

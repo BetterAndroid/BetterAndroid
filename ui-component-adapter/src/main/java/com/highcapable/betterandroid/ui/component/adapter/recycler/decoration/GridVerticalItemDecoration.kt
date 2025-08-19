@@ -57,14 +57,14 @@ class GridVerticalItemDecoration : BaseRecyclerItemDecoration {
      * @param bottom the each bottom spacing (px).
      */
     private class RowColumnRect(
-        @Px val firstLeft: Int,
-        @Px val left: Int,
-        @Px val firstTop: Int,
-        @Px val top: Int,
-        @Px val lastRight: Int,
-        @Px val right: Int,
-        @Px val lastBottom: Int,
-        @Px val bottom: Int
+        @param:Px val firstLeft: Int,
+        @param:Px val left: Int,
+        @param:Px val firstTop: Int,
+        @param:Px val top: Int,
+        @param:Px val lastRight: Int,
+        @param:Px val right: Int,
+        @param:Px val lastBottom: Int,
+        @param:Px val bottom: Int
     )
 
     /**

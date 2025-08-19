@@ -25,6 +25,7 @@ package com.highcapable.betterandroid.ui.component.systembar.style
 
 import android.graphics.Color
 import androidx.annotation.ColorInt
+import com.highcapable.betterandroid.ui.component.systembar.style.SystemBarStyle.Companion.Auto
 import com.highcapable.betterandroid.ui.extension.graphics.isBrightColor
 
 /**
@@ -32,7 +33,7 @@ import com.highcapable.betterandroid.ui.extension.graphics.isBrightColor
  * @param color the background color.
  * @param darkContent whether the content color is dark.
  */
-data class SystemBarStyle(@ColorInt val color: Int? = null, val darkContent: Boolean? = null) {
+data class SystemBarStyle(@param:ColorInt val color: Int? = null, val darkContent: Boolean? = null) {
 
     companion object {
 

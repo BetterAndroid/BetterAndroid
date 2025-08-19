@@ -33,7 +33,7 @@ import com.highcapable.betterandroid.ui.extension.view.layoutInflater
  * XML layout ID type view holder delegate.
  * @param resId the layout resource ID.
  */
-class XmlLayoutHolderDelegate internal constructor(@LayoutRes private val resId: Int) : ViewHolderDelegate<View>() {
+class XmlLayoutHolderDelegate internal constructor(@param:LayoutRes private val resId: Int) : ViewHolderDelegate<View>() {
 
     override fun create(context: Context, parent: ViewGroup?) = context.layoutInflater.inflate(resId, parent, attachToRoot = false)
     override fun getView(instance: View) = instance
