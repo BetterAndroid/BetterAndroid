@@ -14,7 +14,9 @@ kotlin {
     androidTarget {
         publishLibraryVariants("release")
     }
+
     jvm("desktop")
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -31,7 +33,9 @@ kotlin {
             }
         }
     }
+
     jvmToolchain(17)
+
     sourceSets {
         all {
             languageSettings {
@@ -41,10 +45,12 @@ kotlin {
                 optIn("androidx.compose.foundation.ExperimentalFoundationApi")
             }
         }
+
         val commonMain by getting {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
+
                 implementation(projects.composeExtension)
             }
         }
@@ -52,6 +58,7 @@ kotlin {
             dependencies {
                 implementation(androidx.core.core.ktx)
                 implementation(androidx.activity.activity)
+
                 implementation(projects.uiComponent)
             }
         }
@@ -66,7 +73,7 @@ kotlin {
             iosSimulatorArm64Main.dependsOn(this)
         }
     }
-    @Suppress("OPT_IN_USAGE")
+
     compilerOptions {
         // Workaround for https://youtrack.jetbrains.com/issue/KT-61573
         freeCompilerArgs = listOf("-Xexpect-actual-classes")

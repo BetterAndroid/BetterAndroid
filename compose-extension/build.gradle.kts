@@ -14,7 +14,9 @@ kotlin {
     androidTarget {
         publishLibraryVariants("release")
     }
+
     jvm("desktop")
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -25,7 +27,9 @@ kotlin {
             isStatic = true
         }
     }
+
     jvmToolchain(17)
+
     sourceSets {
         all {
             languageSettings {
@@ -35,6 +39,7 @@ kotlin {
                 optIn("androidx.compose.foundation.ExperimentalFoundationApi")
             }
         }
+
         val commonMain by getting {
             dependencies {
                 implementation(compose.runtime)

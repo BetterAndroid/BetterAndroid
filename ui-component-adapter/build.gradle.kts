@@ -27,12 +27,16 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    buildFeatures { viewBinding = true }
+
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
     implementation(projects.uiExtension)
     implementation(projects.systemExtension)
+
     implementation(com.highcapable.kavaref.kavaref.core)
     implementation(com.highcapable.kavaref.kavaref.extension)
     implementation(androidx.core.core.ktx)
@@ -40,6 +44,7 @@ dependencies {
     implementation(androidx.recyclerview.recyclerview)
     implementation(androidx.viewpager.viewpager)
     implementation(androidx.viewpager2.viewpager2)
+
     testImplementation(junit.junit)
     androidTestImplementation(androidx.test.ext.junit)
     androidTestImplementation(androidx.test.espresso.espresso.core)

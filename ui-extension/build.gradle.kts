@@ -27,17 +27,23 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    buildFeatures { viewBinding = true }
+
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
     implementation(projects.systemExtension)
+
+    api(androidx.fragment.fragment.ktx)
+
     implementation(com.highcapable.kavaref.kavaref.core)
     implementation(com.highcapable.kavaref.kavaref.extension)
-    api(androidx.fragment.fragment.ktx)
     implementation(androidx.core.core.ktx)
     implementation(androidx.appcompat.appcompat)
     implementation(com.google.android.material.material)
+
     testImplementation(junit.junit)
     androidTestImplementation(androidx.test.ext.junit)
     androidTestImplementation(androidx.test.espresso.espresso.core)
