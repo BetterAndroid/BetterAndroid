@@ -12,13 +12,13 @@ repositories:
 plugins:
   org.jetbrains.kotlin.multiplatform:
     alias: kotlin-multiplatform
-    version: 2.2.10
+    version: 2.2.20
   org.jetbrains.kotlin.android:
     alias: kotlin-android
     version-ref: kotlin-multiplatform
   org.jetbrains.compose:
     alias: jetbrains-compose
-    version: 1.8.2
+    version: 1.9.0
   org.jetbrains.kotlin.plugin.compose:
     alias: compose-compiler
     version-ref: kotlin-multiplatform
@@ -39,7 +39,7 @@ plugins:
 libraries:
   com.highcapable.kavaref:
     kavaref-core:
-      version: 1.0.1
+      version: 1.0.2
     kavaref-extension:
       version: 1.0.1
   androidx.core:
@@ -50,7 +50,7 @@ libraries:
       version: 1.8.9
   androidx.activity:
     activity:
-      version: 1.10.1
+      version: 1.11.0
   androidx.appcompat:
     appcompat:
       version: 1.7.1
