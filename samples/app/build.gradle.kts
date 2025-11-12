@@ -1,18 +1,18 @@
 plugins {
-    autowire(libs.plugins.android.application)
-    autowire(libs.plugins.kotlin.android)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
-    namespace = property.project.samples.app.packageName
-    compileSdk = property.project.android.compileSdk
+    namespace = gropify.project.samples.app.packageName
+    compileSdk = gropify.project.android.compileSdk
 
     defaultConfig {
-        applicationId = property.project.samples.app.packageName
-        minSdk = property.project.android.minSdk
-        targetSdk = property.project.android.targetSdk
-        versionName = property.project.samples.app.versionName
-        versionCode = property.project.samples.app.versionCode
+        applicationId = gropify.project.samples.app.packageName
+        minSdk = gropify.project.android.minSdk
+        targetSdk = gropify.project.android.targetSdk
+        versionName = gropify.project.samples.app.versionName
+        versionCode = gropify.project.samples.app.versionCode
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -38,12 +38,12 @@ dependencies {
     implementation(projects.uiExtension)
     implementation(projects.systemExtension)
 
-    implementation(androidx.core.core.ktx)
-    implementation(androidx.appcompat.appcompat)
-    implementation(com.google.android.material.material)
-    implementation(androidx.constraintlayout.constraintlayout)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.constraintlayout)
 
-    testImplementation(junit.junit)
-    androidTestImplementation(androidx.test.ext.junit)
-    androidTestImplementation(androidx.test.espresso.espresso.core)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
 }

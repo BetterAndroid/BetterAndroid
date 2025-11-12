@@ -1,14 +1,14 @@
 plugins {
-    autowire(libs.plugins.kotlin.multiplatform)
-    autowire(libs.plugins.android.library)
-    autowire(libs.plugins.jetbrains.compose)
-    autowire(libs.plugins.compose.compiler)
-    autowire(libs.plugins.kotlin.dokka)
-    autowire(libs.plugins.maven.publish)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.dokka)
+    alias(libs.plugins.maven.publish)
 }
 
-group = property.project.groupName
-version = property.project.compose.extension.version
+group = gropify.project.groupName
+version = gropify.project.compose.extension.version
 
 kotlin {
     androidTarget {
@@ -23,7 +23,7 @@ kotlin {
         iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = property.project.compose.extension.iosModuleName
+            baseName = gropify.project.compose.extension.iosModuleName
             isStatic = true
         }
     }
@@ -61,15 +61,15 @@ kotlin {
 }
 
 android {
-    namespace = property.project.compose.extension.namespace
-    compileSdk = property.project.android.compileSdk
+    namespace = gropify.project.compose.extension.namespace
+    compileSdk = gropify.project.android.compileSdk
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
-        minSdk = property.project.android.minSdk
+        minSdk = gropify.project.android.minSdk
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

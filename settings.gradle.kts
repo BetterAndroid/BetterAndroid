@@ -8,55 +8,59 @@ pluginManagement {
     }
 }
 
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        mavenLocal()
+    }
+}
+
 plugins {
-    id("com.highcapable.sweetdependency") version "1.0.4"
-    id("com.highcapable.sweetproperty") version "1.0.8"
+    id("com.highcapable.gropify") version "1.0.0"
 }
 
-sweetDependency {
-    isUseDependencyResolutionManagement = false
-}
-
-sweetProperty {
+gropify {
     global {
-        sourcesCode {
+        android {
             includeKeys("^project\\..*$".toRegex())
-            isEnableRestrictedAccess = true
+            isRestrictedAccessEnabled = true
         }
     }
 
     rootProject {
-        all {
-            isEnable = false
+        common {
+            isEnabled = false
         }
     }
 
-    project(":samples") {
-        all {
-            isEnable = false
+    projects(":samples") {
+        common {
+            isEnabled = false
         }
     }
-    project(":samples:app") {
-        sourcesCode {
-            isEnable = false
+    projects(":samples:app") {
+        android {
+            isEnabled = false
         }
     }
-    project(
+    projects(
         ":ui-component",
         ":ui-component-adapter",
         ":ui-extension",
         ":system-extension"
     ) {
-        sourcesCode {
+        android {
             className = rootProject.name
         }
     }
-    project(
+    projects(
         ":compose-extension",
         ":compose-multiplatform"
     ) {
-        sourcesCode {
-            isEnable = false
+        kmp {
+            isEnabled = false
         }
     }
 }

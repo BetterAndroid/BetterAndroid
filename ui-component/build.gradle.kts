@@ -1,19 +1,19 @@
 plugins {
-    autowire(libs.plugins.android.library)
-    autowire(libs.plugins.kotlin.android)
-    autowire(libs.plugins.kotlin.dokka)
-    autowire(libs.plugins.maven.publish)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.dokka)
+    alias(libs.plugins.maven.publish)
 }
 
-group = property.project.groupName
-version = property.project.ui.component.version
+group = gropify.project.groupName
+version = gropify.project.ui.component.version
 
 android {
-    namespace = property.project.ui.component.namespace
-    compileSdk = property.project.android.compileSdk
+    namespace = gropify.project.ui.component.namespace
+    compileSdk = gropify.project.android.compileSdk
 
     defaultConfig {
-        minSdk = property.project.android.minSdk
+        minSdk = gropify.project.android.minSdk
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -37,12 +37,12 @@ dependencies {
     implementation(projects.uiExtension)
     implementation(projects.systemExtension)
 
-    implementation(com.highcapable.kavaref.kavaref.core)
-    implementation(com.highcapable.kavaref.kavaref.extension)
-    implementation(androidx.core.core.ktx)
-    implementation(androidx.appcompat.appcompat)
+    implementation(libs.kavaref.core)
+    implementation(libs.kavaref.extension)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
 
-    testImplementation(junit.junit)
-    androidTestImplementation(androidx.test.ext.junit)
-    androidTestImplementation(androidx.test.espresso.espresso.core)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
 }

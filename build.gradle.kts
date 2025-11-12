@@ -7,14 +7,14 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
-    autowire(libs.plugins.kotlin.multiplatform) apply false
-    autowire(libs.plugins.kotlin.android) apply false
-    autowire(libs.plugins.android.application) apply false
-    autowire(libs.plugins.android.library) apply false
-    autowire(libs.plugins.jetbrains.compose) apply false
-    autowire(libs.plugins.compose.compiler) apply false
-    autowire(libs.plugins.kotlin.dokka) apply false
-    autowire(libs.plugins.maven.publish) apply false
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.jetbrains.compose) apply false
+    alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.kotlin.dokka) apply false
+    alias(libs.plugins.maven.publish) apply false
 }
 
 libraryProjects {
