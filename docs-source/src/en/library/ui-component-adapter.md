@@ -12,24 +12,7 @@ This is a dependency for UI (user interface) adapter components.
 
 You can add this module to your project using the following method.
 
-### SweetDependency (Recommended)
-
-Add dependency in your project's `SweetDependency` configuration file.
-
-```yaml
-libraries:
-  com.highcapable.betterandroid:
-    ui-component-adapter:
-      version: +
-```
-
-Configure dependency in your project's `build.gradle.kts`.
-
-```kotlin
-implementation(com.highcapable.betterandroid.ui.component.adapter)
-```
-
-### Version Catalog
+### Version Catalog (Recommended)
 
 Add dependency in your project's `gradle/libs.versions.toml`.
 

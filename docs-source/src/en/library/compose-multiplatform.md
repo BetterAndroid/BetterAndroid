@@ -24,60 +24,7 @@ You can add this module to your project using the following method.
 
 This is a Kotlin Multiplatform dependency, you need the `org.jetbrains.kotlin.multiplatform` plugin to apply the relevant dependencies.
 
-### SweetDependency (Recommended)
-
-Add dependencies to your project's `SweetDependency` configuration file.
-
-```yaml
-libraries:
-  com.highcapable.betterandroid:
-    # commonMain
-    compose-multiplatform:
-      version: +
-    # androidMain
-    compose-multiplatform-android:
-      version-ref: <this>::compose-multiplatform
-    # iosArm64Main
-    compose-multiplatform-iosarm64:
-      version-ref: <this>::compose-multiplatform
-    # iosX64Main
-    compose-multiplatform-iosx64:
-      version-ref: <this>::compose-multiplatform
-    # iosSimulatorArm64Main
-    compose-multiplatform-iossimulatorarm64:
-      version-ref: <this>::compose-multiplatform
-    # desktopMain
-    compose-multiplatform-desktop:
-      version-ref: <this>::compose-multiplatform
-```
-
-Configure dependencies in your project's `build.gradle.kts`.
-
-If you use multi-platform dependencies in a regular project, you only need to deploy the corresponding platform suffix dependencies as needed.
-
-```kotlin
-implementation(com.highcapable.betterandroid.compose.multiplatform.android)
-implementation(com.highcapable.betterandroid.compose.multiplatform.iosarm64)
-implementation(com.highcapable.betterandroid.compose.multiplatform.iosx64)
-implementation(com.highcapable.betterandroid.compose.multiplatform.iossimulatorarm64)
-implementation(com.highcapable.betterandroid.compose.multiplatform.desktop)
-```
-
-If you use multi-platform dependencies in a multi-platform project, you need to add the `compose-multiplatform` dependency in `commonMain`.
-
-```kotlin
-kotlin {
-    sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(com.highcapable.betterandroid.compose.multiplatform)
-            }
-        }
-    }
-}
-```
-
-### Version Catalog
+### Version Catalog (Recommended)
 
 Add dependency in your project's `gradle/libs.versions.toml`.
 

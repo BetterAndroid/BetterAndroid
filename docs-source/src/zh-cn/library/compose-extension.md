@@ -16,60 +16,7 @@
 
 这是一个 Kotlin Multiplatform 依赖，你需要 `org.jetbrains.kotlin.multiplatform` 插件来应用相关依赖。
 
-### SweetDependency (推荐)
-
-在你的项目 `SweetDependency` 配置文件中添加依赖。
-
-```yaml
-libraries:
-  com.highcapable.betterandroid:
-    # commonMain
-    compose-extension:
-      version: +
-    # androidMain
-    compose-extension-android:
-      version-ref: <this>::compose-extension
-    # iosArm64Main
-    compose-extension-iosarm64:
-      version-ref: <this>::compose-extension
-    # iosX64Main
-    compose-extension-iosx64:
-      version-ref: <this>::compose-extension
-    # iosSimulatorArm64Main
-    compose-extension-iossimulatorarm64:
-      version-ref: <this>::compose-extension
-    # desktopMain
-    compose-extension-desktop:
-      version-ref: <this>::compose-extension
-```
-
-在你的项目 `build.gradle.kts` 中配置依赖。
-
-如果你在普通的项目中使用多平台依赖，你只需要按需部署对应平台后缀的依赖即可。
-
-```kotlin
-implementation(com.highcapable.betterandroid.compose.extension.android)
-implementation(com.highcapable.betterandroid.compose.extension.iosarm64)
-implementation(com.highcapable.betterandroid.compose.extension.iosx64)
-implementation(com.highcapable.betterandroid.compose.extension.iossimulatorarm64)
-implementation(com.highcapable.betterandroid.compose.extension.desktop)
-```
-
-如果你在多平台项目中使用多平台依赖，你需要在 `commonMain` 中添加 `compose-extension` 依赖。
-
-```kotlin
-kotlin {
-    sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(com.highcapable.betterandroid.compose.extension)
-            }
-        }
-    }
-}
-```
-
-### Version Catalog
+### Version Catalog (推荐)
 
 在你的项目 `gradle/libs.versions.toml` 中添加依赖。
 

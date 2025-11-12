@@ -16,60 +16,7 @@ You can add this module to your project using the following method.
 
 This is a Kotlin Multiplatform dependency, you need the `org.jetbrains.kotlin.multiplatform` plugin to apply the relevant dependencies.
 
-### SweetDependency (Recommended)
-
-Add dependencies to your project's `SweetDependency` configuration file.
-
-```yaml
-libraries:
-  com.highcapable.betterandroid:
-    # commonMain
-    compose-extension:
-      version: +
-    # androidMain
-    compose-extension-android:
-      version-ref: <this>::compose-extension
-    # iosArm64Main
-    compose-extension-iosarm64:
-      version-ref: <this>::compose-extension
-    # iosX64Main
-    compose-extension-iosx64:
-      version-ref: <this>::compose-extension
-    # iosSimulatorArm64Main
-    compose-extension-iossimulatorarm64:
-      version-ref: <this>::compose-extension
-    # desktopMain
-    compose-extension-desktop:
-      version-ref: <this>::compose-extension
-```
-
-Configure dependencies in your project's `build.gradle.kts`.
-
-If you use multi-platform dependencies in a regular project, you only need to deploy the corresponding platform suffix dependencies as needed.
-
-```kotlin
-implementation(com.highcapable.betterandroid.compose.extension.android)
-implementation(com.highcapable.betterandroid.compose.extension.iosarm64)
-implementation(com.highcapable.betterandroid.compose.extension.iosx64)
-implementation(com.highcapable.betterandroid.compose.extension.iossimulatorarm64)
-implementation(com.highcapable.betterandroid.compose.extension.desktop)
-```
-
-If you use multi-platform dependencies in a multi-platform project, you need to add the `compose-extension` dependency in `commonMain`.
-
-```kotlin
-kotlin {
-    sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(com.highcapable.betterandroid.compose.extension)
-            }
-        }
-    }
-}
-```
-
-### Version Catalog
+### Version Catalog (Recommended)
 
 Add dependency in your project's `gradle/libs.versions.toml`.
 

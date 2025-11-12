@@ -12,24 +12,7 @@ This is a dependency for system layer related extensions.
 
 You can add this module to your project using the following method.
 
-### SweetDependency (Recommended)
-
-Add dependency in your project's `SweetDependency` configuration file.
-
-```yaml
-libraries:
-  com.highcapable.betterandroid:
-    system-extension:
-      version: +
-```
-
-Configure dependency in your project's `build.gradle.kts`.
-
-```kotlin
-implementation(com.highcapable.betterandroid.system.extension)
-```
-
-### Version Catalog
+### Version Catalog (Recommended)
 
 Add dependency in your project's `gradle/libs.versions.toml`.
 
