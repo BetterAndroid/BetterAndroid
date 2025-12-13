@@ -63,9 +63,24 @@ gropify {
             isEnabled = false
         }
     }
+    projects(
+        ":ui-extension-lint"
+    ) {
+        jvm {
+            className = rootProject.name
+        }
+    }
 }
 
 rootProject.name = "BetterAndroid"
 
 include(":samples:app")
-include(":ui-component", ":ui-component-adapter", ":ui-extension", ":system-extension", ":compose-extension", ":compose-multiplatform")
+include(
+    ":ui-component",
+    ":ui-component-adapter",
+    ":ui-extension",
+    ":ui-extension-lint",
+    ":system-extension",
+    ":compose-extension",
+    ":compose-multiplatform"
+)

@@ -34,6 +34,8 @@ android {
 }
 
 dependencies {
+    lintPublish(projects.uiExtensionLint)
+
     implementation(projects.systemExtension)
 
     api(libs.androidx.fragment.ktx)
