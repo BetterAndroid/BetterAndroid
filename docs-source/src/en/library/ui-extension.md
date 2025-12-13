@@ -1337,7 +1337,7 @@ Currently, there is no universal and complete solution, this is a historical pro
 
 There is no reason and no need for `BetterAndroid` to be special, encapsulates related functions for bitmap blur.
 
-If your app targets Android 12 and above, we recommend using the officially provided `RenderEffect` for blur operations, and using the `RenderScript` replacement [renderscript-intrinsics-replacement-toolkit](https://github.com/android/renderscript-intrinsics-replacement-toolkit) (but has not been maintained for more than two years).
+If your app targets Android 12 and above, we recommend using the officially provided `RenderEffect` for blur operations, ~~and using the `RenderScript` replacement [renderscript-intrinsics-replacement-toolkit](https://github.com/android/renderscript-intrinsics-replacement-toolkit)~~ (Archived).
 
 :::
 

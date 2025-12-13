@@ -1289,7 +1289,7 @@ val blurBitmap = bitmap.blur(25)
 
 在 Android 中的位图模糊效果你可以参考并使用其它可能的第三方库，目前并没有一个通用且完善的解决方案，这是 Android 中的历史遗留问题，`BetterAndroid` 没有理由且无任何必要特意封装针对位图模糊的相关功能。
 
-如果你的应用程序目标为 Android 12 及以上版本，我们建议使用官方提供的 `RenderEffect` 来进行模糊操作，在以下版本中使用 `RenderScript` 的替代品 [renderscript-intrinsics-replacement-toolkit](https://github.com/android/renderscript-intrinsics-replacement-toolkit) (但是已经超过两年没有维护)。
+如果你的应用程序目标为 Android 12 及以上版本，我们建议使用官方提供的 `RenderEffect` 来进行模糊操作，~~在以下版本中使用 `RenderScript` 的替代品 [renderscript-intrinsics-replacement-toolkit](https://github.com/android/renderscript-intrinsics-replacement-toolkit)~~ (已归档)。
 
 :::
 
