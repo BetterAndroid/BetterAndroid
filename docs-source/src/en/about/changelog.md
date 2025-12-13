@@ -18,7 +18,11 @@ Time zone of version release date: **UTC+8**
 
 ## ui-component
 
-### 1.0.8 | 2025.08.03 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.9 | 2025.12.14 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Breaking change: Migrate Insets related functions to [ui-extension](#ui-extension)
+
+### 1.0.8 | 2025.08.03 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Remove adapter-related functions and merge them into [ui-component-adapter](#ui-component-adapter)
 - Migrate Java reflection-related behavior from [YukiReflection](https://github.com/HighCapable/YukiReflection) to [KavaRef](https://github.com/HighCapable/KavaRef)
@@ -101,7 +105,13 @@ Time zone of version release date: **UTC+8**
 
 ## ui-extension
 
-### 1.0.7 | 2025.08.03 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.8 | 2025.12.14 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Added Insets related functions from [ui-component](#ui-component)
+- Insets extension `handleOnWindowInsetsChanged` method adds `requestApplyOnLayout` parameter
+- Added Lint functionality (experimental)
+
+### 1.0.7 | 2025.08.03 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Remove the `Adapter` related extension and merge it into [ui-component-adapter](#ui-component-adapter)
 - Migrate Java reflection-related behavior from [YukiReflection](https://github.com/HighCapable/YukiReflection) to [KavaRef](https://github.com/HighCapable/KavaRef)

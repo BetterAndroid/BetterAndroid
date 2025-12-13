@@ -10,7 +10,11 @@
 
 ## ui-component
 
-### 1.0.8 | 2025.08.03 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.9 | 2025.12.14 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 破坏性更改：迁移 Insets 相关功能至 [ui-extension](#ui-extension)
+
+### 1.0.8 | 2025.08.03 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 移除适配器相关功能，统一合并至 [ui-component-adapter](#ui-component-adapter)
 - 将 Java 反射相关行为由 [YukiReflection](https://github.com/HighCapable/YukiReflection) 迁移至 [KavaRef](https://github.com/HighCapable/KavaRef)
@@ -90,7 +94,13 @@
 
 ## ui-extension
 
-### 1.0.7 | 2025.08.03 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.8 | 2025.12.14 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 新增 [ui-component](#ui-component) Insets 相关功能
+- Insets 扩展 `handleOnWindowInsetsChanged` 方法新增 `requestApplyOnLayout` 参数
+- 新增 Lint 功能 (实验性)
+
+### 1.0.7 | 2025.08.03 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 移除 `Adapter` 相关扩展，统一合并至 [ui-component-adapter](#ui-component-adapter)
 - 将 Java 反射相关行为由 [YukiReflection](https://github.com/HighCapable/YukiReflection) 迁移至 [KavaRef](https://github.com/HighCapable/KavaRef)
