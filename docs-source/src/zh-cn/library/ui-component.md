@@ -767,6 +767,13 @@ imeSpaceLayout.handleOnWindowInsetsChanged(consumed = true) { imeSpaceLayout, in
 }
 ```
 
+::: tip
+
+如果你发现 `handleOnWindowInsetsChanged` 设置后没有被立即触发，可能是因为当前 `View` 并未附加到窗口上 (Window) 导致的，如果你想在
+`View` 在执行 `onLayout` 时触发一次回调，你可以在方法参数中设置 `requestApplyOnLayout = true`。
+
+:::
+
 如果你想同时在 Window Insets 改变时使其拥有动画效果，你无需重新设置一个 `View.setWindowInsetsAnimationCallback`。
 
 你只需要在方法参数中设置 `animated = true` 即可，这样回调就会在每次 Window Insets 改变中触发。

@@ -797,6 +797,13 @@ imeSpaceLayout.handleOnWindowInsetsChanged(consumed = true) { imeSpaceLayout, in
 }
 ```
 
+::: tip
+
+If you find that `handleOnWindowInsetsChanged` is not triggered immediately after being set, it may be because the current `View` is not attached to the window.
+If you want to `View` triggers a callback when executing `onLayout`, you can set `requestApplyOnLayout = true` in the method parameters.
+
+:::
+
 If you want to animate window insets when they change as well, you don't need to reset a `View.setWindowInsetsAnimationCallback`.
 
 You just need to set `animated = true` in the method parameters so that the callback will be triggered every time window insets change.
