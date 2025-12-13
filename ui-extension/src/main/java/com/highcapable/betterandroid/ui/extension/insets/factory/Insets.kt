@@ -22,7 +22,7 @@
 @file:Suppress("unused")
 @file:JvmName("InsetsUtils")
 
-package com.highcapable.betterandroid.ui.component.insets.factory
+package com.highcapable.betterandroid.ui.extension.insets.factory
 
 import android.app.Activity
 import android.view.View
@@ -34,8 +34,8 @@ import androidx.core.view.WindowInsetsAnimationCompat.Callback.DISPATCH_MODE_CON
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.doOnLayout
 import androidx.core.view.updatePadding
-import com.highcapable.betterandroid.ui.component.insets.InsetsWrapper
-import com.highcapable.betterandroid.ui.component.insets.WindowInsetsWrapper
+import com.highcapable.betterandroid.ui.extension.insets.InsetsWrapper
+import com.highcapable.betterandroid.ui.extension.insets.WindowInsetsWrapper
 
 /**
  * Create a [WindowInsetsWrapper] from [WindowInsetsCompat].

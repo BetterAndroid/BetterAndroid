@@ -25,7 +25,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import com.highcapable.betterandroid.ui.component.activity.base.BaseComponentActivity
-import com.highcapable.betterandroid.ui.component.insets.factory.handleOnWindowInsetsChanged
+import com.highcapable.betterandroid.ui.extension.insets.factory.handleOnWindowInsetsChanged
 import com.highcapable.betterandroid.ui.extension.view.firstChild
 import android.R as Android_R
 

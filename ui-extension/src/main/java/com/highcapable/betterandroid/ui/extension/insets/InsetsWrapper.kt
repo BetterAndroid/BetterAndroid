@@ -21,11 +21,11 @@
  */
 @file:Suppress("unused", "MemberVisibilityCanBePrivate")
 
-package com.highcapable.betterandroid.ui.component.insets
+package com.highcapable.betterandroid.ui.extension.insets
 
 import androidx.annotation.Px
 import androidx.core.graphics.Insets
-import com.highcapable.betterandroid.ui.component.insets.factory.toWrapper
+import com.highcapable.betterandroid.ui.extension.insets.factory.toWrapper
 
 /**
  * A wrapper for [Insets] has a visibility state.

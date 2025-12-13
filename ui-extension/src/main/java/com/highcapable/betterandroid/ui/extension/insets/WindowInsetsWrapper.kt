@@ -21,7 +21,7 @@
  */
 @file:Suppress("unused", "MemberVisibilityCanBePrivate")
 
-package com.highcapable.betterandroid.ui.component.insets
+package com.highcapable.betterandroid.ui.extension.insets
 
 import android.app.Activity
 import android.content.res.Configuration
@@ -35,10 +35,10 @@ import androidx.core.view.DisplayCutoutCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
-import com.highcapable.betterandroid.ui.component.insets.compat.WindowInsetsWrapperCompat
-import com.highcapable.betterandroid.ui.component.insets.factory.createWrapper
-import com.highcapable.betterandroid.ui.component.insets.factory.toWrapper
 import com.highcapable.betterandroid.ui.extension.component.base.toPx
+import com.highcapable.betterandroid.ui.extension.insets.compat.WindowInsetsWrapperCompat
+import com.highcapable.betterandroid.ui.extension.insets.factory.createWrapper
+import com.highcapable.betterandroid.ui.extension.insets.factory.toWrapper
 import kotlin.math.abs
 import android.R as Android_R
 

@@ -48,7 +48,13 @@ implementation("com.highcapable.betterandroid:ui-component:<version>")
 
 ::: tip 在找适配器 (Adapter) 吗？
 
-适配器 (Adapter) 相关功能已被分离为一个独立的模块 [ui-component-adapter](../library/ui-component-adapter.md)，后期将单独进行更新。
+适配器 (Adapter) 相关功能已被分离为一个独立的模块 [ui-component-adapter](./ui-component-adapter)，后期将单独进行更新。
+
+:::
+
+::: tip 在找边衬区 (Insets) 吗？
+
+边衬区 (Insets) 相关功能已被迁移至 [ui-extension → 边衬区 (Insets) 扩展](./ui-extension#边衬区-insets-扩展)，后期将跟随这个模块进行更新。
 
 :::
 
@@ -555,332 +561,6 @@ val isCanceled = poster.isCanceled
 
 :::
 
-### 边衬区 (Insets)
-
-::: tip 本节内容
-
-[WindowInsetsWrapper](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.insets/-window-insets-wrapper)
-
-`WindowInsets` 的包装器。
-
-[WindowInsetsWrapper.Absolute](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.insets/-window-insets-wrapper/-absolute)
-
-`WindowInsetsWrapper` 的绝对 Insets 对象。
-
-[InsetsWrapper](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.insets/-insets-wrapper)
-
-`Insets` 的包装器。
-
-[Insets](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.insets.factory)
-
-适用于 `Insets`、`WindowInsets` 的扩展方法。
-
-:::
-
-::: tip
-
-“边衬区” 是来自 [Android 开发者文档](https://developer.android.com/develop/ui/views/layout/insets?hl=zh-cn) 的简体中文翻译，请以英文原版的 Insets 为准。
-:::
-
-::: warning
-
-在 `1.0.3` 及之前版本的依赖中，`BetterAndroid` 将 Insest、Window Insets 与 [系统栏 (状态栏、导航栏等)](#系统栏-状态栏、导航栏等) 封装在了一起，
-这是曾经不正确的做法，目前对于 Insets、Window Insets 已被解耦合为独立的功能，正如你现在所看到的。
-
-:::
-
-Insets 和 Window Insets 在 Android 中是一个非常重要的概念，虽然这个 API 早在 Android 5.0 就已经存在了，但是在 Android 10 中才被官方正式推荐使用。(自 Android 9 开始，系统加入了异形屏处理的相关 API)
-
-Insets 是一个特殊的空间，它代表 “附着” 在视图四周的占位区域，而诸如异形屏 (刘海屏) 遮挡的部分、状态栏、导航栏以及输入法等系统持有的 Insets 则称为 Window Insets。
-
-`BetterAndroid` 所做的主要就是对这套 API 进行了封装，使其更加易用。
-
-下面，你可以通过一个存在的 `WindowInsets` 对象来创建一个 `WindowInsetsWrapper` 对象。
-
-::: tip
-
-`WindowInsetsWrapper` 是参照 Jetpack Compose 官方提供的 [Window Insets API](https://developer.android.com/jetpack/compose/layouts/insets) 设计的，你能够更加有好的在原生层面上使用这套 API。
-
-:::
-
-出于对向下兼容的考虑，`WindowInsetsWrapper` 封装的对象为 `WindowInsetsCompat` 并建议使用它而不是 `WindowInsets`。
-
-`WindowInsetsWrapper` 封装了 `WindowInsetsCompat.getInsets`、`WindowInsetsCompat.getInsetsIgnoringVisibility`、`WindowInsetsCompat.isVisible` 等方法，
-你无需再为了获取一个 Insets 对象而写超级长的 `WindowInsetsCompat.getInsets(WindowInsetsCompat.Type.systemBars())` 等代码。
-
-> 示例如下
-
-```kotlin
-// 假设这个就是你的 WindowInsets
-val windowInsets: WindowInsetsCompat
-// 创建一个 WindowInsetsWrapper
-val insetsWrapper = windowInsets.createWrapper()
-// 你还可以通过 from 方法来创建
-val insetsWrapper = WindowInsetsWrapper.from(windowInsets)
-// 获取系统栏的 Insets
-val systemBars = insetsWrapper.systemBars
-// 通常情况下，获取到的 Insets 会包含它的可见性，
-// 在不可见的情况下，Insets 的值全部为 0
-// 你可以通过参数 ignoringVisibility 来忽略可见性
-val systemBars = insetsWrapper.systemBars(ignoreVisibility = true)
-// 获取到 Insets 对象后，你可以使用 isVisible 来判断其是否可见
-// 注意：Insets 的值是由系统提供的，isVisible 只是一个状态，
-// 无论其值是否为 0，你都可以使用它来判断当前的 Insets 是否可见
-val insetsIsVisible = systemBars.isVisible
-```
-
-`BetterAndroid` 针对 Android 9 以下异形屏设备的主流品牌的厂商各自的私有方案做了一个兼容处理，如果你需要兼容更旧的设备，你可以在方法参数中传入一个可选的 `Window` 对象。
-
-如果你的应用程序只需要适配 Android 9 及以上的设备，你可以忽略此参数。
-
-> 示例如下
-
-```kotlin
-// 假设这个就是你的 Activity
-val activity: Activity
-// 在通常情况下，你可以通过当前 Activity 获取 Window
-val window = activity.window
-// 创建一个 WindowInsetsWrapper
-val insetsWrapper = windowInsets.createWrapper(window)
-// 你还可以通过 from 方法来创建
-val insetsWrapper = WindowInsetsWrapper.from(windowInsets, window)
-// 获取异形屏的 Insets
-val displayCutout = insetsWrapper.displayCutout
-```
-
-::: warning
-
-如果你的应用程序需要在 Android 10 或以下设备上运行，我们建议始终传入一个 `Window` 对象以保证 `BetterAndroid` 能正确为你处理兼容问题。
-
-目前已知兼容问题为 `androidx` 提供的兼容处理方法无法对 Android 11 以下设备的 `statusBars`、`navigationBars`、`systemBars` 的 `isVisible` 和其内容给出正确的值，`BetterAndroid` 为此进行了修复。
-
-:::
-
-你从 `WindowInsetsWrapper` 获取到的任何 Insets 对象即 `InsetsWrapper`，它封装了 `Insets` 对象并实现了可控的 `isVisible` 状态。
-
-`InsetsWrapper` 可以轻松地转换为原始的 `Insets` 对象，同时也可以重新转换为 `InsetsWrapper`。
-
-> 示例如下
-
-```kotlin
-// 获取系统栏的 Insets
-val systemBars = insetsWrapper.systemBars
-// 转换为 Insets
-val insets = systemBars.toInsets()
-// 转换为 InsetsWrapper
-val wrapper = insets.toWrapper(systemBars.isVisible)
-// 你还可以通过 of 方法来创建
-val wrapper = InsetsWrapper.of(insets, systemBars.isVisible)
-```
-
-与 `Insets` 不同的是，`InsetsWrapper` 重载了运算符，你可以使用 `+`、`-` 以及 `or`、`and` 来对其进行运算或是对其进行比较。
-
-> 示例如下
-
-```kotlin
-val insets1 = InsetsWrapper.of(10, 10, 10, 10)
-val insets2 = InsetsWrapper.of(20, 20, 20, 20)
-// 使用 "+" 运算符，等同于 Insets.add(insets1, insets2)
-val insets3 = insets1 + insets2
-// 使用 "-" 运算符，等同于 Insets.subtract(insets2, insets1)
-val insets3 = insets2 - insets1
-// 使用 "or" 运算符，等同于 Insets.max(insets1, insets2)
-val insets3 = insets1 or insets2
-// 使用 "and" 运算符，等同于 Insets.min(insets1, insets2)
-val insets3 = insets1 and insets2
-// 使用 ">" 运算符进行比较
-val isUpperTo = insets1 > insets2
-// 使用 "<" 运算符进行比较
-val isLowerTo = insets1 < insets2
-```
-
-获取到 Insets 对象后，一般做法是设置为 `View` 的 `padding`，让其为系统占位置的地方 “让路”。
-
-无论是 `InsetsWrapper` 还是 `Insets`，你都不需要使用诸如 `View.setPadding(insets.left, insets.top, insets.right, insets.bottom)` 这样的形式，这看起来及其不友好。
-
-你可以使用以下方式来轻松地将它直接设置为 `View` 的 `padding`。
-
-> 示例如下
-
-```kotlin
-// 假设这个就是你当前的 View
-val view: View
-// 获取系统栏的 Insets
-val systemBars = insetsWrapper.systemBars
-// 使用 Insets 设置 View 的 padding
-view.setInsetsPadding(systemBars)
-// 由于这里演示的对象是系统栏，你可以仅更新纵向 (上下) 的 padding
-// 使用 updateInsetsPadding 方法的作用同 updatePadding
-view.updateInsetsPadding(systemBars, vertical = true)
-```
-
-上面我们说到了，要创建一个 `WindowInsetsWrapper` 对象，你需要一个已存在的 `WindowInsetsCompat` 对象。
-
-出于对向下兼容的考虑，你可以使用 `ViewCompat.setOnApplyWindowInsetsListener` 来为 `View` 设置一个改变监听。
-
-它的实质作用是控制 Window Insets 的传递，Window Insets 通过 `View.onApplyWindowInsets` 方法由根视图向子视图传递，
-直到你使用 `WindowInsetsCompat.CONSUMED` 来明确消费掉它才会停止传递。
-
-> 示例如下
-
-```kotlin
-// 假设这个就是你当前的 View
-val view: View
-// 设置 View 的 Window Insets 改变监听
-ViewCompat.setOnApplyWindowInsetsListener(view) { view, insets ->
-    // insets 就是当前的 WindowInsetsCompat 对象
-    // 你可以通过它创建 WindowInsetsWrapper
-    val insetsWrapper = insets.createWrapper()
-    // 在最后一位消费掉 Window Insets，将停止继续向下传递
-    WindowInsetsCompat.CONSUMED // 或者填入当前的 insets 继续向下传递
-}
-```
-
-这样的做法看起来会很麻烦，所以 `BetterAndroid` 同样为你提供了一个更加简单的方法。
-
-例如，我们需要得知输入法所占的空间并为输入法布局设置来自 Window Insets 的 `padding`。
-
-此时你可以使用 `View.handleOnWindowInsetsChanged` 直接得到一个 `WindowInsetsWrapper` 对象。
-
-> 示例如下
-
-```kotlin
-// 假设这就是你的输入法布局
-val imeSpaceLayout: FrameLayout
-// 处理 View 的 Window Insets 改变监听
-imeSpaceLayout.handleOnWindowInsetsChanged { imeSpaceLayout, insetsWrapper ->
-    // 设置由 ime 提供的 padding
-    imeSpaceLayout.setInsetsPadding(insetsWrapper.ime)
-    // 或者使用 ime 更新底部的 padding
-    imeSpaceLayout.updateInsetsPadding(insetsWrapper.ime, bottom = true)
-}
-```
-
-如果你想对子视图消费掉 Window Insets 使其不再向下传递，你只需要在方法参数中设置 `consumed = true` 即可。
-
-> 示例如下
-
-```kotlin
-// 处理 View 的 Window Insets 改变监听
-imeSpaceLayout.handleOnWindowInsetsChanged(consumed = true) { imeSpaceLayout, insetsWrapper ->
-    // 内容与上述相同
-}
-```
-
-::: tip
-
-如果你发现 `handleOnWindowInsetsChanged` 设置后没有被立即触发，可能是因为当前 `View` 并未附加到窗口上 (Window) 导致的，如果你想在
-`View` 在执行 `onLayout` 时触发一次回调，你可以在方法参数中设置 `requestApplyOnLayout = true`。
-
-:::
-
-如果你想同时在 Window Insets 改变时使其拥有动画效果，你无需重新设置一个 `View.setWindowInsetsAnimationCallback`。
-
-你只需要在方法参数中设置 `animated = true` 即可，这样回调就会在每次 Window Insets 改变中触发。
-
-> 示例如下
-
-```kotlin
-// 处理 View 的 Window Insets 改变监听
-imeSpaceLayout.handleOnWindowInsetsChanged(animated = true) { imeSpaceLayout, insetsWrapper ->
-    // 内容与上述相同
-}
-```
-
-::: warning
-
-这个特性是从 Android 11 开始引入的，在这之前的系统中回调依然会被立即触发，所以将不会产生任何动画效果。
-
-:::
-
-另外，当你设置了 Window Insets 改变的监听后，你不需要关心监听是何时设置的，你可以在任何时候移除它们。
-
-这个操作会移除所有 `View.setOnApplyWindowInsetsListener`、`View.setWindowInsetsAnimationCallback`。
-
-> 示例如下
-
-```kotlin
-// 假设这个就是你当前的 View
-val view: View
-// 移除 View 的 Window Insets 改变监听
-view.removeWindowInsetsListener()
-```
-
-::: warning
-
-你只能为一个 `View` 设置一个 Window Insets 监听，重复设置的监听会被最后一次覆盖掉。
-
-:::
-
-如果你想直接从当前 `View` 中获取 Window Insets，那么你还可以使用以下方式创建一个 `WindowInsetsWrapper` 对象。
-
-> 示例如下
-
-```kotlin
-// 假设这个就是你当前的 View
-val view: View
-// 创建一个 WindowInsetsWrapper
-val insetsWrapper = view.createRootWindowInsetsWrapper()
-// 你还可以通过 from 方法来创建
-val insetsWrapper = WindowInsetsWrapper.from(view)
-// 获取系统栏的 Insets
-// 如果无法通过 View 获取到 Window Insets，将会返回 null
-val systemBars = insetsWrapper?.systemBars
-```
-
-除了上述做法，`WindowInsetsWrapper` 还提供了一个 `WindowInsetsWrapper.Absolute` 对象，你可以无需通过任何监听即可直接通过
-`Window.getDecorView` 获取到一个绝对的 Insets 对象。
-
-> 示例如下
-
-```kotlin
-// 假设这个就是你的 Activity
-val activity: Activity
-// 在通常情况下，你可以通过当前 Activity 获取 Window
-val window = activity.window
-// 创建一个 WindowInsetsWrapper.Absolute
-val absoluteWrapper = WindowInsetsWrapper.Absolute.from(window)
-// 获取状态栏的 Insets
-val statusBar = absoluteWrapper.statusBar
-// 获取导航栏的 Insets
-val navigationBar = absoluteWrapper.navigationBar
-// 获取系统栏的 Insets
-val systemBars = absoluteWrapper.systemBars
-```
-
-::: warning
-
-这种方式获取到的值仅供参考，我们并不推荐这样去获取 Insets 对象，在当前为异形屏设备时，这些值可能会不准确。
-
-:::
-
-以下是 `WindowInsetsWrapper` 中提供的全部 Insets。
-
-| Insets                    | 描述                                                                                      |
-| ------------------------- | ----------------------------------------------------------------------------------------- |
-| `statusBars`              | 状态栏                                                                                    |
-| `navigationBars`          | 导航栏                                                                                    |
-| `captionBar`              | 标题栏                                                                                    |
-| `systemBars`              | 系统栏 (`captionBar` + `statusBars` + `navigationBars`)                                   |
-| `ime`                     | 输入法                                                                                    |
-| `tappableElement`         | 可点击元素                                                                                |
-| `systemGestures`          | 系统手势                                                                                  |
-| `mandatorySystemGestures` | 强制系统手势                                                                              |
-| `displayCutout`           | 异形屏 (刘海屏)                                                                           |
-| `waterFall`               | 瀑布屏 (曲面屏)                                                                           |
-| `safeGestures`            | 安全手势 (`systemGestures` + `mandatorySystemGestures` + `waterFall` + `tappableElement`) |
-| `safeDrawing`             | 安全绘制 (`displayCutout` + `systemBars` + `ime`)                                         |
-| `safeDrawingIgnoringIme`  | 安全绘制 (不包括 `ime`) (`displayCutout` + `systemBars`)                                  |
-| `safeContent`             | 安全内容 (`safeDrawing` + `safeGestures`)                                                 |
-
-以下是 `WindowInsetsWrapper.Absolute` 中提供的全部 Insets。
-
-| Insets           | 描述                                     |
-| ---------------- | ---------------------------------------- |
-| `statusBars`     | 状态栏                                   |
-| `navigationBars` | 导航栏                                   |
-| `systemBars`     | 系统栏 (`statusBars` + `navigationBars`) |
-
 ### 系统栏 (状态栏、导航栏等)
 
 ::: tip 本节内容
@@ -1002,7 +682,7 @@ systemBars.init(rootView, edgeToEdgeInsets = null)
 
 在不做出任何操作的情况下，你的布局就会被系统栏或系统的危险区域 (例如异形屏的挖空处) 遮挡，这会影响用户体验。
 
-如果你想自己维护并管理当前根布局的 `padding`，你必须确保你的界面元素能够正确适应 Window Insets 提供的间距，你可以前往上一节的 [边衬区 (Insets)](#边衬区-insets) 了解更多关于 Window Insets 的内容。
+如果你想自己维护并管理当前根布局的 `padding`，你必须确保你的界面元素能够正确适应 Window Insets 提供的间距，你可以前往 [ui-extension](./ui-extension) 的 [边衬区 (Insets)](./ui-extension#边衬区-insets-扩展) 了解更多关于 Window Insets 的内容。
 
 你不再需要使用 `enableEdgeToEdge`，`SystemBarsController` 初始化后默认将持有此效果，你应该使用 `edgeToEdgeInsets` 来控制根布局的 Window Insets `padding`。
 
@@ -1011,7 +691,7 @@ systemBars.init(rootView, edgeToEdgeInsets = null)
 ::: tip
 
 在 Jetpack Compose 中，你可以使用 `AppComponentActivity` 来获得一个设置了 `edgeToEdgeInsets = null` 初始化的 `SystemBarsController`，
-然后使用 Jetpack Compose 的方式去设置 Window Insets，`BetterAndroid` 同样为其提供了扩展支持，更多功能你可以参考 [compose-multiplatform](../library/compose-multiplatform.md)。
+然后使用 Jetpack Compose 的方式去设置 Window Insets，`BetterAndroid` 同样为其提供了扩展支持，更多功能你可以参考 [compose-multiplatform](./compose-multiplatform)。
 
 :::
 
@@ -1053,7 +733,7 @@ systemBars.show(SystemBars.NAVIGATION_BARS)
 
 ::: tip
 
-如果你需要控制输入法 (IME) 的显示与隐藏，你可以参考 [ui-extension → View 扩展](../library/ui-extension.md#view-扩展)。
+如果你需要控制输入法 (IME) 的显示与隐藏，你可以参考 [ui-extension → View 扩展](./ui-extension#view-扩展)。
 
 :::
 

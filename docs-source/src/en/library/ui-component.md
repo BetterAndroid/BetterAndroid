@@ -48,7 +48,13 @@ You can view the KDoc [click here](kdoc://ui-component).
 
 ::: tip Looking for Adapter?
 
-Adapter related features have been separated into an independent module [ui-component-adapter](../library/ui-component-adapter.md), which will be updated separately in the future.
+Adapter related features have been separated into an independent module [ui-component-adapter](./ui-component-adapter), which will be updated separately in the future.
+
+:::
+
+::: tip Looking for Insets?
+
+Insets related features have been migrated to [ui-extension → Insets Extension](./ui-extension#insets-extension), which will be updated following this module in the future.
 
 :::
 
@@ -574,345 +580,6 @@ You can also get the `NotificationManagerCompat` object through `Context.notific
 
 :::
 
-### Insets
-
-::: tip Contents of This Section
-
-[WindowInsetsWrapper](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.insets/-window-insets-wrapper)
-
-A wrapper for `WindowInsets`.
-
-[WindowInsetsWrapper.Absolute](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.insets/-window-insets-wrapper/-absolute)
-
-An absolute insets for `WindowInsetsWrapper`.
-
-[InsetsWrapper](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.insets/-insets-wrapper)
-
-A wrapper for `Insets`.
-
-[Insets](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.insets.factory)
-
-Extension methods for `Insets`, `WindowInsets`.
-
-:::
-
-::: warning
-
-Among the library of `1.0.3` and previous versions, `BetterAndroid` encapsulates insest, window insets and [System Bars (Status Bars, Navigation Bars, etc)](#system-bars-status-bars-navigation-bars-etc), this was once incorrect, and now insets and window insets have been decoupled into separate functions, as you can see now.
-
-:::
-
-Insets and window insets are a very important concept in Android.
-
-Although this API has existed as early as Android 5.0, it was only officially recommended in Android 10. 
-(Since Android 9, the system has added related APIs for cutout displays processing)
-
-Insets is a special space, which represents the placeholder area "attached" around the view,
-insets held by the system such as the part blocked by the cutout displays (notch screens), status bars, navigation bars,
-and input method are called window insets.
-
-What `BetterAndroid` mainly does is wrapped this set of APIs to make them easier to use.
-
-Next, you can create a `WindowInsetsWrapper` from an existing `WindowInsets` object.
-
-::: tip
-
-`WindowInsetsWrapper` is designed with reference to the [Window Insets API](https://developer.android.com/jetpack/compose/layouts/insets) officially provided by Jetpack Compose.
-
-You can better use this set at the native level API.
-
-:::
-
-For backward compatibility reasons, the object wrapped by `WindowInsetsWrapper` is `WindowInsetsCompat` and it is recommended to use it instead of `WindowInsets`.
-
-`WindowInsetsWrapper` wrapped `WindowInsetsCompat.getInsets`, `WindowInsetsCompat.getInsetsIgnoringVisibility`, `WindowInsetsCompat.isVisible` and other methods,
-you no longer need to write super long code such as `WindowInsetsCompat.getInsets(WindowInsetsCompat.Type.systemBars())` to get an insets.
-
-> The following example
-
-```kotlin
-// Assume this is your WindowInsets.
-val windowInsets: WindowInsetsCompat
-// Create a WindowInsetsWrapper.
-val insetsWrapper = windowInsets.createWrapper()
-// You can also create it through the from method.
-val insetsWrapper = WindowInsetsWrapper.from(windowInsets)
-// Get the insets of the system bars.
-val systemBars = insetsWrapper.systemBars
-// Normally, the obtained insets will include its visibility,
-// when invisible, the values of insets are all 0.
-// You can ignore visibility by passing parameter ignoringVisibility.
-val systemBars = insetsWrapper.systemBars(ignoreVisibility = true)
-// After obtaining the insets, you can use isVisible to determine whether it is visible.
-// Note: The value of insets is provided by the system, isVisible is just a state,
-// regardless of whether its value is 0,
-// you can use it to determine whether the current insets are visible.
-val insetsIsVisible = systemBars.isVisible
-```
-
-`BetterAndroid` has made a compatibility process for the respective private solutions of manufacturers of
-mainstream brands of cutout display devices below Android 9.
-
-If you need to be compatible with older devices, you can pass in an optional `Window` object in the method parameter.
-
-If your app only needs to adapt to Android 9 and above devices, you can ignore this parameter.
-
-> The following example
-
-```kotlin
-// Assume this is your activity.
-val activity: Activity
-// Under normal circumstances, you can get the window through the current activity.
-val window = activity.window
-// Create a WindowInsetsWrapper.
-val insetsWrapper = windowInsets.createWrapper(window)
-// You can also create it through the from method.
-val insetsWrapper = WindowInsetsWrapper.from(windowInsets, window)
-// Get the insets of the cutout displays.
-val displayCutout = insetsWrapper.displayCutout
-```
-
-::: warning
-
-If your app needs to run on Android 10 or below devices, we recommend always passing in a `Window` object to ensure that `BetterAndroid` can correctly handle compatibility issues for you.
-
-Currently known compatibility issues are that the compatibility processing method provided by `androidx` cannot give correct values ​​to the `isVisible` and their contents of
-`statusBars`, `navigationBars`, `systemBars` of devices below Android 11, for this reason, `BetterAndroid` repairs were made.
-
-:::
-
-Any insets you get from `WindowInsetsWrapper` is `InsetsWrapper`, which wrapped `Insets` and implements controllable `isVisible` state.
-
-`InsetsWrapper` can be easily converted to an original `Insets` object, and can also be converted back to an `InsetsWrapper`.
-
-> The following example
-
-```kotlin
-// Get the insets of the system bars.
-val systemBars = insetsWrapper.systemBars
-// Convert to Insets.
-val insets = systemBars.toInsets()
-// Convert to InsetsWrapper.
-val wrapper = insets.toWrapper(systemBars.isVisible)
-// You can also create it through the of method.
-val wrapper = InsetsWrapper.of(insets, systemBars.isVisible)
-```
-
-Unlike `Insets`, `InsetsWrapper` has overloaded operators, and you can use `+`, `-` and `or`, `and` to operate or compare on it.
-
-> The following example
-
-```kotlin
-val insets1 = InsetsWrapper.of(10, 10, 10, 10)
-val insets2 = InsetsWrapper.of(20, 20, 20, 20)
-// Use "+" operator, equivalent to Insets.add(insets1, insets2).
-val insets3 = insets1 + insets2
-// Use "-" operator, equivalent to Insets.subtract(insets2, insets1).
-val insets3 = insets2 - insets1
-// Use "or" operator, equivalent to Insets.max(insets1, insets2).
-val insets3 = insets1 or insets2
-// Use "and" operator, equivalent to Insets.min(insets1, insets2).
-val insets3 = insets1 and insets2
-// Use the ">" operator to compare
-val isUpperTo = insets1 > insets2
-// Use the "<" operator to compare
-val isLowerTo = insets1 < insets2
-```
-
-After obtaining the insets, the general approach is to set it to the `padding` of the `View`
-so that it "makes way" for the system to occupy the position.
-
-Whether it is `InsetsWrapper` or `Insets`, you do not need to use a form such as
-`View.setPadding(insets.left, insets.top, insets.right, insets.bottom)`, which seems extremely unfriendly.
-
-You can easily set it directly as the `padding` of a `View` using the following method.
-
-> The following example
-
-```kotlin
-// Assume this is your current view.
-val view: View
-// Get the insets of the system bars.
-val systemBars = insetsWrapper.systemBars
-// Use insets to set the padding of the view.
-view.setInsetsPadding(systemBars)
-// Since the object demonstrated here is the system bars,
-// you can only update the vertical (top and bottom) padding.
-// Using the updateInsetsPadding method has the same effect as updatePadding.
-view.updateInsetsPadding(systemBars, vertical = true)
-```
-
-As we mentioned above, to create a `WindowInsetsWrapper`, you need an existing `WindowInsetsCompat`.
-
-For backward compatibility reasons, you can use `ViewCompat.setOnApplyWindowInsetsListener` to set a change listener for `View`.
-
-Its essential function is to control the transfer of window insets, window insets are transferred from the root view to
-the sub view through the `View.onApplyWindowInsets` method.
-
-Delivery will not stop until you explicitly consume it using `WindowInsetsCompat.CONSUMED`.
-
-> The following example
-
-```kotlin
-// Assume this is your current view.
-val view: View
-// Set view's window insets change listener.
-ViewCompat.setOnApplyWindowInsetsListener(view) { view, insets ->
-    // insets is the current WindowInsetsCompat.
-    // You can create WindowInsetsWrapper through it.
-    val insetsWrapper = insets.createWrapper()
-    // Consume the window insets at the last bit and stop passing them down.
-    WindowInsetsCompat.CONSUMED // Or fill in the current insets and continue passing down.
-}
-```
-
-This approach seems cumbersome, so `BetterAndroid` also provides you with a simpler method.
-
-For example, we need to know the space occupied by the input method and set the `padding` from window insets for the input method layout.
-
-At this point you can use `View.handleOnWindowInsetsChanged` to directly get a `WindowInsetsWrapper`.
-
-> The following example
-
-```kotlin
-// Assume this is your input method layout.
-val imeSpaceLayout: FrameLayout
-// Handle view's window insets change listener.
-imeSpaceLayout.handleOnWindowInsetsChanged { imeSpaceLayout, insetsWrapper ->
-    // Set the padding provided by ime.
-    imeSpaceLayout.setInsetsPadding(insetsWrapper.ime)
-    // Or use ime to update the padding at the bottom.
-    imeSpaceLayout.updateInsetsPadding(insetsWrapper.ime, bottom = true)
-}
-```
-
-If you want to consume window insets from the subview so that they are no longer passed down, you just need to set `consumed = true` in the method parameters.
-
-> The following example
-
-```kotlin
-// Handle view's window insets change listener.
-imeSpaceLayout.handleOnWindowInsetsChanged(consumed = true) { imeSpaceLayout, insetsWrapper ->
-    // The content is the same as above.
-}
-```
-
-::: tip
-
-If you find that `handleOnWindowInsetsChanged` is not triggered immediately after being set, it may be because the current `View` is not attached to the window.
-If you want to `View` triggers a callback when executing `onLayout`, you can set `requestApplyOnLayout = true` in the method parameters.
-
-:::
-
-If you want to animate window insets when they change as well, you don't need to reset a `View.setWindowInsetsAnimationCallback`.
-
-You just need to set `animated = true` in the method parameters so that the callback will be triggered every time window insets change.
-
-> The following example
-
-```kotlin
-// Handle view's window insets change listener.
-imeSpaceLayout.handleOnWindowInsetsChanged(animated = true) { imeSpaceLayout, insetsWrapper ->
-    // The content is the same as above.
-}
-```
-
-::: warning
-
-This feature was introduced starting with Android 11, in previous systems, callbacks were still triggered immediately, so no animation effects would be produced.
-
-:::
-
-In addition, when you set up window insets change listeners, you don't need to care when the listeners were set, you can remove them at any time.
-
-This operation will remove all `View.setOnApplyWindowInsetsListener` and `View.setWindowInsetsAnimationCallback`.
-
-> The following example
-
-```kotlin
-// Assume this is your current view.
-Val view: View
-// Remove view's window insets change listener.
-view.removeWindowInsetsListener()
-```
-
-::: warning
-
-You can only set one window insets listener for a `View`, repeatedly set listeners will be overwritten by the last one.
-
-:::
-
-If you want to get window insets directly from the current `View`, then you can also create a `WindowInsetsWrapper` using the following method.
-
-> The following example
-
-```kotlin
-// Assume this is your current view.
-val view: View
-// Create a WindowInsetsWrapper.
-val insetsWrapper = view.createRootWindowInsetsWrapper()
-// You can also create it through the from method.
-val insetsWrapper = WindowInsetsWrapper.from(view)
-// Get the insets of the system bars.
-// If window insets cannot be obtained through view, null will be returned.
-val systemBars = insetsWrapper?.systemBars
-```
-
-In addition to the above approach, `WindowInsetsWrapper` also provides a `WindowInsetsWrapper.Absolute`, which you can directly pass without any listener
-and use `Window.getDecorView` to gets an absolute insets.
-
-> The following example
-
-```kotlin
-// Assume this is your activity.
-Val activity: Activity
-// Under normal circumstances, you can get the window through the current activity.
-val window = activity.window
-// Create a WindowInsetsWrapper.Absolute.
-val absoluteWrapper = WindowInsetsWrapper.Absolute.from(window)
-// Get the insets of the status bars.
-val statusBar = absoluteWrapper.statusBar
-// Get the insets of the navigation bars.
-val navigationBar = absoluteWrapper.navigationBar
-// Get the insets of the system bars.
-val systemBars = absoluteWrapper.systemBars
-```
-
-::: warning
-
-The values obtained in this way are for reference only.
-
-We do not recommend obtaining insets in this way, when the current device has a cutout display, these values may be inaccurate.
-
-:::
-
-Below are all the insets provided in `WindowInsetsWrapper`.
-
-| Insets                    | Description                                                                                     |
-| ------------------------- | ----------------------------------------------------------------------------------------------- |
-| `statusBars`              | Status bars.                                                                                    |
-| `navigationBars`          | Navigation bars.                                                                                |
-| `captionBar`              | Caption bar.                                                                                    |
-| `systemBars`              | System bars. (`captionBar` + `statusBars` + `navigationBars`)                                   |
-| `ime`                     | Input method.                                                                                   |
-| `tappableElement`         | Tappable element.                                                                               |
-| `systemGestures`          | System gestures.                                                                                |
-| `mandatorySystemGestures` | Mandatory system gestures.                                                                      |
-| `displayCutout`           | cutout display. (notch screen)                                                                  |
-| `waterFall`               | Waterfall screen. (curved screen)                                                               |
-| `safeGestures`            | Safe gestures. (`systemGestures` + `mandatorySystemGestures` + `waterFall` + `tappableElement`) |
-| `safeDrawing`             | Safe drawing. (`displayCutout` + `systemBars` + `ime`)                                          |
-| `safeDrawingIgnoringIme`  | Safe drawing. (ignoring `ime`) (`displayCutout` + `systemBars`)                                 |
-| `safeContent`             | Safe content. (`safeDrawing` + `safeGestures`)                                                  |
-
-Below are all the insets provided in `WindowInsetsWrapper.Absolute`.
-
-| Insets           | Description                                    |
-| ---------------- | ---------------------------------------------- |
-| `statusBars`     | Status bars.                                   |
-| `navigationBars` | Navigation bars.                               |
-| `systemBars`     | System bars. (`statusBars` + `navigationBars`) |
-
 ### System Bars (Status Bars, Navigation Bars, etc)
 
 ::: tip Contents of This Section
@@ -1044,7 +711,7 @@ Without any action, your layout will be blocked by system bars or dangerous area
 
 If you want to maintain and manage the `padding` of the current root view yourself, you must ensure that your interface elements can correctly adapt to the spacing provided by window insets.
 
-You can go to the [Insets](#insets) section of the previous section learn more about window insets.
+You can go to the [ui-extension → Insets](./ui-extension#insets-extension) section of the previous section learn more about window insets.
 
 You no longer need to use `enableEdgeToEdge`, `SystemBarsController` will hold this effect by default after initialization,
 you should use `edgeToEdgeInsets` to control the window insets `padding` of the root view.
@@ -1056,7 +723,7 @@ you should use `edgeToEdgeInsets` to control the window insets `padding` of the 
 In Jetpack Compose, you can use `AppComponentActivity` to get a `SystemBarsController` initialized with `edgeToEdgeInsets = null`,
 then use Jetpack Compose to set window insets.
 
-`BetterAndroid` also provides extension support for it, for more functions, you can refer to [compose-multiplatform](../library/compose-multiplatform.md).
+`BetterAndroid` also provides extension support for it, for more functions, you can refer to [compose-multiplatform](./compose-multiplatform).
 
 :::
 
@@ -1098,7 +765,7 @@ systemBars.show(SystemBars.NAVIGATION_BARS)
 
 ::: tip
 
-If you need to control the showing and hiding of the input method (IME), you can refer to [ui-extension → View Extension](../library/ui-extension.md#view-extension).
+If you need to control the showing and hiding of the input method (IME), you can refer to [ui-extension → View Extension](./ui-extension#view-extension).
 
 :::
 

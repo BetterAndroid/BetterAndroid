@@ -45,11 +45,6 @@ import com.highcapable.betterandroid.ui.component.activity.AppViewsActivity
 import com.highcapable.betterandroid.ui.component.fragment.AppBindingFragment
 import com.highcapable.betterandroid.ui.component.fragment.AppViewsFragment
 import com.highcapable.betterandroid.ui.component.generated.BetterAndroidProperties
-import com.highcapable.betterandroid.ui.component.insets.InsetsWrapper
-import com.highcapable.betterandroid.ui.component.insets.WindowInsetsWrapper
-import com.highcapable.betterandroid.ui.component.insets.factory.handleOnWindowInsetsChanged
-import com.highcapable.betterandroid.ui.component.insets.factory.removeWindowInsetsListener
-import com.highcapable.betterandroid.ui.component.insets.factory.setInsetsPadding
 import com.highcapable.betterandroid.ui.component.systembar.compat.SystemBarsCompat
 import com.highcapable.betterandroid.ui.component.systembar.style.SystemBarStyle
 import com.highcapable.betterandroid.ui.component.systembar.type.SystemBarBehavior
@@ -57,6 +52,11 @@ import com.highcapable.betterandroid.ui.component.systembar.type.SystemBars
 import com.highcapable.betterandroid.ui.extension.component.base.isUiInNightMode
 import com.highcapable.betterandroid.ui.extension.graphics.isBrightColor
 import com.highcapable.betterandroid.ui.extension.graphics.mixColorOf
+import com.highcapable.betterandroid.ui.extension.insets.InsetsWrapper
+import com.highcapable.betterandroid.ui.extension.insets.WindowInsetsWrapper
+import com.highcapable.betterandroid.ui.extension.insets.factory.handleOnWindowInsetsChanged
+import com.highcapable.betterandroid.ui.extension.insets.factory.removeWindowInsetsListener
+import com.highcapable.betterandroid.ui.extension.insets.factory.setInsetsPadding
 import com.highcapable.betterandroid.ui.extension.view.updateLayoutParams
 import android.R as Android_R
 
@@ -410,7 +410,7 @@ class SystemBarsController private constructor(private val window: Window) {
         val backgroundColor = style.color ?: defaultColor
 
         val darkContent = style.darkContent ?: !isUiInNightMode
-        val lightApperance = darkContent && backgroundColor == Color.TRANSPARENT || backgroundColor.isBrightColor
+        val lightAppearance = darkContent && backgroundColor == Color.TRANSPARENT || backgroundColor.isBrightColor
 
         @Suppress("DEPRECATION")
         when (type) {
@@ -422,7 +422,7 @@ class SystemBarsController private constructor(private val window: Window) {
                 // Some systems, such as MIUI based on Android 5,
                 // will automatically adapt to their own set of inverse color schemes.
                 window.statusBarColor =
-                    if (AndroidVersion.isLessThan(AndroidVersion.M) && !systemBarsCompat.isLegacySystem && lightApperance)
+                    if (AndroidVersion.isLessThan(AndroidVersion.M) && !systemBarsCompat.isLegacySystem && lightAppearance)
                         mixColorOf(backgroundColor, Color.BLACK)
                     else backgroundColor
 
@@ -435,7 +435,7 @@ class SystemBarsController private constructor(private val window: Window) {
                 // Below Android 8.0 will add a transparent mask,
                 // because the system does not support inverting colors.
                 window.navigationBarColor =
-                    if (AndroidVersion.isLessThan(AndroidVersion.O) && lightApperance)
+                    if (AndroidVersion.isLessThan(AndroidVersion.O) && lightAppearance)
                         mixColorOf(backgroundColor, Color.BLACK)
                     else backgroundColor
 
