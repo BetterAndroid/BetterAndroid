@@ -32,6 +32,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsAnimationCompat
 import androidx.core.view.WindowInsetsAnimationCompat.Callback.DISPATCH_MODE_CONTINUE_ON_SUBTREE
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.doOnLayout
 import androidx.core.view.updatePadding
 import com.highcapable.betterandroid.ui.component.insets.InsetsWrapper
 import com.highcapable.betterandroid.ui.component.insets.WindowInsetsWrapper
@@ -111,6 +112,8 @@ fun Insets.toWrapper(isVisible: Boolean = true) = InsetsWrapper.of(left, top, ri
  * }
  * ```
  *
+ * If you find that the callback does not take effect immediately, you can set [requestApplyOnLayout] to true.
+ *
  * If you want to remove the window insets listener after, just call [View.removeWindowInsetsListener].
  * @see View.removeWindowInsetsListener
  * @see WindowInsetsWrapper
@@ -122,6 +125,7 @@ fun Insets.toWrapper(isVisible: Boolean = true) = InsetsWrapper.of(left, top, ri
  * @param consumed whether consume the insets for child views, default false.
  * @param animated whether handle the insets change with animation, default false.
  * @param animationDispatchMode the animation dispatch mode, default is [DISPATCH_MODE_CONTINUE_ON_SUBTREE].
+ * @param requestApplyOnLayout whether request apply insets on layout, default false.
  * @param onChange the insets change callback.
  */
 @JvmOverloads
@@ -129,6 +133,7 @@ fun <V : View> V.handleOnWindowInsetsChanged(
     consumed: Boolean = false,
     animated: Boolean = false,
     animationDispatchMode: Int = DISPATCH_MODE_CONTINUE_ON_SUBTREE,
+    requestApplyOnLayout: Boolean = false,
     onChange: (V, insetsWrapper: WindowInsetsWrapper) -> Unit
 ) {
     // To avoid redundant listening, so remove them before adding.
@@ -168,6 +173,8 @@ fun <V : View> V.handleOnWindowInsetsChanged(
             return if (consumed) WindowInsetsCompat.CONSUMED else insets
         }
     })
+
+    if (requestApplyOnLayout) doOnLayout { it.requestApplyInsets() }
 }
 
 /**
