@@ -48,7 +48,34 @@ class ToastUsageDetector : Detector(), Detector.UastScanner {
         val ISSUE = Issue.create(
             id = "ReplaceWithToastExtension",
             briefDescription = "Use ui-extension's `toast(...)` function instead of `Toast.makeText(...).show()`.",
-            explanation = "Recommended to use `context.toast(\"Your text\")` instead of `Toast.makeText(context, \"Your text\", Toast.LENGTH_SHORT).show()`.",
+            explanation = """
+                Using `Toast.makeText(...).show()` comparisons can be simplified by using the `Toast.kt` \
+                from BetterAndroid ui-extension library.
+
+                The `Toast.kt` provides:
+                - `allowBackground` parameter to show a toast from non-main thread
+                - Shorter syntax for showing toasts
+                - Better readability and maintainability
+
+                Examples:
+                ```kotlin
+                // Before
+                Toast.makeText(context, "Your text", Toast.LENGTH_SHORT).show()
+
+                thread {
+                    Looper.prepare()
+                    Toast.makeText(context, "Your background text", Toast.LENGTH_SHORT).show()
+                    Looper.loop()
+                }
+
+                // After
+                context.toast("Your text")
+
+                thread {
+                    context.toast("Your background text", allowBackground = true)
+                }
+                ```
+            """.trimIndent(),
             category = Category.USABILITY,
             priority = 5,
             severity = Severity.WARNING,
