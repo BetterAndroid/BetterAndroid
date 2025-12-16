@@ -47,8 +47,8 @@ class ToastUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithToastExtension",
-            briefDescription = "Use ui-extension's `toast` function instead of `Toast.makeText(...).show()`.",
-            explanation = "Recommended to use `toast(\"Your text\")` instead of `Toast.makeText(context, \"Your text\", Toast.LENGTH_SHORT).show()`.",
+            briefDescription = "Use ui-extension's `toast(...)` function instead of `Toast.makeText(...).show()`.",
+            explanation = "Recommended to use `context.toast(\"Your text\")` instead of `Toast.makeText(context, \"Your text\", Toast.LENGTH_SHORT).show()`.",
             category = Category.USABILITY,
             priority = 5,
             severity = Severity.WARNING,

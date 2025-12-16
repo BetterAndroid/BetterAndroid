@@ -35,7 +35,7 @@ class UiExtensionIssueRegistry : IssueRegistry() {
         ToastUsageDetector.ISSUE
     )
 
-    override val minApi = BetterAndroidProperties.PROJECT_UI_EXTENSION_LINT_MIN_API
+    override val minApi = BetterAndroidProperties.PROJECT_ANDROID_LINT_MIN_API
     override val api = CURRENT_API
     override val vendor = Vendor(
         vendorName = BetterAndroidProperties.PROJECT_NAME,
