@@ -478,9 +478,9 @@ val context: Context
 // 复制 HTML 类型的文本到剪贴板
 context.clipboardManager.copy("Hello World!", "<b>Hello World!</b>")
 // 复制 Uri 到剪贴板
-context.clipboardManager.copy(Uri.parse("some://uri"), context.contentResolver)
+context.clipboardManager.copy("some://uri".toUri(), context.contentResolver)
 // 复制 Intent 到剪贴板
-context.clipboardManager.copy(Intent(Intent.ACTION_VIEW, Uri.parse("some://uri")))
+context.clipboardManager.copy(Intent(Intent.ACTION_VIEW, "some://uri".toUri()))
 ```
 
 复制自定义的 `ClipData` 内容到剪贴板。
@@ -496,11 +496,27 @@ val context: Context
 val clipData = ClipData {
     addText("Hello World!")
     addHtmlText("Hello World!", "<b>Hello World!</b>")
-    addUri(Uri.parse("some://uri"), context.contentResolver)
-    addIntent(Intent(Intent.ACTION_VIEW, Uri.parse("some://uri")))
+    addUri("some://uri".toUri(), context.contentResolver)
+    addIntent(Intent(Intent.ACTION_VIEW, "some://uri".toUri()))
 }
 // 复制到剪贴板
 context.clipboardManager.copy(clipData)
+```
+
+或者，直接使用 `copy` DSL 来完成。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Context
+val context: Context
+// 复制自定义的 ClipData 内容到剪贴板
+context.clipboardManager.copy {
+    addText("Hello World!")
+    addHtmlText("Hello World!", "<b>Hello World!</b>")
+    addUri("some://uri".toUri(), context.contentResolver)
+    addIntent(Intent(Intent.ACTION_VIEW, "some://uri".toUri()))
+}
 ```
 
 ::: warning

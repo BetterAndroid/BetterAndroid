@@ -497,9 +497,9 @@ val context: Context
 // Copy HTML type text to the clipboard.
 context.clipboardManager.copy("Hello World!", "<b>Hello World!</b>")
 // Copy uri to clipboard.
-context.clipboardManager.copy(Uri.parse("some://uri"), context.contentResolver)
+context.clipboardManager.copy("some://uri".toUri(), context.contentResolver)
 // Copy intent to the clipboard.
-context.clipboardManager.copy(Intent(Intent.ACTION_VIEW, Uri.parse("some://uri")))
+context.clipboardManager.copy(Intent(Intent.ACTION_VIEW, "some://uri".toUri()))
 ```
 
 Copies the contents of a custom `ClipData` to the clipboard.
@@ -515,11 +515,27 @@ val context: Context
 val clipData = ClipData {
     addText("Hello World!")
     addHtmlText("Hello World!", "<b>Hello World!</b>")
-    addUri(Uri.parse("some://uri"), context.contentResolver)
-    addIntent(Intent(Intent.ACTION_VIEW, Uri.parse("some://uri")))
+    addUri("some://uri".toUri(), context.contentResolver)
+    addIntent(Intent(Intent.ACTION_VIEW, "some://uri".toUri()))
 }
 // Copy to clipboard.
 context.clipboardManager.copy(clipData)
+```
+
+Alternatively, use the `copy` DSL to do it directly.
+
+> The following example
+
+```kotlin
+// Assume this is your context.
+val context: Context
+// Copy custom ClipData content to the clipboard.
+context.clipboardManager.copy {
+    addText("Hello World!")
+    addHtmlText("Hello World!", "<b>Hello World!</b>")
+    addUri("some://uri".toUri(), context.contentResolver)
+    addIntent(Intent(Intent.ACTION_VIEW, "some://uri".toUri()))
+}
 ```
 
 ::: warning
