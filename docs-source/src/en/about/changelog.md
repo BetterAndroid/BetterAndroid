@@ -18,9 +18,13 @@ Time zone of version release date: **UTC+8**
 
 ## ui-component
 
-### 1.0.9 | 2025.12.14 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.10 | 2025.12.16 &ensp;<Badge type="tip" text="latest" vertical="middle" />
 
-- Breaking change: Migrate Insets related functions to [ui-extension](#ui-extension)
+- Adapted to Kotlin 2.2+
+
+### 1.0.9 | 2025.12.14 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+
+- Breaking change: Migrate Insets-related functionality to [ui-extension](#ui-extension)
 
 ### 1.0.8 | 2025.08.03 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
@@ -99,16 +103,25 @@ Time zone of version release date: **UTC+8**
 
 ## ui-component-adapter
 
-### 1.0.0 | 2025.08.03 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.1 | 2025.12.16 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Adapted to Kotlin 2.2+
+- Removed unnecessary `reified` keyword from some inline methods
+
+### 1.0.0 | 2025.08.03 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - The first version is submitted to Maven
 
 ## ui-extension
 
-### 1.0.8 | 2025.12.14 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.9 | 2025.12.16 &ensp;<Badge type="tip" text="latest" vertical="middle" />
 
-- Added Insets related functions from [ui-component](#ui-component)
-- Insets extension `handleOnWindowInsetsChanged` method adds `requestApplyOnLayout` parameter
+- Adapted to Kotlin 2.2+
+
+### 1.0.8 | 2025.12.14 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+
+- Added [ui-component](#ui-component) Insets-related functionality
+- Insets extension `handleOnWindowInsetsChanged` method added `requestApplyOnLayout` parameter
 - Added Lint functionality (experimental)
 
 ### 1.0.7 | 2025.08.03 &ensp;<Badge type="warning" text="stale" vertical="middle" />
@@ -219,7 +232,17 @@ Time zone of version release date: **UTC+8**
 
 ## system-extension
 
-### 1.0.3 | 2025.08.03 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.0.4 | 2025.12.16 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Adapted to Kotlin 2.2+
+- Fixed null check error when creating `ClipData` in `Clipboard` extension
+- Adjusted and added `copy` direct DSL creation functionality in `Clipboard` extension
+- Added `getPrimaryClipOrNull` method in `Clipboard` extension
+- Corrected method name ~~`addText`~~ to `addPlainText` in `ClipDataItemBuilder`
+- Moved package name `tool` to `utils`
+- Added Lint functionality (experimental)
+
+### 1.0.3 | 2025.08.03 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Migrate Java reflection-related behavior from [YukiReflection](https://github.com/HighCapable/YukiReflection) to [KavaRef](https://github.com/HighCapable/KavaRef)
 - ~~`SystemVersion`~~ renamed to `AndroidVersion` and added Android 15, 16 and 1-4.3 version constants, and functional adjustments are made at the same time

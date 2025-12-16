@@ -10,7 +10,11 @@
 
 ## ui-component
 
-### 1.0.9 | 2025.12.14 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.10 | 2025.12.16 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 适配 Kotlin 2.2+
+
+### 1.0.9 | 2025.12.14 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 破坏性更改：迁移 Insets 相关功能至 [ui-extension](#ui-extension)
 
@@ -88,13 +92,22 @@
 
 ## ui-component-adapter
 
-### 1.0.0 | 2025.08.03 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.1 | 2025.12.16 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 适配 Kotlin 2.2+
+- 移除了部分内联方法不必要的 `reified` 关键字
+
+### 1.0.0 | 2025.08.03 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 首个版本提交至 Maven
 
 ## ui-extension
 
-### 1.0.8 | 2025.12.14 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.9 | 2025.12.16 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 适配 Kotlin 2.2+
+
+### 1.0.8 | 2025.12.14 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 新增 [ui-component](#ui-component) Insets 相关功能
 - Insets 扩展 `handleOnWindowInsetsChanged` 方法新增 `requestApplyOnLayout` 参数
@@ -208,7 +221,17 @@
 
 ## system-extension
 
-### 1.0.3 | 2025.08.03 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.0.4 | 2025.12.16 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 适配 Kotlin 2.2+
+- 修复 `Clipboard` 扩展中在创建 `ClipData` 时非空判断错误的问题
+- 调整并新增 `Clipboard` 扩展中的 `copy` 直接创建 DSL 功能
+- `Clipboard` 扩展中新增 `getPrimaryClipOrNull` 方法
+- 修正 `ClipDataItemBuilder` 中的方法命名 ~~`addText`~~ 为 `addPlainText`
+- 移动包名 `tool` 到 `utils`
+- 新增 Lint 功能 (实验性)
+
+### 1.0.3 | 2025.08.03 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 将 Java 反射相关行为由 [YukiReflection](https://github.com/HighCapable/YukiReflection) 迁移至 [KavaRef](https://github.com/HighCapable/KavaRef)
 - ~~`SystemVersion`~~ 重命名为 `AndroidVersion` 并新增 Android 15、16 以及 1-4.3 的版本常量，同时进行功能性调整
