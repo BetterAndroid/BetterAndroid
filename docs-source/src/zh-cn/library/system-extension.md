@@ -50,15 +50,15 @@ implementation("com.highcapable.betterandroid:system-extension:<version>")
 
 ::: tip 本节内容
 
-[AndroidVersion](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-android-version)
+[AndroidVersion](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.utils/-android-version)
 
 Android 版本工具。
 
-[RomType](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-rom-type)
+[RomType](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.utils/-rom-type)
 
 Android ROM 类型工具。
 
-[SystemProperties](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-system-properties)
+[SystemProperties](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.utils/-system-properties)
 
 Android 的 `SystemProperties` 工具。
 

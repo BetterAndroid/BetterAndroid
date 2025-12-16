@@ -50,15 +50,15 @@ You can view the KDoc [click here](kdoc://system-extension).
 
 ::: tip Content of This Section
 
-[AndroidVersion](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-android-version)
+[AndroidVersion](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.utils/-android-version)
 
 Android version tool.
 
-[RomType](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-rom-type)
+[RomType](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.utils/-rom-type)
 
 Android ROM type tool.
 
-[SystemProperties](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-system-properties)
+[SystemProperties](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.utils/-system-properties)
 
 Android's `SystemProperties` tool.
 
