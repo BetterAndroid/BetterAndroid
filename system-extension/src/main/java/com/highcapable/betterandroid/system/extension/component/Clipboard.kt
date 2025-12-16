@@ -38,8 +38,9 @@ import androidx.fragment.app.Fragment
 
 /**
  * Clip data item's builder.
+ * @param label the clip data visible label.
  */
-class ClipDataItemBuilder internal constructor() {
+class ClipDataItemBuilder internal constructor(private val label: CharSequence?) {
 
     /** The mime types of clip data. */
     private val mimeTypes = mutableSetOf<String>()
@@ -80,9 +81,10 @@ class ClipDataItemBuilder internal constructor() {
      * @param uri the uri to add.
      * @param resolver the content resolver, use it to get the [uri]'s mime type, default is null.
      */
+    @JvmOverloads
     fun addUri(uri: Uri, resolver: ContentResolver? = null) {
-        // Use ClipData.newUri to make a new clip data for getting the uri's mime type.
-        val description = resolver?.let { ClipData.newUri(it, null, uri).description }
+        // Use [ClipData.newUri] to make a new clip data for getting the uri's mime type.
+        val description = resolver?.let { ClipData.newUri(it, label, uri).description }
 
         if (description != null && description.mimeTypeCount > 0)
             for (i in 0 until description.mimeTypeCount)
@@ -107,7 +109,7 @@ class ClipDataItemBuilder internal constructor() {
  */
 @JvmOverloads
 fun ClipData(label: CharSequence? = null, builder: ClipDataItemBuilder.() -> Unit): ClipData {
-    val data = ClipDataItemBuilder().apply(builder).build()
+    val data = ClipDataItemBuilder(label).apply(builder).build()
     require(data.second.isNotEmpty()) { "ClipData must have at least one item." }
 
     return ClipData(label, data.first, data.second[0]).apply { data.second.drop(1).forEach { addItem(it) } }
@@ -123,6 +125,22 @@ fun ClipData.listOfItems() = if (itemCount > 0)
 else emptyList()
 
 /**
+ * Copy to clipboard.
+ * @receiver [ClipboardManager]
+ * @param clipData the clip data to copy.
+ */
+fun ClipboardManager.copy(clipData: ClipData) = setPrimaryClip(clipData)
+
+/**
+ * Copy to clipboard.
+ * @receiver [ClipboardManager]
+ * @param label the clip data visible label, default is null.
+ * @param builder the [ClipDataItemBuilder] builder body.
+ */
+@JvmOverloads
+fun ClipboardManager.copy(label: CharSequence? = null, builder: ClipDataItemBuilder.() -> Unit) = copy(ClipData(builder = builder))
+
+/**
  * Copy text to clipboard.
  * @receiver [ClipboardManager]
  * @param text the text to copy.
@@ -130,7 +148,7 @@ else emptyList()
  */
 @JvmOverloads
 fun ClipboardManager.copy(text: CharSequence, label: CharSequence? = null) =
-    copy(ClipData.newPlainText(label, text))
+    copy(label) { addText(text) }
 
 /**
  * Copy html text to clipboard.
@@ -141,7 +159,7 @@ fun ClipboardManager.copy(text: CharSequence, label: CharSequence? = null) =
  */
 @JvmOverloads
 fun ClipboardManager.copy(text: CharSequence, htmlText: String, label: CharSequence? = null) =
-    copy(ClipData.newHtmlText(label, text, htmlText))
+    copy(label) { addHtmlText(text, htmlText) }
 
 /**
  * Copy intent to clipboard.
@@ -151,7 +169,7 @@ fun ClipboardManager.copy(text: CharSequence, htmlText: String, label: CharSeque
  */
 @JvmOverloads
 fun ClipboardManager.copy(intent: Intent, label: CharSequence? = null) =
-    copy(ClipData.newIntent(label, intent))
+    copy(label) { addIntent(intent) }
 
 /**
  * Copy uri to clipboard.
@@ -161,18 +179,8 @@ fun ClipboardManager.copy(intent: Intent, label: CharSequence? = null) =
  * @param label the clip data visible label, default is null.
  */
 @JvmOverloads
-fun ClipboardManager.copy(uri: Uri, resolver: ContentResolver? = null, label: CharSequence? = null) {
-    val clipData = resolver?.let { ClipData.newUri(it, label, uri) }
-        ?: ClipData(label, arrayOf(ClipDescription.MIMETYPE_TEXT_URILIST), ClipData.Item(uri))
-    copy(clipData)
-}
-
-/**
- * Copy to clipboard.
- * @receiver [ClipboardManager]
- * @param clipData the clip data to copy.
- */
-fun ClipboardManager.copy(clipData: ClipData) = setPrimaryClip(clipData)
+fun ClipboardManager.copy(uri: Uri, resolver: ContentResolver? = null, label: CharSequence? = null) =
+    copy(label) { addUri(uri, resolver) }
 
 /**
  * Get clipboard manager.
