@@ -146,7 +146,8 @@ fun ClipboardManager.copy(clipData: ClipData) = setPrimaryClip(clipData)
  * @param builder the [ClipDataItemBuilder] builder body.
  */
 @JvmOverloads
-fun ClipboardManager.copy(label: CharSequence? = null, builder: ClipDataItemBuilder.() -> Unit) = copy(ClipData(builder = builder))
+fun ClipboardManager.copy(label: CharSequence? = null, builder: ClipDataItemBuilder.() -> Unit) =
+    copy(ClipData(label, builder))
 
 /**
  * Copy plain text to clipboard.
@@ -156,7 +157,7 @@ fun ClipboardManager.copy(label: CharSequence? = null, builder: ClipDataItemBuil
  */
 @JvmOverloads
 fun ClipboardManager.copy(text: CharSequence, label: CharSequence? = null) =
-    copy(label) { addPlainText(text) }
+    copy(label = label) { addPlainText(text) }
 
 /**
  * Copy html text to clipboard.
@@ -167,7 +168,7 @@ fun ClipboardManager.copy(text: CharSequence, label: CharSequence? = null) =
  */
 @JvmOverloads
 fun ClipboardManager.copy(text: CharSequence, htmlText: String, label: CharSequence? = null) =
-    copy(label) { addHtmlText(text, htmlText) }
+    copy(label = label) { addHtmlText(text, htmlText) }
 
 /**
  * Copy intent to clipboard.
@@ -177,17 +178,17 @@ fun ClipboardManager.copy(text: CharSequence, htmlText: String, label: CharSeque
  */
 @JvmOverloads
 fun ClipboardManager.copy(intent: Intent, label: CharSequence? = null) =
-    copy(label) { addIntent(intent) }
+    copy(label = label) { addIntent(intent) }
 
 /**
  * Copy uri to clipboard.
  * @receiver [ClipboardManager]
  * @param uri the uri to copy.
- * @param resolver the content resolver, use it to get the [uri]'s mime type, default is null.
  * @param label the clip data visible label, default is null.
+ * @param resolver the content resolver, use it to get the [uri]'s mime type, default is null.
  */
 @JvmOverloads
-fun ClipboardManager.copy(uri: Uri, resolver: ContentResolver? = null, label: CharSequence? = null) =
+fun ClipboardManager.copy(uri: Uri, label: CharSequence? = null, resolver: ContentResolver? = null) =
     copy(label) { addUri(uri, resolver) }
 
 /**
