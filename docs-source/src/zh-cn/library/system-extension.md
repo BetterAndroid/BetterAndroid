@@ -46,6 +46,226 @@ implementation("com.highcapable.betterandroid:system-extension:<version>")
 
 你可以 [点击这里](kdoc://system-extension) 查看 KDoc。
 
+### 系统信息
+
+::: tip 本节内容
+
+[AndroidVersion](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-android-version)
+
+Android 版本工具。
+
+[RomType](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-rom-type)
+
+Android ROM 类型工具。
+
+[SystemProperties](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-system-properties)
+
+Android 的 `SystemProperties` 工具。
+
+:::
+
+也许你已经厌烦了代码中漂流各地的 `Build.VERSION.SDK_INT`、`Build.VERSION_CODES`，那么从现在开始，你不再需要使用它们了。
+
+`BetterAndroid` 为你准备了更加简便的写法来取代它们。
+
+在之前，我们需要判断当前系统的 API Level (Android API 等级)，基本上都会通过以下方式进行。
+
+> 示例如下
+
+```kotlin
+if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+    // 执行相关代码
+}
+// 或者使用硬编码 API 版本号的方式
+if (Build.VERSION.SDK_INT >= 29) {
+    // 执行相关代码
+}
+```
+
+现在，你可以通过以下方式非常简单地完成这个操作。
+
+> 示例如下
+
+```kotlin
+AndroidVersion.require(AndroidVersion.Q) {
+    // 执行相关代码
+}
+// result 在 API 大于等于 29 时将会得到 "target"，否则为 "legacy"
+val result = AndroidVersion.require(AndroidVersion.Q, "legacy") { "target" }
+// 如果是一个可为 null 的结果，你可以使用以下方式
+val myData: MyData?
+val result = AndroidVersion.requireOrNull(AndroidVersion.Q, MyData()) { myData }
+```
+
+你也可以使用以下方式进行判断。
+
+> 示例如下
+
+```kotlin
+// 判断 API 是否小于 29
+if (AndroidVersion.isLessThan(AndroidVersion.Q)) {
+    // 执行相关代码
+}
+// 判断 API 是否大于 29
+if (AndroidVersion.isGreaterThan(AndroidVersion.Q)) {
+    // 执行相关代码
+}
+// 判断 API 是否小于等于 29
+if (AndroidVersion.isAtMost(AndroidVersion.Q)) {
+    // 执行相关代码
+}
+// 判断 API 是否大于等于 29
+if (AndroidVersion.isAtLeast(AndroidVersion.Q)) {
+    // 执行相关代码
+}
+```
+
+以下是各个 API 的常量映射对照表，在 Android 版本更新后，`BetterAndroid` 会同步更新这些常量。
+
+| API 等级 | `AndroidVersion` 名称 | `Build.VERSION_CODES` 名称 | 对应系统版本      |
+| -------- | --------------------- | -------------------------- | ----------------- |
+| 1        | `B`                   | `BASE`                     | 1.0               |
+| 2        | `B_1_1`               | `BASE_1_1`                 | 1.1               |
+| 3        | `C`                   | `CUPCAKE`                  | 1.5               |
+| 4        | `D`                   | `DONUT`                    | 1.6               |
+| 5        | `E`                   | `ECLAIR`                   | 2.0               |
+| 6        | `E_0_1`               | `ECLAIR_0_1`               | 2.0.1             |
+| 7        | `E_MR1`               | `ECLAIR_MR1`               | 2.1               |
+| 8        | `F`                   | `FROYO`                    | 2.2               |
+| 9        | `G`                   | `GINGERBREAD`              | 2.3               |
+| 10       | `G_MR1`               | `GINGERBREAD_MR1`          | 2.3.3             |
+| 11       | `H`                   | `HONEYCOMB`                | 3.0               |
+| 12       | `H_MR1`               | `HONEYCOMB_MR1`            | 3.1               |
+| 13       | `H_MR2`               | `HONEYCOMB_MR2`            | 3.2               |
+| 14       | `I`                   | `ICE_CREAM_SANDWICH`       | 4.0               |
+| 15       | `I_MR1`               | `ICE_CREAM_SANDWICH_MR1`   | 4.03              |
+| 16       | `J`                   | `JELLY_BEAN`               | 4.1               |
+| 17       | `J_MR1`               | `JELLY_BEAN_MR1`           | 4.2               |
+| 18       | `J_MR2`               | `JELLY_BEAN_MR2`           | 4.3               |
+| 19       | `K`                   | `KITKAT`                   | 4.4.3、4.4.4      |
+| 20       | `K_W`                 | `KITKAT_WATCH`             | 4.4W              |
+| 21       | `L`                   | `LOLLIPOP`                 | 5.0、5.0.2        |
+| 22       | `L_MR1`               | `LOLLIPOP_MR1`             | 5.1、5.1.1        |
+| 23       | `M`                   | `M`                        | 6.0、6.0.1        |
+| 24       | `N`                   | `N`                        | 7.0               |
+| 25       | `N_MR1`               | `N_MR1`                    | 7.1、7.1.1、7.1.2 |
+| 26       | `O`                   | `O`                        | 8.0               |
+| 27       | `O_MR1`               | `O_MR1`                    | 8.1               |
+| 28       | `P`                   | `P`                        | 9                 |
+| 29       | `Q`                   | `Q`                        | 10                |
+| 30       | `R`                   | `R`                        | 11                |
+| 31       | `S`                   | `S`                        | 12                |
+| 32       | `S_V2`                | `S_V2`                     | 12.1、12L         |
+| 33       | `T`                   | `TIRAMISU`                 | 13                |
+| 34       | `U`                   | `UPSIDE_DOWN_CAKE`         | 14                |
+| 35       | `V`                   | `VANILLA_ICE_CREAM`        | 15                |
+| 36       | `BAKLAVA`             | `BAKLAVA`                  | 16                |
+
+除了对 API 等级的判断，你还可以使用以下方式来获取当前 Android 的版本名称。
+
+> 示例如下
+
+```kotlin
+// 获取当前 Android 的版本名称
+// 它的作用等效于 Build.VERSION.RELEASE
+// 例如，Android 10 的版本名称为字符串 "10"
+val versionName = AndroidVersion.name
+```
+
+你也可以直接使用 `code` 来获取当前 Android 的 API 等级。
+
+```kotlin
+// 获取当前 Android 的 API 等级
+// 它的作用等效于 Build.VERSION.SDK_INT
+// 例如，Android 10 的 API 等级为整数 29
+val targetSdk = AndroidVersion.code
+```
+
+随着中国大陆及其他国家各个厂商相继发布的自家品牌 Android 手机深度定制的 Android 系统越来越多，有时候我们非常有必要针对各个定制版本系统不同的功能去进行定向适配，但是如何判断这些系统的种类就是一个很大的问题。
+
+通常情况下大家的解决方案都是去判断设备的型号从而确定是哪种定制系统，但是如果当前设备运行的不是你所判断的那种定制系统，例如用户自行刷机的案例，那么这种方案就会失效。
+
+`BetterAndroid` 通过收集各种各样常见定制系统的对应特征，为你提供了一个简单、快速、高效的解决方案。
+
+下面是判断当前 ROM 类型的一个简单示例。
+
+> 示例如下
+
+```kotlin
+// 判断当前 ROM 类型是否为 MIUI
+if (RomType.matches(RomType.MIUI)) {
+    // 执行相关代码
+}
+```
+
+没错，就是这么简单，如果你需要同时判断多个 ROM 类型，你还可以使用以下方式。
+
+> 示例如下
+
+```kotlin
+// 获取当前 ROM 类型
+val type = RomType.current
+// 批量判断当前 ROM 类型
+when (type) {
+    RomType.MIUI -> {
+        // 执行相关代码
+    }
+    RomType.COLOROS -> {
+        // 执行相关代码
+    }
+    RomType.ORIGINOS -> {
+        // 执行相关代码
+    }
+}
+```
+
+以下是目前收集的 ROM 类型的常量对照表，如果你有更多 ROM 类型的特征，欢迎 PR 或前往 [GitHub Issues](repo://issues) 向我们提出建议。
+
+| `RomType` 名称 | ROM 类型                                              |
+| -------------- | ----------------------------------------------------- |
+| `DEFAULT`      | 默认、未分类 (原生或类原生以及当前未收集的 ROM 类型)  |
+| `HARMONYOS`    | [HarmonyOS](https://www.harmonyos.com/) (基于 AOSP)   |
+| `EMUI`         | [EMUI](https://www.huaweicentral.com/emui)            |
+| `MIUI`         | [MIUI](https://home.miui.com/)                        |
+| `HYPEROS`      | [HyperOS](https://hyperos.mi.com/)                    |
+| `COLOROS`      | [ColorOS](https://www.coloros.com/)                   |
+| `FUNTOUCHOS`   | [FuntouchOS](https://www.vivo.com/funtouchos)         |
+| `ORIGINOS`     | [OriginOS](https://www.vivo.com/originos)             |
+| `FLYME`        | [Flyme](https://flyme.com/)                           |
+| `ONEUI`        | [OneUI](https://www.samsung.com/one-ui)               |
+| `ZUI`          | [ZUI](https://zui.com/)                               |
+| `REDMAGICOS`   | [RedMagicOS](https://www.nubia.com/)                  |
+| `NUBIAUI`      | [NubiaUI](https://www.nubia.com/)                     |
+| `ROGUI`        | [RogUI](https://www.asus.com/)                        |
+| `VISIONOS`     | [VisionOS](https://fans.hisense.com/forum-269-1.html) |
+
+`SystemProperties` 是 Android 提供的一个能够在运行期间读取 `build.prop` 内容的工具，但是这个功能是不面向开发者开放的。
+
+于是为了能够避免每次都使用反射的方式来访问 `SystemProperties`，`BetterAndroid` 镜像了 `SystemProperties` 的所有方法。
+
+现在，你可以直接使用非反射的方式来访问 `SystemProperties`。
+
+> 示例如下
+
+```kotlin
+// 例如，获取当前系统的构建 ID
+val buildId = SystemProperties.get("ro.build.id")
+// 获取当前系统的构建类型
+val buildTags = SystemProperties.get("ro.system.build.tags")
+// 获取当前设备支持的 CPU ABI 列表
+val abis = SystemProperties.get("ro.system.product.cpu.abilist")
+```
+
+`BetterAndroid` 还为其提供了一个扩展用法。
+
+> 示例如下
+
+```kotlin
+// 判断属性键值是否存在
+// 例如一些 ROM 中特有的键值
+val isExists = SystemProperties.contains("ro.miui.ui.version.name")
+```
+
 ### Application 扩展
 
 ::: tip 本节内容
@@ -675,223 +895,3 @@ context.startService("com.example.app", "com.example.app.MyService") {
 请参考 [Background Execution Limits](https://developer.android.com/about/versions/oreo/background)。
 
 :::
-
-### 系统信息
-
-::: tip 本节内容
-
-[AndroidVersion](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-android-version)
-
-Android 版本工具。
-
-[RomType](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-rom-type)
-
-Android ROM 类型工具。
-
-[SystemProperties](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-system-properties)
-
-Android 的 `SystemProperties` 工具。
-
-:::
-
-也许你已经厌烦了代码中漂流各地的 `Build.VERSION.SDK_INT`、`Build.VERSION_CODES`，那么从现在开始，你不再需要使用它们了。
-
-`BetterAndroid` 为你准备了更加简便的写法来取代它们。
-
-在之前，我们需要判断当前系统的 API Level (Android API 等级)，基本上都会通过以下方式进行。
-
-> 示例如下
-
-```kotlin
-if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-    // 执行相关代码
-}
-// 或者使用硬编码 API 版本号的方式
-if (Build.VERSION.SDK_INT >= 29) {
-    // 执行相关代码
-}
-```
-
-现在，你可以通过以下方式非常简单地完成这个操作。
-
-> 示例如下
-
-```kotlin
-AndroidVersion.require(AndroidVersion.Q) {
-    // 执行相关代码
-}
-// result 在 API 大于等于 29 时将会得到 "target"，否则为 "legacy"
-val result = AndroidVersion.require(AndroidVersion.Q, "legacy") { "target" }
-// 如果是一个可为 null 的结果，你可以使用以下方式
-val myData: MyData?
-val result = AndroidVersion.requireOrNull(AndroidVersion.Q, MyData()) { myData }
-```
-
-你也可以使用以下方式进行判断。
-
-> 示例如下
-
-```kotlin
-// 判断 API 是否小于 29
-if (AndroidVersion.isLessThan(AndroidVersion.Q)) {
-    // 执行相关代码
-}
-// 判断 API 是否大于 29
-if (AndroidVersion.isGreaterThan(AndroidVersion.Q)) {
-    // 执行相关代码
-}
-// 判断 API 是否小于等于 29
-if (AndroidVersion.isAtMost(AndroidVersion.Q)) {
-    // 执行相关代码
-}
-// 判断 API 是否大于等于 29
-if (AndroidVersion.isAtLeast(AndroidVersion.Q)) {
-    // 执行相关代码
-}
-```
-
-以下是各个 API 的常量映射对照表，在 Android 版本更新后，`BetterAndroid` 会同步更新这些常量。
-
-| API 等级 | `AndroidVersion` 名称 | `Build.VERSION_CODES` 名称 | 对应系统版本      |
-| -------- | --------------------- | -------------------------- | ----------------- |
-| 1        | `B`                   | `BASE`                     | 1.0               |
-| 2        | `B_1_1`               | `BASE_1_1`                 | 1.1               |
-| 3        | `C`                   | `CUPCAKE`                  | 1.5               |
-| 4        | `D`                   | `DONUT`                    | 1.6               |
-| 5        | `E`                   | `ECLAIR`                   | 2.0               |
-| 6        | `E_0_1`               | `ECLAIR_0_1`               | 2.0.1             |
-| 7        | `E_MR1`               | `ECLAIR_MR1`               | 2.1               |
-| 8        | `F`                   | `FROYO`                    | 2.2               |
-| 9        | `G`                   | `GINGERBREAD`              | 2.3               |
-| 10       | `G_MR1`               | `GINGERBREAD_MR1`          | 2.3.3             |
-| 11       | `H`                   | `HONEYCOMB`                | 3.0               |
-| 12       | `H_MR1`               | `HONEYCOMB_MR1`            | 3.1               |
-| 13       | `H_MR2`               | `HONEYCOMB_MR2`            | 3.2               |
-| 14       | `I`                   | `ICE_CREAM_SANDWICH`       | 4.0               |
-| 15       | `I_MR1`               | `ICE_CREAM_SANDWICH_MR1`   | 4.03              |
-| 16       | `J`                   | `JELLY_BEAN`               | 4.1               |
-| 17       | `J_MR1`               | `JELLY_BEAN_MR1`           | 4.2               |
-| 18       | `J_MR2`               | `JELLY_BEAN_MR2`           | 4.3               |
-| 19       | `K`                   | `KITKAT`                   | 4.4.3、4.4.4      |
-| 20       | `K_W`                 | `KITKAT_WATCH`             | 4.4W              |
-| 21       | `L`                   | `LOLLIPOP`                 | 5.0、5.0.2        |
-| 22       | `L_MR1`               | `LOLLIPOP_MR1`             | 5.1、5.1.1        |
-| 23       | `M`                   | `M`                        | 6.0、6.0.1        |
-| 24       | `N`                   | `N`                        | 7.0               |
-| 25       | `N_MR1`               | `N_MR1`                    | 7.1、7.1.1、7.1.2 |
-| 26       | `O`                   | `O`                        | 8.0               |
-| 27       | `O_MR1`               | `O_MR1`                    | 8.1               |
-| 28       | `P`                   | `P`                        | 9                 |
-| 29       | `Q`                   | `Q`                        | 10                |
-| 30       | `R`                   | `R`                        | 11                |
-| 31       | `S`                   | `S`                        | 12                |
-| 32       | `S_V2`                | `S_V2`                     | 12.1、12L         |
-| 33       | `T`                   | `TIRAMISU`                 | 13                |
-| 34       | `U`                   | `UPSIDE_DOWN_CAKE`         | 14                |
-| 35       | `V`                   | `VANILLA_ICE_CREAM`        | 15                |
-| 36       | `BAKLAVA`             | `BAKLAVA`                  | 16                |
-
-除了对 API 等级的判断，你还可以使用以下方式来获取当前 Android 的版本名称。
-
-> 示例如下
-
-```kotlin
-// 获取当前 Android 的版本名称
-// 它的作用等效于 Build.VERSION.RELEASE
-// 例如，Android 10 的版本名称为字符串 "10"
-val versionName = AndroidVersion.name
-```
-
-你也可以直接使用 `code` 来获取当前 Android 的 API 等级。
-
-```kotlin
-// 获取当前 Android 的 API 等级
-// 它的作用等效于 Build.VERSION.SDK_INT
-// 例如，Android 10 的 API 等级为整数 29
-val targetSdk = AndroidVersion.code
-```
-
-随着中国大陆及其他国家各个厂商相继发布的自家品牌 Android 手机深度定制的 Android 系统越来越多，有时候我们非常有必要针对各个定制版本系统不同的功能去进行定向适配，但是如何判断这些系统的种类就是一个很大的问题。
-
-通常情况下大家的解决方案都是去判断设备的型号从而确定是哪种定制系统，但是如果当前设备运行的不是你所判断的那种定制系统，例如用户自行刷机的案例，那么这种方案就会失效。
-
-`BetterAndroid` 通过收集各种各样常见定制系统的对应特征，为你提供了一个简单、快速、高效的解决方案。
-
-下面是判断当前 ROM 类型的一个简单示例。
-
-> 示例如下
-
-```kotlin
-// 判断当前 ROM 类型是否为 MIUI
-if (RomType.matches(RomType.MIUI)) {
-    // 执行相关代码
-}
-```
-
-没错，就是这么简单，如果你需要同时判断多个 ROM 类型，你还可以使用以下方式。
-
-> 示例如下
-
-```kotlin
-// 获取当前 ROM 类型
-val type = RomType.current
-// 批量判断当前 ROM 类型
-when (type) {
-    RomType.MIUI -> {
-        // 执行相关代码
-    }
-    RomType.COLOROS -> {
-        // 执行相关代码
-    }
-    RomType.ORIGINOS -> {
-        // 执行相关代码
-    }
-}
-```
-
-以下是目前收集的 ROM 类型的常量对照表，如果你有更多 ROM 类型的特征，欢迎 PR 或前往 [GitHub Issues](repo://issues) 向我们提出建议。
-
-| `RomType` 名称 | ROM 类型                                              |
-| -------------- | ----------------------------------------------------- |
-| `DEFAULT`      | 默认、未分类 (原生或类原生以及当前未收集的 ROM 类型)  |
-| `HARMONYOS`    | [HarmonyOS](https://www.harmonyos.com/) (基于 AOSP)   |
-| `EMUI`         | [EMUI](https://www.huaweicentral.com/emui)            |
-| `MIUI`         | [MIUI](https://home.miui.com/)                        |
-| `HYPEROS`      | [HyperOS](https://hyperos.mi.com/)                    |
-| `COLOROS`      | [ColorOS](https://www.coloros.com/)                   |
-| `FUNTOUCHOS`   | [FuntouchOS](https://www.vivo.com/funtouchos)         |
-| `ORIGINOS`     | [OriginOS](https://www.vivo.com/originos)             |
-| `FLYME`        | [Flyme](https://flyme.com/)                           |
-| `ONEUI`        | [OneUI](https://www.samsung.com/one-ui)               |
-| `ZUI`          | [ZUI](https://zui.com/)                               |
-| `REDMAGICOS`   | [RedMagicOS](https://www.nubia.com/)                  |
-| `NUBIAUI`      | [NubiaUI](https://www.nubia.com/)                     |
-| `ROGUI`        | [RogUI](https://www.asus.com/)                        |
-| `VISIONOS`     | [VisionOS](https://fans.hisense.com/forum-269-1.html) |
-
-`SystemProperties` 是 Android 提供的一个能够在运行期间读取 `build.prop` 内容的工具，但是这个功能是不面向开发者开放的。
-
-于是为了能够避免每次都使用反射的方式来访问 `SystemProperties`，`BetterAndroid` 镜像了 `SystemProperties` 的所有方法。
-
-现在，你可以直接使用非反射的方式来访问 `SystemProperties`。
-
-> 示例如下
-
-```kotlin
-// 例如，获取当前系统的构建 ID
-val buildId = SystemProperties.get("ro.build.id")
-// 获取当前系统的构建类型
-val buildTags = SystemProperties.get("ro.system.build.tags")
-// 获取当前设备支持的 CPU ABI 列表
-val abis = SystemProperties.get("ro.system.product.cpu.abilist")
-```
-
-`BetterAndroid` 还为其提供了一个扩展用法。
-
-> 示例如下
-
-```kotlin
-// 判断属性键值是否存在
-// 例如一些 ROM 中特有的键值
-val isExists = SystemProperties.contains("ro.miui.ui.version.name")
-```

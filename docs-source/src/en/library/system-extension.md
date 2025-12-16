@@ -46,6 +46,229 @@ Please change `<version>` to the version displayed at the top of this document.
 
 You can view the KDoc [click here](kdoc://system-extension).
 
+### System Infomation
+
+::: tip Content of This Section
+
+[AndroidVersion](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-android-version)
+
+Android version tool.
+
+[RomType](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-rom-type)
+
+Android ROM type tool.
+
+[SystemProperties](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-system-properties)
+
+Android's `SystemProperties` tool.
+
+:::
+
+Maybe you are tired of `Build.VERSION.SDK_INT` and `Build.VERSION_CODES` floating around in your code, so from now on, you no longer need to use them.
+
+`BetterAndroid` has prepared simpler writing methods for you to replace them.
+
+Previously, we needed to determine the Android API level of the current system, which was basically done in the following ways.
+
+> The following example
+
+```kotlin
+if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+    // Execute relevant code.
+}
+// Or use hard-coded API version code.
+if (Build.VERSION.SDK_INT >= 29) {
+    // Execute relevant code.
+}
+```
+
+Now, you can do this very easily in the following way.
+
+> The following example
+
+```kotlin
+AndroidVersion.require(AndroidVersion.Q) {
+    // Execute relevant code.
+}
+// result will get "target" when API is greater than or equal to 29, otherwise it will be "legacy".
+val result = AndroidVersion.require(AndroidVersion.Q, "legacy") { "target" }
+// If it is a nullable result, you can use the following method.
+val myData: MyData?
+val result = AndroidVersion.requireOrNull(AndroidVersion.Q, MyData()) { myData }
+```
+
+You can also use the following methods to judge.
+
+> The following example
+
+```kotlin
+// Determine whether API is less than 29.
+if (AndroidVersion.isLessThan(AndroidVersion.Q)) {
+    // Execute relevant code.
+}
+// Determine whether API is greater than 29.
+if (AndroidVersion.isGreaterThan(AndroidVersion.Q)) {
+    // Execute relevant code.
+}
+// Determine whether API is less than or equal to 29.
+if (AndroidVersion.isAtMost(AndroidVersion.Q)) {
+    // Execute relevant code.
+}
+// Determine whether the API is greater than or equal to 29.
+if (AndroidVersion.isAtLeast(AndroidVersion.Q)) {
+    // Execute relevant code.
+}
+```
+
+The following is the constant mapping comparison table for each API, after Android version update, `BetterAndroid` will update these constants synchronously.
+
+| API Level | `AndroidVersion` Name | `Build.VERSION_CODES` Name | Corresponding System Version |
+| --------- | --------------------- | -------------------------- | ---------------------------- |
+| 1         | `B`                   | `BASE`                     | 1.0                          |
+| 2         | `B_1_1`               | `BASE_1_1`                 | 1.1                          |
+| 3         | `C`                   | `CUPCAKE`                  | 1.5                          |
+| 4         | `D`                   | `DONUT`                    | 1.6                          |
+| 5         | `E`                   | `ECLAIR`                   | 2.0                          |
+| 6         | `E_0_1`               | `ECLAIR_0_1`               | 2.0.1                        |
+| 7         | `E_MR1`               | `ECLAIR_MR1`               | 2.1                          |
+| 8         | `F`                   | `FROYO`                    | 2.2                          |
+| 9         | `G`                   | `GINGERBREAD`              | 2.3                          |
+| 10        | `G_MR1`               | `GINGERBREAD_MR1`          | 2.3.3                        |
+| 11        | `H`                   | `HONEYCOMB`                | 3.0                          |
+| 12        | `H_MR1`               | `HONEYCOMB_MR1`            | 3.1                          |
+| 13        | `H_MR2`               | `HONEYCOMB_MR2`            | 3.2                          |
+| 14        | `I`                   | `ICE_CREAM_SANDWICH`       | 4.0                          |
+| 15        | `I_MR1`               | `ICE_CREAM_SANDWICH_MR1`   | 4.03                         |
+| 16        | `J`                   | `JELLY_BEAN`               | 4.1                          |
+| 17        | `J_MR1`               | `JELLY_BEAN_MR1`           | 4.2                          |
+| 18        | `J_MR2`               | `JELLY_BEAN_MR2`           | 4.3                          |
+| 19        | `K`                   | `KITKAT`                   | 4.4.3, 4.4.4                 |
+| 20        | `K_W`                 | `KITKAT_WATCH`             | 4.4W                         |
+| 21        | `L`                   | `LOLLIPOP`                 | 5.0, 5.0.2                   |
+| 22        | `L_MR1`               | `LOLLIPOP_MR1`             | 5.1, 5.1.1                   |
+| 23        | `M`                   | `M`                        | 6.0, 6.0.1                   |
+| 24        | `N`                   | `N`                        | 7.0                          |
+| 25        | `N_MR1`               | `N_MR1`                    | 7.1, 7.1.1, 7.1.2            |
+| 26        | `O`                   | `O`                        | 8.0                          |
+| 27        | `O_MR1`               | `O_MR1`                    | 8.1                          |
+| 28        | `P`                   | `P`                        | 9                            |
+| 29        | `Q`                   | `Q`                        | 10                           |
+| 30        | `R`                   | `R`                        | 11                           |
+| 31        | `S`                   | `S`                        | 12                           |
+| 32        | `S_V2`                | `S_V2`                     | 12.1, 12L                    |
+| 33        | `T`                   | `TIRAMISU`                 | 13                           |
+| 34        | `U`                   | `UPSIDE_DOWN_CAKE`         | 14                           |
+| 35        | `V`                   | `VANILLA_ICE_CREAM`        | 15                           |
+| 36        | `BAKLAVA`             | `BAKLAVA`                  | 16                           |
+
+In addition to judging the API level, you can also use the following method to get the current Android version name.
+
+> The following example
+
+```kotlin
+// Get the current Android version name.
+// It is equivalent to Build.VERSION.RELEASE.
+// For example, the version name of Android 10 is the string "10".
+val versionName = AndroidVersion.name
+```
+
+You can also use `code` directly to get the current Android API level.
+
+```kotlin
+// Get the current Android API level.
+// Its function is equivalent to Build.VERSION.SDK_INT.
+// For example, the API level of Android 10 is integer 29.
+val targetSdk = AndroidVersion.code
+```
+
+With more and more Android systems for deeply customized Android phones released by manufacturers in mainland China and other countries,
+it is very necessary for us to target the different functions of each customized version of the system, but how to judge the types of these systems is a big problem.
+
+Usually, everyone’s solution is to determine the model of the device to determine what kind of customized system it is,
+however, if the current device is not running the customized system you judged, such as the case where the user flashes the phone by himself, then this solution is will fail.
+
+`BetterAndroid` provides you with a simple, fast and efficient solution by collecting corresponding features of various common custom systems.
+
+The following is a simple example to determine the type of current ROM.
+
+> The following example
+
+```kotlin
+// Determine whether the current ROM type is MIUI.
+if (RomType.equals(RomType.MIUI)) {
+    // Execute relevant code.
+}
+```
+
+Yes, it's that simple, if you need to judge multiple ROM types at the same time, you can also use the following method.
+
+> The following example
+
+```kotlin
+// Get the current ROM type.
+val type = RomType.current
+// Determine the current ROM type in batches.
+when (type) {
+    RomType.MIUI -> {
+        // Execute relevant code.
+    }
+    RomType.COLOROS -> {
+        // Execute relevant code.
+    }
+    RomType.ORIGINOS -> {
+        // Execute relevant code.
+    }
+}
+```
+
+The following is a comparison table of constants for currently collected ROM types, if you have features for more ROM types,
+you are welcome to PR or go to [GitHub Issues](repo://issues) to make suggestions to us.
+
+| `RomType` Name | ROM Type                                                                                                 |
+| -------------- | -------------------------------------------------------------------------------------------------------- |
+| `DEFAULT`      | Default, uncategorized. (Stock Android or AOSP-based Android system or ROM type not currently collected) |
+| `HARMONYOS`    | [HarmonyOS](https://www.harmonyos.com/) (Based on AOSP)                                                  |
+| `EMUI`         | [EMUI](https://www.huaweicentral.com/emui)                                                               |
+| `MIUI`         | [MIUI](https://home.miui.com/)                                                                           |
+| `HYPEROS`      | [HyperOS](https://hyperos.mi.com/)                                                                       |
+| `COLOROS`      | [ColorOS](https://www.coloros.com/)                                                                      |
+| `FUNTOUCHOS`   | [FuntouchOS](https://www.vivo.com/funtouchos)                                                            |
+| `ORIGINOS`     | [OriginOS](https://www.vivo.com/originos)                                                                |
+| `FLYME`        | [Flyme](https://flyme.com/)                                                                              |
+| `ONEUI`        | [OneUI](https://www.samsung.com/one-ui)                                                                  |
+| `ZUI`          | [ZUI](https://zui.com/)                                                                                  |
+| `REDMAGICOS`   | [RedMagicOS](https://www.nubia.com/)                                                                     |
+| `NUBIAUI`      | [NubiaUI](https://www.nubia.com/)                                                                        |
+| `ROGUI`        | [RogUI](https://www.asus.com/)                                                                           |
+| `VISIONOS`     | [VisionOS](https://fans.hisense.com/forum-269-1.html)                                                    |
+
+`SystemProperties` is a tool provided by Android that can read the contents of `build.prop` during runtime, but this function is not open to developers.
+
+So in order to avoid using reflection to access `SystemProperties` every time, `BetterAndroid` mirrors all methods of `SystemProperties`.
+
+Now, you can directly access `SystemProperties` using non-reflective means.
+
+> The following example
+
+```kotlin
+// For example, get the build ID of the current system.
+val buildId = SystemProperties.get("ro.build.id")
+// Get the build type of the current system.
+val buildTags = SystemProperties.get("ro.system.build.tags")
+// Get the CPU ABI list supported by the current device.
+val abis = SystemProperties.get("ro.system.product.cpu.abilist")
+```
+
+`BetterAndroid` also provides an extension usage for it.
+
+> The following example
+
+```kotlin
+// Determine whether the properties key exists.
+// For example, some unique key values in ROM.
+val isExists = SystemProperties.contains("ro.miui.ui.version.name")
+```
+
 ### Application Extension
 
 ::: tip Contents of This Section
@@ -698,226 +921,3 @@ In Android 8 or higher, in some cases, you may need to use `startForegroundServi
 Please refer to [Background Execution Limits](https://developer.android.com/about/versions/oreo/background).
 
 :::
-
-### System Infomation
-
-::: tip Content of This Section
-
-[AndroidVersion](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-android-version)
-
-Android version tool.
-
-[RomType](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-rom-type)
-
-Android ROM type tool.
-
-[SystemProperties](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.tool/-system-properties)
-
-Android's `SystemProperties` tool.
-
-:::
-
-Maybe you are tired of `Build.VERSION.SDK_INT` and `Build.VERSION_CODES` floating around in your code, so from now on, you no longer need to use them.
-
-`BetterAndroid` has prepared simpler writing methods for you to replace them.
-
-Previously, we needed to determine the Android API level of the current system, which was basically done in the following ways.
-
-> The following example
-
-```kotlin
-if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-    // Execute relevant code.
-}
-// Or use hard-coded API version code.
-if (Build.VERSION.SDK_INT >= 29) {
-    // Execute relevant code.
-}
-```
-
-Now, you can do this very easily in the following way.
-
-> The following example
-
-```kotlin
-AndroidVersion.require(AndroidVersion.Q) {
-    // Execute relevant code.
-}
-// result will get "target" when API is greater than or equal to 29, otherwise it will be "legacy".
-val result = AndroidVersion.require(AndroidVersion.Q, "legacy") { "target" }
-// If it is a nullable result, you can use the following method.
-val myData: MyData?
-val result = AndroidVersion.requireOrNull(AndroidVersion.Q, MyData()) { myData }
-```
-
-You can also use the following methods to judge.
-
-> The following example
-
-```kotlin
-// Determine whether API is less than 29.
-if (AndroidVersion.isLessThan(AndroidVersion.Q)) {
-    // Execute relevant code.
-}
-// Determine whether API is greater than 29.
-if (AndroidVersion.isGreaterThan(AndroidVersion.Q)) {
-    // Execute relevant code.
-}
-// Determine whether API is less than or equal to 29.
-if (AndroidVersion.isAtMost(AndroidVersion.Q)) {
-    // Execute relevant code.
-}
-// Determine whether the API is greater than or equal to 29.
-if (AndroidVersion.isAtLeast(AndroidVersion.Q)) {
-    // Execute relevant code.
-}
-```
-
-The following is the constant mapping comparison table for each API, after Android version update, `BetterAndroid` will update these constants synchronously.
-
-| API Level | `AndroidVersion` Name | `Build.VERSION_CODES` Name | Corresponding System Version |
-| --------- | --------------------- | -------------------------- | ---------------------------- |
-| 1         | `B`                   | `BASE`                     | 1.0                          |
-| 2         | `B_1_1`               | `BASE_1_1`                 | 1.1                          |
-| 3         | `C`                   | `CUPCAKE`                  | 1.5                          |
-| 4         | `D`                   | `DONUT`                    | 1.6                          |
-| 5         | `E`                   | `ECLAIR`                   | 2.0                          |
-| 6         | `E_0_1`               | `ECLAIR_0_1`               | 2.0.1                        |
-| 7         | `E_MR1`               | `ECLAIR_MR1`               | 2.1                          |
-| 8         | `F`                   | `FROYO`                    | 2.2                          |
-| 9         | `G`                   | `GINGERBREAD`              | 2.3                          |
-| 10        | `G_MR1`               | `GINGERBREAD_MR1`          | 2.3.3                        |
-| 11        | `H`                   | `HONEYCOMB`                | 3.0                          |
-| 12        | `H_MR1`               | `HONEYCOMB_MR1`            | 3.1                          |
-| 13        | `H_MR2`               | `HONEYCOMB_MR2`            | 3.2                          |
-| 14        | `I`                   | `ICE_CREAM_SANDWICH`       | 4.0                          |
-| 15        | `I_MR1`               | `ICE_CREAM_SANDWICH_MR1`   | 4.03                         |
-| 16        | `J`                   | `JELLY_BEAN`               | 4.1                          |
-| 17        | `J_MR1`               | `JELLY_BEAN_MR1`           | 4.2                          |
-| 18        | `J_MR2`               | `JELLY_BEAN_MR2`           | 4.3                          |
-| 19        | `K`                   | `KITKAT`                   | 4.4.3, 4.4.4                 |
-| 20        | `K_W`                 | `KITKAT_WATCH`             | 4.4W                         |
-| 21        | `L`                   | `LOLLIPOP`                 | 5.0, 5.0.2                   |
-| 22        | `L_MR1`               | `LOLLIPOP_MR1`             | 5.1, 5.1.1                   |
-| 23        | `M`                   | `M`                        | 6.0, 6.0.1                   |
-| 24        | `N`                   | `N`                        | 7.0                          |
-| 25        | `N_MR1`               | `N_MR1`                    | 7.1, 7.1.1, 7.1.2            |
-| 26        | `O`                   | `O`                        | 8.0                          |
-| 27        | `O_MR1`               | `O_MR1`                    | 8.1                          |
-| 28        | `P`                   | `P`                        | 9                            |
-| 29        | `Q`                   | `Q`                        | 10                           |
-| 30        | `R`                   | `R`                        | 11                           |
-| 31        | `S`                   | `S`                        | 12                           |
-| 32        | `S_V2`                | `S_V2`                     | 12.1, 12L                    |
-| 33        | `T`                   | `TIRAMISU`                 | 13                           |
-| 34        | `U`                   | `UPSIDE_DOWN_CAKE`         | 14                           |
-| 35        | `V`                   | `VANILLA_ICE_CREAM`        | 15                           |
-| 36        | `BAKLAVA`             | `BAKLAVA`                  | 16                           |
-
-In addition to judging the API level, you can also use the following method to get the current Android version name.
-
-> The following example
-
-```kotlin
-// Get the current Android version name.
-// It is equivalent to Build.VERSION.RELEASE.
-// For example, the version name of Android 10 is the string "10".
-val versionName = AndroidVersion.name
-```
-
-You can also use `code` directly to get the current Android API level.
-
-```kotlin
-// Get the current Android API level.
-// Its function is equivalent to Build.VERSION.SDK_INT.
-// For example, the API level of Android 10 is integer 29.
-val targetSdk = AndroidVersion.code
-```
-
-With more and more Android systems for deeply customized Android phones released by manufacturers in mainland China and other countries,
-it is very necessary for us to target the different functions of each customized version of the system, but how to judge the types of these systems is a big problem.
-
-Usually, everyone’s solution is to determine the model of the device to determine what kind of customized system it is,
-however, if the current device is not running the customized system you judged, such as the case where the user flashes the phone by himself, then this solution is will fail.
-
-`BetterAndroid` provides you with a simple, fast and efficient solution by collecting corresponding features of various common custom systems.
-
-The following is a simple example to determine the type of current ROM.
-
-> The following example
-
-```kotlin
-// Determine whether the current ROM type is MIUI.
-if (RomType.equals(RomType.MIUI)) {
-    // Execute relevant code.
-}
-```
-
-Yes, it's that simple, if you need to judge multiple ROM types at the same time, you can also use the following method.
-
-> The following example
-
-```kotlin
-// Get the current ROM type.
-val type = RomType.current
-// Determine the current ROM type in batches.
-when (type) {
-    RomType.MIUI -> {
-        // Execute relevant code.
-    }
-    RomType.COLOROS -> {
-        // Execute relevant code.
-    }
-    RomType.ORIGINOS -> {
-        // Execute relevant code.
-    }
-}
-```
-
-The following is a comparison table of constants for currently collected ROM types, if you have features for more ROM types,
-you are welcome to PR or go to [GitHub Issues](repo://issues) to make suggestions to us.
-
-| `RomType` Name | ROM Type                                                                                                 |
-| -------------- | -------------------------------------------------------------------------------------------------------- |
-| `DEFAULT`      | Default, uncategorized. (Stock Android or AOSP-based Android system or ROM type not currently collected) |
-| `HARMONYOS`    | [HarmonyOS](https://www.harmonyos.com/) (Based on AOSP)                                                  |
-| `EMUI`         | [EMUI](https://www.huaweicentral.com/emui)                                                               |
-| `MIUI`         | [MIUI](https://home.miui.com/)                                                                           |
-| `HYPEROS`      | [HyperOS](https://hyperos.mi.com/)                                                                       |
-| `COLOROS`      | [ColorOS](https://www.coloros.com/)                                                                      |
-| `FUNTOUCHOS`   | [FuntouchOS](https://www.vivo.com/funtouchos)                                                            |
-| `ORIGINOS`     | [OriginOS](https://www.vivo.com/originos)                                                                |
-| `FLYME`        | [Flyme](https://flyme.com/)                                                                              |
-| `ONEUI`        | [OneUI](https://www.samsung.com/one-ui)                                                                  |
-| `ZUI`          | [ZUI](https://zui.com/)                                                                                  |
-| `REDMAGICOS`   | [RedMagicOS](https://www.nubia.com/)                                                                     |
-| `NUBIAUI`      | [NubiaUI](https://www.nubia.com/)                                                                        |
-| `ROGUI`        | [RogUI](https://www.asus.com/)                                                                           |
-| `VISIONOS`     | [VisionOS](https://fans.hisense.com/forum-269-1.html)                                                    |
-
-`SystemProperties` is a tool provided by Android that can read the contents of `build.prop` during runtime, but this function is not open to developers.
-
-So in order to avoid using reflection to access `SystemProperties` every time, `BetterAndroid` mirrors all methods of `SystemProperties`.
-
-Now, you can directly access `SystemProperties` using non-reflective means.
-
-> The following example
-
-```kotlin
-// For example, get the build ID of the current system.
-val buildId = SystemProperties.get("ro.build.id")
-// Get the build type of the current system.
-val buildTags = SystemProperties.get("ro.system.build.tags")
-// Get the CPU ABI list supported by the current device.
-val abis = SystemProperties.get("ro.system.product.cpu.abilist")
-```
-
-`BetterAndroid` also provides an extension usage for it.
-
-> The following example
-
-```kotlin
-// Determine whether the properties key exists.
-// For example, some unique key values in ROM.
-val isExists = SystemProperties.contains("ro.miui.ui.version.name")
-```
