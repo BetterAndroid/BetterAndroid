@@ -538,6 +538,48 @@ context.clipboardManager.copy {
 }
 ```
 
+If you want to copy an image to the clipboard, you can implement an extension function for `ClipDataItemBuilder` to do so.
+
+The following extension function shows how to save a `Bitmap` to the system album and copy its `Uri` to the clipboard (no additional permissions required).
+
+> The following example
+
+```kotlin
+fun ClipDataItemBuilder.addBitmap(
+    bitmap: Bitmap,
+    resolver: ContentResolver,
+    format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG,
+    quality: Int = 100,
+    tempFileName: String = "your_image.png"
+) {
+    val values = ContentValues().apply {
+        put(MediaStore.Images.Media.DISPLAY_NAME, tempFileName)
+        put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+        if (AndroidVersion.isAtLeast(AndroidVersion.Q)) {
+            put(MediaStore.Images.Media.IS_PENDING, 1)
+            put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+        }
+    }
+
+    val imageCollection = if (AndroidVersion.isAtLeast(AndroidVersion.Q))
+        MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+    else MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+
+    val uri = resolver.insert(imageCollection, values) ?: return
+    resolver.openOutputStream(uri)?.use { out ->
+        bitmap.compress(format, quality, out)
+    }
+
+    if (AndroidVersion.isAtLeast(AndroidVersion.Q)) {
+        values.clear()
+        values.put(MediaStore.Images.Media.IS_PENDING, 0)
+        resolver.update(uri, values, null, null)
+    }
+
+    addUri(uri, resolver)
+}
+```
+
 ::: warning
 
 In Android 10 or later, the contents of the clipboard cannot be read while your app is in the background unless your app is an input method (IME).

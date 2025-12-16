@@ -519,6 +519,48 @@ context.clipboardManager.copy {
 }
 ```
 
+如果你希望复制一张图片到剪贴板，你可以为 `ClipDataItemBuilder` 实现一个扩展方法来实现。
+
+以下扩展方法展示了如何将 `Bitmap` 保存到系统相册中并复制其 `Uri` 到剪贴板 (无需额外权限)。
+
+> 示例如下
+
+```kotlin
+fun ClipDataItemBuilder.addBitmap(
+    bitmap: Bitmap,
+    resolver: ContentResolver,
+    format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG,
+    quality: Int = 100,
+    tempFileName: String = "your_image.png"
+) {
+    val values = ContentValues().apply {
+        put(MediaStore.Images.Media.DISPLAY_NAME, tempFileName)
+        put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+        if (AndroidVersion.isAtLeast(AndroidVersion.Q)) {
+            put(MediaStore.Images.Media.IS_PENDING, 1)
+            put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+        }
+    }
+
+    val imageCollection = if (AndroidVersion.isAtLeast(AndroidVersion.Q))
+        MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+    else MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+
+    val uri = resolver.insert(imageCollection, values) ?: return
+    resolver.openOutputStream(uri)?.use { out ->
+        bitmap.compress(format, quality, out)
+    }
+
+    if (AndroidVersion.isAtLeast(AndroidVersion.Q)) {
+        values.clear()
+        values.put(MediaStore.Images.Media.IS_PENDING, 0)
+        resolver.update(uri, values, null, null)
+    }
+
+    addUri(uri, resolver)
+}
+```
+
 ::: warning
 
 在 Android 10 或更高版本中，当应用程序处于后台时，除非你的应用程序是输入法 (IME)，否则无法读取剪贴板中的内容。
