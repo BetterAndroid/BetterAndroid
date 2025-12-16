@@ -19,123 +19,58 @@
  *
  * This file is created by fankes on 2023/10/23.
  */
-@file:Suppress("unused")
-
 package com.highcapable.betterandroid.system.extension.tool
 
-import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.kavaref.extension.lazyClass
+import com.highcapable.betterandroid.system.extension.utils.SystemProperties as NewSystemProperties
 
 /**
- * This is a system properties extension tool mirrored from "android.os.SystemProperties".
- *
- * You can directly access the system's properties through this tool.
- *
- * - Note: The core functionality relies on calling system class through Java reflection,
- *   which may be limited by the system versions and third-party ROMs.
+ * Use [NewSystemProperties] instead.
  */
+@Deprecated(
+    message = "Use SystemProperties instead.",
+    ReplaceWith(
+        expression = "SystemProperties",
+        imports = arrayOf("com.highcapable.betterandroid.system.extension.utils.SystemProperties")
+    )
+)
 object SystemProperties {
 
-    /** The current [Class] instance. */
-    private val SystemPropertiesClass by lazyClass("android.os.SystemProperties")
-
-    /** The method used to get system properties key-value. */
-    private val getMethod by lazy {
-        SystemPropertiesClass.resolve()
-            .optional(silent = true)
-            .firstMethodOrNull {
-                name = "get"
-                parameters(String::class, String::class)
-            }
-    }
-
-    /** The method used to get system properties key-value as [Int]. */
-    private val getIntMethod by lazy {
-        SystemPropertiesClass.resolve()
-            .optional(silent = true)
-            .firstMethodOrNull {
-                name = "getInt"
-                parameters(String::class, Int::class)
-            }
-    }
-
-    /** The method used to get system properties key-value as [Long]. */
-    private val getLongMethod by lazy {
-        SystemPropertiesClass.resolve()
-            .optional(silent = true)
-            .firstMethodOrNull {
-                name = "getLong"
-                parameters(String::class, Long::class)
-            }
-    }
-
-    /** The method used to get system properties key-value as [Boolean]. */
-    private val getBooleanMethod by lazy {
-        SystemPropertiesClass.resolve()
-            .optional(silent = true)
-            .firstMethodOrNull {
-                name = "getBoolean"
-                parameters(String::class, Int::class)
-            }
-    }
-
     /**
-     * Determine whether system properties contain the specified [key].
-     * @param key the key name.
-     * @return [Boolean]
+     * - This function is deprecated, use [NewSystemProperties.contains] instead.
      */
+    @Deprecated(message = "Use SystemProperties.contains instead.", ReplaceWith("SystemProperties.contains(key)"))
     @JvmStatic
-    fun contains(key: String) = get(key).isNotBlank()
+    fun contains(key: String) = NewSystemProperties.contains(key)
 
     /**
-     * Get the system properties key-value, and return as [String].
-     * @param key the key name.
-     * @param default the default value.
-     * @return [String]
+     * - This function is deprecated, use [NewSystemProperties.get] instead.
      */
+    @Deprecated(message = "Use SystemProperties.get instead.", ReplaceWith("SystemProperties.get(key, default)"))
     @JvmStatic
     @JvmOverloads
-    fun get(key: String, default: String = "") =
-        getMethod?.invokeQuietly<String>(key, default) ?: default
+    fun get(key: String, default: String = "") = NewSystemProperties.get(key, default)
 
     /**
-     * Get the system properties key-value, and return as [Int].
-     * @param key the key name.
-     * @param default the default value.
-     * @return [Int]
+     * - This function is deprecated, use [NewSystemProperties.getInt] instead.
      */
+    @Deprecated(message = "Use SystemProperties.getInt instead.", ReplaceWith("SystemProperties.getInt(key, default)"))
     @JvmStatic
     @JvmOverloads
-    fun getInt(key: String, default: Int = 0) =
-        getIntMethod?.invokeQuietly<Int>(key, default) ?: default
+    fun getInt(key: String, default: Int = 0) = NewSystemProperties.getInt(key, default)
 
     /**
-     * Get the system properties key-value, and return as [Long].
-     * @param key the key name.
-     * @param default the default value.
-     * @return [Long]
+     * - This function is deprecated, use [NewSystemProperties.getLong] instead.
      */
+    @Deprecated(message = "Use SystemProperties.getLong instead.", ReplaceWith("SystemProperties.getLong(key, default)"))
     @JvmStatic
     @JvmOverloads
-    fun getLong(key: String, default: Long = 0L) =
-        getLongMethod?.invokeQuietly<Long>(key, default) ?: default
+    fun getLong(key: String, default: Long = 0L) = NewSystemProperties.getLong(key, default)
 
     /**
-     * Get the system properties key-value, and return as [Boolean].
-     *
-     * Values 'n', 'no', '0', 'false' or 'off' are considered false.
-     *
-     * Values 'y', 'yes', '1', 'true' or 'on' are considered true.
-     *
-     * (case sensitive).
-     *
-     * See [here](https://android.googlesource.com/platform/frameworks/base.git/+/refs/heads/main/core/java/android/os/SystemProperties.java#213).
-     * @param key the key name.
-     * @param default the default value.
-     * @return [Boolean]
+     * - This function is deprecated, use [NewSystemProperties.getBoolean] instead.
      */
+    @Deprecated(message = "Use SystemProperties.getBoolean instead.", ReplaceWith("SystemProperties.getBoolean(key, default)"))
     @JvmStatic
     @JvmOverloads
-    fun getBoolean(key: String, default: Boolean = false) =
-        getBooleanMethod?.invokeQuietly<Boolean>(key, default) ?: default
+    fun getBoolean(key: String, default: Boolean = false) = NewSystemProperties.getBoolean(key, default)
 }

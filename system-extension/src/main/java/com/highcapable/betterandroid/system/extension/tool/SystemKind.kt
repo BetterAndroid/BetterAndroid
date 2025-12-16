@@ -23,10 +23,17 @@
 
 package com.highcapable.betterandroid.system.extension.tool
 
+import com.highcapable.betterandroid.system.extension.utils.RomType
+
 /**
  * Use [RomType] instead.
  */
-@Deprecated(message = "Use RomType instead.", ReplaceWith("RomType"))
+@Deprecated(message = "Use RomType instead.",
+    ReplaceWith(
+        expression = "RomType",
+        imports = arrayOf("com.highcapable.betterandroid.system.extension.utils.RomType")
+    )
+)
 object SystemKind {
 
     /**

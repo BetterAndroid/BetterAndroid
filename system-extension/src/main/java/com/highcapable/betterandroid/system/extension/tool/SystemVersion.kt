@@ -24,11 +24,18 @@
 package com.highcapable.betterandroid.system.extension.tool
 
 import androidx.annotation.ChecksSdkIntAtLeast
+import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
 
 /**
  * Use [AndroidVersion] instead.
  */
-@Deprecated(message = "Use AndroidVersion instead.", ReplaceWith("AndroidVersion"))
+@Deprecated(
+    message = "Use AndroidVersion instead.",
+    ReplaceWith(
+        expression = "AndroidVersion",
+        imports = arrayOf("com.highcapable.betterandroid.system.extension.utils.AndroidVersion")
+    )
+)
 object SystemVersion {
 
     /**

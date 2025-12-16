@@ -23,8 +23,8 @@ package com.highcapable.betterandroid.ui.component.systembar.compat
 
 import android.util.Log
 import android.view.Window
-import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
-import com.highcapable.betterandroid.system.extension.tool.RomType
+import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
+import com.highcapable.betterandroid.system.extension.utils.RomType
 import com.highcapable.betterandroid.ui.component.generated.BetterAndroidProperties
 import com.highcapable.kavaref.KavaRef.Companion.asResolver
 import com.highcapable.kavaref.KavaRef.Companion.resolve

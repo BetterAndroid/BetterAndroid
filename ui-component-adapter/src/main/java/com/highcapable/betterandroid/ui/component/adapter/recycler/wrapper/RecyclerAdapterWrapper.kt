@@ -1,5 +1,5 @@
 /*
- * BetterAndroid - Create more useful tool extensions for Android.
+ * Better Android - Create more useful tool extensions for Android.
  * Copyright (C) 2019 HighCapable
  * https://github.com/BetterAndroid/BetterAndroid
  *

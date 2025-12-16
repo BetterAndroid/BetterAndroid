@@ -31,7 +31,7 @@ import android.text.method.DigitsKeyListener
 import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.ColorInt
-import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
+import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
 import java.util.Locale
 
 /**

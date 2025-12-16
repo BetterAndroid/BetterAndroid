@@ -34,7 +34,7 @@ import androidx.core.graphics.Insets
 import androidx.core.view.DisplayCutoutCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
+import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
 import com.highcapable.betterandroid.ui.extension.component.base.toPx
 import com.highcapable.betterandroid.ui.extension.insets.compat.WindowInsetsWrapperCompat
 import com.highcapable.betterandroid.ui.extension.insets.factory.createWrapper

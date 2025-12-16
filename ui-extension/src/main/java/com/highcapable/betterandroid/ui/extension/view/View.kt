@@ -54,7 +54,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
 import androidx.core.view.updateMarginsRelative
 import androidx.core.view.updatePadding
-import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
+import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
 import com.highcapable.betterandroid.ui.extension.R
 import com.highcapable.kavaref.extension.classOf
 import com.highcapable.kavaref.extension.createInstanceOrNull

@@ -59,7 +59,7 @@ import androidx.core.content.withStyledAttributes
 import androidx.core.view.get
 import androidx.core.view.isNotEmpty
 import androidx.core.view.size
-import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
+import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
 import com.highcapable.kavaref.KavaRef.Companion.asResolver
 import com.highcapable.kavaref.extension.classOf
 

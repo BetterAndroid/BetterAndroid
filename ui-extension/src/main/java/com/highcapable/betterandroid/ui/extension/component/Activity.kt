@@ -34,7 +34,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.highcapable.betterandroid.system.extension.component.queryLaunchActivitiesForPackage
 import com.highcapable.betterandroid.system.extension.component.queryLaunchActivitiesForPackageOrNull
-import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
+import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
 import com.highcapable.kavaref.extension.classOf
 
 /**
@@ -51,7 +51,7 @@ val Activity.isInSpecialWindowMode get() = isInMultiWindowModeCompat
  * Whether the activity is currently in multi-window mode (compat).
  *
  * - Note: This function will always return false on system version prior to Android 7.
- * @receiver the current activty.
+ * @receiver the current activity.
  * @return [Boolean]
  */
 val Activity.isInMultiWindowModeCompat get() = AndroidVersion.require(AndroidVersion.N, false) { isInMultiWindowMode }

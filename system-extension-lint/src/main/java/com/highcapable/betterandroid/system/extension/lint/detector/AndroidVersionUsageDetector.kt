@@ -47,7 +47,7 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
         private const val BUILD_VERSION_CODES_CLASS = "android.os.$BUILD_VERSION_CODES_NAME"
         private const val SDK_INT_FIELD = "SDK_INT"
 
-        private const val ANDROID_VERSION_PACKAGE = "${DeclaredSymbol.BASE_PACKAGE}.tool"
+        private const val ANDROID_VERSION_PACKAGE = "${DeclaredSymbol.BASE_PACKAGE}.utils"
         private const val ANDROID_VERSION_NAME = "AndroidVersion"
         private const val ANDROID_VERSION_CLASS = "$ANDROID_VERSION_PACKAGE.$ANDROID_VERSION_NAME"
         private const val ANDROID_VERSION_CODE_FIELD = "code"

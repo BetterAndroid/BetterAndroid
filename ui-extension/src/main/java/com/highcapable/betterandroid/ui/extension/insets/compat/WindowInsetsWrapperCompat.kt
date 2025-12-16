@@ -24,9 +24,9 @@ package com.highcapable.betterandroid.ui.extension.insets.compat
 import android.util.Log
 import android.view.View
 import android.view.Window
-import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
-import com.highcapable.betterandroid.system.extension.tool.RomType
-import com.highcapable.betterandroid.system.extension.tool.SystemProperties
+import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
+import com.highcapable.betterandroid.system.extension.utils.RomType
+import com.highcapable.betterandroid.system.extension.utils.SystemProperties
 import com.highcapable.betterandroid.ui.extension.component.base.toPx
 import com.highcapable.betterandroid.ui.extension.generated.BetterAndroidProperties
 import com.highcapable.betterandroid.ui.extension.insets.InsetsWrapper

@@ -23,221 +23,295 @@
 
 package com.highcapable.betterandroid.system.extension.tool
 
-import android.os.Build
-import androidx.annotation.ChecksSdkIntAtLeast
-import androidx.annotation.IntDef
+import com.highcapable.betterandroid.system.extension.utils.AndroidVersion as NewAndroidVersion
 
 /**
- * Android SDK version tool.
+ * Use [NewAndroidVersion] instead.
  */
+@Deprecated(
+    message = "Use AndroidVersion instead.",
+    ReplaceWith(
+        expression = "AndroidVersion",
+        imports = arrayOf("com.highcapable.betterandroid.system.extension.utils.AndroidVersion")
+    )
+)
 object AndroidVersion {
 
     /**
-     * The Android SDK version code annotation.
+     * - This property is deprecated, use [NewAndroidVersion.B] instead.
      */
-    @IntDef(
-        B, B_1_1, C, D, E, E_0_1, E_MR1, FROYO, G, G_MR1,
-        H, H_MR1, H_MR2, I, I_MR1, J, J_MR1, J_MR2, K,
-        K_W, L, L_MR1, M, N, N_MR1, O, O_MR1, P,
-        Q, R, S, S_V2, T, U, V, BAKLAVA
-    )
-    @Retention(AnnotationRetention.SOURCE)
-    annotation class SdkInt
-
-    /** Android 1.0 (1) */
-    const val B = Build.VERSION_CODES.BASE
-
-    /** Android 1.1 (2) */
-    const val B_1_1 = Build.VERSION_CODES.BASE_1_1
-
-    /** Android 1.5 (3) */
-    const val C = Build.VERSION_CODES.CUPCAKE
-
-    /** Android 1.6 (4) */
-    const val D = Build.VERSION_CODES.DONUT
-
-    /** Android 2.0 (5) */
-    const val E = Build.VERSION_CODES.ECLAIR
-
-    /** Android 2.0.1 (6) */
-    const val E_0_1 = Build.VERSION_CODES.ECLAIR_0_1
-
-    /** Android 2.1 (7) */
-    const val E_MR1 = Build.VERSION_CODES.ECLAIR_MR1
-
-    /** Android 2.2 (8) */
-    const val FROYO = Build.VERSION_CODES.FROYO
-
-    /** Android 2.3 (9) */
-    const val G = Build.VERSION_CODES.GINGERBREAD
-
-    /** Android 2.3.3 (10) */
-    const val G_MR1 = Build.VERSION_CODES.GINGERBREAD_MR1
-
-    /** Android 3.0 (11) */
-    const val H = Build.VERSION_CODES.HONEYCOMB
-
-    /** Android 3.1 (12) */
-    const val H_MR1 = Build.VERSION_CODES.HONEYCOMB_MR1
-
-    /** Android 3.2 (13) */
-    const val H_MR2 = Build.VERSION_CODES.HONEYCOMB_MR2
-
-    /** Android 4.0 (14) */
-    const val I = Build.VERSION_CODES.ICE_CREAM_SANDWICH
-
-    /** Android 4.03 (15) */
-    const val I_MR1 = Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1
-
-    /** Android 4.1 (16) */
-    const val J = Build.VERSION_CODES.JELLY_BEAN
-
-    /** Android 4.2 (17) */
-    const val J_MR1 = Build.VERSION_CODES.JELLY_BEAN_MR1
-
-    /** Android 4.3 (18) */
-    const val J_MR2 = Build.VERSION_CODES.JELLY_BEAN_MR2
-
-    /** Android 4.4.3、4.4.4 (19) */
-    const val K = Build.VERSION_CODES.KITKAT
-
-    /** Android 4.4W (20) */
-    const val K_W = Build.VERSION_CODES.KITKAT_WATCH
-
-    /** Android 5.0、5.0.2 (21) */
-    const val L = Build.VERSION_CODES.LOLLIPOP
-
-    /** Android 5.1、5.1.1 (22) */
-    const val L_MR1 = Build.VERSION_CODES.LOLLIPOP_MR1
-
-    /** Android 6.0、6.0.1 (23) */
-    const val M = Build.VERSION_CODES.M
-
-    /** Android 7.0 (24) */
-    const val N = Build.VERSION_CODES.N
-
-    /** Android 7.1、7.1.1、7.1.2 (25) */
-    const val N_MR1 = Build.VERSION_CODES.N_MR1
-
-    /** Android 8.0 (26) */
-    const val O = Build.VERSION_CODES.O
-
-    /** Android 8.1 (27) */
-    const val O_MR1 = Build.VERSION_CODES.O_MR1
-
-    /** Android 9 (28) */
-    const val P = Build.VERSION_CODES.P
-
-    /** Android 10 (29) */
-    const val Q = Build.VERSION_CODES.Q
-
-    /** Android 11 (30) */
-    const val R = Build.VERSION_CODES.R
-
-    /** Android 12 (31) */
-    const val S = Build.VERSION_CODES.S
-
-    /** Android 12L、12.1 (32) */
-    const val S_V2 = Build.VERSION_CODES.S_V2
-
-    /** Android 13 (33) */
-    const val T = Build.VERSION_CODES.TIRAMISU
-
-    /** Android 14 (34) */
-    const val U = Build.VERSION_CODES.UPSIDE_DOWN_CAKE
-
-    /** Android 15 (35) */
-    const val V = Build.VERSION_CODES.VANILLA_ICE_CREAM
-
-    /** Android 16 (36) */
-    const val BAKLAVA = Build.VERSION_CODES.BAKLAVA
+    @Deprecated(message = "Use AndroidVersion.B instead.", ReplaceWith("AndroidVersion.B"))
+    const val B = NewAndroidVersion.B
 
     /**
-     * Get the current Android version name.
-     *
-     * For example Android 12, it will return a string "12".
-     * @see Build.VERSION.RELEASE
-     * @return [String]
+     * - This property is deprecated, use [NewAndroidVersion.B_1_1] instead.
      */
+    @Deprecated(message = "Use AndroidVersion.B_1_1 instead.", ReplaceWith("AndroidVersion.B_1_1"))
+    const val B_1_1 = NewAndroidVersion.B_1_1
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.C] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.C instead.", ReplaceWith("AndroidVersion.C"))
+    const val C = NewAndroidVersion.C
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.D] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.D instead.", ReplaceWith("AndroidVersion.D"))
+    const val D = NewAndroidVersion.D
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.E] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.E instead.", ReplaceWith("AndroidVersion.E"))
+    const val E = NewAndroidVersion.E
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.E_0_1] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.E_0_1 instead.", ReplaceWith("AndroidVersion.E_0_1"))
+    const val E_0_1 = NewAndroidVersion.E_0_1
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.E_MR1] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.E_MR1 instead.", ReplaceWith("AndroidVersion.E_MR1"))
+    const val E_MR1 = NewAndroidVersion.E_MR1
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.FROYO] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.FROYO instead.", ReplaceWith("AndroidVersion.FROYO"))
+    const val FROYO = NewAndroidVersion.FROYO
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.G] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.G instead.", ReplaceWith("AndroidVersion.G"))
+    const val G = NewAndroidVersion.G
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.G_MR1] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.G_MR1 instead.", ReplaceWith("AndroidVersion.G_MR1"))
+    const val G_MR1 = NewAndroidVersion.G_MR1
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.H] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.H instead.", ReplaceWith("AndroidVersion.H"))
+    const val H = NewAndroidVersion.H
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.H_MR1] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.H_MR1 instead.", ReplaceWith("AndroidVersion.H_MR1"))
+    const val H_MR1 = NewAndroidVersion.H_MR1
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.H_MR2] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.H_MR2 instead.", ReplaceWith("AndroidVersion.H_MR2"))
+    const val H_MR2 = NewAndroidVersion.H_MR2
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.I] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.I instead.", ReplaceWith("AndroidVersion.I"))
+    const val I = NewAndroidVersion.I
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.I_MR1] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.I_MR1 instead.", ReplaceWith("AndroidVersion.I_MR1"))
+    const val I_MR1 = NewAndroidVersion.I_MR1
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.J] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.J instead.", ReplaceWith("AndroidVersion.J"))
+    const val J = NewAndroidVersion.J
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.J_MR1] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.J_MR1 instead.", ReplaceWith("AndroidVersion.J_MR1"))
+    const val J_MR1 = NewAndroidVersion.J_MR1
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.J_MR2] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.J_MR2 instead.", ReplaceWith("AndroidVersion.J_MR2"))
+    const val J_MR2 = NewAndroidVersion.J_MR2
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.K] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.K instead.", ReplaceWith("AndroidVersion.K"))
+    const val K = NewAndroidVersion.K
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.K_W] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.K_W instead.", ReplaceWith("AndroidVersion.K_W"))
+    const val K_W = NewAndroidVersion.K_W
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.L] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.L instead.", ReplaceWith("AndroidVersion.L"))
+    const val L = NewAndroidVersion.L
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.L_MR1] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.L_MR1 instead.", ReplaceWith("AndroidVersion.L_MR1"))
+    const val L_MR1 = NewAndroidVersion.L_MR1
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.M] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.M instead.", ReplaceWith("AndroidVersion.M"))
+    const val M = NewAndroidVersion.M
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.N] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.N instead.", ReplaceWith("AndroidVersion.N"))
+    const val N = NewAndroidVersion.N
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.N_MR1] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.N_MR1 instead.", ReplaceWith("AndroidVersion.N_MR1"))
+    const val N_MR1 = NewAndroidVersion.N_MR1
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.O] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.O instead.", ReplaceWith("AndroidVersion.O"))
+    const val O = NewAndroidVersion.O
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.O_MR1] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.O_MR1 instead.", ReplaceWith("AndroidVersion.O_MR1"))
+    const val O_MR1 = NewAndroidVersion.O_MR1
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.P] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.P instead.", ReplaceWith("AndroidVersion.P"))
+    const val P = NewAndroidVersion.P
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.Q] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.Q instead.", ReplaceWith("AndroidVersion.Q"))
+    const val Q = NewAndroidVersion.Q
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.R] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.R instead.", ReplaceWith("AndroidVersion.R"))
+    const val R = NewAndroidVersion.R
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.S] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.S instead.", ReplaceWith("AndroidVersion.S"))
+    const val S = NewAndroidVersion.S
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.S_V2] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.S_V2 instead.", ReplaceWith("AndroidVersion.S_V2"))
+    const val S_V2 = NewAndroidVersion.S_V2
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.T] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.T instead.", ReplaceWith("AndroidVersion.T"))
+    const val T = NewAndroidVersion.T
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.U] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.U instead.", ReplaceWith("AndroidVersion.U"))
+    const val U = NewAndroidVersion.U
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.V] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.V instead.", ReplaceWith("AndroidVersion.V"))
+    const val V = NewAndroidVersion.V
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.BAKLAVA] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.BAKLAVA instead.", ReplaceWith("AndroidVersion.BAKLAVA"))
+    const val BAKLAVA = NewAndroidVersion.BAKLAVA
+
+    /**
+     * - This property is deprecated, use [NewAndroidVersion.name] instead.
+     */
+    @Deprecated(message = "Use AndroidVersion.name instead.", ReplaceWith("AndroidVersion.name"))
     @JvmStatic
-    val name by lazy { Build.VERSION.RELEASE ?: "" }
+    val name get() = NewAndroidVersion.name
 
     /**
-     * Get the current Android version code.
-     *
-     * For example Android 12, it will return an integer 31.
-     * @see Build.VERSION.SDK_INT
-     * @return [Int]
+     * - This property is deprecated, use [NewAndroidVersion.code] instead.
      */
+    @Deprecated(message = "Use AndroidVersion.code instead.", ReplaceWith("AndroidVersion.code"))
     @JvmStatic
-    val code by lazy { Build.VERSION.SDK_INT }
+    val code get() = NewAndroidVersion.code
 
     /**
-     * Less than target sdk. `code < target`
-     * @param target the target sdk.
-     * @return [Boolean]
+     * - This function is deprecated, use [NewAndroidVersion.isLessThan] instead.
      */
+    @Deprecated(message = "Use AndroidVersion.isLessThan instead.", ReplaceWith("AndroidVersion.isLessThan(target)"))
     @JvmStatic
-    @ChecksSdkIntAtLeast(parameter = 0)
-    fun isLessThan(@SdkInt target: Int) = code < target
+    fun isLessThan(target: Int) = NewAndroidVersion.isLessThan(target)
 
     /**
-     * At most target sdk. `code <= target`
-     * @param target the target sdk.
-     * @return [Boolean]
+     * - This function is deprecated, use [NewAndroidVersion.isAtMost] instead.
      */
+    @Deprecated(message = "Use AndroidVersion.isAtMost instead.", ReplaceWith("AndroidVersion.isAtMost(target)"))
     @JvmStatic
-    @ChecksSdkIntAtLeast(parameter = 0)
-    fun isAtMost(@SdkInt target: Int) = code <= target
+    fun isAtMost(target: Int) = NewAndroidVersion.isAtMost(target)
 
     /**
-     * Greater than target sdk. `code > target`
-     * @param target the target sdk.
-     * @return [Boolean]
+     * - This function is deprecated, use [NewAndroidVersion.isGreaterThan] instead.
      */
+    @Deprecated(message = "Use AndroidVersion.isGreaterThan instead.", ReplaceWith("AndroidVersion.isGreaterThan(target)"))
     @JvmStatic
-    @ChecksSdkIntAtLeast(parameter = 0)
-    fun isGreaterThan(@SdkInt target: Int) = code > target
+    fun isGreaterThan(target: Int) = NewAndroidVersion.isGreaterThan(target)
 
     /**
-     * At least target sdk. `code >= target`
-     * @param target the target sdk.
-     * @return [Boolean]
+     * - This function is deprecated, use [NewAndroidVersion.isAtLeast] instead.
      */
+    @Deprecated(message = "Use AndroidVersion.isAtLeast instead.", ReplaceWith("AndroidVersion.isAtLeast(target)"))
     @JvmStatic
-    @ChecksSdkIntAtLeast(parameter = 0)
-    fun isAtLeast(@SdkInt target: Int) = code >= target
+    fun isAtLeast(target: Int) = NewAndroidVersion.isAtLeast(target)
 
     /**
-     * The target sdk is required to be [target] or higher than [target] to call [callback].
-     * @param target the target sdk.
-     * @param callback callback when the above conditions are met.
+     * - This function is deprecated, use [NewAndroidVersion.require] instead.
      */
-    @ChecksSdkIntAtLeast(parameter = 0)
-    inline fun require(@SdkInt target: Int, callback: () -> Unit) {
-        if (isAtLeast(target)) callback()
-    }
+    @Deprecated(message = "Use AndroidVersion.require instead.", ReplaceWith("AndroidVersion.require(target, callback)"))
+    inline fun require(target: Int, callback: () -> Unit) = NewAndroidVersion.require(target, callback)
 
     /**
-     * The target sdk is required to be [target] or higher than [target] to call [callback].
-     * @see requireOrNull
-     * @param target the target sdk.
-     * @param defaultValue the default value when the above conditions are not met.
-     * @param callback callback when the above conditions are met.
-     * @return [T]
+     * - This function is deprecated, use [NewAndroidVersion.require] instead.
      */
-    @ChecksSdkIntAtLeast(parameter = 0)
-    inline fun <T : Any> require(@SdkInt target: Int, defaultValue: T, callback: () -> T): T =
-        if (isAtLeast(target)) callback() else defaultValue
+    @Deprecated(message = "Use AndroidVersion.require instead.", ReplaceWith("AndroidVersion.require(target, defaultValue, callback)"))
+    inline fun <T : Any> require(target: Int, defaultValue: T, callback: () -> T) =
+        NewAndroidVersion.require(target, defaultValue, callback)
 
     /**
-     * The target sdk is required to be [target] or higher than [target] to call [callback].
-     * @param target the target sdk.
-     * @param defaultValue the default value when the above conditions are not met.
-     * @param callback callback when the above conditions are met.
-     * @return [T] or null.
+     * - This function is deprecated, use [NewAndroidVersion.requireOrNull] instead.
      */
-    @ChecksSdkIntAtLeast(parameter = 0)
-    inline fun <T : Any?> requireOrNull(@SdkInt target: Int, defaultValue: T?, callback: () -> T?): T? =
-        if (isAtLeast(target)) (callback() ?: defaultValue) else defaultValue
+    @Deprecated(message = "Use AndroidVersion.requireOrNull instead.", ReplaceWith("AndroidVersion.requireOrNull(target, defaultValue, callback)"))
+    inline fun <T : Any?> requireOrNull(target: Int, defaultValue: T?, callback: () -> T?) =
+        NewAndroidVersion.requireOrNull(target, defaultValue, callback)
 }

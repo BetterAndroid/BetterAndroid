@@ -32,7 +32,7 @@ import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.ShapeDrawable
 import androidx.annotation.CallSuper
 import androidx.annotation.Px
-import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
+import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
 
 /**
  * A [GradientDrawable] with padding (compat).
@@ -47,6 +47,7 @@ open class GradientDrawableCompat : GradientDrawable() {
     @CallSuper
     override fun getPadding(padding: Rect) =
         if (this.padding != null && this.padding != padding)
+            @Suppress("KotlinConstantConditions")
             this.padding?.let { padding.set(it); true } ?: false
         else super.getPadding(padding)
 
@@ -95,8 +96,8 @@ fun GradientDrawable.setPaddingCompat(@Px left: Int, @Px top: Int, @Px right: In
  */
 fun Drawable.setPadding(@Px left: Int, @Px top: Int, @Px right: Int, @Px bottom: Int) {
     when (this) {
-        is RippleDrawable -> setPadding(left, top, right, bottom)
-        is LayerDrawable -> setPadding(left, top, right, bottom)
+        is RippleDrawable -> AndroidVersion.require(AndroidVersion.M) { setPadding(left, top, right, bottom) }
+        is LayerDrawable -> AndroidVersion.require(AndroidVersion.M) { setPadding(left, top, right, bottom) }
         is ShapeDrawable -> setPadding(left, top, right, bottom)
         is GradientDrawable -> setPaddingCompat(left, top, right, bottom)
     }

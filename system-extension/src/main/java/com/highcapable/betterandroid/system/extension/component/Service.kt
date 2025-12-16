@@ -29,7 +29,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import androidx.annotation.RequiresApi
-import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
+import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
 import com.highcapable.kavaref.extension.classOf
 
 /**

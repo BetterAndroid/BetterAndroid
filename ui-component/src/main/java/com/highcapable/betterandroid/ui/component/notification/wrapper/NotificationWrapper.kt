@@ -24,7 +24,7 @@ package com.highcapable.betterandroid.ui.component.notification.wrapper
 import android.media.AudioAttributes
 import android.media.AudioManager
 import androidx.core.app.NotificationCompat
-import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
+import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
 import com.highcapable.betterandroid.ui.component.R
 import com.highcapable.betterandroid.ui.component.notification.NotificationBuilder
 import com.highcapable.betterandroid.ui.component.notification.NotificationChannelBuilder

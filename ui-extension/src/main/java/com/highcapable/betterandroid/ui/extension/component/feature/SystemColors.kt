@@ -26,7 +26,7 @@ package com.highcapable.betterandroid.ui.extension.component.feature
 import android.content.Context
 import android.graphics.Color
 import com.google.android.material.color.DynamicColors
-import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
+import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
 import com.highcapable.betterandroid.ui.extension.component.base.getColorCompat
 import android.R as Android_R
 import com.google.android.material.R as Material_R

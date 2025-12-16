@@ -27,7 +27,7 @@ package com.highcapable.betterandroid.system.extension.component
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
+import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
 import com.highcapable.kavaref.extension.classOf
 import java.io.Serializable
 

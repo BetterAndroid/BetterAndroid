@@ -28,7 +28,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationManagerCompat
-import com.highcapable.betterandroid.system.extension.tool.AndroidVersion
+import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
 import com.highcapable.betterandroid.ui.component.notification.factory.notificationManager
 import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationWrapper
 
@@ -40,10 +40,10 @@ import com.highcapable.betterandroid.ui.component.notification.wrapper.Notificat
  */
 class NotificationPoster internal constructor(private val notification: NotificationWrapper) {
 
-    /** The current shown notificaion ID. */
+    /** The current shown notification ID. */
     private var shownId: Int? = null
 
-    /** The current shown notificaion tag. */
+    /** The current shown notification tag. */
     private var shownTag = ""
 
     /**
