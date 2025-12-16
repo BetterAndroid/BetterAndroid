@@ -21,7 +21,9 @@
  */
 package com.highcapable.betterandroid.ui.extension.lint
 
+import com.highcapable.betterandroid.generated.BetterAndroidProperties
+
 object DeclaredSymbol {
 
-    const val BASE_PACKAGE = "com.highcapable.betterandroid.ui.extension"
+    const val BASE_PACKAGE = BetterAndroidProperties.PROJECT_UI_EXTENSION_NAMESPACE
 }
