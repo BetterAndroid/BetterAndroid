@@ -1,9 +1,7 @@
 [versions]
 agp = "8.13.2"
-# noinspection NewerVersionAvailable, GradleDependency
-kotlin = "2.1.10"
-# noinspection NewerVersionAvailable
-compose = "1.8.2"
+kotlin = "2.2.21"
+compose = "1.9.3"
 # noinspection NewerVersionAvailable
 dokka = "1.9.20"
 maven-publish = "0.35.0"
