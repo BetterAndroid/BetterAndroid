@@ -64,7 +64,8 @@ gropify {
         }
     }
     projects(
-        ":ui-extension-lint"
+        ":ui-extension-lint",
+        ":system-extension-lint"
     ) {
         jvm {
             className = rootProject.name
@@ -81,6 +82,7 @@ include(
     ":ui-extension",
     ":ui-extension-lint",
     ":system-extension",
+    ":system-extension-lint",
     ":compose-extension",
     ":compose-multiplatform"
 )

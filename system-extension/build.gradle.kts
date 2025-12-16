@@ -30,6 +30,8 @@ android {
 }
 
 dependencies {
+    lintPublish(projects.systemExtensionLint)
+
     implementation(libs.kavaref.core)
     implementation(libs.kavaref.extension)
     implementation(libs.androidx.appcompat)
