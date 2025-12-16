@@ -30,12 +30,12 @@ import android.view.WindowManager
 /**
  * Update window's attributes.
  * @receiver the current window.
- * @param initiate the [WindowManager.LayoutParams] builder body.
+ * @param body the [WindowManager.LayoutParams] builder body.
  */
-inline fun Window.updateLayoutParams(initiate: WindowManager.LayoutParams.() -> Unit) {
+inline fun Window.updateLayoutParams(body: WindowManager.LayoutParams.() -> Unit) {
     val params = attributes
 
-    initiate(params)
+    body(params)
     attributes = params
 }
 

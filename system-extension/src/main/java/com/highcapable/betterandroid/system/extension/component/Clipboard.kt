@@ -102,12 +102,12 @@ class ClipDataItemBuilder internal constructor() {
 /**
  * Create a clip data.
  * @param label the clip data visible label, default is null.
- * @param initiate the [ClipDataItemBuilder] builder body.
+ * @param builder the [ClipDataItemBuilder] builder body.
  * @throws IllegalStateException if no clip data item provided.
  */
 @JvmOverloads
-fun ClipData(label: CharSequence? = null, initiate: ClipDataItemBuilder.() -> Unit): ClipData {
-    val data = ClipDataItemBuilder().apply(initiate).build()
+fun ClipData(label: CharSequence? = null, builder: ClipDataItemBuilder.() -> Unit): ClipData {
+    val data = ClipDataItemBuilder().apply(builder).build()
     require(data.second.isEmpty()) { "ClipData must have at least one item." }
 
     return ClipData(label, data.first, data.second[0]).apply { data.second.drop(1).forEach { addItem(it) } }

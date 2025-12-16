@@ -49,12 +49,12 @@ class LinearHorizontalItemDecoration : BaseRecyclerItemDecoration {
      * @param bottom the each bottom spacing (px).
      */
     private class RowColumnRect(
-        @param:Px val firstLeft: Int,
-        @param:Px val left: Int,
-        @param:Px val top: Int,
-        @param:Px val lastRight: Int,
-        @param:Px val right: Int,
-        @param:Px val bottom: Int
+        @field:Px val firstLeft: Int,
+        @field:Px val left: Int,
+        @field:Px val top: Int,
+        @field:Px val lastRight: Int,
+        @field:Px val right: Int,
+        @field:Px val bottom: Int
     )
 
     /**

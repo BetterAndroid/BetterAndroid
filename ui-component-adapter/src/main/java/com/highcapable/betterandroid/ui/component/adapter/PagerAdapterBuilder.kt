@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2022/11/22.
  */
-@file:Suppress("unused", "MemberVisibilityCanBePrivate", "UNCHECKED_CAST", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate", "UNCHECKED_CAST")
 
 package com.highcapable.betterandroid.ui.component.adapter
 
@@ -39,6 +39,7 @@ import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.Xm
 import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.base.ViewHolderDelegate
 import com.highcapable.betterandroid.ui.component.adapter.viewholder.impl.BaseViewHolderImpl
 import com.highcapable.betterandroid.ui.extension.binding.ViewBinding
+import com.highcapable.betterandroid.ui.extension.binding.ViewBindingBuilder
 
 /**
  * [PagerAdapter] builder, using entity [E].
@@ -73,7 +74,7 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
      * @return [E] or null.
      */
     private fun getCurrentEntity(position: Int) = (listDataCallback?.invoke() ?: emptyList()).let {
-        if (it.isEmpty() && (dataSetCount > 0 || boundViewHolderCallbacks.size > 0)) Any() as E else it.getOrNull(position)
+        if (it.isEmpty() && (dataSetCount > 0 || boundViewHolderCallbacks.isNotEmpty())) Any() as E else it.getOrNull(position)
     }
 
     /**
@@ -107,10 +108,10 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
 
     /**
      * Add and bind the each page's [PagerMediator].
-     * @param initiate the [PagerMediator] builder body.
+     * @param body the [PagerMediator] builder body.
      * @return [PagerAdapterBuilder]<[E]>
      */
-    fun onBindMediators(initiate: PagerMediator.() -> Unit) = apply { pagerMediatorsCallback = initiate }
+    fun onBindMediators(body: PagerMediator.() -> Unit) = apply { pagerMediatorsCallback = body }
 
     /**
      * Create and add view holder from [ViewHolderDelegate]<[VD]>.
@@ -142,7 +143,19 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
      */
     inline fun <reified VB : ViewBinding> onBindPageView(
         noinline viewHolder: (binding: VB, entity: E, position: Int) -> Unit = { _, _, _ -> }
-    ) = onBindPageView(ViewBindingHolderDelegate(ViewBinding<VB>()), viewHolder)
+    ) = onBindPageView(ViewBinding<VB>(), viewHolder)
+
+    /**
+     * Create and add view holder from [ViewBinding]<[VB]>.
+     * @param bindingBuilder the view binding builder.
+     * @param viewHolder callback and return each bound item function.
+     * @return [PagerAdapterBuilder]<[E]>
+     */
+    @JvmOverloads
+    fun <VB : ViewBinding> onBindPageView(
+        bindingBuilder: ViewBindingBuilder<VB>,
+        viewHolder: (binding: VB, entity: E, position: Int) -> Unit = { _, _, _ -> }
+    ) = onBindPageView(ViewBindingHolderDelegate(bindingBuilder), viewHolder)
 
     /**
      * Create and add view holder from XML layout ID.

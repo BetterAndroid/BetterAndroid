@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2022/11/2.
  */
-@file:Suppress("unused", "MemberVisibilityCanBePrivate", "UNCHECKED_CAST", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate", "UNCHECKED_CAST")
 
 package com.highcapable.betterandroid.ui.component.adapter
 
@@ -35,6 +35,7 @@ import android.widget.ListView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.ListPopupWindow
 import androidx.viewbinding.ViewBinding
+import com.highcapable.betterandroid.ui.component.adapter.BaseAdapterBuilder.Companion.ITEM_NO_ID
 import com.highcapable.betterandroid.ui.component.adapter.base.IAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.factory.bindAdapter
 import com.highcapable.betterandroid.ui.component.adapter.viewholder.BaseViewHolder
@@ -43,6 +44,7 @@ import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.Xm
 import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.base.ViewHolderDelegate
 import com.highcapable.betterandroid.ui.component.adapter.viewholder.impl.BaseViewHolderImpl
 import com.highcapable.betterandroid.ui.extension.binding.ViewBinding
+import com.highcapable.betterandroid.ui.extension.binding.ViewBindingBuilder
 import androidx.appcompat.widget.ListPopupWindow as AndroidX_ListPopupWindow
 
 /**
@@ -179,7 +181,19 @@ class BaseAdapterBuilder<E> private constructor(private val adapterContext: Cont
      */
     inline fun <reified VB : ViewBinding> onBindItemView(
         noinline viewHolder: (binding: VB, entity: E, position: Int) -> Unit = { _, _, _ -> }
-    ) = onBindItemView(ViewBindingHolderDelegate(ViewBinding<VB>()), viewHolder)
+    ) = onBindItemView(ViewBinding<VB>(), viewHolder)
+
+    /**
+     * Create and add view holder from [ViewBinding]<[VB]>.
+     * @param bindingBuilder the view binding builder.
+     * @param viewHolder callback and return each bound item function.
+     * @return [BaseAdapterBuilder]<[E]>
+     */
+    @JvmOverloads
+    fun <VB : ViewBinding> onBindItemView(
+        bindingBuilder: ViewBindingBuilder<VB>,
+        viewHolder: (binding: VB, entity: E, position: Int) -> Unit = { _, _, _ -> }
+    ) = onBindItemView(ViewBindingHolderDelegate(bindingBuilder), viewHolder)
 
     /**
      * Create and add view holder from XML layout ID.

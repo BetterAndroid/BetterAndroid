@@ -128,12 +128,12 @@ class BackPressedController private constructor(private val activity: ComponentA
     /**
      * Add a new callback to this controller.
      * @param enabled whether to enable this callback, default true.
-     * @param initiate the [OnBackPressedCallback] builder body.
+     * @param callback the [OnBackPressedCallback] builder body.
      * @return [OnBackPressedCallback]
      */
     @JvmOverloads
-    fun addCallback(enabled: Boolean = true, initiate: OnBackPressedCallback.() -> Unit) =
-        OnBackPressedCallback(enabled, initiate).also { addCallback(it) }
+    fun addCallback(enabled: Boolean = true, callback: OnBackPressedCallback.() -> Unit) =
+        OnBackPressedCallback(enabled, callback).also { addCallback(it) }
 
     /**
      * Add a new callback to this controller.

@@ -33,7 +33,7 @@ import com.highcapable.betterandroid.ui.extension.graphics.isBrightColor
  * @param color the background color.
  * @param darkContent whether the content color is dark.
  */
-data class SystemBarStyle(@param:ColorInt val color: Int? = null, val darkContent: Boolean? = null) {
+data class SystemBarStyle(@field:ColorInt val color: Int? = null, val darkContent: Boolean? = null) {
 
     companion object {
 

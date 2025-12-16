@@ -67,41 +67,41 @@ fun NotificationWrapper.asPoster() = NotificationPoster(notification = this)
  * ```
  * @receiver the current context.
  * @param channel the notification channel.
- * @param initiate the [NotificationBuilder] builder body.
+ * @param builder the [NotificationBuilder] builder body.
  * @return [NotificationPoster]
  */
-inline fun Context.createNotification(channel: NotificationChannelWrapper, initiate: NotificationBuilder.() -> Unit) =
-    Notification(context = this, channel, initiate).asPoster()
+inline fun Context.createNotification(channel: NotificationChannelWrapper, builder: NotificationBuilder.() -> Unit) =
+    Notification(context = this, channel, builder).asPoster()
 
 /**
  * Create a notification.
  * @param context the current context.
- * @param initiate the [NotificationBuilder] builder body.
+ * @param builder the [NotificationBuilder] builder body.
  * @return [NotificationWrapper]
  */
-inline fun Notification(context: Context, channel: NotificationChannelWrapper, initiate: NotificationBuilder.() -> Unit) =
-    NotificationBuilder.from(context, channel).apply(initiate).build()
+inline fun Notification(context: Context, channel: NotificationChannelWrapper, builder: NotificationBuilder.() -> Unit) =
+    NotificationBuilder.from(context, channel).apply(builder).build()
 
 /**
  * Create a notification channel.
  * @param channelId the channel ID.
  * @param group the channel group, default is null.
  * @param importance the notification importance, default is [NotificationImportance.DEFAULT].
- * @param initiate the [NotificationChannelBuilder] builder body.
+ * @param builder the [NotificationChannelBuilder] builder body.
  * @return [NotificationChannelWrapper]
  */
 inline fun NotificationChannel(
     channelId: String,
     group: NotificationChannelGroupWrapper? = null,
     importance: NotificationImportance = NotificationImportance.DEFAULT,
-    initiate: NotificationChannelBuilder.() -> Unit
-) = NotificationChannelBuilder.from(channelId, group, importance).apply(initiate).build()
+    builder: NotificationChannelBuilder.() -> Unit
+) = NotificationChannelBuilder.from(channelId, group, importance).apply(builder).build()
 
 /**
  * Create a notification channel group.
  * @param groupId the channel group ID.
- * @param initiate the [NotificationChannelGroupBuilder] builder body.
+ * @param builder the [NotificationChannelGroupBuilder] builder body.
  * @return [NotificationChannelGroupWrapper]
  */
-inline fun NotificationChannelGroup(groupId: String, initiate: NotificationChannelGroupBuilder.() -> Unit) =
-    NotificationChannelGroupBuilder.from(groupId).apply(initiate).build()
+inline fun NotificationChannelGroup(groupId: String, builder: NotificationChannelGroupBuilder.() -> Unit) =
+    NotificationChannelGroupBuilder.from(groupId).apply(builder).build()

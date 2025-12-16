@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2022/11/3.
  */
-@file:Suppress("unused", "FunctionName", "MemberVisibilityCanBePrivate", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE", "UNCHECKED_CAST")
+@file:Suppress("unused", "FunctionName", "MemberVisibilityCanBePrivate", "UNCHECKED_CAST")
 @file:JvmName("ViewBindingUtils")
 
 package com.highcapable.betterandroid.ui.extension.binding
@@ -31,6 +31,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import com.highcapable.betterandroid.ui.extension.binding.ViewBindingBuilder.Companion.fromGeneric
 import com.highcapable.betterandroid.ui.extension.view.layoutInflater
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.extension.classOf
@@ -65,7 +66,16 @@ import com.highcapable.kavaref.extension.toClassOrNull
  * @see Context.viewBinding
  * @return [ViewBindingBuilder]<[VB]>
  */
-inline fun <reified VB : ViewBinding> ViewBinding() = ViewBindingBuilder(classOf<VB>())
+inline fun <reified VB : ViewBinding> ViewBinding() = ViewBinding(classOf<VB>())
+
+/**
+ * Create a [ViewBinding] instance.
+ * @see ViewBinding
+ * @see Context.viewBinding
+ * @param bindingClass the [ViewBinding] class.
+ * @return [ViewBindingBuilder]<[VB]>
+ */
+fun <VB : ViewBinding> ViewBinding(bindingClass: Class<VB>) = ViewBindingBuilder(bindingClass)
 
 /**
  * Create a delegate for [ViewBinding].
@@ -73,7 +83,7 @@ inline fun <reified VB : ViewBinding> ViewBinding() = ViewBindingBuilder(classOf
  * Usage:
  *
  * ```kotlin
- * class YourActvity : Activity() {
+ * class YourActivity : Activity() {
  *
  *     val binding: ActivityMainBinding by viewBinding()
  *
@@ -100,7 +110,19 @@ inline fun <reified VB : ViewBinding> ViewBinding() = ViewBindingBuilder(classOf
  * @return [ViewBindingDelegate]<[VB]>
  */
 inline fun <reified VB : ViewBinding> Context.viewBinding(parent: ViewGroup? = null, attachToParent: Boolean = false) =
-    ViewBindingDelegate(classOf<VB>(), { layoutInflater }, parent, attachToParent)
+    viewBinding(classOf<VB>(), parent, attachToParent)
+
+/**
+ * Create a delegate for [ViewBinding].
+ * @see Context.viewBinding
+ * @see Fragment.viewBinding
+ * @param bindingClass the [ViewBinding] class.
+ * @param parent the parent view, default is null.
+ * @param attachToParent whether to attach the parent view, default is false.
+ * @return [ViewBindingDelegate]<[VB]>
+ */
+fun <VB : ViewBinding> Context.viewBinding(bindingClass: Class<VB>, parent: ViewGroup? = null, attachToParent: Boolean = false) =
+    ViewBindingDelegate(bindingClass, { layoutInflater }, parent, attachToParent)
 
 /**
  * Create a delegate for [ViewBinding].
@@ -136,7 +158,19 @@ inline fun <reified VB : ViewBinding> Context.viewBinding(parent: ViewGroup? = n
  * @return [ViewBindingDelegate]<[VB]>
  */
 inline fun <reified VB : ViewBinding> Fragment.viewBinding(parent: ViewGroup? = null, attachToParent: Boolean = false) =
-    ViewBindingDelegate(classOf<VB>(), { layoutInflater }, parent, attachToParent)
+    viewBinding(classOf<VB>(), parent, attachToParent)
+
+/**
+ * Create a delegate for [ViewBinding].
+ * @see Fragment.viewBinding
+ * @see Context.viewBinding
+ * @param bindingClass the [ViewBinding] class.
+ * @param parent the parent view, default is null.
+ * @param attachToParent whether to attach the parent view, default is false.
+ * @return [ViewBindingDelegate]<[VB]>
+ */
+fun <VB : ViewBinding> Fragment.viewBinding(bindingClass: Class<VB>, parent: ViewGroup? = null, attachToParent: Boolean = false) =
+    ViewBindingDelegate(bindingClass, { layoutInflater }, parent, attachToParent)
 
 /**
  * A [ViewBinding] builder.
@@ -154,7 +188,7 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
          * Create a base [Activity] as follows:
          *
          * ```kotlin
-         * open class YourBaseActvity<VB : ViewBinding> : Activity() {
+         * open class YourBaseActivity<VB : ViewBinding> : Activity() {
          *
          *     lateinit var binding: VB
          *

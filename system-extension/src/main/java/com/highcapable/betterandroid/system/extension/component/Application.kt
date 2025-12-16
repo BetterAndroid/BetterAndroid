@@ -47,7 +47,16 @@ import com.highcapable.kavaref.extension.classOf
  * @receiver the current context.
  * @return [ComponentName]
  */
-inline fun <reified T : Any> Context.getComponentName() = ComponentName(this, classOf<T>())
+inline fun <reified T : Any> Context.getComponentName() = getComponentName(classOf<T>())
+
+/**
+ * Get the current component name of this application.
+ * @see Context.getComponentName
+ * @receiver the current context.
+ * @param type the target class type.
+ * @return [ComponentName]
+ */
+fun <T : Any> Context.getComponentName(type: Class<T>) = ComponentName(this, type)
 
 /**
  * Determine whether the [packageName] was installed.

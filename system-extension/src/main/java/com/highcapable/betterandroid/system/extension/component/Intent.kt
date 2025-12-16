@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2023/4/18.
  */
-@file:Suppress("unused", "DEPRECATION")
+@file:Suppress("unused", "DEPRECATION", "UNCHECKED_CAST")
 @file:JvmName("IntentUtils")
 
 package com.highcapable.betterandroid.system.extension.component
@@ -37,8 +37,18 @@ import java.io.Serializable
  * @param name the key name.
  * @return [T] or null.
  */
-inline fun <reified T : Serializable> Intent.getSerializableExtraCompat(name: String) =
-    AndroidVersion.requireOrNull(AndroidVersion.T, getSerializableExtra(name) as? T?) { getSerializableExtra(name, classOf<T>()) }
+inline fun <reified T : Serializable> Intent.getSerializableExtraCompat(name: String) = getSerializableExtraCompat(classOf<T>(), name)
+
+/**
+ * Get the [Serializable] data (compat).
+ * @see Intent.getSerializableExtraCompat
+ * @receiver the current intent.
+ * @param type the value type.
+ * @param name the key name.
+ * @return [T] or null.
+ */
+fun <T : Serializable> Intent.getSerializableExtraCompat(type: Class<T>, name: String) =
+    AndroidVersion.requireOrNull(AndroidVersion.T, getSerializableExtra(name) as? T?) { getSerializableExtra(name, type) }
 
 /**
  * Get the [Serializable] data (compat).
@@ -46,8 +56,18 @@ inline fun <reified T : Serializable> Intent.getSerializableExtraCompat(name: St
  * @param name the key name.
  * @return [T] or null.
  */
-inline fun <reified T : Serializable> Bundle.getSerializableCompat(name: String) =
-    AndroidVersion.requireOrNull(AndroidVersion.T, getSerializable(name) as? T?) { getSerializable(name, classOf<T>()) }
+inline fun <reified T : Serializable> Bundle.getSerializableCompat(name: String) = getSerializableCompat(classOf<T>(), name)
+
+/**
+ * Get the [Serializable] data (compat).
+ * @see Bundle.getSerializableCompat
+ * @receiver the current intent.
+ * @param type the value type.
+ * @param name the key name.
+ * @return [T] or null.
+ */
+fun <T : Serializable> Bundle.getSerializableCompat(type: Class<T>, name: String) =
+    AndroidVersion.requireOrNull(AndroidVersion.T, getSerializable(name) as? T?) { getSerializable(name, type) }
 
 /**
  * Get the [Parcelable] data (compat).
@@ -55,8 +75,18 @@ inline fun <reified T : Serializable> Bundle.getSerializableCompat(name: String)
  * @param name the key name.
  * @return [T] or null.
  */
-inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(name: String) =
-    AndroidVersion.requireOrNull(AndroidVersion.T, getParcelableExtra(name) as? T?) { getParcelableExtra(name, classOf<T>()) }
+inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(name: String) = getParcelableExtraCompat(classOf<T>(), name)
+
+/**
+ * Get the [Parcelable] data (compat).
+ * @see Intent.getParcelableExtraCompat
+ * @receiver the current intent.
+ * @param type the value type.
+ * @param name the key name.
+ * @return [T] or null.
+ */
+fun <T : Parcelable> Intent.getParcelableExtraCompat(type: Class<T>, name: String) =
+    AndroidVersion.requireOrNull(AndroidVersion.T, getParcelableExtra(name) as? T?) { getParcelableExtra(name, type) }
 
 /**
  * Get the [Parcelable] data (compat).
@@ -64,5 +94,15 @@ inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(name: String
  * @param name the key name.
  * @return [T] or null.
  */
-inline fun <reified T : Parcelable> Bundle.getParcelableCompat(name: String) =
-    AndroidVersion.requireOrNull(AndroidVersion.T, getParcelable(name) as? T?) { getParcelable(name, classOf<T>()) }
+inline fun <reified T : Parcelable> Bundle.getParcelableCompat(name: String) = getParcelableCompat(classOf<T>(), name)
+
+/**
+ * Get the [Parcelable] data (compat).
+ * @see Bundle.getParcelableCompat
+ * @receiver the current intent.
+ * @param type the value type.
+ * @param name the key name.
+ * @return [T] or null.
+ */
+fun <T : Parcelable> Bundle.getParcelableCompat(type: Class<T>, name: String) =
+    AndroidVersion.requireOrNull(AndroidVersion.T, getParcelable(name) as? T?) { getParcelable(name, type) }

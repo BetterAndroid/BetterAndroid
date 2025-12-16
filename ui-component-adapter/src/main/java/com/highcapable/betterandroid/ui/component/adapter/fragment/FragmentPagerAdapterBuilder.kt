@@ -71,10 +71,10 @@ class FragmentPagerAdapterBuilder private constructor(private val adapterInstanc
 
     /**
      * Add and bind each [PagerMediator] of pages.
-     * @param initiate the [PagerMediator] builder body.
+     * @param body the [PagerMediator] builder body.
      * @return [FragmentPagerAdapterBuilder]
      */
-    fun onBindMediators(initiate: PagerMediator.() -> Unit) = apply { pagerMediatorsCallback = initiate }
+    fun onBindMediators(body: PagerMediator.() -> Unit) = apply { pagerMediatorsCallback = body }
 
     /**
      * Add and create each [Fragment].

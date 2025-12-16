@@ -113,15 +113,15 @@ fun Context.registerReceiver(
  *     action = "com.example.app.action.KNOCK"
  *     putExtra("greetings", "Hey there!")
  * }
- * // If you want to request a permission for the receiverd apps.
+ * // If you want to request a permission for the received apps.
  * sendBroadcast("com.example.app", "com.example.app.permission.KNOCK") {
  *    action = "com.example.app.action.KNOCK"
  *    putExtra("greetings", "Hey Pro!")
  * }
  * ```
  * @receiver the current context.
- * @param packageName the receiverd app's package name, default is empty.
- * @param receiverPermission the receiverd app's permission, default is null.
+ * @param packageName the received app's package name, default is empty.
+ * @param receiverPermission the received app's permission, default is null.
  * @param options the [Bundle] options for the broadcast, default is null.
  * @param intent the [Intent] builder body.
  */

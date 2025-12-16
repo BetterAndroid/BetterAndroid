@@ -63,7 +63,7 @@ import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
  * @see IBackPressedController
  * @param layoutResId the layout resource ID to be inflated, default is [View.NO_ID].
  */
-open class AppViewsFragment(@param:LayoutRes private val layoutResId: Int = View.NO_ID) : BaseFragment() {
+open class AppViewsFragment(@field:LayoutRes private val layoutResId: Int = View.NO_ID) : BaseFragment() {
 
     @CallSuper
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =

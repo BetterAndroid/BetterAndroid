@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2023/10/25.
  */
-@file:Suppress("unused", "FunctionName", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE", "EXTENSION_SHADOWED_BY_MEMBER")
+@file:Suppress("unused", "FunctionName", "EXTENSION_SHADOWED_BY_MEMBER", "AssignedValueIsNeverRead")
 @file:JvmName("ViewUtils")
 
 package com.highcapable.betterandroid.ui.extension.view
@@ -743,16 +743,16 @@ inline fun <reified V : View> ViewGroup.inflate(resId: Int, attachToRoot: Boolea
  * @param matchParent set width and height to [LayoutParamsMatchParent], default false.
  * @param widthMatchParent set width to [LayoutParamsMatchParent], default false.
  * @param heightMatchParent set height to [LayoutParamsMatchParent], default false.
- * @return [VGLP]
- * @throws IllegalStateException if [VGLP] create failed.
+ * @return [LP]
+ * @throws IllegalStateException if [LP] create failed.
  */
-inline fun <reified VGLP : ViewGroup.LayoutParams> ViewLayoutParams(
-    @Px width: Int = LayoutParamsUnspecified,
-    @Px height: Int = LayoutParamsUnspecified,
+inline fun <reified LP : ViewGroup.LayoutParams> ViewLayoutParams(
+    @Px width: Int? = null,
+    @Px height: Int? = null,
     matchParent: Boolean = false,
     widthMatchParent: Boolean = false,
     heightMatchParent: Boolean = false
-) = ViewLayoutParams(classOf<VGLP>(), width, height, matchParent, widthMatchParent, heightMatchParent)
+) = ViewLayoutParams(classOf<LP>(), width, height, matchParent, widthMatchParent, heightMatchParent)
 
 /**
  * Create a new [ViewGroup.LayoutParams].
@@ -770,25 +770,25 @@ inline fun <reified VGLP : ViewGroup.LayoutParams> ViewLayoutParams(
  * @param matchParent set width and height to [LayoutParamsMatchParent], default false.
  * @param widthMatchParent set width to [LayoutParamsMatchParent], default false.
  * @param heightMatchParent set height to [LayoutParamsMatchParent], default false.
- * @return [VGLP]
- * @throws IllegalStateException if [VGLP] create failed.
+ * @return [LP]
+ * @throws IllegalStateException if [LP] create failed.
  */
 @JvmOverloads
-fun <VGLP : ViewGroup.LayoutParams> ViewLayoutParams(
-    lpClass: Class<VGLP>,
-    @Px width: Int = LayoutParamsUnspecified,
-    @Px height: Int = LayoutParamsUnspecified,
+fun <LP : ViewGroup.LayoutParams> ViewLayoutParams(
+    lpClass: Class<LP>,
+    @Px width: Int? = null,
+    @Px height: Int? = null,
     matchParent: Boolean = false,
     widthMatchParent: Boolean = false,
     heightMatchParent: Boolean = false
-): VGLP {
+): LP {
     val absWidth = when {
-        width != LayoutParamsUnspecified -> width
+        width != null -> width
         matchParent || widthMatchParent -> LayoutParamsMatchParent
         else -> LayoutParamsWrapContent
     }
     val absHeight = when {
-        height != LayoutParamsUnspecified -> height
+        height != null -> height
         matchParent || heightMatchParent -> LayoutParamsMatchParent
         else -> LayoutParamsWrapContent
     }
@@ -804,6 +804,3 @@ const val LayoutParamsMatchParent = ViewGroup.LayoutParams.MATCH_PARENT
 
 /** Reference to [ViewGroup.LayoutParams.WRAP_CONTENT]. */
 const val LayoutParamsWrapContent = ViewGroup.LayoutParams.WRAP_CONTENT
-
-/** The unspecified layout params value. */
-private const val LayoutParamsUnspecified = LayoutParamsWrapContent - 1

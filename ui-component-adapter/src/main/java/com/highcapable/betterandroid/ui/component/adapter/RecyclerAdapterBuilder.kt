@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2022/11/2.
  */
-@file:Suppress("unused", "LocalVariableName", "MemberVisibilityCanBePrivate", "UNCHECKED_CAST", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
+@file:Suppress("unused", "LocalVariableName", "MemberVisibilityCanBePrivate", "UNCHECKED_CAST")
 
 package com.highcapable.betterandroid.ui.component.adapter
 
@@ -30,6 +30,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.widget.ViewPager2
+import com.highcapable.betterandroid.ui.component.adapter.RecyclerAdapterBuilder.Companion.DEFAULT_VIEW_TYPE
 import com.highcapable.betterandroid.ui.component.adapter.base.IAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.entity.AdapterPosition
 import com.highcapable.betterandroid.ui.component.adapter.factory.bindAdapter
@@ -40,6 +41,7 @@ import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.Xm
 import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.base.ViewHolderDelegate
 import com.highcapable.betterandroid.ui.component.adapter.viewholder.impl.RecyclerViewHolderImpl
 import com.highcapable.betterandroid.ui.extension.binding.ViewBinding
+import com.highcapable.betterandroid.ui.extension.binding.ViewBindingBuilder
 
 /**
  * [RecyclerView.Adapter] builder, using entity [E].
@@ -266,7 +268,24 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      * @throws IllegalStateException if the header view already exists.
      */
     inline fun <reified VB : ViewBinding> onBindHeaderView(noinline viewHolder: (binding: VB) -> Unit = {}) =
-        onBindHeaderView(ViewBindingHolderDelegate(ViewBinding<VB>()), viewHolder)
+        onBindHeaderView(ViewBinding<VB>(), viewHolder)
+
+    /**
+     * Create and add view holder from [ViewBinding]<[VB]> for a header view.
+     *
+     * A header item view is a special item view that is not included in the [dataSetCount] or [onBindData].
+     *
+     * - Note: You can only set one header view.
+     * @see onBindFooterView
+     * @see onBindItemView
+     * @param bindingBuilder the view binding builder.
+     * @param viewHolder callback and return each bound item function.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     * @throws IllegalStateException if the header view already exists.
+     */
+    @JvmOverloads
+    fun <VB : ViewBinding> onBindHeaderView(bindingBuilder: ViewBindingBuilder<VB>, viewHolder: (binding: VB) -> Unit = {}) =
+        onBindHeaderView(ViewBindingHolderDelegate(bindingBuilder), viewHolder)
 
     /**
      * Create and add view holder from XML layout ID for a header view.
@@ -298,7 +317,24 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      * @throws IllegalStateException if the footer view already exists.
      */
     inline fun <reified VB : ViewBinding> onBindFooterView(noinline viewHolder: (binding: VB) -> Unit = {}) =
-        onBindFooterView(ViewBindingHolderDelegate(ViewBinding<VB>()), viewHolder)
+        onBindFooterView(ViewBinding<VB>(), viewHolder)
+
+    /**
+     * Create and add view holder from [ViewBinding]<[VB]> for a footer view.
+     *
+     * A footer item view is a special item view that is not included in the [dataSetCount] or [onBindData].
+     *
+     * - Note: You can only set one footer view.
+     * @see onBindHeaderView
+     * @see onBindItemView
+     * @param bindingBuilder the view binding builder.
+     * @param viewHolder callback and return each bound item function.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     * @throws IllegalStateException if the footer view already exists.
+     */
+    @JvmOverloads
+    fun <VB : ViewBinding> onBindFooterView(bindingBuilder: ViewBindingBuilder<VB>, viewHolder: (binding: VB) -> Unit = {}) =
+        onBindFooterView(ViewBindingHolderDelegate(bindingBuilder), viewHolder)
 
     /**
      * Create and add view holder from XML layout ID for a footer view.
@@ -327,7 +363,22 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     inline fun <reified VB : ViewBinding> onBindItemView(
         viewType: Int = DEFAULT_VIEW_TYPE,
         noinline viewHolder: (binding: VB, entity: E, position: AdapterPosition) -> Unit = { _, _, _ -> }
-    ) = onBindItemView(ViewBindingHolderDelegate(ViewBinding<VB>()), viewType, viewHolder)
+    ) = onBindItemView(ViewBinding<VB>(), viewType, viewHolder)
+
+    /**
+     * Create and add view holder from [ViewBinding]<[VB]>.
+     * @param viewType the view type, default is [DEFAULT_VIEW_TYPE],
+     * you must use [onBindViewType] to specify the each position of view type.
+     * @param bindingBuilder the view binding builder.
+     * @param viewHolder callback and return each bound item function.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     */
+    @JvmOverloads
+    fun <VB : ViewBinding> onBindItemView(
+        bindingBuilder: ViewBindingBuilder<VB>,
+        viewType: Int = DEFAULT_VIEW_TYPE,
+        viewHolder: (binding: VB, entity: E, position: AdapterPosition) -> Unit = { _, _, _ -> }
+    ) = onBindItemView(ViewBindingHolderDelegate(bindingBuilder), viewType, viewHolder)
 
     /**
      * Create and add view holder from XML layout ID.
