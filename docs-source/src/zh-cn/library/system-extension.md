@@ -494,7 +494,7 @@ context.clipboardManager.copy(Intent(Intent.ACTION_VIEW, "some://uri".toUri()))
 val context: Context
 // 创建 ClipData 对象
 val clipData = ClipData {
-    addText("Hello World!")
+    addPlainText("Hello World!")
     addHtmlText("Hello World!", "<b>Hello World!</b>")
     addUri("some://uri".toUri(), context.contentResolver)
     addIntent(Intent(Intent.ACTION_VIEW, "some://uri".toUri()))
@@ -512,7 +512,7 @@ context.clipboardManager.copy(clipData)
 val context: Context
 // 复制自定义的 ClipData 内容到剪贴板
 context.clipboardManager.copy {
-    addText("Hello World!")
+    addPlainText("Hello World!")
     addHtmlText("Hello World!", "<b>Hello World!</b>")
     addUri("some://uri".toUri(), context.contentResolver)
     addIntent(Intent(Intent.ACTION_VIEW, "some://uri".toUri()))

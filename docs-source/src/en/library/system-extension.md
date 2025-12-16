@@ -513,7 +513,7 @@ You can use the `ClipData` method to create a new `ClipData` object and then cop
 val context: Context
 // Create ClipData object.
 val clipData = ClipData {
-    addText("Hello World!")
+    addPlainText("Hello World!")
     addHtmlText("Hello World!", "<b>Hello World!</b>")
     addUri("some://uri".toUri(), context.contentResolver)
     addIntent(Intent(Intent.ACTION_VIEW, "some://uri".toUri()))
@@ -531,7 +531,7 @@ Alternatively, use the `copy` DSL to do it directly.
 val context: Context
 // Copy custom ClipData content to the clipboard.
 context.clipboardManager.copy {
-    addText("Hello World!")
+    addPlainText("Hello World!")
     addHtmlText("Hello World!", "<b>Hello World!</b>")
     addUri("some://uri".toUri(), context.contentResolver)
     addIntent(Intent(Intent.ACTION_VIEW, "some://uri".toUri()))
