@@ -108,7 +108,7 @@ class ClipDataItemBuilder internal constructor() {
 @JvmOverloads
 fun ClipData(label: CharSequence? = null, builder: ClipDataItemBuilder.() -> Unit): ClipData {
     val data = ClipDataItemBuilder().apply(builder).build()
-    require(data.second.isEmpty()) { "ClipData must have at least one item." }
+    require(data.second.isNotEmpty()) { "ClipData must have at least one item." }
 
     return ClipData(label, data.first, data.second[0]).apply { data.second.drop(1).forEach { addItem(it) } }
 }
