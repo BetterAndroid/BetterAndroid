@@ -49,10 +49,10 @@ class ClipDataItemBuilder internal constructor(private val label: CharSequence?)
     private val dataItems = mutableListOf<ClipData.Item>()
 
     /**
-     * Add a text item to clip data.
+     * Add a plain text item to clip data.
      * @param text the text to add.
      */
-    fun addText(text: CharSequence) {
+    fun addPlainText(text: CharSequence) {
         mimeTypes.add(ClipDescription.MIMETYPE_TEXT_PLAIN)
         dataItems.add(ClipData.Item(text))
     }
@@ -93,6 +93,14 @@ class ClipDataItemBuilder internal constructor(private val label: CharSequence?)
 
         dataItems.add(ClipData.Item(uri))
     }
+
+    /**
+     * Add a text item to clip data.
+     *
+     * - This function is deprecated, use [addPlainText] instead.
+     */
+    @Deprecated(message = "Use addPlainText instead.", ReplaceWith("addPlainText(text)"))
+    fun addText(text: CharSequence) = addPlainText(text)
 
     /**
      * Get the clip data item result.
@@ -141,14 +149,14 @@ fun ClipboardManager.copy(clipData: ClipData) = setPrimaryClip(clipData)
 fun ClipboardManager.copy(label: CharSequence? = null, builder: ClipDataItemBuilder.() -> Unit) = copy(ClipData(builder = builder))
 
 /**
- * Copy text to clipboard.
+ * Copy plain text to clipboard.
  * @receiver [ClipboardManager]
  * @param text the text to copy.
  * @param label the clip data visible label, default is null.
  */
 @JvmOverloads
 fun ClipboardManager.copy(text: CharSequence, label: CharSequence? = null) =
-    copy(label) { addText(text) }
+    copy(label) { addPlainText(text) }
 
 /**
  * Copy html text to clipboard.
