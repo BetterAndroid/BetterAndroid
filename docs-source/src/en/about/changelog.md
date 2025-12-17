@@ -117,6 +117,7 @@ Time zone of version release date: **UTC+8**
 ### 1.0.9 | 2025.12.16 &ensp;<Badge type="tip" text="latest" vertical="middle" />
 
 - Adapted to Kotlin 2.2+
+- Adjusted the default values of `width` and `height` parameters in `ViewLayoutParams` in the `View` extension to `null`, no longer using `-2` as the default value for not setting width and height
 
 ### 1.0.8 | 2025.12.14 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
@@ -237,7 +238,6 @@ Time zone of version release date: **UTC+8**
 - Adapted to Kotlin 2.2+
 - Fixed null check error when creating `ClipData` in `Clipboard` extension
 - Adjusted and added `copy` direct DSL creation functionality in `Clipboard` extension
-- Added `getPrimaryClipOrNull` method in `Clipboard` extension
 - Corrected method name ~~`addText`~~ to `addPlainText` in `ClipDataItemBuilder`
 - Moved package name `tool` to `utils`
 - Added Lint functionality (experimental)

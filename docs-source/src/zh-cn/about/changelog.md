@@ -106,6 +106,7 @@
 ### 1.0.9 | 2025.12.16 &ensp;<Badge type="tip" text="最新" vertical="middle" />
 
 - 适配 Kotlin 2.2+
+- `View` 扩展中的 `ViewLayoutParams` 调整 `width` 和 `height` 参数的默认值为 `null`，不再采用 `-2` 作为不设置宽高的默认值
 
 ### 1.0.8 | 2025.12.14 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
@@ -226,7 +227,6 @@
 - 适配 Kotlin 2.2+
 - 修复 `Clipboard` 扩展中在创建 `ClipData` 时非空判断错误的问题
 - 调整并新增 `Clipboard` 扩展中的 `copy` 直接创建 DSL 功能
-- `Clipboard` 扩展中新增 `getPrimaryClipOrNull` 方法
 - 修正 `ClipDataItemBuilder` 中的方法命名 ~~`addText`~~ 为 `addPlainText`
 - 移动包名 `tool` 到 `utils`
 - 新增 Lint 功能 (实验性)
