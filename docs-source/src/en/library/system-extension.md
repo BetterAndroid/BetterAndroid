@@ -645,15 +645,25 @@ Please refer to [Runtime-registered broadcasts receivers must specify export beh
 
 ::: tip Contents of This Section
 
-[ClipDataItemBuilder](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/-clip-data-item-builder)
+[ClipDataBuilder](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/-clip-data-builder)
 
-`ClipData.Item` builder.
+`ClipData` builder.
 
 [Clipboard → clipboardManager](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/clipboard-manager)
 
 [Clipboard → copy](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/copy)
 
 [Clipboard → listOfItems](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/list-of-items)
+
+[Clipboard → primaryClipItems](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/primary-clip-items)
+
+[Clipboard → primaryClipItemsOrNull](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/primary-clip-items-or-null)
+
+[Clipboard → firstPrimaryClipItem](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/first-primary-clip-item)
+
+[Clipboard → firstPrimaryClipItemOrNull](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/first-primary-clip-item-or-null)
+
+[Clipboard → resolveMimeTypes](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/resolve-mime-types)
 
 [Clipboard → ClipData](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/-clip-data)
 
@@ -679,6 +689,8 @@ This method will return a `List<ClipData.Item>`, you can use `firstOrNull` to ge
 
 Its benefits it means that you no longer need to consider whether the array will out of bounds.
 
+If you only need to get a specific item, you can use `ClipboardManager.primaryClipItemsOrNull`.
+
 > The following example
 
 ```kotlin
@@ -686,11 +698,10 @@ Its benefits it means that you no longer need to consider whether the array will
 val context: Context
 // Get the clipboard manager.
 val manager = context.clipboardManager
-// Get the first ClipData.Item in the clipboard.
-// Normally, you only need to get the first object.
-val clipItem = manager.primaryClip?.listOfItems()?.firstOrNull()
 // Get the copied text.
-val copiedText = clipItem?.text
+val copiedText = manager.firstPrimaryClipItemOrNull?.text
+// Get the copied text by index.
+val copiedSecondText = manager.primaryClipItemsOrNull(1)?.text
 ```
 
 Copy a text to the clipboard.
@@ -720,10 +731,34 @@ val context: Context
 // Copy HTML type text to the clipboard.
 context.clipboardManager.copy("Hello World!", "<b>Hello World!</b>")
 // Copy uri to clipboard.
-context.clipboardManager.copy("some://uri".toUri(), context.contentResolver)
+context.clipboardManager.copy("some://uri".toUri())
+// Copy uri to clipboard with mime type.
+context.clipboardManager.copy("some://image.png".toUri(), "image/png")
 // Copy intent to the clipboard.
 context.clipboardManager.copy(Intent(Intent.ACTION_VIEW, "some://uri".toUri()))
 ```
+
+If the mime type of a `Uri` is not known, you can resolve it first and then pass it to `copy`.
+
+> The following example
+
+```kotlin
+// Assume this is your context.
+val context: Context
+val uri = "content://some/image".toUri()
+// Resolve mime types.
+val mimeTypes = uri.resolveMimeTypes(context.contentResolver)
+// Copy uri to clipboard.
+context.clipboardManager.copy(uri, mimeTypes)
+```
+
+::: warning
+
+The `copy(uri, label, resolver)` and `addUri(uri, resolver)` usages are deprecated.
+
+Please use `uri.resolveMimeTypes(resolver)` to resolve mime types first, and then pass the result to `copy` or `addUri`.
+
+:::
 
 Copies the contents of a custom `ClipData` to the clipboard.
 
@@ -734,13 +769,37 @@ You can use the `ClipData` method to create a new `ClipData` object and then cop
 ```kotlin
 // Assume this is your context.
 val context: Context
+val uri = "some://uri".toUri()
+val mimeTypes = uri.resolveMimeTypes(context.contentResolver)
 // Create ClipData object.
-val clipData = ClipData {
+val clipData = ClipData("MyClip") {
     addPlainText("Hello World!")
     addHtmlText("Hello World!", "<b>Hello World!</b>")
-    addUri("some://uri".toUri(), context.contentResolver)
-    addIntent(Intent(Intent.ACTION_VIEW, "some://uri".toUri()))
+    addUri(uri, mimeTypes)
+    addIntent(Intent(Intent.ACTION_VIEW, uri))
 }
+// Copy to clipboard.
+context.clipboardManager.copy(clipData)
+```
+
+You can also create it with `ClipDataBuilder` directly.
+
+All `add...` methods in `ClipDataBuilder` return the builder itself, so you can chain calls and then use `build` to create a `ClipData`.
+
+> The following example
+
+```kotlin
+// Assume this is your context.
+val context: Context
+val uri = "some://uri".toUri()
+val mimeTypes = uri.resolveMimeTypes(context.contentResolver)
+// Create ClipData object with ClipDataBuilder.
+val clipData = ClipDataBuilder()
+    .addPlainText("Hello World!")
+    .addHtmlText("Hello World!", "<b>Hello World!</b>")
+    .addUri(uri, mimeTypes)
+    .addIntent(Intent(Intent.ACTION_VIEW, uri))
+    .build("MyClip")
 // Copy to clipboard.
 context.clipboardManager.copy(clipData)
 ```
@@ -752,23 +811,25 @@ Alternatively, use the `copy` DSL to do it directly.
 ```kotlin
 // Assume this is your context.
 val context: Context
+val uri = "some://uri".toUri()
+val mimeTypes = uri.resolveMimeTypes(context.contentResolver)
 // Copy custom ClipData content to the clipboard.
 context.clipboardManager.copy {
     addPlainText("Hello World!")
     addHtmlText("Hello World!", "<b>Hello World!</b>")
-    addUri("some://uri".toUri(), context.contentResolver)
-    addIntent(Intent(Intent.ACTION_VIEW, "some://uri".toUri()))
+    addUri(uri, mimeTypes)
+    addIntent(Intent(Intent.ACTION_VIEW, uri))
 }
 ```
 
-If you want to copy an image to the clipboard, you can implement an extension function for `ClipDataItemBuilder` to do so.
+If you want to copy an image to the clipboard, you can implement an extension function for `ClipDataBuilder` to do so.
 
 The following extension function shows how to save a `Bitmap` to the system album and copy its `Uri` to the clipboard (no additional permissions required).
 
 > The following example
 
 ```kotlin
-fun ClipDataItemBuilder.addBitmap(
+fun ClipDataBuilder.addBitmap(
     bitmap: Bitmap,
     resolver: ContentResolver,
     format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG,
@@ -799,7 +860,7 @@ fun ClipDataItemBuilder.addBitmap(
         resolver.update(uri, values, null, null)
     }
 
-    addUri(uri, resolver)
+    addUri(uri, "image/png")
 }
 ```
 

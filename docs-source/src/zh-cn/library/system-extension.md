@@ -627,15 +627,25 @@ context.unregisterReceiver(receiver)
 
 ::: tip 本节内容
 
-[ClipDataItemBuilder](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/-clip-data-item-builder)
+[ClipDataBuilder](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/-clip-data-builder)
 
-`ClipData.Item` 构建器。
+`ClipData` 构建器。
 
 [Clipboard → clipboardManager](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/clipboard-manager)
 
 [Clipboard → copy](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/copy)
 
 [Clipboard → listOfItems](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/list-of-items)
+
+[Clipboard → primaryClipItems](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/primary-clip-items)
+
+[Clipboard → primaryClipItemsOrNull](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/primary-clip-items-or-null)
+
+[Clipboard → firstPrimaryClipItem](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/first-primary-clip-item)
+
+[Clipboard → firstPrimaryClipItemOrNull](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/first-primary-clip-item-or-null)
+
+[Clipboard → resolveMimeTypes](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/resolve-mime-types)
 
 [Clipboard → ClipData](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/-clip-data)
 
@@ -657,6 +667,8 @@ context.unregisterReceiver(receiver)
 
 这个方法将会返回一个 `List<ClipData.Item>`，你可以使用 `firstOrNull` 来获取第一个 `ClipData.Item`，或者使用 `isEmpty` 来直接判断剪贴板中是否存在内容，它的好处就是不再需要去考虑数组是不是会越界的问题。
 
+如果你只是需要获取指定位置的剪贴板项目，可以使用 `ClipboardManager.primaryClipItemsOrNull`。
+
 > 示例如下
 
 ```kotlin
@@ -664,11 +676,10 @@ context.unregisterReceiver(receiver)
 val context: Context
 // 获取剪贴板管理器
 val manager = context.clipboardManager
-// 获取剪贴板中第一个 ClipData.Item
-// 通常情况下，你只需要获取第一个对象即可
-val clipItem = manager.primaryClip?.listOfItems()?.firstOrNull()
 // 获取已复制的文本
-val copiedText = clipItem?.text
+val copiedText = manager.firstPrimaryClipItemOrNull?.text
+// 按索引获取已复制的文本
+val copiedSecondText = manager.primaryClipItemsOrNull(1)?.text
 ```
 
 复制一条文本到剪贴板。
@@ -698,10 +709,34 @@ val context: Context
 // 复制 HTML 类型的文本到剪贴板
 context.clipboardManager.copy("Hello World!", "<b>Hello World!</b>")
 // 复制 Uri 到剪贴板
-context.clipboardManager.copy("some://uri".toUri(), context.contentResolver)
+context.clipboardManager.copy("some://uri".toUri())
+// 携带 MIME 类型复制 Uri 到剪贴板
+context.clipboardManager.copy("some://image.png".toUri(), "image/png")
 // 复制 Intent 到剪贴板
 context.clipboardManager.copy(Intent(Intent.ACTION_VIEW, "some://uri".toUri()))
 ```
+
+如果你不知道一个 `Uri` 的 MIME 类型，可以先解析它，然后再传递给 `copy`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Context
+val context: Context
+val uri = "content://some/image".toUri()
+// 解析 MIME 类型
+val mimeTypes = uri.resolveMimeTypes(context.contentResolver)
+// 复制 Uri 到剪贴板
+context.clipboardManager.copy(uri, mimeTypes)
+```
+
+::: warning
+
+`copy(uri, label, resolver)` 和 `addUri(uri, resolver)` 用法已不推荐。
+
+请先使用 `uri.resolveMimeTypes(resolver)` 解析 MIME 类型，然后将结果传递给 `copy` 或 `addUri`。
+
+:::
 
 复制自定义的 `ClipData` 内容到剪贴板。
 
@@ -712,13 +747,37 @@ context.clipboardManager.copy(Intent(Intent.ACTION_VIEW, "some://uri".toUri()))
 ```kotlin
 // 假设这就是你的 Context
 val context: Context
+val uri = "some://uri".toUri()
+val mimeTypes = uri.resolveMimeTypes(context.contentResolver)
 // 创建 ClipData 对象
-val clipData = ClipData {
+val clipData = ClipData("MyClip") {
     addPlainText("Hello World!")
     addHtmlText("Hello World!", "<b>Hello World!</b>")
-    addUri("some://uri".toUri(), context.contentResolver)
-    addIntent(Intent(Intent.ACTION_VIEW, "some://uri".toUri()))
+    addUri(uri, mimeTypes)
+    addIntent(Intent(Intent.ACTION_VIEW, uri))
 }
+// 复制到剪贴板
+context.clipboardManager.copy(clipData)
+```
+
+你也可以直接使用 `ClipDataBuilder` 来创建。
+
+`ClipDataBuilder` 中的所有 `add...` 方法都会返回构建器本身，因此你可以链式调用，并最终使用 `build` 创建一个 `ClipData`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Context
+val context: Context
+val uri = "some://uri".toUri()
+val mimeTypes = uri.resolveMimeTypes(context.contentResolver)
+// 使用 ClipDataBuilder 创建 ClipData 对象
+val clipData = ClipDataBuilder()
+    .addPlainText("Hello World!")
+    .addHtmlText("Hello World!", "<b>Hello World!</b>")
+    .addUri(uri, mimeTypes)
+    .addIntent(Intent(Intent.ACTION_VIEW, uri))
+    .build("MyClip")
 // 复制到剪贴板
 context.clipboardManager.copy(clipData)
 ```
@@ -730,23 +789,25 @@ context.clipboardManager.copy(clipData)
 ```kotlin
 // 假设这就是你的 Context
 val context: Context
+val uri = "some://uri".toUri()
+val mimeTypes = uri.resolveMimeTypes(context.contentResolver)
 // 复制自定义的 ClipData 内容到剪贴板
 context.clipboardManager.copy {
     addPlainText("Hello World!")
     addHtmlText("Hello World!", "<b>Hello World!</b>")
-    addUri("some://uri".toUri(), context.contentResolver)
-    addIntent(Intent(Intent.ACTION_VIEW, "some://uri".toUri()))
+    addUri(uri, mimeTypes)
+    addIntent(Intent(Intent.ACTION_VIEW, uri))
 }
 ```
 
-如果你希望复制一张图片到剪贴板，你可以为 `ClipDataItemBuilder` 实现一个扩展方法来实现。
+如果你希望复制一张图片到剪贴板，你可以为 `ClipDataBuilder` 实现一个扩展方法来实现。
 
 以下扩展方法展示了如何将 `Bitmap` 保存到系统相册中并复制其 `Uri` 到剪贴板 (无需额外权限)。
 
 > 示例如下
 
 ```kotlin
-fun ClipDataItemBuilder.addBitmap(
+fun ClipDataBuilder.addBitmap(
     bitmap: Bitmap,
     resolver: ContentResolver,
     format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG,
@@ -777,7 +838,7 @@ fun ClipDataItemBuilder.addBitmap(
         resolver.update(uri, values, null, null)
     }
 
-    addUri(uri, resolver)
+    addUri(uri, "image/png")
 }
 ```
 
