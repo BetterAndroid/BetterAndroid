@@ -1,15 +1,17 @@
 [versions]
-agp = "8.13.2"
-kotlin = "2.2.21"
-compose = "1.9.3"
-# noinspection NewerVersionAvailable
-dokka = "1.9.20"
-maven-publish = "0.35.0"
+agp = "9.2.1"
+kotlin = "2.3.21"
+compose = "1.10.3"
+dokka = "2.2.0"
+maven-publish = "0.36.0"
 kavaref-core = "1.0.2"
 kavaref-extension = "1.0.2"
+# The project current support min sdk version is 21,
+# suppress the warning about using newer versions of dependencies that may require higher min sdk version.
+# noinspection GradleDependency
 androidx-core-ktx = "1.17.0"
 androidx-fragment-ktx = "1.8.9"
-androidx-activity = "1.12.1"
+androidx-activity = "1.13.0"
 androidx-appcompat = "1.7.1"
 androidx-recyclerview = "1.4.0"
 androidx-viewpager = "1.1.0"
@@ -20,17 +22,16 @@ constraintlayout = "2.2.1"
 androidx-test-ext-junit = "1.3.0"
 androidx-test-espresso-core = "3.7.0"
 junit = "4.13.2"
-# noinspection GradleDependency
-android-lint = "31.9.0"
+android-lint = "32.2.1"
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 kotlin-dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }
 
@@ -47,6 +48,8 @@ androidx-viewpager = { group = "androidx.viewpager", name = "viewpager", version
 androidx-viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "androidx-viewpager2" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+compose-runtime = { group = "org.jetbrains.compose.runtime", name = "runtime", version.ref = "compose" }
+compose-foundation = { group = "org.jetbrains.compose.foundation", name = "foundation", version.ref = "compose" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidx-test-espresso-core" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
