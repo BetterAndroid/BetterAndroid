@@ -37,10 +37,9 @@ import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
 
 /**
- * Clip data item's builder.
- * @param label the clip data visible label.
+ * Clip data builder.
  */
-class ClipDataItemBuilder internal constructor(private val label: CharSequence?) {
+class ClipDataBuilder {
 
     /** The mime types of clip data. */
     private val mimeTypes = mutableSetOf<String>()
@@ -51,48 +50,68 @@ class ClipDataItemBuilder internal constructor(private val label: CharSequence?)
     /**
      * Add a plain text item to clip data.
      * @param text the text to add.
+     * @return [ClipDataBuilder]
      */
-    fun addPlainText(text: CharSequence) {
-        mimeTypes.add(ClipDescription.MIMETYPE_TEXT_PLAIN)
-        dataItems.add(ClipData.Item(text))
+    fun addPlainText(text: CharSequence) = apply {
+        this.mimeTypes.add(ClipDescription.MIMETYPE_TEXT_PLAIN)
+        this.dataItems.add(ClipData.Item(text))
     }
 
     /**
      * Add a html text item to clip data.
      * @param text the text to add.
-     * @param htmlText the html text to add.
+     * @param htmlText the HTML text to add.
+     * @return [ClipDataBuilder]
      */
-    fun addHtmlText(text: CharSequence, htmlText: String) {
-        mimeTypes.add(ClipDescription.MIMETYPE_TEXT_HTML)
-        dataItems.add(ClipData.Item(text, htmlText))
+    fun addHtmlText(text: CharSequence, htmlText: String) = apply {
+        this.mimeTypes.add(ClipDescription.MIMETYPE_TEXT_HTML)
+        this.dataItems.add(ClipData.Item(text, htmlText))
     }
 
     /**
      * Add a intent item to clip data.
      * @param intent the intent to add.
+     * @return [ClipDataBuilder]
      */
-    fun addIntent(intent: Intent) {
-        mimeTypes.add(ClipDescription.MIMETYPE_TEXT_INTENT)
-        dataItems.add(ClipData.Item(intent))
+    fun addIntent(intent: Intent) = apply {
+        this.mimeTypes.add(ClipDescription.MIMETYPE_TEXT_INTENT)
+        this.dataItems.add(ClipData.Item(intent))
     }
 
     /**
      * Add a uri item to clip data.
      * @param uri the uri to add.
-     * @param resolver the content resolver, use it to get the [uri]'s mime type, default is null.
+     * @param mimeTypes the mime types to add, if not provided, it will be set to [ClipDescription.MIMETYPE_TEXT_URILIST].
+     * @return [ClipDataBuilder]
+     */
+    fun addUri(uri: Uri, vararg mimeTypes: String) = apply {
+        this.mimeTypes.addAll(mimeTypes.filter { it.isNotBlank() }.ifEmpty { listOf(ClipDescription.MIMETYPE_TEXT_URILIST) })
+        this.dataItems.add(ClipData.Item(uri))
+    }
+
+    /**
+     * Add a uri item to clip data.
+     * @param uri the uri to add.
+     * @param mimeTypes the mime types to add, if not provided, it will be set to [ClipDescription.MIMETYPE_TEXT_URILIST].
+     * @return [ClipDataBuilder]
      */
     @JvmOverloads
-    fun addUri(uri: Uri, resolver: ContentResolver? = null) {
-        // Use [ClipData.newUri] to make a new clip data for getting the uri's mime type.
-        val description = resolver?.let { ClipData.newUri(it, label, uri).description }
+    fun addUri(uri: Uri, mimeTypes: List<String> = emptyList()) = addUri(uri, *mimeTypes.toTypedArray())
 
-        if (description != null && description.mimeTypeCount > 0)
-            for (i in 0 until description.mimeTypeCount)
-                mimeTypes.add(description.getMimeType(i))
-        else mimeTypes.add(ClipDescription.MIMETYPE_TEXT_URILIST)
-
-        dataItems.add(ClipData.Item(uri))
-    }
+    /**
+     * Add a uri item to clip data.
+     *
+     * - This function is deprecated, use [addUri] with [Uri.resolveMimeTypes] instead.
+     */
+    @Deprecated(
+        message = "Use addUri with Uri.resolveMimeTypes instead.",
+        ReplaceWith(
+            expression = "addUri(uri, resolver?.let { uri.resolveMimeTypes(it) } ?: listOf(ClipDescription.MIMETYPE_TEXT_URILIST))",
+            imports = arrayOf("android.content.ClipDescription")
+        )
+    )
+    fun addUri(uri: Uri, resolver: ContentResolver?) =
+        addUri(uri, resolver?.let { uri.resolveMimeTypes(it) } ?: listOf(ClipDescription.MIMETYPE_TEXT_URILIST))
 
     /**
      * Add a text item to clip data.
@@ -103,25 +122,30 @@ class ClipDataItemBuilder internal constructor(private val label: CharSequence?)
     fun addText(text: CharSequence) = addPlainText(text)
 
     /**
-     * Get the clip data item result.
-     * @return [Pair]<[Array]<[String]>, [MutableList]<[ClipData.Item]>>
+     * Build the clip data result.
+     * @param label the clip data visible label, default is null.
+     * @return [ClipData]
      */
-    internal fun build() = mimeTypes.toTypedArray() to dataItems
+    fun build(label: CharSequence? = null): ClipData {
+        require(dataItems.isNotEmpty()) {
+            "ClipData must have at least one item."
+        }
+
+        return ClipData(
+            label, mimeTypes.toTypedArray(), 
+            dataItems.first()
+        ).apply { dataItems.drop(1).forEach { addItem(it) } }
+    }
 }
 
 /**
  * Create a clip data.
  * @param label the clip data visible label, default is null.
- * @param builder the [ClipDataItemBuilder] builder body.
+ * @param builder the [ClipDataBuilder] builder body.
  * @throws IllegalStateException if no clip data item provided.
  */
-@JvmOverloads
-fun ClipData(label: CharSequence? = null, builder: ClipDataItemBuilder.() -> Unit): ClipData {
-    val data = ClipDataItemBuilder(label).apply(builder).build()
-    require(data.second.isNotEmpty()) { "ClipData must have at least one item." }
-
-    return ClipData(label, data.first, data.second[0]).apply { data.second.drop(1).forEach { addItem(it) } }
-}
+inline fun ClipData(label: CharSequence? = null, builder: ClipDataBuilder.() -> Unit) =
+    ClipDataBuilder().apply(builder).build(label)
 
 /**
  * Get the clip data item list.
@@ -131,6 +155,50 @@ fun ClipData(label: CharSequence? = null, builder: ClipDataItemBuilder.() -> Uni
 fun ClipData.listOfItems() = if (itemCount > 0)
     (0 until itemCount).map { getItemAt(it) }
 else emptyList()
+
+/**
+ * Get the primary clip item.
+ * @receiver [ClipboardManager]
+ * @param index the clip item index.
+ * @return [ClipData.Item]
+ */
+fun ClipboardManager.primaryClipItems(index: Int) = primaryClip?.listOfItems()[index]
+
+/**
+ * Get the primary clip item or null.
+ * @receiver [ClipboardManager]
+ * @param index the clip item index.
+ * @return [ClipData.Item] or null.
+ */
+fun ClipboardManager.primaryClipItemsOrNull(index: Int) = primaryClip?.listOfItems()?.getOrNull(index)
+
+/**
+ * Get the first primary clip item.
+ * @receiver [ClipboardManager]
+ * @return [ClipData.Item]
+ */
+val ClipboardManager.firstPrimaryClipItem get() = primaryClipItems(0)
+
+/**
+ * Get the first primary clip item or null.
+ * @receiver [ClipboardManager]
+ * @return [ClipData.Item] or null.
+ */
+val ClipboardManager.firstPrimaryClipItemOrNull get() = primaryClipItemsOrNull(0)
+
+/**
+ * Resolve the mime type list.
+ * @receiver [Uri]
+ * @param resolver the content resolver, use it to get the [Uri]'s mime type.
+ * @return [List]<[String]>
+ */
+fun Uri.resolveMimeTypes(resolver: ContentResolver): List<String> {
+    val description = ClipData.newUri(resolver, null, this).description
+
+    return if (description.mimeTypeCount > 0)
+        (0 until description.mimeTypeCount).map { description.getMimeType(it) }
+    else emptyList()
+}
 
 /**
  * Copy to clipboard.
@@ -143,10 +211,10 @@ fun ClipboardManager.copy(clipData: ClipData) = setPrimaryClip(clipData)
  * Copy to clipboard.
  * @receiver [ClipboardManager]
  * @param label the clip data visible label, default is null.
- * @param builder the [ClipDataItemBuilder] builder body.
+ * @param builder the [ClipDataBuilder] builder body.
  */
 @JvmOverloads
-fun ClipboardManager.copy(label: CharSequence? = null, builder: ClipDataItemBuilder.() -> Unit) =
+fun ClipboardManager.copy(label: CharSequence? = null, builder: ClipDataBuilder.() -> Unit) =
     copy(ClipData(label, builder))
 
 /**
@@ -163,7 +231,7 @@ fun ClipboardManager.copy(text: CharSequence, label: CharSequence? = null) =
  * Copy html text to clipboard.
  * @receiver [ClipboardManager]
  * @param text the text to copy.
- * @param htmlText the html text to copy.
+ * @param htmlText the HTML text to copy.
  * @param label the clip data visible label, default is null.
  */
 @JvmOverloads
@@ -184,12 +252,23 @@ fun ClipboardManager.copy(intent: Intent, label: CharSequence? = null) =
  * Copy uri to clipboard.
  * @receiver [ClipboardManager]
  * @param uri the uri to copy.
- * @param label the clip data visible label, default is null.
- * @param resolver the content resolver, use it to get the [uri]'s mime type, default is null.
+ * @param mimeTypes the mime types to copy, if not provided, it will be set to [ClipDescription.MIMETYPE_TEXT_URILIST].
+ * @param label the clip data visible label.
  */
 @JvmOverloads
-fun ClipboardManager.copy(uri: Uri, label: CharSequence? = null, resolver: ContentResolver? = null) =
-    copy(label) { addUri(uri, resolver) }
+fun ClipboardManager.copy(uri: Uri, vararg mimeTypes: String, label: CharSequence? = null) =
+    copy(label) { addUri(uri, *mimeTypes) }
+
+/**
+ * Copy uri to clipboard.
+ * @receiver [ClipboardManager]
+ * @param uri the uri to copy.
+ * @param mimeTypes the mime types to copy, if not provided, it will be set to [ClipDescription.MIMETYPE_TEXT_URILIST].
+ * @param label the clip data visible label.
+ */
+@JvmOverloads
+fun ClipboardManager.copy(uri: Uri, mimeTypes: List<String> = emptyList(), label: CharSequence? = null) =
+    copy(label) { addUri(uri, mimeTypes) }
 
 /**
  * Get clipboard manager.
@@ -198,6 +277,21 @@ fun ClipboardManager.copy(uri: Uri, label: CharSequence? = null, resolver: Conte
  * @throws IllegalStateException if clipboard manager is unavailable.
  */
 val Context.clipboardManager get() = getSystemService<ClipboardManager>() ?: error("ClipboardManager is unavailable.")
+
+/**
+ * Copy uri to clipboard.
+ *
+ * - This function is deprecated, use [copy] with [Uri.resolveMimeTypes] instead.
+ */
+@Deprecated(
+    message = "Use copy with Uri.resolveMimeTypes instead.",
+    ReplaceWith(
+        expression = "copy(uri, resolver?.let { uri.resolveMimeTypes(it) } ?: listOf(ClipDescription.MIMETYPE_TEXT_URILIST), label)",
+        imports = arrayOf("android.content.ClipDescription")
+    )
+)
+fun ClipboardManager.copy(uri: Uri, label: CharSequence? = null, resolver: ContentResolver?) =
+    copy(uri, resolver?.let { uri.resolveMimeTypes(it) } ?: listOf(ClipDescription.MIMETYPE_TEXT_URILIST), label)
 
 /**
  * Copy text to clipboard.
