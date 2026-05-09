@@ -2148,7 +2148,9 @@ view.setMargins(10.toPx(context))
 
 通常情况下，我们需要使用 `View.parent` 方法递归遍历父布局，使用 `ViewGroup.children` 方法递归遍历子布局。
 
-`BetterAndroid` 为此提供了一个更加简单的方式，它的设计灵感来源于 Kotlin 提供的 `File` 中的 `walk` 扩展方法。
+虽然官方已经提供了 `View.ancestors` 与 `ViewGroup.descendants` 这样的扩展能力，不过对于大多数开发者来说，这样的命名在日常业务代码中并不算直观。
+
+`BetterAndroid` 为此提供了 `walkToRoot` 与 `walkThroughChildren` 两个更加友好的命名方式，它的设计灵感来源于 Kotlin 提供的 `File` 中的 `walk` 扩展方法。
 
 > 示例如下
 
@@ -2162,6 +2164,14 @@ val parents = view.walkToRoot()
 // 获取所有子布局
 val children = viewGroup.walkThroughChildren()
 ```
+
+::: warning
+
+从 `1.1.0` 开始，`walkToRoot` 与 `walkThroughChildren` 的返回值已由 `List` 调整为 `Sequence`，这是出于性能考量的破坏性更新。
+
+如果你之前的业务依赖其立即求值结果，请补充 `toList()`，或根据新的惰性遍历方式调整业务逻辑。
+
+:::
 
 获取 `View` 在父布局中的索引。
 

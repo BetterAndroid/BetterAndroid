@@ -2227,7 +2227,9 @@ Traverse the parent layout and all child layouts.
 
 Normally, we need to use the `View.parent` method to recursively traverse the parent layout and the `ViewGroup.children` method to recursively traverse the child layout.
 
-`BetterAndroid` provides a simpler way for this, its design is inspired by the `walk` extension method in `File` provided by Kotlin.
+Although the official API already provides `View.ancestors` and `ViewGroup.descendants` for similar traversal scenarios, those names are not always the most intuitive choice in everyday app code.
+
+`BetterAndroid` provides two more friendly names for this: `walkToRoot` and `walkThroughChildren`, and their design is inspired by Kotlin's `File.walk` extension.
 
 > The following example
 
@@ -2241,6 +2243,14 @@ val parents = view.walkToRoot()
 // Get all sublayouts.
 val children = viewGroup.walkThroughChildren()
 ```
+
+::: warning
+
+Since `1.1.0`, the return types of `walkToRoot` and `walkThroughChildren` have changed from `List` to `Sequence` for performance reasons. This is a breaking change.
+
+If your previous usage depended on eager evaluation, append `toList()` or adjust your business logic to work with lazy traversal.
+
+:::
 
 Gets the index of `View` in the parent layout.
 
