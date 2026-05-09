@@ -42,7 +42,9 @@ import androidx.annotation.Px
 import androidx.core.content.getSystemService
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.ancestors
 import androidx.core.view.children
+import androidx.core.view.descendants
 import androidx.core.view.marginBottom
 import androidx.core.view.marginEnd
 import androidx.core.view.marginLeft
@@ -621,35 +623,25 @@ fun View.setMargins(@Px size: Int) {
 
 /**
  * Walk to the view's parent views.
+ * @see View.ancestors
  * @receiver [View]
- * @return [List]<[View]>
+ * @return [Sequence]<[View]>
  */
-fun View.walkToRoot(): List<View> {
-    val views = mutableListOf<View>()
-    var current: View? = this
-
-    while (current != null) {
-        views.add(current)
-        current = current.parentOrNull()
-    }
-
-    return views
+fun View.walkToRoot(): Sequence<View> = generateSequence(this) {
+    it.parentOrNull()
 }
 
 /**
  * Walk through the view's children views.
+ * @see ViewGroup.descendants
  * @receiver [ViewGroup]
- * @return [List]<[View]>
+ * @return [Sequence]<[View]>
  */
-fun ViewGroup.walkThroughChildren(): List<View> {
-    val children = mutableListOf<View>()
-
-    this.children.forEach { child ->
-        children.add(child)
-        if (child is ViewGroup) children.addAll(child.walkThroughChildren())
+fun ViewGroup.walkThroughChildren(): Sequence<View> = sequence {
+    children.forEach { child ->
+        yield(child)
+        if (child is ViewGroup) yieldAll(child.walkThroughChildren())
     }
-
-    return children
 }
 
 /**
