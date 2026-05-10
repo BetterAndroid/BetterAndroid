@@ -224,23 +224,39 @@ when (type) {
 The following is a comparison table of constants for currently collected ROM types, if you have features for more ROM types,
 you are welcome to PR or go to [GitHub Issues](repo://issues) to make suggestions to us.
 
-| `RomType` Name | ROM Type                                                                                                 |
-| -------------- | -------------------------------------------------------------------------------------------------------- |
-| `DEFAULT`      | Default, uncategorized. (Stock Android or AOSP-based Android system or ROM type not currently collected) |
-| `HARMONYOS`    | [HarmonyOS](https://www.harmonyos.com/) (Based on AOSP)                                                  |
-| `EMUI`         | [EMUI](https://www.huaweicentral.com/emui)                                                               |
-| `MIUI`         | [MIUI](https://home.miui.com/)                                                                           |
-| `HYPEROS`      | [HyperOS](https://hyperos.mi.com/)                                                                       |
-| `COLOROS`      | [ColorOS](https://www.coloros.com/)                                                                      |
-| `FUNTOUCHOS`   | [FuntouchOS](https://www.vivo.com/funtouchos)                                                            |
-| `ORIGINOS`     | [OriginOS](https://www.vivo.com/originos)                                                                |
-| `FLYME`        | [Flyme](https://flyme.com/)                                                                              |
-| `ONEUI`        | [OneUI](https://www.samsung.com/one-ui)                                                                  |
-| `ZUI`          | [ZUI](https://zui.com/)                                                                                  |
-| `REDMAGICOS`   | [RedMagicOS](https://www.nubia.com/)                                                                     |
-| `NUBIAUI`      | [NubiaUI](https://www.nubia.com/)                                                                        |
-| `ROGUI`        | [RogUI](https://www.asus.com/)                                                                           |
-| `VISIONOS`     | [VisionOS](https://fans.hisense.com/forum-269-1.html)                                                    |
+Some of the later ROM detection additions were inspired by [DeviceCompat](https://github.com/getActivity/DeviceCompat).
+Special thanks to that project for the adaptation ideas and references.
+
+| `RomType` Name   | ROM Type                                                                                          |
+| ---------------- | ------------------------------------------------------------------------------------------------- |
+| `DEFAULT`        | Default, uncategorized. (Stock Android, AOSP-based Android, or ROM types not currently collected) |
+| `HYPEROS`        | [HyperOS](https://hyperos.mi.com/) (Xiaomi, Redmi)                                                |
+| `MIUI`           | [MIUI](https://home.miui.com/) (Older systems on Xiaomi and Redmi devices)                        |
+| `COLOROS`        | [ColorOS](https://www.coloros.com/) (OPPO, OnePlus)                                               |
+| `REALMEUI`       | [realmeUI](https://www.realme.com/) (Realme)                                                      |
+| `FUNTOUCHOS`     | [FuntouchOS](https://www.vivo.com/funtouchos) (Older systems on Vivo devices)                     |
+| `ORIGINOS`       | [OriginOS](https://www.vivo.com/originos) (Vivo)                                                  |
+| `MAGICOS`        | [MagicOS](https://www.honor.com/) (HONOR)                                                         |
+| `FLYME`          | [Flyme](https://flyme.com/) (Meizu)                                                               |
+| `ONEUI`          | [OneUI](https://www.samsung.com/one-ui) (Samsung)                                                 |
+| `OXYGENOS`       | [OxygenOS](https://www.oneplus.com/) (Older global systems on OnePlus devices)                    |
+| `H2OS`           | [H2OS](https://www.oneplus.com/) (Older mainland China systems on OnePlus devices)                |
+| `ZUI`            | [ZUI](https://zui.com/) (Older systems on Lenovo and Motorola devices)                            |
+| `ZUXOS`          | [ZUXOS](https://zuxos.com/) (Lenovo, Motorola)                                                    |
+| `REDMAGICOS`     | [RedMagicOS](https://www.nubia.com/) (RedMagic)                                                   |
+| `NEBULAAIOS`     | [NebulaAIOS](https://www.nubia.com/) (Nubia)                                                      |
+| `MYOS`           | [MyOS](https://www.nubia.com/) (ZTE, Nubia)                                                       |
+| `MIFAVORUI`      | [MifavorUI](https://www.nubia.com/) (Older systems on ZTE devices)                                |
+| `NUBIAUI`        | [NubiaUI](https://www.nubia.com/) (Older systems on Nubia devices)                                |
+| `SMARTISANOS`    | [SmartisanOS](https://www.smartisan.com/os/) (Smartisan, Nut)                                     |
+| `EUI`            | [EUI](https://www.tuyidesign.com/cases/leshi/) (LeEco)                                            |
+| `OBRICUI`        | [ObricUI](https://www.doubao.com/) (Doubao Phone)                                                 |
+| `ROGUI`          | [RogUI](https://www.asus.com/) (ASUS ROG Phone)                                                   |
+| `OS360`          | [360OS](https://www.360os.com/) (360 phones)                                                      |
+| `HARMONYOS`      | [HarmonyOS](https://www.harmonyos.com/) (Huawei, HONOR, based on AOSP)                            |
+| `HARMONYOS_NEXT` | [HarmonyOS NEXT](https://www.harmonyos.com/) (HarmonyOS NEXT compatibility environment)           |
+| `EMUI`           | [EMUI](https://www.huaweicentral.com/emui) (Older systems on Huawei and HONOR devices)            |
+| `VISIONOS`       | [VisionOS](https://fans.hisense.com/forum-269-1.html) (Hisense)                                   |
 
 `SystemProperties` is a tool provided by Android that can read the contents of `build.prop` during runtime, but this function is not open to developers.
 

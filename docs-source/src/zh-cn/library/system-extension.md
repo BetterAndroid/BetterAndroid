@@ -221,23 +221,38 @@ when (type) {
 
 以下是目前收集的 ROM 类型的常量对照表，如果你有更多 ROM 类型的特征，欢迎 PR 或前往 [GitHub Issues](repo://issues) 向我们提出建议。
 
-| `RomType` 名称 | ROM 类型                                              |
-| -------------- | ----------------------------------------------------- |
-| `DEFAULT`      | 默认、未分类 (原生或类原生以及当前未收集的 ROM 类型)  |
-| `HARMONYOS`    | [HarmonyOS](https://www.harmonyos.com/) (基于 AOSP)   |
-| `EMUI`         | [EMUI](https://www.huaweicentral.com/emui)            |
-| `MIUI`         | [MIUI](https://home.miui.com/)                        |
-| `HYPEROS`      | [HyperOS](https://hyperos.mi.com/)                    |
-| `COLOROS`      | [ColorOS](https://www.coloros.com/)                   |
-| `FUNTOUCHOS`   | [FuntouchOS](https://www.vivo.com/funtouchos)         |
-| `ORIGINOS`     | [OriginOS](https://www.vivo.com/originos)             |
-| `FLYME`        | [Flyme](https://flyme.com/)                           |
-| `ONEUI`        | [OneUI](https://www.samsung.com/one-ui)               |
-| `ZUI`          | [ZUI](https://zui.com/)                               |
-| `REDMAGICOS`   | [RedMagicOS](https://www.nubia.com/)                  |
-| `NUBIAUI`      | [NubiaUI](https://www.nubia.com/)                     |
-| `ROGUI`        | [RogUI](https://www.asus.com/)                        |
-| `VISIONOS`     | [VisionOS](https://fans.hisense.com/forum-269-1.html) |
+后期补充的部分 ROM 判断参考了 [DeviceCompat](https://github.com/getActivity/DeviceCompat) 项目，感谢它提供的适配思路与参考实现。
+
+| `RomType` 名称   | ROM 类型                                                               |
+| ---------------- | ---------------------------------------------------------------------- |
+| `DEFAULT`        | 默认、未分类 (原生或类原生以及当前未收集的 ROM 类型)                   |
+| `HYPEROS`        | [HyperOS](https://hyperos.mi.com/) (小米、Redmi)                       |
+| `MIUI`           | [MIUI](https://home.miui.com/) (小米、Redmi 的旧系统)                  |
+| `COLOROS`        | [ColorOS](https://www.coloros.com/) (OPPO、一加)                       |
+| `REALMEUI`       | [realmeUI](https://www.realme.com/) (Realme)                           |
+| `FUNTOUCHOS`     | [FuntouchOS](https://www.vivo.com/funtouchos) (Vivo 的旧系统)          |
+| `ORIGINOS`       | [OriginOS](https://www.vivo.com/originos) (Vivo)                       |
+| `MAGICOS`        | [MagicOS](https://www.honor.com/) (荣耀)                               |
+| `FLYME`          | [Flyme](https://flyme.com/) (魅族)                                     |
+| `ONEUI`          | [OneUI](https://www.samsung.com/one-ui) (三星)                         |
+| `OXYGENOS`       | [OxygenOS](https://www.oneplus.com/) (一加的旧海外系统)                |
+| `H2OS`           | [H2OS](https://www.oneplus.com/) (一加的旧国内系统)                    |
+| `ZUI`            | [ZUI](https://zui.com/) (联想、摩托罗拉的旧系统)                       |
+| `ZUXOS`          | [ZUXOS](https://zuxos.com/) (联想、摩托罗拉)                           |
+| `REDMAGICOS`     | [RedMagicOS](https://www.nubia.com/) (红魔)                            |
+| `NEBULAAIOS`     | [NebulaAIOS](https://www.nubia.com/) (努比亚)                          |
+| `MYOS`           | [MyOS](https://www.nubia.com/) (中兴、努比亚)                          |
+| `MIFAVORUI`      | [MifavorUI](https://www.nubia.com/) (中兴的旧系统)                     |
+| `NUBIAUI`        | [NubiaUI](https://www.nubia.com/) (努比亚的旧系统)                     |
+| `SMARTISANOS`    | [SmartisanOS](https://www.smartisan.com/os/) (锤子、坚果)              |
+| `EUI`            | [EUI](https://www.tuyidesign.com/cases/leshi/) (乐视)                  |
+| `OBRICUI`        | [ObricUI](https://www.doubao.com/) (豆包手机)                          |
+| `ROGUI`          | [RogUI](https://www.asus.com/) (华硕 ROG Phone)                        |
+| `OS360`          | [360OS](https://www.360os.com/) (360 手机)                             |
+| `HARMONYOS`      | [HarmonyOS](https://www.harmonyos.com/) (华为、荣耀，基于 AOSP)        |
+| `HARMONYOS_NEXT` | [HarmonyOS NEXT](https://www.harmonyos.com/) (HarmonyOS NEXT 兼容环境) |
+| `EMUI`           | [EMUI](https://www.huaweicentral.com/emui) (华为、荣耀的旧系统)        |
+| `VISIONOS`       | [VisionOS](https://fans.hisense.com/forum-269-1.html) (海信)           |
 
 `SystemProperties` 是 Android 提供的一个能够在运行期间读取 `build.prop` 内容的工具，但是这个功能是不面向开发者开放的。
 
