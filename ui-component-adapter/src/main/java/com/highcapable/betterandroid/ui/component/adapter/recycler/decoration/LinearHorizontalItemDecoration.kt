@@ -42,11 +42,11 @@ class LinearHorizontalItemDecoration : BaseRecyclerItemDecoration {
     /**
      * Spacing adaption rect.
      * @param firstLeft the first left spacing (px).
-     * @param left the each left spacing (px).
-     * @param top the each top spacing (px).
+     * @param left the left spacing (px).
+     * @param top the top spacing (px).
      * @param lastRight the last right spacing (px).
-     * @param right the each right spacing (px).
-     * @param bottom the each bottom spacing (px).
+     * @param right the right spacing (px).
+     * @param bottom the bottom spacing (px).
      */
     private class RowColumnRect(
         @field:Px val firstLeft: Int,
@@ -60,11 +60,11 @@ class LinearHorizontalItemDecoration : BaseRecyclerItemDecoration {
     /**
      * Initialized as custom entry spacing adaptation.
      * @param firstLeft the first left spacing (px).
-     * @param left the each left spacing (px).
-     * @param top the each top spacing (px).
+     * @param left the left spacing (px).
+     * @param top the top spacing (px).
      * @param lastRight the last right spacing (px).
-     * @param right the each right spacing (px).
-     * @param bottom the each bottom spacing (px).
+     * @param right the right spacing (px).
+     * @param bottom the bottom spacing (px).
      */
     constructor(
         @Px firstLeft: Int = 0,
@@ -88,11 +88,11 @@ class LinearHorizontalItemDecoration : BaseRecyclerItemDecoration {
     /**
      * Update the current item spacing.
      * @param firstLeft the first left spacing (px).
-     * @param left the each left spacing (px).
-     * @param top the each top spacing (px).
+     * @param left the left spacing (px).
+     * @param top the top spacing (px).
      * @param lastRight the last right spacing (px).
-     * @param right the each right spacing (px).
-     * @param bottom the each bottom spacing (px).
+     * @param right the right spacing (px).
+     * @param bottom the bottom spacing (px).
      */
     fun update(
         @Px firstLeft: Int = rowColumnRect?.firstLeft ?: 0,

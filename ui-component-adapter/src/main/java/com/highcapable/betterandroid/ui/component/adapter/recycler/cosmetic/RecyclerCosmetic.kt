@@ -27,6 +27,8 @@ package com.highcapable.betterandroid.ui.component.adapter.recycler.cosmetic
 import android.content.Context
 import androidx.annotation.Px
 import androidx.recyclerview.widget.RecyclerView
+import com.highcapable.betterandroid.ui.component.adapter.recycler.cosmetic.RecyclerCosmetic.Companion.DEFAULT_SPACING_DP
+import com.highcapable.betterandroid.ui.component.adapter.recycler.cosmetic.RecyclerCosmetic.Companion.defaultSpacingPx
 import com.highcapable.betterandroid.ui.component.adapter.recycler.decoration.GridVerticalItemDecoration
 import com.highcapable.betterandroid.ui.component.adapter.recycler.decoration.LinearHorizontalItemDecoration
 import com.highcapable.betterandroid.ui.component.adapter.recycler.decoration.LinearVerticalItemDecoration
@@ -95,13 +97,13 @@ class RecyclerCosmetic<RVLM : RecyclerView.LayoutManager, RVID : RecyclerView.It
          * @param context the current context.
          * @param spanCount the column count, default is 3.
          * @param firstLeft the first left spacing (px).
-         * @param left the each left spacing (px).
+         * @param left the left spacing (px).
          * @param firstTop the first top spacing (px).
-         * @param top the each top spacing (px).
+         * @param top the top spacing (px).
          * @param lastRight the last right spacing (px).
-         * @param right the each right spacing (px).
+         * @param right the right spacing (px).
          * @param lastBottom the last bottom spacing (px).
-         * @param bottom the each bottom spacing (px).
+         * @param bottom the bottom spacing (px).
          * @param isReverseLayout reverse the layout, default false.
          * @return [RecyclerCosmetic]
          */
@@ -146,12 +148,12 @@ class RecyclerCosmetic<RVLM : RecyclerView.LayoutManager, RVID : RecyclerView.It
         /**
          * Create a linear vertical cosmetic.
          * @param context the current context.
-         * @param left the each left spacing (px).
+         * @param left the left spacing (px).
          * @param firstTop the first top spacing (px).
-         * @param top the each top spacing (px).
-         * @param right the each right spacing (px).
+         * @param top the top spacing (px).
+         * @param right the right spacing (px).
          * @param lastBottom the last bottom spacing (px).
-         * @param bottom the each bottom spacing (px).
+         * @param bottom the bottom spacing (px).
          * @param isReverseLayout reverse the layout, default false.
          * @return [RecyclerCosmetic]
          */
@@ -194,11 +196,11 @@ class RecyclerCosmetic<RVLM : RecyclerView.LayoutManager, RVID : RecyclerView.It
          * Create a linear horizontal cosmetic.
          * @param context the current context.
          * @param firstLeft the first left spacing (px).
-         * @param left the each left spacing (px).
-         * @param top the each top spacing (px).
+         * @param left the left spacing (px).
+         * @param top the top spacing (px).
          * @param lastRight the last right spacing (px).
-         * @param right the each right spacing (px).
-         * @param bottom the each bottom spacing (px).
+         * @param right the right spacing (px).
+         * @param bottom the bottom spacing (px).
          * @param isReverseLayout reverse the layout, default false.
          * @return [RecyclerCosmetic]
          */

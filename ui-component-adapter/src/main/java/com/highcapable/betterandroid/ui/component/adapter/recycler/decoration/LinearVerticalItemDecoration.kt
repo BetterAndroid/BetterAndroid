@@ -41,12 +41,12 @@ class LinearVerticalItemDecoration : BaseRecyclerItemDecoration {
 
     /**
      * Spacing adaption rect.
-     * @param left the each left spacing (px).
+     * @param left the left spacing (px).
      * @param firstTop the first top spacing (px).
-     * @param top the each top spacing (px).
-     * @param right the each right spacing (px).
+     * @param top the top spacing (px).
+     * @param right the right spacing (px).
      * @param lastBottom the last bottom spacing (px).
-     * @param bottom the each bottom spacing (px).
+     * @param bottom the bottom spacing (px).
      */
     private data class RowColumnRect(
         @field:Px val left: Int,
@@ -59,12 +59,12 @@ class LinearVerticalItemDecoration : BaseRecyclerItemDecoration {
 
     /**
      * Initialized as custom entry spacing adaptation.
-     * @param left the each left spacing (px).
+     * @param left the left spacing (px).
      * @param firstTop the first top spacing (px).
-     * @param top the each top spacing (px).
-     * @param right the each right spacing (px).
+     * @param top the top spacing (px).
+     * @param right the right spacing (px).
      * @param lastBottom the last bottom spacing (px).
-     * @param bottom the each bottom spacing (px).
+     * @param bottom the bottom spacing (px).
      */
     constructor(
         @Px left: Int = 0,
@@ -87,12 +87,12 @@ class LinearVerticalItemDecoration : BaseRecyclerItemDecoration {
 
     /**
      * Update the current item spacing.
-     * @param left the each left spacing (px).
+     * @param left the left spacing (px).
      * @param firstTop the first top spacing (px).
-     * @param top the each top spacing (px).
-     * @param right the each right spacing (px).
+     * @param top the top spacing (px).
+     * @param right the right spacing (px).
      * @param lastBottom the last bottom spacing (px).
-     * @param bottom the each bottom spacing (px).
+     * @param bottom the bottom spacing (px).
      */
     fun update(
         @Px left: Int = rowColumnRect?.left ?: 0,

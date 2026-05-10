@@ -38,7 +38,7 @@ abstract class BaseRecyclerItemDecoration internal constructor() : RecyclerView.
     }
 
     /**
-     * Callback and calculate the each item offsets.
+     * Callback and calculate the item offsets.
      * @param outRect the item out rect.
      * @param position the current position.
      * @param itemCount the data set count.
