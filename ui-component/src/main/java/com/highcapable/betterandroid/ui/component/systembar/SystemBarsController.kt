@@ -166,6 +166,12 @@ class SystemBarsController private constructor(private val window: Window) {
     /** Whether to handle the [rootView]'s window insets for edge-to-edge. */
     private var hasEdgeToEdgeInsets = false
 
+    /** Whether the status bar style has been applied. */
+    private var hasAppliedStatusBarStyle = false
+
+    /** Whether the navigation bar style has been applied. */
+    private var hasAppliedNavigationBarStyle = false
+
     /**
      * Get the current system bars compat instance.
      * @return [SystemBarsCompat]
@@ -350,9 +356,13 @@ class SystemBarsController private constructor(private val window: Window) {
      */
     var statusBarStyle = SystemBarStyle.AutoTransparent
         set(value) {
+            val shouldApply = !hasAppliedStatusBarStyle || field != value
             field = value
 
-            applyStyle(SystemBars.STATUS_BARS, value)
+            if (shouldApply) {
+                applyStyle(SystemBars.STATUS_BARS, value)
+                hasAppliedStatusBarStyle = true
+            }
         }
 
     /**
@@ -363,9 +373,13 @@ class SystemBarsController private constructor(private val window: Window) {
      */
     var navigationBarStyle = SystemBarStyle.AutoTransparent
         set(value) {
+            val shouldApply = !hasAppliedNavigationBarStyle || field != value
             field = value
 
-            applyStyle(SystemBars.NAVIGATION_BARS, value)
+            if (shouldApply) {
+                applyStyle(SystemBars.NAVIGATION_BARS, value)
+                hasAppliedNavigationBarStyle = true
+            }
         }
 
     /**
@@ -492,6 +506,8 @@ class SystemBarsController private constructor(private val window: Window) {
         rootInsetsController = null
         rootView = null
         hasEdgeToEdgeInsets = false
+        hasAppliedStatusBarStyle = false
+        hasAppliedNavigationBarStyle = false
         isInitOnce = false
     }
 
