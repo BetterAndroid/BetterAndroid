@@ -233,6 +233,12 @@ class BaseAdapterBuilder<E> private constructor(private val adapterContext: Cont
      */
     inner class Instance internal constructor() : BaseAdapter(), Filterable {
 
+        /** The current owner item click dispatchers. */
+        private val ownerItemClickDispatchers = java.util.WeakHashMap<AdapterView<*>, OwnerItemClickDispatcher>()
+
+        /** The current owner item long click dispatchers. */
+        private val ownerItemLongClickDispatchers = java.util.WeakHashMap<AdapterView<*>, OwnerItemLongClickDispatcher>()
+
         init {
             require(dataSetCount <= 0 || listDataCallback?.invoke().isNullOrEmpty()) {
                 "You can only use once dataSetCount or entities on BaseAdapter."
@@ -298,28 +304,29 @@ class BaseAdapterBuilder<E> private constructor(private val adapterContext: Cont
             }
 
             if (owner != null) {
-                if (viewHolderOnClickCallbacks.isNotEmpty()) owner.setOnItemClickListener { _, view, currentPosition, _ ->
-                    val currentItemId = getItemId(currentPosition)
-                    val currentEntity = getCurrentEntity(currentPosition) ?: return@setOnItemClickListener
+                if (viewHolderOnClickCallbacks.isNotEmpty()) {
+                    val dispatcher = ownerItemClickDispatchers[owner]
+                        ?: OwnerItemClickDispatcher().also { ownerItemClickDispatchers[owner] = it }
 
-                    viewHolderOnClickCallbacks.forEach { (key, callback) ->
-                        if (key == ITEM_NO_ID || key == currentItemId)
-                            callback(view, currentEntity, currentPosition)
+                    if (owner.onItemClickListener !== dispatcher) {
+                        dispatcher.delegate = owner.onItemClickListener
+                        owner.onItemClickListener = dispatcher
                     }
-                } else owner.onItemClickListener = null
+                }
 
-                if (viewHolderOnLongClickCallbacks.isNotEmpty()) owner.setOnItemLongClickListener { _, view, currentPosition, _ ->
-                    val currentItemId = getItemId(currentPosition)
-                    val currentEntity = getCurrentEntity(currentPosition) ?: return@setOnItemLongClickListener false
-                    var result = false
+                if (viewHolderOnLongClickCallbacks.isNotEmpty()) {
+                    val dispatcher = ownerItemLongClickDispatchers[owner]
+                        ?: OwnerItemLongClickDispatcher().also { wrapper ->
+                            wrapper.delegate = owner.onItemLongClickListener
+                            ownerItemLongClickDispatchers[owner] = wrapper
+                            owner.onItemLongClickListener = wrapper
+                        }
 
-                    viewHolderOnLongClickCallbacks.forEach { (key, callback) ->
-                        if (key == ITEM_NO_ID || key == currentItemId)
-                            result = callback(view, currentEntity, currentPosition) || result
+                    if (owner.onItemLongClickListener !== dispatcher) {
+                        dispatcher.delegate = owner.onItemLongClickListener
+                        owner.onItemLongClickListener = dispatcher
                     }
-
-                    result
-                } else owner.onItemLongClickListener = null
+                }
             }
 
             entity?.let {
@@ -327,6 +334,68 @@ class BaseAdapterBuilder<E> private constructor(private val adapterContext: Cont
             }
 
             return itemView ?: error("ViewHolder create failed.")
+        }
+
+        /**
+         * Call the onClick event.
+         * @param view the current view.
+         * @param position the current position.
+         */
+        private fun doOnItemClick(view: View, position: Int) {
+            val currentItemId = getItemId(position)
+            val currentEntity = getCurrentEntity(position) ?: return
+
+            viewHolderOnClickCallbacks.forEach { (key, callback) ->
+                if (key == ITEM_NO_ID || key == currentItemId)
+                    callback(view, currentEntity, position)
+            }
+        }
+
+        /**
+         * Call the onLongClick event.
+         * @param view the current view.
+         * @param position the current position.
+         * @return [Boolean]
+         */
+        private fun doOnItemLongClick(view: View, position: Int): Boolean {
+            val currentItemId = getItemId(position)
+            val currentEntity = getCurrentEntity(position) ?: return false
+            var result = false
+
+            viewHolderOnLongClickCallbacks.forEach { (key, callback) ->
+                if (key == ITEM_NO_ID || key == currentItemId)
+                    result = callback(view, currentEntity, position) || result
+            }
+
+            return result
+        }
+
+        /**
+         * The [AdapterView.OnItemClickListener] dispatcher.
+         */
+        private inner class OwnerItemClickDispatcher : AdapterView.OnItemClickListener {
+
+            /** The current delegate listener. */
+            var delegate: AdapterView.OnItemClickListener? = null
+
+            override fun onItemClick(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
+                doOnItemClick(view, position)
+                delegate?.onItemClick(parent, view, position, id)
+            }
+        }
+
+        /**
+         * The [AdapterView.OnItemLongClickListener] dispatcher.
+         */
+        private inner class OwnerItemLongClickDispatcher : AdapterView.OnItemLongClickListener {
+
+            /** The current delegate listener. */
+            var delegate: AdapterView.OnItemLongClickListener? = null
+
+            override fun onItemLongClick(parent: AdapterView<*>?, view: View, position: Int, id: Long): Boolean {
+                val result = doOnItemLongClick(view, position)
+                return delegate?.onItemLongClick(parent, view, position, id) == true || result
+            }
         }
     }
 }
