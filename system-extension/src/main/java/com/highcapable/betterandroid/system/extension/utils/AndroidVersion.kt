@@ -239,6 +239,6 @@ object AndroidVersion {
      * @return [T] or null.
      */
     @ChecksSdkIntAtLeast(parameter = 0)
-    inline fun <T : Any?> requireOrNull(@SdkInt target: Int, defaultValue: T?, callback: () -> T?): T? =
+    inline fun <T> requireOrNull(@SdkInt target: Int, defaultValue: T?, callback: () -> T?): T? =
         if (isAtLeast(target)) (callback() ?: defaultValue) else defaultValue
 }
