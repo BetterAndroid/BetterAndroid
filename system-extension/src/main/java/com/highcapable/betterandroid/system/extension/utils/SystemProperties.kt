@@ -127,7 +127,7 @@ object SystemProperties {
      *
      * Values 'y', 'yes', '1', 'true' or 'on' are considered true.
      *
-     * (case sensitive).
+     * (case-sensitive).
      *
      * See [here](https://android.googlesource.com/platform/frameworks/base.git/+/refs/heads/main/core/java/android/os/SystemProperties.java#213).
      * @param key the key name.
