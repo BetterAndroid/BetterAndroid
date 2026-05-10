@@ -231,7 +231,7 @@ fun Modifier.selectable(
  * @return () -> [Unit]
  */
 @Composable
-fun HapticFeedback(
+fun hapticFeedback(
     type: HapticFeedbackType = HapticFeedbackType.LongPress,
     handler: () -> Unit
 ): () -> Unit {
@@ -242,3 +242,17 @@ fun HapticFeedback(
         hapticFeedback.performHapticFeedback(type)
     }
 }
+
+/**
+ * - This function is deprecated, use [hapticFeedback] instead.
+ */
+@Suppress("ComposableNaming")
+@Deprecated(
+    message = "Use hapticFeedback() instead",
+    replaceWith = ReplaceWith("hapticFeedback(type, handler)")
+)
+@Composable
+fun HapticFeedback(
+    type: HapticFeedbackType = HapticFeedbackType.LongPress,
+    handler: () -> Unit
+): () -> Unit = hapticFeedback(type, handler)
