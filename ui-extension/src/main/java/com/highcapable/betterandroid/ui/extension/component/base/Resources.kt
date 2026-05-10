@@ -34,7 +34,6 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.util.SparseArray
 import android.util.TypedValue
 import android.view.ContextThemeWrapper
 import android.view.Menu
@@ -60,17 +59,8 @@ import androidx.core.view.get
 import androidx.core.view.isNotEmpty
 import androidx.core.view.size
 import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
-import com.highcapable.kavaref.KavaRef.Companion.asResolver
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.extension.classOf
-
-/**
- * Whether in non-standard (special) floating window mode.
- *
- * - This solution was undesirable, so it was deprecated and no effect, don't use it.
- */
-@Suppress("UnusedReceiverParameter", "DeprecatedCallableAddReplaceWith")
-@Deprecated(message = "No effect and will be removed in the future.")
-val Configuration.isSpecialWindowingMode get() = false
 
 /**
  * Get the current theme resource ID.
@@ -79,11 +69,7 @@ val Configuration.isSpecialWindowingMode get() = false
  * @receiver the current context theme wrapper.
  * @return [Int]
  */
-val ContextThemeWrapper.themeResId
-    get() = asResolver().optional().firstFieldOrNull {
-        name = "mThemeResource"
-        superclass()
-    }?.getQuietly<Int>() ?: -1
+val ContextThemeWrapper.themeResId get() = mThemeResourceCaller?.copy()?.of(this)?.getQuietly<Int>() ?: -1
 
 /**
  * Determine whether the current UI mode is night mode.
@@ -338,7 +324,7 @@ fun Context.getThemeAttrsColor(@AttrRes id: Int) = resources.getColorCompat(getT
  *
  * The attribute resources ID usually like ?attr/value or ?value.
  *
- * Currently the following types are supported:
+ * Currently, the following types are supported:
  *
  * - Color
  * - ColorStateList
@@ -355,19 +341,26 @@ fun Context.getThemeAttrsColor(@AttrRes id: Int) = resources.getColorCompat(getT
  * @param lastId the second attribute resources ID.
  * @return [Boolean] are equal.
  */
-fun Context.areThemeAttrsIdsValueEquals(@AttrRes firstId: Int, @AttrRes lastId: Int) = when {
-    firstId == lastId -> true
-    runCatching { getThemeAttrsColor(firstId) == getThemeAttrsColor(lastId) }.getOrNull() ?: false -> true
-    runCatching { getThemeAttrsColorStateList(firstId) == getThemeAttrsColorStateList(lastId) }.getOrNull() ?: false -> true
-    runCatching { getThemeAttrsDrawable(firstId) == getThemeAttrsDrawable(lastId) }.getOrNull() ?: false -> true
-    runCatching { getThemeAttrsDimension(firstId) == getThemeAttrsDimension(lastId) }.getOrNull() ?: false -> true
-    runCatching { getThemeAttrsString(firstId) == getThemeAttrsString(lastId) }.getOrNull() ?: false -> true
-    runCatching { getThemeAttrsStringArray(firstId).contentEquals(getThemeAttrsStringArray(lastId)) }.getOrNull() ?: false -> true
-    runCatching { getThemeAttrsInteger(firstId) == getThemeAttrsInteger(lastId) }.getOrNull() ?: false -> true
-    runCatching { getThemeAttrsIntArray(firstId).contentEquals(getThemeAttrsIntArray(lastId)) }.getOrNull() ?: false -> true
-    runCatching { getThemeAttrsFloat(firstId) == getThemeAttrsFloat(lastId) }.getOrNull() ?: false -> true
-    runCatching { getThemeAttrsBoolean(firstId) == getThemeAttrsBoolean(lastId) }.getOrNull() ?: false -> true
-    else -> false
+fun Context.areThemeAttrsIdsValueEquals(@AttrRes firstId: Int, @AttrRes lastId: Int): Boolean {
+    if (firstId == lastId) return true
+
+    val firstThemeAttrsId = getThemeAttrsId(firstId)
+    val lastThemeAttrsId = getThemeAttrsId(lastId)
+
+    return when {
+        firstThemeAttrsId > 0 && firstThemeAttrsId == lastThemeAttrsId -> true
+        runCatching { resources.getColorCompat(firstThemeAttrsId, theme) == resources.getColorCompat(lastThemeAttrsId, theme) }.getOrNull() ?: false -> true
+        runCatching { resources.getColorStateListCompat(firstThemeAttrsId, theme) == resources.getColorStateListCompat(lastThemeAttrsId, theme) }.getOrNull() ?: false -> true
+        runCatching { resources.getDrawableCompat(firstThemeAttrsId, theme) == resources.getDrawableCompat(lastThemeAttrsId, theme) }.getOrNull() ?: false -> true
+        runCatching { resources.getDimension(firstThemeAttrsId) == resources.getDimension(lastThemeAttrsId) }.getOrNull() ?: false -> true
+        runCatching { resources.getString(firstThemeAttrsId) == resources.getString(lastThemeAttrsId) }.getOrNull() ?: false -> true
+        runCatching { resources.getStringArray(firstThemeAttrsId).contentEquals(resources.getStringArray(lastThemeAttrsId)) }.getOrNull() ?: false -> true
+        runCatching { resources.getInteger(firstThemeAttrsId) == resources.getInteger(lastThemeAttrsId) }.getOrNull() ?: false -> true
+        runCatching { resources.getIntArray(firstThemeAttrsId).contentEquals(resources.getIntArray(lastThemeAttrsId)) }.getOrNull() ?: false -> true
+        runCatching { resources.getFloatCompat(firstThemeAttrsId) == resources.getFloatCompat(lastThemeAttrsId) }.getOrNull() ?: false -> true
+        runCatching { resources.getBoolean(firstThemeAttrsId) == resources.getBoolean(lastThemeAttrsId) }.getOrNull() ?: false -> true
+        else -> false
+    }
 }
 
 /**
@@ -398,8 +391,9 @@ fun Context.hasThemeAttrsId(@AttrRes id: Int) = getThemeAttrsId(id) > 0
  * @param id the attribute resources ID.
  * @return [Int] if the resource ID not found will return a value less than 0.
  */
-fun Context.getThemeAttrsId(@AttrRes id: Int) =
-    runCatching { TypedValue().also { theme.resolveAttribute(id, it, true) }.resourceId }.getOrNull() ?: -1
+fun Context.getThemeAttrsId(@AttrRes id: Int) = runCatching {
+    themeAttrsTypedValue.get()?.also { theme.resolveAttribute(id, it, true) }?.resourceId
+}.getOrNull() ?: -1
 
 /**
  * Get and parse the [MenuItem] array from the [Menu] resource ID.
@@ -654,12 +648,33 @@ inline fun View.obtainStyledAttributes(attrs: AttributeSet? = null, styleIds: In
 }
 
 /**
+ * Whether in non-standard (special) floating window mode.
+ *
+ * - This solution was undesirable, so it was deprecated and no effect, don't use it.
+ */
+@Suppress("UnusedReceiverParameter", "DeprecatedCallableAddReplaceWith")
+@Deprecated(message = "No effect and will be removed in the future.")
+val Configuration.isSpecialWindowingMode get() = false
+
+/** The [ContextThemeWrapper] hidden API caller for get theme resource ID. */
+private val mThemeResourceCaller by lazy {
+    ContextThemeWrapper::class.resolve()
+        .optional()
+        .firstFieldOrNull {
+            name = "mThemeResource"
+            superclass()
+        }
+}
+
+/** The current thread local [TypedValue] for theme attribute resolution. */
+private val themeAttrsTypedValue = object : ThreadLocal<TypedValue>() {
+    override fun initialValue() = TypedValue()
+}
+
+/**
  * [ColorStateList] compat tool.
  */
 private object ColorStateListCompat {
-
-    /** The current [ColorStateList] caching array. */
-    private val sColorStateCaches = SparseArray<ColorStateList>()
 
     /**
      * Get [ColorStateList] from [Resources] (compat)
@@ -680,8 +695,7 @@ private object ColorStateListCompat {
      * @throws Resources.NotFoundException if the resource is not found.
      */
     @Suppress("DEPRECATION")
-    private fun createFromXml(resources: Resources, id: Int, theme: Theme?) =
-        sColorStateCaches.get(id) ?: runCatching {
-            ColorStateListInflaterCompat.createFromXml(resources, resources.getXml(id), theme).also { sColorStateCaches.put(id, it) }
-        }.getOrNull() ?: resources.getColorStateList(id)
+    private fun createFromXml(resources: Resources, id: Int, theme: Theme?) = runCatching {
+        ColorStateListInflaterCompat.createFromXml(resources, resources.getXml(id), theme)
+    }.getOrNull() ?: resources.getColorStateList(id)
 }
