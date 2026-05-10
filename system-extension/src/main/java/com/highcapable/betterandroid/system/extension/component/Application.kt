@@ -32,7 +32,7 @@ import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import androidx.annotation.RequiresApi
 import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
-import com.highcapable.kavaref.KavaRef.Companion.asResolver
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.extension.classOf
 
 /**
@@ -242,9 +242,7 @@ val PackageInfo.longVersionCodeCompat get() = versionCodeCompat
  * @return [String]
  */
 val ApplicationInfo.primaryCpuAbi
-    get() = asResolver().optional()
-        .firstFieldOrNull { name = "primaryCpuAbi" }
-        ?.getQuietly<String>() ?: ""
+    get() = primaryCpuAbiCaller?.copy()?.of(this)?.getQuietly<String>() ?: ""
 
 /**
  * Get the secondary cpu abi for the application.
@@ -252,9 +250,7 @@ val ApplicationInfo.primaryCpuAbi
  * @return [String]
  */
 val ApplicationInfo.secondaryCpuAbi
-    get() = asResolver().optional()
-        .firstFieldOrNull { name = "secondaryCpuAbi" }
-        ?.getQuietly<String>() ?: ""
+    get() = secondaryCpuAbiCaller?.copy()?.of(this)?.getQuietly<String>() ?: ""
 
 /**
  * Determine whether the application has given flags.
@@ -267,7 +263,7 @@ fun ApplicationInfo.hasFlags(vararg flags: ApplicationInfoFlagsWrapper) = this.f
 /**
  * Convert [Array]<[PackageInfoFlagsWrapper]> to [PackageManager] types.
  *
- * If empty will returns [PackageInfoFlagsWrapper.GET_CONFIGURATIONS].
+ * If empty will return [PackageInfoFlagsWrapper.GET_CONFIGURATIONS].
  * @receiver the [PackageInfoFlagsWrapper] type.
  * @return [Int]
  */
@@ -277,11 +273,23 @@ private fun Array<out PackageInfoFlagsWrapper>.toSystemType() =
 /**
  * Convert [Array]<[ApplicationInfoFlagsWrapper]> to [ApplicationInfo] types.
  *
- * If empty will returns -1.
+ * If empty will return -1.
  * @receiver the [ApplicationInfoFlagsWrapper] type.
  * @return [Int]
  */
 private fun Array<out ApplicationInfoFlagsWrapper>.toSystemType() = fold(-1) { flag, wrapper -> flag or wrapper.original }
+
+/** The [ApplicationInfo] primary cpu abi caller. */
+private val primaryCpuAbiCaller by lazy {
+    ApplicationInfo::class.resolve().optional()
+        .firstFieldOrNull { name = "primaryCpuAbi" }
+}
+
+/** The [ApplicationInfo] secondary cpu abi caller. */
+private val secondaryCpuAbiCaller by lazy {
+    ApplicationInfo::class.resolve().optional()
+        .firstFieldOrNull { name = "secondaryCpuAbi" }
+}
 
 /**
  * Package info flags wrapper.
