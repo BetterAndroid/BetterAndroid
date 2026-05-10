@@ -30,15 +30,61 @@ import com.highcapable.betterandroid.system.extension.utils.SystemProperties
 import com.highcapable.betterandroid.ui.extension.component.base.toPx
 import com.highcapable.betterandroid.ui.extension.generated.BetterAndroidProperties
 import com.highcapable.betterandroid.ui.extension.insets.InsetsWrapper
-import com.highcapable.kavaref.KavaRef.Companion.asResolver
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.extension.toClassOrNull
+import com.highcapable.kavaref.resolver.MethodResolver
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Window insets wrapper's compatible adaptation tool for various devices and systems.
  * @param window the current window.
  */
 internal class WindowInsetsWrapperCompat internal constructor(private val window: Window?) {
+
+    private companion object {
+
+        private val miuiAddExtraFlagsMethods = ConcurrentHashMap<Class<*>, MethodResolver<Window>>()
+
+        private val huaweiAddHwFlagsMethod by lazy {
+            "com.huawei.android.view.LayoutParamsEx".toClassOrNull()
+                ?.resolve()
+                ?.optional(silent = true)
+                ?.firstMethodOrNull {
+                    name = "addHwFlags"
+                    parameters(Int::class)
+                }
+        }
+
+        private val ftFeatureSupportMethod by lazy {
+            "android.util.FtFeature".toClassOrNull()
+                ?.resolve()
+                ?.optional(silent = true)
+                ?.firstMethodOrNull {
+                    name = "isFeatureSupport"
+                    parameters(Int::class)
+                }
+        }
+
+        private val huaweiGetNotchSizeMethod by lazy {
+            "com.huawei.android.util.HwNotchSizeUtil".toClassOrNull()
+                ?.resolve()
+                ?.optional(silent = true)
+                ?.firstMethodOrNull { name = "getNotchSize" }
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        private fun Class<*>.resolveMiuiAddExtraFlagsMethod(): MethodResolver<Window>? {
+            fun doResolve() = this.resolve().optional(silent = true).firstMethodOrNull {
+                name = "addExtraFlags"
+                parameters(Int::class)
+                superclass()
+            }
+
+            return miuiAddExtraFlagsMethods.getOrPut(this) {
+                doResolve() as? MethodResolver<Window>
+            }?.copy()
+        }
+    }
 
     /**
      * Get the status bar visibility.
@@ -86,21 +132,10 @@ internal class WindowInsetsWrapperCompat internal constructor(private val window
 
         if (AndroidVersion.isAtMost(AndroidVersion.P)) when (RomType.current) {
             RomType.EMUI -> runCatching {
-                val huaweiRet = "com.huawei.android.util.HwNotchSizeUtil".toClassOrNull()
-                    ?.resolve()
-                    ?.optional(silent = true)
-                    ?.firstMethodOrNull { name = "getNotchSize" }
-                    ?.invoke<IntArray>()
-                    ?: intArrayOf(0, 0)
+                val huaweiRet = huaweiGetNotchSizeMethod?.copy()?.invoke<IntArray>() ?: intArrayOf(0, 0)
 
                 if (huaweiRet[1] != 0)
-                    "com.huawei.android.view.LayoutParamsEx".toClassOrNull()
-                        ?.resolve()
-                        ?.optional(silent = true)
-                        ?.firstMethodOrNull {
-                            name = "addHwFlags"
-                            parameters(Int::class)
-                        }
+                    huaweiAddHwFlagsMethod?.copy()
                         ?.of(window?.attributes)
                         ?.invokeQuietly(0x00010000)
 
@@ -108,14 +143,8 @@ internal class WindowInsetsWrapperCompat internal constructor(private val window
             }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to set display cutout configuration for EMUI.", it) }
 
             RomType.FUNTOUCHOS, RomType.ORIGINOS -> runCatching {
-                if ("android.util.FtFeature".toClassOrNull()
-                        ?.resolve()
-                        ?.optional(silent = true)
-                        ?.firstMethodOrNull {
-                            name = "isFeatureSupport"
-                            parameters(Int::class)
-                        }?.invokeQuietly<Boolean>(0x00000020) == true
-                ) safeInsetTop = 27.toPx(context)
+                if (ftFeatureSupportMethod?.copy()?.invokeQuietly<Boolean>(0x00000020) == true)
+                    safeInsetTop = 27.toPx(context)
             }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to set display cutout configuration for FuntouchOS/OriginalOS.", it) }
 
             RomType.COLOROS -> runCatching {
@@ -129,11 +158,10 @@ internal class WindowInsetsWrapperCompat internal constructor(private val window
                 if (hasMiuiNotch) {
                     safeInsetTop = statusBars.top
 
-                    window?.asResolver()?.optional(silent = true)?.firstMethodOrNull {
-                        name = "addExtraFlags"
-                        parameters(Int::class)
-                        superclass()
-                    }?.invokeQuietly(0x00000100 or 0x00000200 or 0x00000400)
+                    window?.javaClass
+                        ?.resolveMiuiAddExtraFlagsMethod()
+                        ?.of(window)
+                        ?.invokeQuietly(0x00000100 or 0x00000200 or 0x00000400)
                 }
             }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Failed to set display cutout configuration for MIUI.", it) }
         }
