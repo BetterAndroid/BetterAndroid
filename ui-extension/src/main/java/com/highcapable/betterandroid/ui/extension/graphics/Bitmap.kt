@@ -51,7 +51,7 @@ import kotlin.math.sqrt
 /**
  * Decode a file into a bitmap.
  *
- * If cannot be decoded into a bitmap, will throw an exception.
+ * If you cannot be decoded into a bitmap, will throw an exception.
  * @see File.decodeToBitmapOrNull
  * @see BitmapFactory.decodeFile
  * @receiver [File]
@@ -66,7 +66,7 @@ fun File.decodeToBitmap(opts: BitmapFactory.Options? = null) =
 /**
  * Decode a file descriptor into a bitmap.
  *
- * If cannot be decoded into a bitmap, will throw an exception.
+ * If you cannot be decoded into a bitmap, will throw an exception.
  * @see FileDescriptor.decodeToBitmapOrNull
  * @see BitmapFactory.decodeFileDescriptor
  * @receiver [FileDescriptor]
@@ -82,7 +82,7 @@ fun FileDescriptor.decodeToBitmap(outPadding: Rect? = null, opts: BitmapFactory.
 /**
  * Decode a stream into a bitmap.
  *
- * If cannot be decoded into a bitmap, will throw an exception.
+ * If you cannot be decoded into a bitmap, will throw an exception.
  * @see InputStream.decodeToBitmapOrNull
  * @see BitmapFactory.decodeStream
  * @receiver [InputStream]
@@ -98,7 +98,7 @@ fun InputStream.decodeToBitmap(outPadding: Rect? = null, opts: BitmapFactory.Opt
 /**
  * Decode a byte array into a bitmap.
  *
- * If cannot be decoded into a bitmap, will throw an exception.
+ * If you cannot be decoded into a bitmap, will throw an exception.
  * @see ByteArray.decodeToBitmapOrNull
  * @see BitmapFactory.decodeByteArray
  * @receiver [ByteArray]
@@ -114,7 +114,7 @@ fun ByteArray.decodeToBitmap(offset: Int = 0, size: Int = this.size) =
 /**
  * Create a bitmap from resources.
  *
- * If cannot be decoded into a bitmap, will throw an exception.
+ * If you cannot be decoded into a bitmap, will throw an exception.
  * @see Resources.createBitmapOrNull
  * @see BitmapFactory.decodeResource
  * @receiver [Resources]
@@ -130,7 +130,7 @@ fun Resources.createBitmap(@DrawableRes resId: Int, opts: BitmapFactory.Options?
 /**
  * Decode a file into a bitmap.
  *
- * If cannot be decoded into a bitmap, the function returns null.
+ * If you cannot be decoded into a bitmap, the function returns null.
  * @see BitmapFactory.decodeFile
  * @receiver [File]
  * @param opts the [BitmapFactory.Options], default is null.
@@ -143,7 +143,7 @@ fun File.decodeToBitmapOrNull(opts: BitmapFactory.Options? = null) =
 /**
  * Decode a file descriptor into a bitmap.
  *
- * If cannot be decoded into a bitmap, the function returns null.
+ * If you cannot be decoded into a bitmap, the function returns null.
  * @see BitmapFactory.decodeFileDescriptor
  * @receiver [FileDescriptor]
  * @param outPadding set the padding of this bitmap, default is null, see [BitmapFactory.decodeFileDescriptor].
@@ -157,7 +157,7 @@ fun FileDescriptor.decodeToBitmapOrNull(outPadding: Rect? = null, opts: BitmapFa
 /**
  * Decode a stream into a bitmap.
  *
- * If cannot be decoded into a bitmap, the function returns null.
+ * If you cannot be decoded into a bitmap, the function returns null.
  * @see BitmapFactory.decodeStream
  * @receiver [InputStream]
  * @param outPadding set the padding of this bitmap, default is null.
@@ -171,7 +171,7 @@ fun InputStream.decodeToBitmapOrNull(outPadding: Rect? = null, opts: BitmapFacto
 /**
  * Decode a byte array into a bitmap.
  *
- * If cannot be decoded into a bitmap, the function returns null.
+ * If you cannot be decoded into a bitmap, the function returns null.
  * @see BitmapFactory.decodeByteArray
  * @receiver [ByteArray]
  * @param offset the current offset, default is 0.
@@ -185,7 +185,7 @@ fun ByteArray.decodeToBitmapOrNull(offset: Int = 0, size: Int = this.size) =
 /**
  * Create a bitmap from resources.
  *
- * If cannot be decoded into a bitmap, the function returns null.
+ * If you cannot be decoded into a bitmap, the function returns null.
  * @see BitmapFactory.decodeResource
  * @receiver [Resources]
  * @param resId the drawable resource id.

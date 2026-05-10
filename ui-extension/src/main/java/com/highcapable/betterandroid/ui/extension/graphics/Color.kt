@@ -74,7 +74,7 @@ fun @receiver:ColorInt Int.toAlphaColor(value: Float) = runCatching {
 
 /**
  * Use (0 - 255) to modify color transparency.
- * @receiver the current color..
+ * @receiver the current color.
  * @param value the transparency (0 - 255).
  * @return [Int] modified color.
  */

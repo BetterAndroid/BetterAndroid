@@ -119,9 +119,9 @@ fun Fragment.attach(
 
 /**
  * Use the current [Fragment] from host to replace the existing one.
- * @receiver the [Fragment] that needs to be replace to.
- * @param host the host that needs to be replace to, must be [FragmentActivity] or [Fragment].
- * @param container the container view that needs to be replace to, must be a [View] or view id ([Int]),
+ * @receiver the [Fragment] that needs to be replaced to.
+ * @param host the host that needs to be replaced to, must be [FragmentActivity] or [Fragment].
+ * @param container the container view that needs to be replaced to, must be a [View] or view id ([Int]),
  * default is get the root view from [host].
  * @param tag the [Fragment] tag, default is random tag.
  * @param customEnterAnimId the [Fragment] transition enter animation, see [FragmentTransaction.setCustomAnimations].

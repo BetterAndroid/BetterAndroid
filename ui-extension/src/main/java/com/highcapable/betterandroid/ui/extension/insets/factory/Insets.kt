@@ -242,7 +242,7 @@ fun View.setInsetsPadding(
  * @see View.updateInsetsPadding
  * @see View.handleOnWindowInsetsChanged
  * @receiver [View]
- * @param insets the insets wrapper.
+ * @param insets the insets' wrapper.
  * @param left whether set the left padding.
  * @param top whether set the top padding.
  * @param right whether set the right padding.
@@ -264,7 +264,7 @@ fun View.setInsetsPadding(
  * @see View.updateInsetsPadding
  * @see View.handleOnWindowInsetsChanged
  * @receiver [View]
- * @param insets the insets wrapper.
+ * @param insets the insets' wrapper.
  * @param horizontal whether set the horizontal padding.
  * @param vertical whether set the vertical padding.
  */
@@ -310,7 +310,7 @@ fun View.updateInsetsPadding(
  * @see View.setInsetsPadding
  * @see View.handleOnWindowInsetsChanged
  * @receiver [View]
- * @param insets the insets wrapper.
+ * @param insets the insets' wrapper.
  * @param left whether update the left padding.
  * @param top whether update the top padding.
  * @param right whether update the right padding.
@@ -354,7 +354,7 @@ fun View.updateInsetsPadding(
  * @see View.setInsetsPadding
  * @see View.handleOnWindowInsetsChanged
  * @receiver [View]
- * @param insets the insets wrapper.
+ * @param insets the insets' wrapper.
  * @param horizontal whether update the horizontal padding.
  * @param vertical whether update the vertical padding.
  */

@@ -49,7 +49,7 @@ fun Window.updateScreenBrightness(progress: Int) = updateLayoutParams { screenBr
 /**
  * Update the [WindowManager.LayoutParams.screenBrightness].
  * @receiver the current window.
- * @param progress the brightness, must between 0f..1f.
+ * @param progress the brightness, must between 0f and 1f.
  */
 fun Window.updateScreenBrightness(progress: Float) = updateLayoutParams { screenBrightness = progress.coerceIn(0f, 1f) }
 
