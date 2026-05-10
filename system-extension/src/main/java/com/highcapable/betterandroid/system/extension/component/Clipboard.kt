@@ -131,10 +131,9 @@ class ClipDataBuilder {
             "ClipData must have at least one item."
         }
 
-        return ClipData(
-            label, mimeTypes.toTypedArray(), 
-            dataItems.first()
-        ).apply { dataItems.drop(1).forEach { addItem(it) } }
+        return ClipData(label, mimeTypes.toTypedArray(), dataItems.first()).apply {
+            for (index in 1 until dataItems.size) addItem(dataItems[index])
+        }
     }
 }
 
@@ -162,7 +161,7 @@ else emptyList()
  * @param index the clip item index.
  * @return [ClipData.Item]
  */
-fun ClipboardManager.primaryClipItems(index: Int) = primaryClip?.listOfItems()[index]
+fun ClipboardManager.primaryClipItems(index: Int) = primaryClip?.getItemAt(index) ?: error("ClipData item index out of bounds.")
 
 /**
  * Get the primary clip item or null.
@@ -170,7 +169,7 @@ fun ClipboardManager.primaryClipItems(index: Int) = primaryClip?.listOfItems()[i
  * @param index the clip item index.
  * @return [ClipData.Item] or null.
  */
-fun ClipboardManager.primaryClipItemsOrNull(index: Int) = primaryClip?.listOfItems()?.getOrNull(index)
+fun ClipboardManager.primaryClipItemsOrNull(index: Int) = runCatching { primaryClipItems(index) }.getOrNull()
 
 /**
  * Get the first primary clip item.
