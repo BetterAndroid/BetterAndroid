@@ -147,7 +147,7 @@ interface ComponentPadding : PaddingValues {
          * - This property is deprecated, use [Zero] instead.
          */
         @Deprecated(
-            message = "Use ComponentPadding.Zero instead",
+            message = "Use ComponentPadding.Zero instead.",
             replaceWith = ReplaceWith("ComponentPadding.Zero")
         )
         @Stable

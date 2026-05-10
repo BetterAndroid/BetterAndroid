@@ -248,7 +248,7 @@ fun hapticFeedback(
  */
 @Suppress("ComposableNaming")
 @Deprecated(
-    message = "Use hapticFeedback() instead",
+    message = "Use hapticFeedback() instead.",
     replaceWith = ReplaceWith("hapticFeedback(type, handler)")
 )
 @Composable

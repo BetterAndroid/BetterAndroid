@@ -49,7 +49,7 @@ data class DialogPropertiesWrapper(
     /**
      * Android platform's properties.
      *
-     * - Note: This properties only available on Android platform.
+     * - Note: These properties only available on Android platform.
      * @see DialogProperties
      */
     @Immutable
