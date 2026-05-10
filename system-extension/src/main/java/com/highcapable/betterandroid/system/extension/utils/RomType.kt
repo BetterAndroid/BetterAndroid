@@ -193,35 +193,37 @@ object RomType {
      * @return [Int]
      */
     @JvmStatic
-    val current get() = when {
-        Matcher.HyperOS -> HYPEROS
-        Matcher.Miui -> MIUI
-        Matcher.ColorOS -> COLOROS
-        Matcher.RealmeUi -> REALMEUI
-        Matcher.OriginOS -> ORIGINOS
-        Matcher.FuntouchOS -> FUNTOUCHOS
-        Matcher.MagicOS -> MAGICOS
-        Matcher.Flyme -> FLYME
-        Matcher.OneUi -> ONEUI
-        Matcher.OxygenOS -> OXYGENOS
-        Matcher.H2OS -> H2OS
-        Matcher.NebulaAiOS -> NEBULAAIOS
-        Matcher.RedmagicOS -> REDMAGICOS
-        Matcher.MyOS -> MYOS
-        Matcher.MifavorUi -> MIFAVORUI
-        Matcher.ZuxOS -> ZUXOS
-        Matcher.ZUi -> ZUI
-        Matcher.NubiaUi -> NUBIAUI
-        Matcher.ObricUi -> OBRICUI
-        Matcher.RogUi -> ROGUI
-        Matcher.SmartisanOS -> SMARTISANOS
-        Matcher.EUi -> EUI
-        Matcher.OS360 -> OS360
-        Matcher.HarmonyOS -> HARMONYOS
-        Matcher.HarmonyOSNext -> HARMONYOS_NEXT
-        Matcher.Emui -> EMUI
-        Matcher.VisionOS -> VISIONOS
-        else -> DEFAULT
+    val current by lazy {
+        when {
+            Matcher.HyperOS -> HYPEROS
+            Matcher.Miui -> MIUI
+            Matcher.ColorOS -> COLOROS
+            Matcher.RealmeUi -> REALMEUI
+            Matcher.OriginOS -> ORIGINOS
+            Matcher.FuntouchOS -> FUNTOUCHOS
+            Matcher.MagicOS -> MAGICOS
+            Matcher.Flyme -> FLYME
+            Matcher.OneUi -> ONEUI
+            Matcher.OxygenOS -> OXYGENOS
+            Matcher.H2OS -> H2OS
+            Matcher.NebulaAiOS -> NEBULAAIOS
+            Matcher.RedmagicOS -> REDMAGICOS
+            Matcher.MyOS -> MYOS
+            Matcher.MifavorUi -> MIFAVORUI
+            Matcher.ZuxOS -> ZUXOS
+            Matcher.ZUi -> ZUI
+            Matcher.NubiaUi -> NUBIAUI
+            Matcher.ObricUi -> OBRICUI
+            Matcher.RogUi -> ROGUI
+            Matcher.SmartisanOS -> SMARTISANOS
+            Matcher.EUi -> EUI
+            Matcher.OS360 -> OS360
+            Matcher.HarmonyOS -> HARMONYOS
+            Matcher.HarmonyOSNext -> HARMONYOS_NEXT
+            Matcher.Emui -> EMUI
+            Matcher.VisionOS -> VISIONOS
+            else -> DEFAULT
+        }
     }
 
     /**
