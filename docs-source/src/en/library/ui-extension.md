@@ -1789,12 +1789,12 @@ Please refer to [Custom toasts from the background are blocked](https://develope
 // Assume this is your context.
 val context: Context
 // Create a new thread.
-Thread {
+thread {
     // Delay 1 second.
     Thread.sleep(1000)
     // Show a toast and set allowBackground to true.
     context.toast("Hello World!", allowBackground = true)
-}.start() // Start it.
+}
 ```
 
 In this way, you can show a `Toast` in any thread, it should be noted that this parameter is `false` by default and you need to set it manually.

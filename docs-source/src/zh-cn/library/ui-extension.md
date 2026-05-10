@@ -1723,12 +1723,12 @@ context.toast("Hello World!", Toast.LENGTH_SHORT)
 // 假设这就是你的 Context
 val context: Context
 // 创建一个新的线程
-Thread {
+thread {
     // 延迟 1 秒
     Thread.sleep(1000)
     // 弹出一个 Toast 并设置 allowBackground 为 true
     context.toast("Hello World!", allowBackground = true)
-}.start() // 启动它
+}
 ```
 
 这样，你就能在任何线程的情况下弹出一个 `Toast`，需要注意的是，这个参数在默认情况下是 `false`，你需要手动设置它。
