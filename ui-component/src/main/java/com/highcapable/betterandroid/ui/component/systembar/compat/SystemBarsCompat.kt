@@ -71,7 +71,7 @@ internal class SystemBarsCompat internal constructor(private val window: Window)
      */
     private fun setStatusBarDarkModeForLegacyMiui(isDarkMode: Boolean) {
         runCatching {
-            val darkModeFlag = "android.view.MiuiWindowManager\$LayoutParams".toClassOrNull()
+            val darkModeFlag = $$"android.view.MiuiWindowManager$LayoutParams".toClassOrNull()
                 ?.resolve()
                 ?.firstField { name = "EXTRA_FLAG_STATUS_BAR_DARK_MODE" }
                 ?.get<Int>() ?: 0
@@ -91,7 +91,7 @@ internal class SystemBarsCompat internal constructor(private val window: Window)
      * Set the legacy Flyme system status bar dark mode.
      *
      * The adaptation method is referenced from
-     * [here](https://github.com/gyf-dev/ImmersionBar/blob/master/immersionbar/src/main/java/com/gyf/immersionbar/SpecialBarFontUtils.java#L131)
+     * [here](https://github.com/gyf-dev/ImmersionBar/blob/master/immersionbar/src/main/java/com/gyf/immersionbar/SpecialBarFontUtils.java#L131),
      * and thanks for it.
      * @param isDarkMode the current dark mode or bright mode.
      */

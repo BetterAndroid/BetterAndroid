@@ -434,7 +434,7 @@ class NotificationBuilder private constructor(
      * @see NotificationCompat.Builder.setProgress
      * @param max the max progress, default is 100.
      * @param progress the current progress, default is 0.
-     * @param indeterminate whether to set a indeterminate status, default false.
+     * @param indeterminate whether to set an indeterminate status, default false.
      * @return [NotificationBuilder]
      */
     @JvmOverloads

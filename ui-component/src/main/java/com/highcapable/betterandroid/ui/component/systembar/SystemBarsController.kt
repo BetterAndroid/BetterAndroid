@@ -299,7 +299,7 @@ class SystemBarsController private constructor(private val window: Window) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         initializeDefaults()
 
-        // If has [edgeToEdgeInsets],
+        // If it has [edgeToEdgeInsets],
         // the controller will handle the root window insets by default.
         edgeToEdgeInsets?.also {
             absRootView.handleOnWindowInsetsChanged(animated = true) { rootView, insetsWrapper ->
@@ -446,7 +446,7 @@ class SystemBarsController private constructor(private val window: Window) {
         }
     }
 
-    /** Enable to draws system bar backgrounds if not. */
+    /** Enable to draw system bar backgrounds if not. */
     private fun enableDrawsSystemBarBackgrounds() {
         @Suppress("DEPRECATION")
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)

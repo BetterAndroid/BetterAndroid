@@ -24,7 +24,7 @@ package com.highcapable.betterandroid.ui.component.notification.proxy
 /**
  * Notification builder interface.
  *
- * Implemented the [build] function to create an notification wrapper.
+ * Implemented the [build] function to create a notification wrapper.
  */
 internal interface INotificationBuilder {
 

@@ -39,7 +39,7 @@ enum class NotificationImportance {
 
     /**
      * Turn on the notification, it will not pop up, not sound,
-     * and it icon will be displayed in the status bar.
+     * and its icon will be displayed in the status bar.
      *
      * - Note: Some third-party ROMs will not display the icon in
      *   the status bar, such as ColorOS, but some are always displayed,
@@ -50,14 +50,14 @@ enum class NotificationImportance {
 
     /**
      * Turn on the notification, it will not pop up,
-     * a prompt sound will rings, and it icon will be displayed in the status bar.
+     * a prompt sound will ring, and its icon will be displayed in the status bar.
      * @see NotificationManagerCompat.IMPORTANCE_DEFAULT
      */
     DEFAULT,
 
     /**
      * Turn on the notification, it will pop up, sound a prompt,
-     * and it icon will be displayed in the status bar.
+     * and its icon will be displayed in the status bar.
      * @see NotificationManagerCompat.IMPORTANCE_HIGH
      */
     HIGH
