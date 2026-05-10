@@ -10,7 +10,7 @@
 
 Because the template creation projects provided by Android Studio are too redundant, we may launch a project template creation tool that integrates `BetterAndroid` related dependencies in the future. 
 
-Currently, only [Project Template](../guide/quick-start.md#project-template) has been completed. It may exist as a plugin for IntelliJ IDEA.
+It may exist as a plugin for IntelliJ IDEA.
 
 This feature will support the creation of native Android projects and Jetpack Compose Multiplatform projects.
 
