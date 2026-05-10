@@ -250,7 +250,7 @@ object RomType {
     private object Matcher {
 
         private val propContainsMiOS by lazy {
-            hasProperties("ro.mi.os.version.name", "ro.mi.os.version.code", "ro.mi.os.version.incremental")
+            hasAnyProperties("ro.mi.os.version.name", "ro.mi.os.version.code", "ro.mi.os.version.incremental")
         }
 
         private val propIsMiui816 by lazy { SystemProperties.get("ro.miui.ui.version.name") == "V816" }
@@ -285,12 +285,12 @@ object RomType {
         val HyperOS by lazy { propContainsMiOS || (classHasMiuiR && propIsMiui816) }
 
         val Miui by lazy {
-            !HyperOS && (hasProperties("ro.miui.ui.version.name", "ro.miui.ui.version.code") || classHasMiuiR) &&
+            !HyperOS && (hasAnyProperties("ro.miui.ui.version.name", "ro.miui.ui.version.code") || classHasMiuiR) &&
                 !propContainsMiOS && !propIsMiui816
         }
 
         val ColorOS by lazy {
-            !RealmeUi && (hasProperties("ro.build.version.oplusrom", "ro.build.version.opporom") ||
+            !RealmeUi && (hasAnyProperties("ro.build.version.oplusrom", "ro.build.version.opporom") ||
                 "oppo.R".exists() || "oplus.R".exists() || "com.color.os.ColorBuild".exists())
         }
 
@@ -302,10 +302,10 @@ object RomType {
 
         val OriginOS by lazy { propVivoOsDisplayId.containsIgnoreCase("origin") || (classHasVivoR && classHasVivoSysFactory) }
 
-        val MagicOS by lazy { hasProperties("msc.config.magic.version", "ro.build.version.magic") }
+        val MagicOS by lazy { hasAnyProperties("msc.config.magic.version", "ro.build.version.magic") }
 
         val Flyme by lazy {
-            hasProperties("ro.flyme.published", "ro.flyme.version.id") ||
+            hasAnyProperties("ro.flyme.published", "ro.flyme.version.id") ||
                 "flyme.app.IActivityManagerExt".exists() || "flyme.config.FlymeFeature".exists() ||
                 "com.meizu.server.AppOpsHandle".exists()
         }
@@ -323,7 +323,7 @@ object RomType {
         val ZuxOS by lazy { propZuxOsName.containsIgnoreCase("zuxos") }
 
         val ZUi by lazy {
-            !ZuxOS && (hasProperties(
+            !ZuxOS && (hasAnyProperties(
                 "ro.com.zui.version",
                 "ro.zui.version.status",
                 "ro.zui.hardware.displayid",
@@ -359,10 +359,10 @@ object RomType {
             )
         }
 
-        val SmartisanOS by lazy { hasProperties("ro.smartisan.sa", "ro.smartisan.version") }
+        val SmartisanOS by lazy { hasAnyProperties("ro.smartisan.sa", "ro.smartisan.version") }
 
         val EUi by lazy {
-            hasProperties(
+            hasAnyProperties(
                 "ro.letv.release.version",
                 "ro.letv.release.version_date",
                 "ro.product.letv_model",
@@ -384,15 +384,15 @@ object RomType {
         }
 
         val HarmonyOS by lazy {
-            !HarmonyOSNext && (hasProperties("ro.build.ohos.devicetype", "persist.sys.ohos.osd.cloud.switch") ||
+            !HarmonyOSNext && (hasAnyProperties("ro.build.ohos.devicetype", "persist.sys.ohos.osd.cloud.switch") ||
                 buildExSaysHarmonyOS ||
                 ("ohos.system.version.SystemVersion".exists() && SystemProperties.contains("ro.build.ohos.devicetype") &&
-                    hasProperties("ro.build.hide.matchers", "ro.build.hide.replacements"))
+                    hasAnyProperties("ro.build.hide.matchers", "ro.build.hide.replacements"))
             )
         }
 
         val HarmonyOSNext by lazy {
-            hasProperties(
+            hasAnyProperties(
                 "ro.product.anco.devicetype",
                 "ro.sys.anco.product.software.version",
                 "ro.product.os.dist.anco.apiversion",
@@ -413,7 +413,7 @@ object RomType {
 
         private fun String.exists() = javaClass.classLoader?.hasClass(this) == true
 
-        private fun hasProperties(vararg keys: String) = keys.any { SystemProperties.contains(it) }
+        private fun hasAnyProperties(vararg keys: String) = keys.any { SystemProperties.contains(it) }
         private fun SystemProperties.containsIgnoreCase(key: String, value: String) =
             this.get(key).contains(value, ignoreCase = true)
 
