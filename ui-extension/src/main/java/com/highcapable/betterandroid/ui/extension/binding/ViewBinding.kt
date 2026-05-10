@@ -38,6 +38,8 @@ import com.highcapable.kavaref.extension.classOf
 import com.highcapable.kavaref.extension.genericSuperclassTypeArguments
 import com.highcapable.kavaref.extension.isSubclassOf
 import com.highcapable.kavaref.extension.toClassOrNull
+import com.highcapable.kavaref.resolver.MethodResolver
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Create a [ViewBinding] instance.
@@ -180,6 +182,49 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
 
     companion object {
 
+        private val threeArgsMethods = ConcurrentHashMap<Class<*>, MethodResolver<*>>()
+        private val twoArgsMethods = ConcurrentHashMap<Class<*>, MethodResolver<*>>()
+        private val bindMethods = ConcurrentHashMap<Class<*>, MethodResolver<*>>()
+
+        /**
+         * Resolve the inflate method with three arguments and cache it.
+         * @return [MethodResolver] or null.
+         */
+        private fun Class<*>.resolveThreeArgsMethod(): MethodResolver<*>? {
+            fun doResolve() = this.resolve().optional(silent = true).firstMethodOrNull {
+                name = "inflate"
+                parameters(LayoutInflater::class, ViewGroup::class, Boolean::class)
+            }
+
+            return threeArgsMethods.getOrPut(this) { doResolve() }
+        }
+
+        /**
+         * Resolve the inflate method with two arguments and cache it.
+         * @return [MethodResolver] or null.
+         */
+        private fun Class<*>.resolveTwoArgsMethod(): MethodResolver<*>? {
+            fun doResolve() = this.resolve().optional(silent = true).firstMethodOrNull {
+                name = "inflate"
+                parameters(LayoutInflater::class, ViewGroup::class)
+            }
+
+            return twoArgsMethods.getOrPut(this) { doResolve() }
+        }
+
+        /**
+         * Resolve the bind method and cache it.
+         * @return [MethodResolver] or null.
+         */
+        private fun Class<*>.resolveBindMethod(): MethodResolver<*>? {
+            fun doResolve() = this.resolve().optional(silent = true).firstMethodOrNull {
+                name = "bind"
+                parameters(View::class)
+            }
+
+            return bindMethods.getOrPut(this) { doResolve() }
+        }
+
         /**
          * Create a [ViewBindingBuilder] from [instance]'s generic class.
          *
@@ -267,10 +312,7 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
      * @throws IllegalStateException if the binding failed.
      */
     fun bind(view: View): VB {
-        val binding = bindingClass.resolve().optional(silent = true).firstMethodOrNull {
-            name = "bind"
-            parameters(View::class)
-        }?.invokeQuietly<VB>(view)
+        val binding = bindingClass.resolveBindMethod()?.invokeQuietly<VB>(view)
 
         require(binding != null) {
             "Cannot find the bind(View) method in $bindingClass, if you are using R8, please configure obfuscation rules."
@@ -290,18 +332,12 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
      */
     @JvmOverloads
     fun inflate(layoutInflater: LayoutInflater, parent: ViewGroup? = null, attachToParent: Boolean = false): VB {
-        val binding = bindingClass.resolve().optional(silent = true).firstMethodOrNull {
-            name = "inflate"
-            parameters(LayoutInflater::class, ViewGroup::class, Boolean::class)
-        }?.invokeQuietly<VB>(layoutInflater, parent, attachToParent)
+        val binding = bindingClass.resolveThreeArgsMethod()?.invokeQuietly<VB>(layoutInflater, parent, attachToParent)
 
         return when {
             binding != null -> binding
             parent != null ->
-                bindingClass.resolve().optional(silent = true).firstMethodOrNull {
-                    name = "inflate"
-                    parameters(LayoutInflater::class, ViewGroup::class)
-                }?.invokeQuietly<VB>(layoutInflater, parent) ?: error(
+                bindingClass.resolveTwoArgsMethod()?.invokeQuietly<VB>(layoutInflater, parent) ?: error(
                     "Cannot find the inflate(LayoutInflater, ViewGroup) method in $bindingClass, " +
                         "if you are using R8, please configure obfuscation rules."
                 )
