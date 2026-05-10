@@ -23,10 +23,10 @@ package com.highcapable.betterandroid.ui.component.systembar.compat
 
 import android.util.Log
 import android.view.Window
+import android.view.WindowManager
 import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
 import com.highcapable.betterandroid.system.extension.utils.RomType
 import com.highcapable.betterandroid.ui.component.generated.BetterAndroidProperties
-import com.highcapable.kavaref.KavaRef.Companion.asResolver
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.extension.toClassOrNull
 
@@ -35,6 +35,39 @@ import com.highcapable.kavaref.extension.toClassOrNull
  * @param window the current window.
  */
 internal class SystemBarsCompat internal constructor(private val window: Window) {
+
+    private companion object {
+
+        private val miuiDarkModeFlagField by lazy {
+            $$"android.view.MiuiWindowManager$LayoutParams".toClassOrNull()
+                ?.resolve()
+                ?.optional(silent = true)
+                ?.firstFieldOrNull { name = "EXTRA_FLAG_STATUS_BAR_DARK_MODE" }
+        }
+
+        private val miuiSetExtraFlagsMethod by lazy {
+            "com.android.internal.policy.impl.MiuiPhoneWindow".toClassOrNull()
+                ?.resolve()
+                ?.optional(silent = true)
+                ?.firstMethodOrNull {
+                    name = "setExtraFlags"
+                    parameters(Int::class, Int::class)
+                    superclass()
+                }
+        }
+
+        private val flymeDarkStatusBarIconField by lazy {
+            WindowManager.LayoutParams::class.resolve()
+                .optional(silent = true)
+                .firstFieldOrNull { name = "MEIZU_FLAG_DARK_STATUS_BAR_ICON" }
+        }
+
+        private val flymeFlagsField by lazy {
+            WindowManager.LayoutParams::class.resolve()
+                .optional(silent = true)
+                .firstFieldOrNull { name = "meizuFlags" }
+        }
+    }
 
     /**
      * Returns true if a legacy system.
@@ -71,18 +104,10 @@ internal class SystemBarsCompat internal constructor(private val window: Window)
      */
     private fun setStatusBarDarkModeForLegacyMiui(isDarkMode: Boolean) {
         runCatching {
-            val darkModeFlag = $$"android.view.MiuiWindowManager$LayoutParams".toClassOrNull()
-                ?.resolve()
-                ?.firstField { name = "EXTRA_FLAG_STATUS_BAR_DARK_MODE" }
-                ?.get<Int>() ?: 0
+            val darkModeFlag = miuiDarkModeFlagField?.copy()?.getQuietly<Int>() ?: 0
 
-            "com.android.internal.policy.impl.MiuiPhoneWindow".toClassOrNull()
-                ?.resolve()
-                ?.firstMethod {
-                    name = "setExtraFlags"
-                    parameters(Int::class, Int::class)
-                    superclass()
-                }?.of(window)
+            miuiSetExtraFlagsMethod?.copy()
+                ?.of(window)
                 ?.invoke(if (isDarkMode) darkModeFlag else 0, darkModeFlag)
         }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Called setStatusBarDarkModeForLegacyMiui function failed.", it) }
     }
@@ -97,15 +122,15 @@ internal class SystemBarsCompat internal constructor(private val window: Window)
      */
     private fun setStatusBarDarkModeForLegacyFlyme(isDarkMode: Boolean) {
         runCatching {
-            window.attributes?.asResolver()?.apply {
-                val flags = firstField { name = "MEIZU_FLAG_DARK_STATUS_BAR_ICON" }.get<Int>() ?: -1
+            window.attributes?.also { attributes ->
+                val flags = flymeDarkStatusBarIconField?.copy()?.of(attributes)?.getQuietly<Int>() ?: -1
 
-                val meizuFlagField = firstField { name = "meizuFlags" }
-                var meizuFlags = meizuFlagField.get<Int>() ?: -1
+                val meizuFlagsFieldCaller = flymeFlagsField?.copy()?.of(attributes)
+                var meizuFlags = meizuFlagsFieldCaller?.getQuietly<Int>() ?: -1
                 val oldFlags = meizuFlags
 
                 meizuFlags = if (isDarkMode) meizuFlags or flags else meizuFlags and flags.inv()
-                if (oldFlags != meizuFlags) meizuFlagField.set(meizuFlags)
+                if (oldFlags != meizuFlags) meizuFlagsFieldCaller?.setQuietly(meizuFlags)
             }
         }.onFailure { Log.w(BetterAndroidProperties.PROJECT_NAME, "Called setStatusBarDarkModeForLegacyFlyme function failed.", it) }
     }
