@@ -40,11 +40,20 @@ import com.highcapable.betterandroid.ui.component.notification.wrapper.Notificat
  */
 class NotificationPoster internal constructor(private val notification: NotificationWrapper) {
 
+    private companion object {
+        private val mainHandler by lazy { Handler(Looper.getMainLooper()) }
+        private val createdChannelIds = mutableSetOf<String>()
+        private val createdChannelGroupIds = mutableSetOf<String>()
+    }
+
     /** The current shown notification ID. */
     private var shownId: Int? = null
 
     /** The current shown notification tag. */
     private var shownTag = ""
+
+    /** Whether the current notification has been posted. */
+    private var isPosted = false
 
     /**
      * Get the system notification manager.
@@ -56,7 +65,7 @@ class NotificationPoster internal constructor(private val notification: Notifica
      * Determine whether the current notification has been canceled.
      * @return [Boolean]
      */
-    val isCanceled get() = manager.activeNotifications.none { it.id == shownId || it.tag == shownTag }
+    val isCanceled get() = !isPosted || manager.activeNotifications.none { it.id == shownId || it.tag == shownTag }
 
     /**
      * Post the current notification.
@@ -69,11 +78,17 @@ class NotificationPoster internal constructor(private val notification: Notifica
     @JvmOverloads
     fun post(id: Int = 0, tag: String = "") = apply {
         val channel = notification.builder.channel
+        val channelBuilder = channel.builder
+        val channelId = channelBuilder.channelId
+        val channelGroup = channelBuilder.group
+        val channelGroupId = channelGroup?.builder?.groupId
 
-        val channelGroup = channel.builder.group?.instance
-        channelGroup?.also { manager.createNotificationChannelGroup(it) }
+        if (channelGroupId != null && createdChannelGroupIds.add(channelGroupId))
+            channelGroup.instance.also { manager.createNotificationChannelGroup(it) }
 
-        manager.createNotificationChannel(channel.instance)
+        if (createdChannelIds.add(channelId))
+            manager.createNotificationChannel(channel.instance)
+
         notification.instance.also {
             if (tag.isNotBlank())
                 manager.notify(tag, id, it)
@@ -81,11 +96,12 @@ class NotificationPoster internal constructor(private val notification: Notifica
 
             shownId = id
             shownTag = tag
+            isPosted = true
 
             // Compat the [NotificationCompat.Builder.setTimeoutAfter].
             if (AndroidVersion.isLessThan(AndroidVersion.O))
                 notification.builder.timeoutAfter?.also { timeoutAfter ->
-                    Handler(Looper.getMainLooper()).postDelayed({ cancel() }, timeoutAfter)
+                    mainHandler.postDelayed({ cancel() }, timeoutAfter)
                 }
         }
     }
@@ -102,5 +118,7 @@ class NotificationPoster internal constructor(private val notification: Notifica
         if (shownTag.isNotBlank())
             manager.cancel(shownTag, currentShownId)
         else manager.cancel(currentShownId)
+
+        isPosted = false
     }
 }
