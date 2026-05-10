@@ -371,7 +371,7 @@ val paddingValues = padding.toPaddingValues()
 
 [Foundation → selectable](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/selectable)
 
-[Foundation → HapticFeedback](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/-haptic-feedback)
+[Foundation → hapticFeedback](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/haptic-feedback)
 
 基础功能相关扩展。
 
@@ -424,14 +424,14 @@ Box(
 
 在 Jetpack Compose 中，你需要每次都引用 `LocalHapticFeedback`，然后使用 `performHapticFeedback` 方法，这看起来并不友好。
 
-`BetterAndroid` 为此提供了 `HapticFeedback` 方法，你现在可以更加简单地使用以下方式来实现触感反馈。
+`BetterAndroid` 为此提供了 `hapticFeedback` 方法，你现在可以更加简单地使用以下方式来实现触感反馈。
 
 > 示例如下
 
 ```kotlin
 Box(
     modifier = Modifier.combinedClickable(
-        onLongClick = HapticFeedback {
+        onLongClick = hapticFeedback {
             // Do something.
         }
     )

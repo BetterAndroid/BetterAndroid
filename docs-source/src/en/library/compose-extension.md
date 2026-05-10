@@ -374,7 +374,7 @@ val paddingValues = padding.toPaddingValues()
 
 [Foundation → selectable](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/selectable)
 
-[Foundation → HapticFeedback](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/-haptic-feedback)
+[Foundation → hapticFeedback](kdoc://compose-extension/compose-extension/com.highcapable.betterandroid.compose.extension.ui/haptic-feedback)
 
 Extensions related to foundation.
 
@@ -431,14 +431,14 @@ In native Android, to implement haptic feedback, you need to use the `View.perfo
 
 In Jetpack Compose, you need to reference `LocalHapticFeedback` every time and then use the `performHapticFeedback` method, which seems unfriendly.
 
-`BetterAndroid` provides the `HapticFeedback` method for this purpose, you can now use the following methods to implement haptic feedback more simply.
+`BetterAndroid` provides the `hapticFeedback` method for this purpose, you can now use the following methods to implement haptic feedback more simply.
 
 > The following example
 
 ```kotlin
 Box(
     modifier = Modifier.combinedClickable(
-        onLongClick = HapticFeedback {
+        onLongClick = hapticFeedback {
             // Do something.
         }
     )
