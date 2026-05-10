@@ -107,7 +107,7 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
     fun onBindData(result: (() -> List<E>)) = apply { listDataCallback = result }
 
     /**
-     * Add and bind the each page's [PagerMediator].
+     * Add and bind the page's [PagerMediator].
      * @param body the [PagerMediator] builder body.
      * @return [PagerAdapterBuilder]<[E]>
      */
@@ -175,40 +175,46 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
      */
     inner class Instance internal constructor() : PagerAdapter() {
 
+        /** The current callback list cache. */
+        private val callbacks = boundViewHolderCallbacks.toList()
+
+        /** The current cached [BaseViewHolderImpl]. */
+        private val viewHolderImpls = mutableMapOf<Int, BaseViewHolderImpl<Any>>()
+
         init {
             require(dataSetCount <= 0 || listDataCallback?.invoke().isNullOrEmpty()) {
                 "You can only use once dataSetCount or entities on PagerAdapter."
             }
-            require((dataSetCount <= 0 && listDataCallback?.invoke().isNullOrEmpty()) || boundViewHolderCallbacks.size <= 1) {
+            require((dataSetCount <= 0 && listDataCallback?.invoke().isNullOrEmpty()) || callbacks.size <= 1) {
                 "Cannot bound multiple ViewHolders with dataSetCount or entities on PagerAdapter."
             }
         }
-
-        /** The current cached [BaseViewHolderImpl]. */
-        private val viewHolderImpls = mutableMapOf<Int, BaseViewHolderImpl<Any>>()
 
         /**
          * Get the current each item function callbacks.
          * @param position the current position.
          * @return [BaseViewHolder]<[E]> or null.
          */
-        private fun getCallback(position: Int) = boundViewHolderCallbacks.toList().let { it.getOrNull(position) ?: it.getOrNull(0) }
+        private fun getCallback(position: Int) = callbacks.getOrNull(position) ?: callbacks.getOrNull(0)
 
         override fun instantiateItem(container: ViewGroup, position: Int) =
-            (viewHolderImpls[position] ?: getCallback(position)?.delegate?.let {
-                BaseViewHolderImpl.from(it, adapterContext, container)
-            })?.let {
-                container.addView(it.rootView)
+            getCallback(position)?.let { callback ->
+                (viewHolderImpls[position] ?: callback.delegate.let {
+                    BaseViewHolderImpl.from(it, adapterContext, container)
+                }.also { viewHolderImpls[position] = it }).let {
+                    container.addView(it.rootView)
 
-                getCurrentEntity(position)?.let { entity ->
-                    getCallback(position)?.onBindCallback
-                        ?.invoke(it.delegateInstance, entity, position)
-                }; it.rootView
+                    getCurrentEntity(position)?.let { entity ->
+                        callback.onBindCallback.invoke(it.delegateInstance, entity, position)
+                    }
+
+                    it.rootView
+                }
             } ?: error("No ViewHolder found, are you sure you have created one using onBindPageView?")
 
         override fun getPageTitle(position: Int) = PagerMediator(position).let { pagerMediatorsCallback?.invoke(it); it.title }
         override fun getPageWidth(position: Int) = PagerMediator(position).let { pagerMediatorsCallback?.invoke(it); it.width }
-        override fun getCount() = (dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: boundViewHolderCallbacks.size)
+        override fun getCount() = (dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: callbacks.size)
         override fun isViewFromObject(view: View, any: Any) = view == any
 
         override fun destroyItem(container: ViewGroup, position: Int, any: Any) {

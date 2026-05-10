@@ -44,7 +44,7 @@ import com.highcapable.betterandroid.ui.component.adapter.fragment.FragmentPager
 import com.highcapable.betterandroid.ui.component.adapter.fragment.FragmentStateAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.recycler.cosmetic.RecyclerCosmetic
 import com.highcapable.betterandroid.ui.component.adapter.viewholder.impl.RecyclerViewHolderImpl
-import com.highcapable.kavaref.KavaRef.Companion.asResolver
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import androidx.appcompat.widget.ListPopupWindow as AndroidX_ListPopupWindow
 
 /**
@@ -74,10 +74,7 @@ inline fun ListView.bindAdapter(builder: BaseAdapterBuilder<Any>.() -> Unit) = b
 @JvmName("bindAdapterTyped")
 inline fun <E> AutoCompleteTextView.bindAdapter(builder: BaseAdapterBuilder<E>.() -> Unit) =
     BaseAdapter(context, builder).also {
-        asResolver().optional().firstMethodOrNull {
-            name = "setAdapter"
-            parameterCount = 1
-        }?.invokeQuietly(it)
+        autoCompleteTextViewSetAdapterMethod?.copy()?.of(this)?.invokeQuietly(it)
     }
 
 /**
@@ -349,3 +346,12 @@ inline fun FragmentPagerAdapter(
  */
 inline fun FragmentStateAdapter(instance: Any, builder: FragmentStateAdapterBuilder.() -> Unit) =
     FragmentStateAdapterBuilder.from(instance).apply(builder).build()
+
+/** The cached method of [AutoCompleteTextView.setAdapter]. */
+@PublishedApi
+internal val autoCompleteTextViewSetAdapterMethod by lazy {
+    AutoCompleteTextView::class.resolve().optional().firstMethodOrNull {
+        name = "setAdapter"
+        parameterCount = 1
+    }
+}

@@ -146,7 +146,7 @@ class BaseAdapterBuilder<E> private constructor(private val adapterContext: Cont
      * Bind each item ID to [BaseAdapter].
      *
      * If not set will use current position as the ID.
-     * @param entityId callback the each item ID function.
+     * @param entityId callback the item ID function.
      * @return [BaseAdapterBuilder]<[E]>
      */
     fun onBindItemId(entityId: (entity: E, position: Int) -> Long) = apply { entityIdCallback = entityId }
@@ -207,8 +207,8 @@ class BaseAdapterBuilder<E> private constructor(private val adapterContext: Cont
     ) = onBindItemView(XmlLayoutHolderDelegate(resId), viewHolder)
 
     /**
-     * Set the each item view on click events.
-     * @param id specific a item ID to bind the on click event, default is [ITEM_NO_ID].
+     * Set the item view on click events.
+     * @param id specific an item ID to bind the on click event, default is [ITEM_NO_ID].
      * @param onClick callback and return each bound item function (the on click event callback).
      * @return [BaseAdapterBuilder]<[E]>
      */
@@ -217,8 +217,8 @@ class BaseAdapterBuilder<E> private constructor(private val adapterContext: Cont
         apply { viewHolderOnClickCallbacks[id] = onClick }
 
     /**
-     * Set the each item view on long click events.
-     * @param id specific a item ID to bind the on long click event, default is [ITEM_NO_ID].
+     * Set the item view on long click events.
+     * @param id specific an item ID to bind the on long click event, default is [ITEM_NO_ID].
      * @param onLongClick callback and return each bound item function (the on long click event callback).
      * @return [BaseAdapterBuilder]<[E]>
      */
@@ -256,54 +256,73 @@ class BaseAdapterBuilder<E> private constructor(private val adapterContext: Cont
                 } ?: error("No ViewHolder found, are you sure you have created one using onBindItemView?")
             else convertView.tag as BaseViewHolderImpl<Any>
 
+            val itemId = getItemId(position)
+            val entity = getCurrentEntity(position)
+
             itemView?.apply {
                 tag = viewHolder
 
-                viewHolderOnClickCallbacks
-                    .filterKeys { it == ITEM_NO_ID || it == getItemId(position) }
-                    .takeIf { it.isNotEmpty() }
-                    ?.also { callbacks ->
-                        /**
-                         * Call the onClick event.
-                         * @param position the current position.
-                         */
-                        fun View.doOnClick(position: Int) {
-                            callbacks.forEach { (_, callback) ->
-                                getCurrentEntity(position)?.let { entity ->
-                                    callback(this, entity, position)
-                                }
+                val clickCallbacks = mutableListOf<(View, E, Int) -> Unit>()
+
+                viewHolderOnClickCallbacks.forEach { (key, callback) ->
+                    if (key == ITEM_NO_ID || key == itemId) clickCallbacks.add(callback)
+                }
+
+                if (owner == null)
+                    if (clickCallbacks.isNotEmpty()) setOnClickListener { view ->
+                        entity?.let { currentEntity ->
+                            clickCallbacks.forEach { callback ->
+                                callback(view, currentEntity, position)
+                            }
+                        }
+                    } else setOnClickListener(null)
+
+                val longClickCallbacks = mutableListOf<(View, E, Int) -> Boolean>()
+
+                viewHolderOnLongClickCallbacks.forEach { (key, callback) ->
+                    if (key == ITEM_NO_ID || key == itemId) longClickCallbacks.add(callback)
+                }
+
+                if (owner == null)
+                    if (longClickCallbacks.isNotEmpty()) setOnLongClickListener { view ->
+                        var result = false
+
+                        entity?.let { currentEntity ->
+                            longClickCallbacks.forEach { callback ->
+                                result = callback(view, currentEntity, position) || result
                             }
                         }
 
-                        owner?.setOnItemClickListener { _, view, position, _ ->
-                            view.doOnClick(position)
-                        } ?: setOnClickListener { it.doOnClick(position) }
-                    }
-                viewHolderOnLongClickCallbacks
-                    .filterKeys { it == ITEM_NO_ID || it == getItemId(position) }
-                    .takeIf { it.isNotEmpty() }
-                    ?.also { callbacks ->
-                        /**
-                         * Call the onLongClick event.
-                         * @param position the current position.
-                         * @return [Boolean]
-                         */
-                        fun View.doOnLongClick(position: Int): Boolean {
-                            var result = false
-
-                            callbacks.forEach { (_, callback) ->
-                                getCurrentEntity(position)?.let { entity -> result = callback(this, entity, position) }
-                            }
-
-                            return result
-                        }
-
-                        owner?.setOnItemLongClickListener { _, view, position, _ ->
-                            view.doOnLongClick(position)
-                        } ?: setOnLongClickListener { it.doOnLongClick(position) }
-                    }
+                        result
+                    } else setOnLongClickListener(null)
             }
-            getCurrentEntity(position)?.let {
+
+            if (owner != null) {
+                if (viewHolderOnClickCallbacks.isNotEmpty()) owner.setOnItemClickListener { _, view, currentPosition, _ ->
+                    val currentItemId = getItemId(currentPosition)
+                    val currentEntity = getCurrentEntity(currentPosition) ?: return@setOnItemClickListener
+
+                    viewHolderOnClickCallbacks.forEach { (key, callback) ->
+                        if (key == ITEM_NO_ID || key == currentItemId)
+                            callback(view, currentEntity, currentPosition)
+                    }
+                } else owner.onItemClickListener = null
+
+                if (viewHolderOnLongClickCallbacks.isNotEmpty()) owner.setOnItemLongClickListener { _, view, currentPosition, _ ->
+                    val currentItemId = getItemId(currentPosition)
+                    val currentEntity = getCurrentEntity(currentPosition) ?: return@setOnItemLongClickListener false
+                    var result = false
+
+                    viewHolderOnLongClickCallbacks.forEach { (key, callback) ->
+                        if (key == ITEM_NO_ID || key == currentItemId)
+                            result = callback(view, currentEntity, currentPosition) || result
+                    }
+
+                    result
+                } else owner.onItemLongClickListener = null
+            }
+
+            entity?.let {
                 boundViewHolderCallback?.onBindCallback?.invoke(viewHolder.delegateInstance, it, position)
             }
 

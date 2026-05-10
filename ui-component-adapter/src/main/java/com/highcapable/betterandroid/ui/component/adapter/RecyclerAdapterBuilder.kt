@@ -158,14 +158,14 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      * Bind each item ID to [RecyclerView.Adapter].
      *
      * If not set will use current position as the ID.
-     * @param entityId callback the each item ID function.
+     * @param entityId callback the item ID function.
      * @return [RecyclerAdapterBuilder]<[E]>
      */
     fun onBindItemId(entityId: (entity: E, position: Int) -> Long) = apply { entityIdCallback = entityId }
 
     /**
      * Bind each view type to [RecyclerView.Adapter].
-     * @param entityType callback the each view type function.
+     * @param entityType callback the view type function.
      * @return [RecyclerAdapterBuilder]<[E]>
      */
     fun onBindViewType(entityType: (entity: E, position: Int) -> Int) = apply { entityTypeCallback = entityType }
@@ -174,7 +174,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      * Create and add view holder from [ViewHolderDelegate]<[VD]> (Nullable).
      * @param delegate the custom item view delegate.
      * @param viewType the view type, default is [DEFAULT_VIEW_TYPE],
-     * you must use [onBindViewType] to specify the each position of view type.
+     * you must use [onBindViewType] to specify the position of view type.
      * @param viewHolder callback and return each bound item function.
      * @return [RecyclerAdapterBuilder]<[E]>
      */
@@ -204,7 +204,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      * Create and add view holder from [ViewHolderDelegate]<[VD]>.
      * @param delegate the custom item view delegate.
      * @param viewType the view type, default is [DEFAULT_VIEW_TYPE],
-     * you must use [onBindViewType] to specify the each position of view type.
+     * you must use [onBindViewType] to specify the position of view type.
      * @param viewHolder callback and return each bound item function.
      * @return [RecyclerAdapterBuilder]<[E]>
      */
@@ -356,7 +356,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     /**
      * Create and add view holder from [ViewBinding]<[VB]>.
      * @param viewType the view type, default is [DEFAULT_VIEW_TYPE],
-     * you must use [onBindViewType] to specify the each position of view type.
+     * you must use [onBindViewType] to specify the position of view type.
      * @param viewHolder callback and return each bound item function.
      * @return [RecyclerAdapterBuilder]<[E]>
      */
@@ -368,7 +368,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     /**
      * Create and add view holder from [ViewBinding]<[VB]>.
      * @param viewType the view type, default is [DEFAULT_VIEW_TYPE],
-     * you must use [onBindViewType] to specify the each position of view type.
+     * you must use [onBindViewType] to specify the position of view type.
      * @param bindingBuilder the view binding builder.
      * @param viewHolder callback and return each bound item function.
      * @return [RecyclerAdapterBuilder]<[E]>
@@ -384,7 +384,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      * Create and add view holder from XML layout ID.
      * @param resId item view layout ID.
      * @param viewType the view type, default is [DEFAULT_VIEW_TYPE],
-     * you must use [onBindViewType] to specify the each position of view type.
+     * you must use [onBindViewType] to specify the position of view type.
      * @param viewHolder callback and return each bound item function.
      * @return [RecyclerAdapterBuilder]<[E]>
      */
@@ -395,10 +395,10 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     ) = onBindItemView(XmlLayoutHolderDelegate(resId), viewType, viewHolder)
 
     /**
-     * Set the each item view on click events.
+     * Set the item view on click events.
      * @see onItemViewLongClick
-     * @param id specific a item ID to bind the on click event, only one of [id] and [viewType] can be used.
-     * @param viewType specific a item view type to bind the on click event, only one of [id] and [viewType] can be used.
+     * @param id specific an item ID to bind the on click event, only one of [id] and [viewType] can be used.
+     * @param viewType specific an item view type to bind the on click event, only one of [id] and [viewType] can be used.
      * @param onClick callback and return each bound item function (the on click event callback).
      * @return [RecyclerAdapterBuilder]<[E]>
      * @throws IllegalArgumentException if [id] and [viewType] are used at the same time.
@@ -415,10 +415,10 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     }
 
     /**
-     * Set the each item view on long click events.
+     * Set the item view on long click events.
      * @see onItemViewClick
-     * @param id specific a item ID to bind the on long click event, only one of [id] and [viewType] can be used.
-     * @param viewType specific a item view type to bind the on long click event, only one of [id] and [viewType] can be used.
+     * @param id specific an item ID to bind the on long click event, only one of [id] and [viewType] can be used.
+     * @param viewType specific an item view type to bind the on long click event, only one of [id] and [viewType] can be used.
      * @param onLongClick callback and return each bound item function (the on long click event callback).
      * @return [RecyclerAdapterBuilder]<[E]>
      * @throws IllegalArgumentException if [id] and [viewType] are used at the same time.
@@ -440,6 +440,9 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      * The [RecyclerAdapterBuilder] instance.
      */
     inner class Instance internal constructor() : RecyclerView.Adapter<RecyclerViewHolderImpl<Any>>() {
+
+        /** The current view type callback cache. */
+        private val boundViewHolderCallbacksByViewType = boundViewHolderCallbacks.groupBy { it.viewType }
 
         init {
             require(dataSetCount <= 0 || listDataCallback?.invoke().isNullOrEmpty()) {
@@ -472,7 +475,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
          * @param viewType the current view type。
          * @return [RecyclerViewHolder]<[E]> or null.
          */
-        private fun getCallback(viewType: Int) = boundViewHolderCallbacks.firstOrNull { it.viewType == viewType }
+        private fun getCallback(viewType: Int) = boundViewHolderCallbacksByViewType[viewType]?.firstOrNull()
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             getCallback(viewType)?.delegate?.let {
@@ -490,17 +493,15 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
 
         override fun onBindViewHolder(holder: RecyclerViewHolderImpl<Any>, position: Int) {
             val isInHeaderOrFooter = isInHeaderViewHolder(position) || isInFooterViewHolder(position)
-
             val staticPosition = excludingPosition(position)
             val dynamicPosition = AdapterPosition.from(
                 layout = { excludingPosition(holder.layoutPosition) },
                 binding = { excludingPosition(holder.bindingAdapterPosition) },
                 absolute = { excludingPosition(holder.absoluteAdapterPosition) }
             )
+            val callbacks = boundViewHolderCallbacksByViewType[holder.viewType].orEmpty()
 
-            boundViewHolderCallbacks.filter { it.viewType == holder.viewType }.forEach {
-                // If it is in the header or footer view holder,
-                // use the null value as the placeholder for entity, and null is not allowed in other cases.
+            callbacks.forEach {
                 val entity = if (isInHeaderOrFooter) null else getCurrentEntity(staticPosition) ?: return
                 it.onBindCallback(holder.delegateInstance, entity, dynamicPosition)
             }
@@ -508,41 +509,50 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
             // Header and footer view does not handle item view click events.
             if (isInHeaderOrFooter) return
 
-            viewHolderOnClickCallbacks.filterKeys {
-                when (it) {
-                    is Long -> it == ITEM_NO_ID || it == getItemId(staticPosition)
-                    is Int -> it == DEFAULT_VIEW_TYPE || it == holder.viewType
+            val currentItemId = getItemId(position)
+            val clickCallbacks = mutableListOf<(View, E, Int) -> Unit>()
+
+            viewHolderOnClickCallbacks.forEach { (key, callback) ->
+                val isMatch = when (key) {
+                    is Long -> key == ITEM_NO_ID || key == currentItemId
+                    is Int -> key == DEFAULT_VIEW_TYPE || key == holder.viewType
                     else -> false
                 }
-            }.takeIf { it.isNotEmpty() }?.also { callbacks ->
-                holder.itemView.setOnClickListener {
-                    callbacks.forEach { (_, callback) ->
-                        val value = dynamicPosition.value
-                        getCurrentEntity(value)?.let { entity -> callback(it, entity, value) }
-                    }
-                }
+
+                if (isMatch) clickCallbacks.add(callback)
             }
-            viewHolderOnLongClickCallbacks.filterKeys {
-                when (it) {
-                    is Long -> it == ITEM_NO_ID || it == getItemId(staticPosition)
-                    is Int -> it == DEFAULT_VIEW_TYPE || it == holder.viewType
+
+            if (clickCallbacks.isNotEmpty()) holder.itemView.setOnClickListener {
+                val value = dynamicPosition.value
+                getCurrentEntity(value)?.let { entity ->
+                    clickCallbacks.forEach { callback -> callback(it, entity, value) }
+                }
+            } else holder.itemView.setOnClickListener(null)
+
+            val longClickCallbacks = mutableListOf<(View, E, Int) -> Boolean>()
+
+            viewHolderOnLongClickCallbacks.forEach { (key, callback) ->
+                val isMatch = when (key) {
+                    is Long -> key == ITEM_NO_ID || key == currentItemId
+                    is Int -> key == DEFAULT_VIEW_TYPE || key == holder.viewType
                     else -> false
                 }
-            }.takeIf { it.isNotEmpty() }?.also { callbacks ->
-                holder.rootView.setOnLongClickListener {
-                    var result = false
 
-                    callbacks.forEach { (_, callback) ->
-                        val value = dynamicPosition.value
-
-                        result = result || getCurrentEntity(value)?.let { entity ->
-                            callback(it, entity, value)
-                        } == true
-                    }
-
-                    result
-                }
+                if (isMatch) longClickCallbacks.add(callback)
             }
+
+            if (longClickCallbacks.isNotEmpty()) holder.rootView.setOnLongClickListener {
+                val value = dynamicPosition.value
+                var result = false
+
+                getCurrentEntity(value)?.let { entity ->
+                    longClickCallbacks.forEach { callback ->
+                        result = callback(it, entity, value) || result
+                    }
+                }
+
+                result
+            } else holder.rootView.setOnLongClickListener(null)
         }
 
         override fun getItemViewType(position: Int) = when {
