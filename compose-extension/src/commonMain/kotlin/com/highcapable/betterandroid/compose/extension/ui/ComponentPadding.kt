@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding.Companion.Zero
 
 /**
  * Creates a padding of all dp along all 4 edges.
@@ -140,7 +141,17 @@ interface ComponentPadding : PaddingValues {
          * @return [ComponentPadding]
          */
         @Stable
-        val None = ComponentPadding(0.dp)
+        val Zero = ComponentPadding(0.dp)
+
+        /**
+         * - This property is deprecated, use [Zero] instead.
+         */
+        @Deprecated(
+            message = "Use ComponentPadding.Zero instead",
+            replaceWith = ReplaceWith("ComponentPadding.Zero")
+        )
+        @Stable
+        val None = Zero
     }
 }
 
