@@ -305,7 +305,7 @@ val color = border.solidColor(Color.Black)
 // 创建一个 ComponentPadding
 val padding = ComponentPadding(10.dp)
 // 得到一个四边均为 0.dp 的 ComponentPadding
-val padding = ComponentPadding.None
+val padding = ComponentPadding.Zero
 // 设置每个方向的 padding
 val padding = ComponentPadding(
     start = 15.dp,

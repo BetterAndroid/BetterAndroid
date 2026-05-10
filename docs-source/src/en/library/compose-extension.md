@@ -307,7 +307,7 @@ In terms of usage, `ComponentPadding` is exactly the same as `PaddingValues`, an
 // Create a ComponentPadding.
 val padding = ComponentPadding(10.dp)
 // Create a 0.dp ComponentPadding of all directions.
-val padding = ComponentPadding.None
+val padding = ComponentPadding.Zero
 // Set padding for each direction.
 val padding = ComponentPadding(
     start = 15.dp,
