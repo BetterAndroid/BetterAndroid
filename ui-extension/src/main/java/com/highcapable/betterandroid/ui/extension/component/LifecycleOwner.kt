@@ -26,10 +26,12 @@ package com.highcapable.betterandroid.ui.extension.component
 
 import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import com.highcapable.kavaref.extension.classOf
 
 /**
@@ -106,21 +108,46 @@ inline fun <reified T : Activity> LifecycleOwner.activity() = activity as? T?
 inline fun <reified T : Activity> LifecycleOwner.requireActivity() = requireActivity() as? T? ?: error("LifecycleOwner is not ${classOf<T>()}.")
 
 /**
+ * Get the [LifecycleOwner] from a context.
+ *
+ * The context must be attached to a [LifecycleOwner].
+ * @see Context.requireLifecycleOwner
+ * @receiver [Context]
+ * @return [LifecycleOwner] or null.
+ */
+val Context.lifecycleOwner: LifecycleOwner? get() = when (this) {
+    is LifecycleOwner -> this
+    is ContextWrapper -> baseContext.lifecycleOwner
+    else -> null
+}
+
+/**
+ * Get the [LifecycleOwner] from a context.
+ *
+ * The context must be attached to a [LifecycleOwner].
+ * @receiver [Context]
+ * @return [LifecycleOwner]
+ * @throws IllegalStateException if the context is not attached to a [LifecycleOwner].
+ */
+fun Context.requireLifecycleOwner() = lifecycleOwner ?: error("Context $this does not implement LifecycleOwner.")
+
+/**
  * Get the [LifecycleOwner] from the view.
  *
- * The view must be attached to a [FragmentActivity] or [Activity].
+ * The view must be attached to a [LifecycleOwner].
  * @see View.requireLifecycleOwner
+ * @see View.findViewTreeLifecycleOwner
  * @receiver [View]
  * @return [LifecycleOwner] or null.
  */
 val View.lifecycleOwner: LifecycleOwner?
     get() {
-        // Query the lifecycle owner from the first fragment of the activity.
-        val byFragment = (context as? FragmentActivity?)?.fragmentManager()?.fragments?.lastOrNull()
+        // Query the lifecycle owner from the view tree.
+        val byViewTree = findViewTreeLifecycleOwner()
         // Query the lifecycle owner from the activity.
-        val byOwner = context as? LifecycleOwner?
+        val byOwner = context?.lifecycleOwner
 
-        return byFragment ?: byOwner
+        return byViewTree ?: byOwner
     }
 
 /**
@@ -132,4 +159,5 @@ val View.lifecycleOwner: LifecycleOwner?
  * @return [LifecycleOwner]
  * @throws IllegalStateException if the view is not attached to a [FragmentActivity] or [Activity].
  */
-fun View.requireLifecycleOwner() = lifecycleOwner ?: error("This View must be attached to a Fragment or Activity.")
+fun View.requireLifecycleOwner() = lifecycleOwner
+    ?: error("View $this is not yet attached or its Context (${context::class.java.simpleName}) does not implement LifecycleOwner.")
