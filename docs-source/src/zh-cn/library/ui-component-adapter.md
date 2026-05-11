@@ -646,6 +646,8 @@ recyclerView.invalidateItemDecorations()
 
 [RecyclerAdapter → notifyAllItemsChanged](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-all-items-changed)
 
+[RecyclerAdapter → notifyByDiff](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-by-diff)
+
 [RecyclerAdapter → clearAndNotify](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter.recycler.factory/clear-and-notify)
 
 [RecyclerAdapter → notifyDataSetChangedIgnore](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-data-set-changed-ignore)
@@ -722,6 +724,54 @@ adapter.notifyAllItemsChanged()
 // 通知适配器数据发生了变化
 adapter.notifyAllItemsChanged(dataSet)
 ```
+
+当我们需要根据前后两份数据集的差异来自动计算更新行为时，你可以使用 `notifyByDiff`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 RecyclerView.Adapter 对象
+val adapter: RecyclerView.Adapter<*>
+// 假设这就是你的数据集
+val dataSet: MutableList<MyEntity>
+// 保存旧数据快照
+val oldList = dataSet.toList()
+// 更新数据集
+dataSet.clear()
+dataSet.addAll(newDataSet)
+// 通知适配器根据差异更新数据
+adapter.notifyByDiff(
+    oldList = oldList,
+    newList = dataSet,
+    areItemsTheSame = { oldItem, newItem -> oldItem.id == newItem.id },
+    areContentsTheSame = { oldItem, newItem -> oldItem == newItem }
+)
+```
+
+如果你需要进一步控制局部刷新的载荷内容，你还可以使用 `getChangePayload`。
+
+> 示例如下
+
+```kotlin
+adapter.notifyByDiff(
+    oldList = oldList,
+    newList = dataSet,
+    areItemsTheSame = { oldItem, newItem -> oldItem.id == newItem.id },
+    areContentsTheSame = { oldItem, newItem -> oldItem == newItem },
+    getChangePayload = { oldItem, newItem ->
+        // 返回你需要传递到 payload 中的内容
+        Unit
+    }
+)
+```
+
+::: warning
+
+在调用 `notifyByDiff` 前，请确保 `newList` 已经是当前适配器实际持有的数据，并且 `itemCount` 已经能够正确反映更新后的数量。
+
+如果你正在使用 `RecyclerAdapterBuilder` 创建的适配器且设置了头部或末位 `View`，`notifyByDiff` 将自动通过 `wrapper` 处理下标偏移问题，你无需手动额外处理。
+
+:::
 
 当我们需要清空数据集并通知适配器数据发生了变化时，通常需要使用 `notifyItemRangeRemoved` 来通知适配器数据发生了变化。
 

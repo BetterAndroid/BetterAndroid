@@ -651,6 +651,8 @@ recyclerView.invalidateItemDecorations()
 
 [RecyclerAdapter → notifyAllItemsChanged](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-all-items-changed)
 
+[RecyclerAdapter → notifyByDiff](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-by-diff)
+
 [RecyclerAdapter → clearAndNotify](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter.recycler.factory/clear-and-notify)
 
 [RecyclerAdapter → notifyDataSetChangedIgnore](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-data-set-changed-ignore)
@@ -729,6 +731,54 @@ Similarly, please ensure that your adapter returns the correct `itemCount`, othe
 // Notify the adapter that the data has changed.
 adapter.notifyAllItemsChanged(dataSet)
 ```
+
+When we need to automatically calculate update behavior based on the difference between the old and new datasets, you can use `notifyByDiff`.
+
+> The following example
+
+```kotlin
+// Assume this is your RecyclerView.Adapter.
+val adapter: RecyclerView.Adapter<*>
+// Assume this is your dataset.
+val dataSet: MutableList<MyEntity>
+// Save the old data snapshot.
+val oldList = dataSet.toList()
+// Update the dataset.
+dataSet.clear()
+dataSet.addAll(newDataSet)
+// Notify the adapter to update by diff.
+adapter.notifyByDiff(
+    oldList = oldList,
+    newList = dataSet,
+    areItemsTheSame = { oldItem, newItem -> oldItem.id == newItem.id },
+    areContentsTheSame = { oldItem, newItem -> oldItem == newItem }
+)
+```
+
+If you need to further control the payload content of partial refreshes, you can also use `getChangePayload`.
+
+> The following example
+
+```kotlin
+adapter.notifyByDiff(
+    oldList = oldList,
+    newList = dataSet,
+    areItemsTheSame = { oldItem, newItem -> oldItem.id == newItem.id },
+    areContentsTheSame = { oldItem, newItem -> oldItem == newItem },
+    getChangePayload = { oldItem, newItem ->
+        // Return the content you want to pass to payload.
+        Unit
+    }
+)
+```
+
+::: warning
+
+Before calling `notifyByDiff`, please ensure that `newList` is already the actual data currently held by the adapter, and that `itemCount` can already correctly reflect the updated count.
+
+If you are using an adapter created by `RecyclerAdapterBuilder` and have set header or footer `View`, `notifyByDiff` will automatically handle index offset issues through `wrapper`, and you do not need to handle them manually.
+
+:::
 
 When we need to clear the dataset and notify the adapter that the data has changed, we usually need to use `notifyItemRangeRemoved` to notify the adapter that the data has changed.
 
