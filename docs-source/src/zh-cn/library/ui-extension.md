@@ -733,9 +733,9 @@ val systemBars = absoluteWrapper.systemBars
 
 [LifecycleOwner → requireActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/require-activity)
 
-[View → lifecycleOwner](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/lifecycle-owner)
+[Context/View → lifecycleOwner](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/lifecycle-owner)
 
-[View → requireLifecycleOwner](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/require-lifecycle-owner)
+[Context/View → requireLifecycleOwner](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/require-lifecycle-owner)
 
 适用于 `LifecycleOwner` 的扩展。
 
@@ -764,7 +764,9 @@ val yourActivity = lcOwner.activity<YourActivity>()
 val yourActivity = lcOwner.requireActivity<YourActivity>()
 ```
 
-你还可以从一个 `View` 中获取其所在的 `LifecycleOwner`。
+`androidx` 提供了 `View.findViewTreeLifecycleOwner` 来从一个 `View` 中获取其所在的 `LifecycleOwner`，但是它的使用方式并不是很友好。
+
+`BetterAndroid` 为 `View` 提供了一个更加友好的方式来获取所在的 `LifecycleOwner`，它集成了 `View.findViewTreeLifecycleOwner` 并加入了兜底机制，它能够处理在预加载时可能失败的情况，继续使用 `View.getContext` 来获取上下文并从中获取 `LifecycleOwner`。
 
 > 示例如下
 
@@ -777,38 +779,18 @@ val lcOwner = view.lifecycleOwner
 val lcOwner = view.requireLifecycleOwner()
 ```
 
-::: danger
-
-这本质上是一个实验性功能，从 `View` 获取的 `LifecycleOwner` 是不确定的，
-它本质上是通过获取 `View` 中的上下文来确定并优先选择 `Activity` 中绑定的首位 `Fragment`，如果没有绑定 `Fragment` 则会选择 `Activity`。
-
-我们建议优先对自定义 `View` 采用传递当前 `LifecycleOwner` 的方式来获取，或者在 `View` 装载后传递。
+正如上面所说，`BetterAndroid` 同时为 `Context` 提供了一个获取 `LifecycleOwner` 的扩展方法。
 
 > 示例如下
 
 ```kotlin
-// 你可以在构造函数中传递 LifecycleOwner
-class YourView(
-    context: Context,
-    attrs: AttributeSet?,
-    lcOwner: LifecycleOwner
-) : View(context, attrs) {
-
-    // 或者在装载后设置 LifecycleOwner
-    var lifecycleOwner: LifecycleOwner = lcOwner
-
-    init {
-        // Your code here.
-    }
-}
-// 在你的 LifecycleOwner 中设置
-// 假设这就是你的 View
-val yourView: YourView
-// 假设 this 就是当前的 LifecycleOwner
-yourView.lifecycleOwner = this
+// 假设这就是你的 Context
+val context: Context
+// 获取 Context 所在的 LifecycleOwner
+val lcOwner = context.lifecycleOwner
+// 获取非空 LifecycleOwner (获取失败会抛出异常)
+val lcOwner = context.requireLifecycleOwner()
 ```
-
-:::
 
 ### 协程 (Coroutines) 扩展
 

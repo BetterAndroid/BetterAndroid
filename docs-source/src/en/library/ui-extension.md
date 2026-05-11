@@ -759,9 +759,9 @@ Below are all the insets provided in `WindowInsetsWrapper.Absolute`.
 
 [LifecycleOwner → requireActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/require-activity)
 
-[View → lifecycleOwner](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/lifecycle-owner)
+[Context/View → lifecycleOwner](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/lifecycle-owner)
 
-[View → requireLifecycleOwner](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/require-lifecycle-owner)
+[Context/View → requireLifecycleOwner](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/require-lifecycle-owner)
 
 Extensions for `LifecycleOwner`.
 
@@ -790,7 +790,11 @@ val yourActivity = lcOwner.activity<YourActivity>()
 val yourActivity = lcOwner.requireActivity<YourActivity>()
 ```
 
-You can also get the `LifecycleOwner` from a `View`.
+`androidx` provides `View.findViewTreeLifecycleOwner` to get the `LifecycleOwner` from a `View`, but its usage is not very friendly.
+
+`BetterAndroid` provides a more friendly way for `View` to get the `LifecycleOwner` it is in,
+which integrates `View.findViewTreeLifecycleOwner` and adds a fallback mechanism that can handle cases where it may fail during preloading,
+continuing to use `View.getContext` to get the context and obtain the `LifecycleOwner` from it.
 
 > The following example
 
@@ -803,40 +807,18 @@ val lcOwner = view.lifecycleOwner
 val lcOwner = view.requireLifecycleOwner()
 ```
 
-::: danger
-
-This is essentially an experimental feature, and the `LifecycleOwner` obtained from `View` is uncertain. 
-
-It essentially determines and prioritizes the first `Fragment` bound in the `Activity` by obtaining the context in the `View`. 
-If no `Fragment` is bound, it will select the `Activity`.
-
-We recommend prioritizing the method of passing the current `LifecycleOwner` to obtain it for custom `View`, or passing it after the `View` is loaded.
+As mentioned above, `BetterAndroid` also provides an extension method for `Context` to obtain the `LifecycleOwner`.
 
 > The following example
 
 ```kotlin
-// You can pass the LifecycleOwner in the constructor.
-class YourView(
-    context: Context,
-    attrs: AttributeSet?,
-    lcOwner: LifecycleOwner
-) : View(context, attrs) {
-
-    // Or set the LifecycleOwner after loading.
-    var lifecycleOwner: LifecycleOwner = lcOwner
-
-    init {
-        // Your code here.
-    }
-}
-// Set in your LifecycleOwner.
-// Assume this is your View.
-val yourView: YourView
-// Assume this is the current LifecycleOwner.
-yourView.lifecycleOwner = this
+// Assume this is your Context.
+val context: Context
+// Get the LifecycleOwner of the Context.
+val lcOwner = context.lifecycleOwner
+// Get the non-null LifecycleOwner (throws exception if failed).
+val lcOwner = context.requireLifecycleOwner()
 ```
-
-:::
 
 ### Coroutines Extensions
 
