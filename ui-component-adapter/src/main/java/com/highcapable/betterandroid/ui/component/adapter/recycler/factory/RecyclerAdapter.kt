@@ -25,6 +25,8 @@
 package com.highcapable.betterandroid.ui.component.adapter.recycler.factory
 
 import android.util.Log
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListUpdateCallback
 import androidx.recyclerview.widget.RecyclerView
 import com.highcapable.betterandroid.ui.component.adapter.RecyclerAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.generated.BetterAndroidProperties
@@ -95,6 +97,101 @@ fun RecyclerView.Adapter<*>.notifyAllItemsChanged(dataSet: Collection<*>? = null
     }
 
     notifyItemRangeChanged(0, count)
+}
+
+/**
+ * Notify that the adapter has been updated by diff.
+ *
+ * Usage:
+ *
+ * ```kotlin
+ * // Assume that's your dataset.
+ * val dataSet = mutableListOf<MyEntity>()
+ * // Save the old data snapshot.
+ * val oldList = dataSet.toList()
+ * // Update the current dataset.
+ * dataSet.clear()
+ * dataSet.addAll(newDataSet)
+ * // Notify the adapter using DiffUtil.
+ * adapter.notifyByDiff(
+ *     oldList = oldList,
+ *     newList = dataSet,
+ *     areItemsTheSame = { oldItem, newItem -> oldItem.id == newItem.id },
+ *     areContentsTheSame = { oldItem, newItem -> oldItem == newItem }
+ * )
+ * ```
+ *
+ * - Note: The [newList] must belong to the adapter and already be reflected in [RecyclerView.Adapter.itemCount].
+ * @see DiffUtil.calculateDiff
+ * @receiver [RecyclerView.Adapter]
+ * @param oldList the old data list snapshot.
+ * @param newList the new data list snapshot.
+ * @param areItemsTheSame compare whether the two items represent the same object.
+ * @param areContentsTheSame compare whether the contents of the two items are the same.
+ * @param getChangePayload get the changed payload between two items, default is null.
+ */
+fun <T> RecyclerView.Adapter<*>.notifyByDiff(
+    oldList: List<T>,
+    newList: List<T>,
+    areItemsTheSame: (oldItem: T, newItem: T) -> Boolean,
+    areContentsTheSame: (oldItem: T, newItem: T) -> Boolean,
+    getChangePayload: (oldItem: T, newItem: T) -> Any? = { _, _ -> null }
+) {
+    val wrapper = wrapper
+
+    when {
+        wrapper != null -> {
+            val currentItemCount = itemCount
+            val expectedItemCount = newList.size +
+                (if (wrapper.hasHeaderView) 1 else 0) +
+                (if (wrapper.hasFooterView) 1 else 0)
+
+            if (currentItemCount != expectedItemCount) Log.w(
+                BetterAndroidProperties.PROJECT_NAME,
+                "notifyByDiff called with mismatched itemCount, current adapter.itemCount is $currentItemCount, but expected $expectedItemCount."
+            )
+        }
+        itemCount != newList.size -> Log.w(
+            BetterAndroidProperties.PROJECT_NAME,
+            "notifyByDiff called with mismatched itemCount, current adapter.itemCount is $itemCount, but expected ${newList.size}."
+        )
+    }
+
+    val diffResult = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+
+        override fun getOldListSize() = oldList.size
+        override fun getNewListSize() = newList.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+            areItemsTheSame(oldList[oldItemPosition], newList[newItemPosition])
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+            areContentsTheSame(oldList[oldItemPosition], newList[newItemPosition])
+
+        override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int) =
+            getChangePayload(oldList[oldItemPosition], newList[newItemPosition])
+    })
+
+    wrapper?.let { wrapper ->
+        diffResult.dispatchUpdatesTo(object : ListUpdateCallback {
+
+            override fun onInserted(position: Int, count: Int) {
+                notifyItemRangeInserted(wrapper.includingPosition(position), count)
+            }
+
+            override fun onRemoved(position: Int, count: Int) {
+                notifyItemRangeRemoved(wrapper.includingPosition(position), count)
+            }
+
+            override fun onMoved(fromPosition: Int, toPosition: Int) {
+                notifyItemMoved(wrapper.includingPosition(fromPosition), wrapper.includingPosition(toPosition))
+            }
+
+            override fun onChanged(position: Int, count: Int, payload: Any?) {
+                notifyItemRangeChanged(wrapper.includingPosition(position), count, payload)
+            }
+        })
+    } ?: diffResult.dispatchUpdatesTo(this)
 }
 
 /**
