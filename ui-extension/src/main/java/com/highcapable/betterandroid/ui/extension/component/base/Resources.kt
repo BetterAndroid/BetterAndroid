@@ -621,7 +621,7 @@ fun TypedArray.getDimensionPx(view: View, @StyleableRes index: Int, @Px defValue
 /**
  * Obtain [View] attributes.
  *
- * - This function is deprecated, use [Context.obtainStyledAttributes] instead.
+ * - This function is deprecated, use [Context.withStyledAttributes] instead.
  *
  * Before:
  *
@@ -639,7 +639,7 @@ fun TypedArray.getDimensionPx(view: View, @StyleableRes index: Int, @Px defValue
  * }
  */
 @Deprecated(
-    message = "Use Context.obtainStyledAttributes instead.",
+    message = "Use Context.withStyledAttributes instead.",
     ReplaceWith("context.withStyledAttributes(attrs, styleIds) { result(this) }", "androidx.core.content.withStyledAttributes"),
 )
 inline fun View.obtainStyledAttributes(attrs: AttributeSet? = null, styleIds: IntArray, result: (TypedArray) -> Unit) {
