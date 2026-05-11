@@ -1979,10 +1979,9 @@ view.removeSelfInLayout()
 
 设置工具提示文本 (向下兼容)。
 
-在 Android 8.0 (26) 及以上版本中，你可以使用 `View.tooltipText` 来设置工具提示文本，`androidx` 所提供的 `ViewCompat.setTooltipText` 虽然支持在低于 26 的版本中使用，但是低于 26 版本将无效，
-这并没有实质解决这个问题。
+在 Android 8.0 (26) 及以上版本中，你可以使用 `View.tooltipText` 来设置工具提示文本，`androidx` 所提供的 `ViewCompat.setTooltipText` 虽然支持在低于 26 的版本中使用，但是低于 26 版本将无效，同时 `TooltipTextCompat` 也只是提供了兼容模拟方案，并没有提供获取工具提示文本的方法。
 
-所以 `BetterAndroid` 为此提供了一个 `View.tooltipTextCompat` 方法，它会在低版本系统中使用 `Toast` 来模拟工具提示文本并且可以重新获取你设置的文本。
+为了让这个功能在各个版本的使用方式均无差异，`BetterAndroid` 提供了一个 `View.tooltipTextCompat` 方法，它会在低版本系统中使用 `Toast` 来模拟工具提示文本并且可以重新获取你设置的文本。
 
 > 示例如下
 

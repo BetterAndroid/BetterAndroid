@@ -2048,10 +2048,12 @@ view.removeSelfInLayout()
 
 Set tooltip text (backward compatible).
 
-In Android 8.0 (26) and above, you can use `View.tooltipText` to set the tooltip text. Although `androidx` provides `ViewCompat.setTooltipText` to support usage below version 26,
-it will be ineffective on versions below 26, which does not essentially solve the problem.
+In Android 8.0 (26) and above, you can use `View.tooltipText` to set the tooltip text.
+Although `androidx` provides `ViewCompat.setTooltipText` to support usage below version 26,
+it will be ineffective below version 26, and `TooltipTextCompat` only provides a compatible simulation scheme without providing a method to get the tooltip text.
 
-Therefore, `BetterAndroid` provides a `View.tooltipTextCompat` method, which will use `Toast` to simulate the tooltip text on lower sdk systems and can retrieve the text you set.
+To make the usage of this feature consistent across all versions,
+`BetterAndroid` provides a `View.tooltipTextCompat` method, which uses `Toast` to simulate tooltip text on lower versions of the system and allows you to retrieve the text you set.
 
 > The following example
 
