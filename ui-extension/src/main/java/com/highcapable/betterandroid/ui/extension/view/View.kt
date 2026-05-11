@@ -39,7 +39,9 @@ import android.view.ViewOutlineProvider
 import android.view.ViewPropertyAnimator
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Px
+import androidx.appcompat.widget.TooltipCompat
 import androidx.core.content.getSystemService
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.ancestors
@@ -383,7 +385,9 @@ fun View.hideSoftInput() = hideIme()
  * Get or set the view's tooltip text (compat).
  * 
  * If the target SDK version is lower than 26,
- * the tooltip text will be compatible with toast.
+ * the tooltip text will be compatible with [TooltipCompat].
+ * @see TooltipCompat.setTooltipText
+ * @see ViewCompat.setTooltipText
  * @receiver [View]
  * @return [CharSequence] or null.
  */
@@ -396,7 +400,7 @@ var View.tooltipTextCompat
             tooltipText = value
         else value?.let {
             setTag(R.id.tag_better_android_tooltip_text_compat, it)
-            setOnLongClickListener { _ -> context?.toast(it); true }
+            TooltipCompat.setTooltipText(this, value)
         }
     }
 
