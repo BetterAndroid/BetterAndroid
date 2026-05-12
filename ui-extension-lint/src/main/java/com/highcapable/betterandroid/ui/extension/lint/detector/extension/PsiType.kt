@@ -17,17 +17,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file is created by fankes on 2025/12/14.
+ * This file is created by fankes on 2026/5/12.
  */
-package com.highcapable.betterandroid.ui.extension.lint
+package com.highcapable.betterandroid.ui.extension.lint.detector.extension
 
-import com.highcapable.betterandroid.generated.BetterAndroidProperties
+import com.android.tools.lint.detector.api.JavaContext
+import com.intellij.psi.PsiClassType
+import com.intellij.psi.PsiType
 
-object DeclaredSymbol {
+internal fun PsiType?.extendsClass(context: JavaContext, qualifiedName: String): Boolean {
+    if (this == null) return false
+    if (canonicalText == qualifiedName) return true
+    val classType = this as? PsiClassType ?: return false
+    val psiClass = classType.resolve() ?: return false
 
-    const val BASE_PACKAGE = BetterAndroidProperties.PROJECT_UI_EXTENSION_NAMESPACE
-    const val COMPONENT_PACKAGE = "$BASE_PACKAGE.component"
-    const val COMPONENT_BASE_PACKAGE = "$COMPONENT_PACKAGE.base"
-    const val GRAPHICS_PACKAGE = "$BASE_PACKAGE.graphics"
-    const val VIEW_PACKAGE = "$BASE_PACKAGE.view"
+    return context.evaluator.extendsClass(psiClass, qualifiedName, false)
 }

@@ -27,12 +27,40 @@ import com.android.tools.lint.client.api.IssueRegistry
 import com.android.tools.lint.client.api.Vendor
 import com.android.tools.lint.detector.api.CURRENT_API
 import com.highcapable.betterandroid.generated.BetterAndroidProperties
+import com.highcapable.betterandroid.ui.extension.lint.detector.ActivityUsageDetector
+import com.highcapable.betterandroid.ui.extension.lint.detector.BitmapUsageDetector
+import com.highcapable.betterandroid.ui.extension.lint.detector.CoroutinesUsageDetector
+import com.highcapable.betterandroid.ui.extension.lint.detector.DrawableUsageDetector
+import com.highcapable.betterandroid.ui.extension.lint.detector.FragmentUsageDetector
+import com.highcapable.betterandroid.ui.extension.lint.detector.LayoutInflaterUsageDetector
+import com.highcapable.betterandroid.ui.extension.lint.detector.LifecycleOwnerUsageDetector
+import com.highcapable.betterandroid.ui.extension.lint.detector.RecyclerViewUsageDetector
+import com.highcapable.betterandroid.ui.extension.lint.detector.ResourcesUsageDetector
+import com.highcapable.betterandroid.ui.extension.lint.detector.TextViewUsageDetector
 import com.highcapable.betterandroid.ui.extension.lint.detector.ToastUsageDetector
+import com.highcapable.betterandroid.ui.extension.lint.detector.ViewImeVisibilityUsageDetector
+import com.highcapable.betterandroid.ui.extension.lint.detector.ViewTooltipTextUsageDetector
+import com.highcapable.betterandroid.ui.extension.lint.detector.ViewWalkUsageDetector
+import com.highcapable.betterandroid.ui.extension.lint.detector.WindowInsetsListenerUsageDetector
 
 class UiExtensionIssueRegistry : IssueRegistry() {
 
     override val issues get() = listOf(
-        ToastUsageDetector.ISSUE
+        ActivityUsageDetector.ISSUE,
+        FragmentUsageDetector.ISSUE,
+        LifecycleOwnerUsageDetector.ISSUE,
+        ResourcesUsageDetector.ISSUE,
+        DrawableUsageDetector.ISSUE,
+        BitmapUsageDetector.ISSUE,
+        CoroutinesUsageDetector.ISSUE,
+        ToastUsageDetector.ISSUE,
+        RecyclerViewUsageDetector.ISSUE,
+        LayoutInflaterUsageDetector.ISSUE,
+        TextViewUsageDetector.ISSUE,
+        ViewTooltipTextUsageDetector.ISSUE,
+        ViewWalkUsageDetector.ISSUE,
+        ViewImeVisibilityUsageDetector.ISSUE,
+        WindowInsetsListenerUsageDetector.ISSUE
     )
 
     override val minApi = BetterAndroidProperties.PROJECT_ANDROID_LINT_MIN_API

@@ -27,10 +27,10 @@ import com.android.tools.lint.detector.api.Detector
 import com.android.tools.lint.detector.api.Implementation
 import com.android.tools.lint.detector.api.Issue
 import com.android.tools.lint.detector.api.JavaContext
-import com.android.tools.lint.detector.api.LintFix
 import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UQualifiedReferenceExpression
 
@@ -136,7 +136,7 @@ class ToastUsageDetector : Detector(), Detector.UastScanner {
         }
     }
 
-    private fun createLintFix(contextText: String, messageText: String, durationText: String?): Pair<String, LintFix> {
+    private fun createLintFix(contextText: String, messageText: String, durationText: String?) = run {
         // Determine whether to use `context.toast(...)` or direct `toast(...)`.
         val replacement = when {
             contextText == "this" -> {
@@ -153,14 +153,10 @@ class ToastUsageDetector : Detector(), Detector.UastScanner {
             }
         }
 
-        return replacement to LintFix.create()
-            .name("Replace with 'toast'")
-            .replace()
-            .all()
-            .with(replacement)
-            .reformat(true)
-            .shortenNames()
-            .imports(TOAST_EXTENSION_FULL_FUNCTION_NAME)
-            .build()
+        replacement to buildReplaceFix(
+            name = "Replace with 'toast'",
+            replacement = replacement,
+            imports = arrayOf(TOAST_EXTENSION_FULL_FUNCTION_NAME)
+        )
     }
 }
