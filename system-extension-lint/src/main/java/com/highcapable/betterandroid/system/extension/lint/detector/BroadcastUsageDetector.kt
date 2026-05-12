@@ -58,9 +58,9 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
             id = "ReplaceWithBroadcastExtension",
             briefDescription = "Use system-extension's broadcast extensions instead.",
             explanation = """
-                Using `sendBroadcast(Intent(...))` with a clearly constructed `Intent`, or manually
-                creating an anonymous `BroadcastReceiver` for `registerReceiver(...)`, can be
-                simplified by using the broadcast extensions from BetterAndroid system-extension
+                Using `sendBroadcast(Intent(...))` with a clearly constructed `Intent`, or manually \
+                creating an anonymous `BroadcastReceiver` for `registerReceiver(...)`, can be \
+                simplified by using the broadcast extensions from BetterAndroid system-extension \
                 library.
 
                 The `Broadcast.kt` provides:
@@ -129,7 +129,7 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`.",
                 quickfixData = buildReplaceFix(
-                    name = "Replace with '$SEND_BROADCAST(...)'",
+                    name = "Replace with '$SEND_BROADCAST'",
                     replacement = replacement,
                     imports = arrayOf("${DeclaredSymbol.COMPONENT_PACKAGE}.$SEND_BROADCAST")
                 )

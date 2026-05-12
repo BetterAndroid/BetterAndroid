@@ -45,8 +45,22 @@ class LayoutInflaterUsageDetector : Detector(), Detector.UastScanner {
             id = "ReplaceWithLayoutInflaterExtension",
             briefDescription = "Use ui-extension's `layoutInflater` extension instead.",
             explanation = """
-                Using `LayoutInflater.from(...)` can be simplified by using the `layoutInflater` \
-                extension property from BetterAndroid ui-extension library.
+                Using `LayoutInflater.from(...)` can be simplified by using `layoutInflater` from \
+                BetterAndroid ui-extension library.
+
+                The `LayoutInflater.kt` provides:
+                - A direct `Context.layoutInflater` access API
+                - Shorter inflater lookup code
+                - Better readability and maintainability
+
+                Examples:
+                ```kotlin
+                // Before
+                LayoutInflater.from(context)
+
+                // After
+                context.layoutInflater
+                ```
             """.trimIndent(),
             category = Category.USABILITY,
             priority = 5,

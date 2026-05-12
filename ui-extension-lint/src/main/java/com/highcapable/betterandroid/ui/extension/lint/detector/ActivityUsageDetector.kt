@@ -53,8 +53,23 @@ class ActivityUsageDetector : Detector(), Detector.UastScanner {
             briefDescription = "Use ui-extension's `startActivity<T>(...)` instead.",
             explanation = """
                 Using `startActivity(Intent(...))` with an explicit target activity class can be \
-                simplified by using the `startActivity<T>(...)` extension from BetterAndroid \
-                ui-extension library.
+                simplified by using `startActivity<T>(...)` from BetterAndroid ui-extension library.
+
+                The `Activity.kt` provides:
+                - A shorter generic activity launch API
+                - Consistent usage on both `Context` and `Fragment`
+                - Better readability and maintainability
+
+                Examples:
+                ```kotlin
+                // Before
+                context.startActivity(Intent(context, DemoActivity::class.java))
+                fragment.startActivity(Intent(context, DemoActivity::class.java))
+
+                // After
+                context.startActivity<DemoActivity>()
+                fragment.startActivity<DemoActivity>()
+                ```
             """.trimIndent(),
             category = Category.USABILITY,
             priority = 5,
@@ -96,7 +111,7 @@ class ActivityUsageDetector : Detector(), Detector.UastScanner {
                 location = context.getLocation(node),
                 message = "Can be replaced with `$displayReplacement`.",
                 quickfixData = buildReplaceFix(
-                    name = "Replace with '$START_ACTIVITY_METHOD<$displayTargetClass>()'",
+                    name = "Replace with '$START_ACTIVITY_METHOD'",
                     replacement = replacement,
                     imports = arrayOf("${DeclaredSymbol.COMPONENT_PACKAGE}.$START_ACTIVITY_METHOD")
                 )

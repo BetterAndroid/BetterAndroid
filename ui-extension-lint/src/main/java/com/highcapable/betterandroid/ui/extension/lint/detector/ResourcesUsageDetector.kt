@@ -31,7 +31,6 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
-import com.highcapable.betterandroid.ui.extension.lint.detector.extension.displayShortName
 import org.jetbrains.uast.UCallExpression
 
 class ResourcesUsageDetector : Detector(), Detector.UastScanner {
@@ -58,7 +57,35 @@ class ResourcesUsageDetector : Detector(), Detector.UastScanner {
             briefDescription = "Use ui-extension's resources compat extensions instead.",
             explanation = """
                 Using `ContextCompat` or `ResourcesCompat` resource access APIs can be simplified by \
-                using the resource compatibility extensions from BetterAndroid ui-extension library.
+                using resource compatibility extensions from BetterAndroid ui-extension library.
+
+                The `Resources.kt` provides:
+                - Context and Resources based compat access APIs
+                - Direct replacements for drawable, color, color state list, float and font lookups
+                - Better readability and maintainability
+
+                Examples:
+                ```kotlin
+                // Before
+                ContextCompat.getDrawable(context, drawableId)
+                ContextCompat.getColor(context, colorId)
+                ContextCompat.getColorStateList(context, colorId)
+                ResourcesCompat.getDrawable(resources, drawableId, theme)
+                ResourcesCompat.getColor(resources, colorId, theme)
+                ResourcesCompat.getColorStateList(resources, colorId, theme)
+                ResourcesCompat.getFloat(resources, dimenId)
+                ResourcesCompat.getFont(context, fontId)
+
+                // After
+                context.getDrawableCompat(drawableId)
+                context.getColorCompat(colorId)
+                context.getColorStateListCompat(colorId)
+                resources.getDrawableCompat(drawableId, theme)
+                resources.getColorCompat(colorId, theme)
+                resources.getColorStateListCompat(colorId, theme)
+                resources.getFloatCompat(dimenId)
+                context.getFontCompat(fontId)
+                ```
             """.trimIndent(),
             category = Category.USABILITY,
             priority = 5,
@@ -85,13 +112,21 @@ class ResourcesUsageDetector : Detector(), Detector.UastScanner {
                     createResourcesCompatReplacement(node, methodName)
                 else -> null
             } ?: return
+            val fixName = when (methodName) {
+                GET_DRAWABLE_METHOD -> GET_DRAWABLE_COMPAT
+                GET_COLOR_METHOD -> GET_COLOR_COMPAT
+                GET_COLOR_STATE_LIST_METHOD -> GET_COLOR_STATE_LIST_COMPAT
+                GET_FLOAT_METHOD -> GET_FLOAT_COMPAT
+                GET_FONT_METHOD -> GET_FONT_COMPAT
+                else -> return
+            }
 
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
                 message = "Can be replaced with `${replacement.first}`.",
                 quickfixData = buildReplaceFix(
-                    name = "Replace with '${replacement.first.displayShortName()}'",
+                    name = "Replace with '$fixName'",
                     replacement = replacement.first,
                     imports = replacement.second.toTypedArray()
                 )

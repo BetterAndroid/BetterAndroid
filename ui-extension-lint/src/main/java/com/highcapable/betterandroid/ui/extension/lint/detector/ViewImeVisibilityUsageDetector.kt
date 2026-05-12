@@ -31,7 +31,6 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
-import com.highcapable.betterandroid.ui.extension.lint.detector.extension.displayShortName
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.resolveName
 import com.intellij.psi.util.PsiTypesUtil
 import org.jetbrains.uast.UCallExpression
@@ -67,8 +66,29 @@ class ViewImeVisibilityUsageDetector : Detector(), Detector.UastScanner {
             id = "ReplaceWithViewImeExtension",
             briefDescription = "Use ui-extension's `showIme()` or `hideIme()` instead.",
             explanation = """
-                Using official IME show and hide APIs can be simplified by using the `showIme()` \
-                and `hideIme()` extensions from BetterAndroid ui-extension library.
+                Using official IME show and hide APIs can be simplified by using `showIme()` and \
+                `hideIme()` from BetterAndroid ui-extension library.
+
+                The `View.kt` provides:
+                - Direct IME control APIs on `View`
+                - A single entry for `InputMethodManager`, `WindowInsetsController` and compat usage
+                - Less window token and controller plumbing
+                - Better readability and maintainability
+
+                Examples:
+                ```kotlin
+                // Before
+                inputMethodManager.showSoftInput(view, 0)
+                inputMethodManager.showSoftInputFromInputMethod(view.windowToken, 0)
+                inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+                inputMethodManager.hideSoftInputFromInputMethod(view.windowToken, 0)
+                windowInsetsController.show(WindowInsets.Type.ime())
+                windowInsetsController.hide(WindowInsets.Type.ime())
+
+                // After
+                view.showIme()
+                view.hideIme()
+                ```
             """.trimIndent(),
             category = Category.USABILITY,
             priority = 5,
@@ -123,9 +143,10 @@ class ViewImeVisibilityUsageDetector : Detector(), Detector.UastScanner {
 
             val quickFix = replacement?.let {
                 val importTarget = if (it.endsWith("$SHOW_IME_FUNCTION()")) SHOW_IME_FULL_NAME else HIDE_IME_FULL_NAME
+                val fixName = if (it.endsWith("$SHOW_IME_FUNCTION()")) SHOW_IME_FUNCTION else HIDE_IME_FUNCTION
 
                 buildReplaceFix(
-                    name = "Replace with '${it.displayShortName()}'",
+                    name = "Replace with '$fixName'",
                     replacement = it,
                     imports = arrayOf(importTarget)
                 )

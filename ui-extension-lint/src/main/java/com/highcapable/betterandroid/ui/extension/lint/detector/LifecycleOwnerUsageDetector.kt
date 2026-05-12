@@ -31,7 +31,6 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
-import com.highcapable.betterandroid.ui.extension.lint.detector.extension.displayShortName
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.extendsClass
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.unwrapParenthesized
 import org.jetbrains.uast.UBinaryExpressionWithType
@@ -56,9 +55,32 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
             id = "ReplaceWithLifecycleOwnerExtension",
             briefDescription = "Use ui-extension's lifecycle owner extensions instead.",
             explanation = """
-                Using `findViewTreeLifecycleOwner()`, `owner as Activity`, `owner as? Activity`,
-                `owner as Context` or `owner as? Context` can be simplified by using the lifecycle \
+                Using `findViewTreeLifecycleOwner()`, `owner as Activity`, `owner as? Activity`, \
+                `owner as Context` or `owner as? Context` can be simplified by using lifecycle \
                 owner extensions from BetterAndroid ui-extension library.
+
+                The `LifecycleOwner.kt` provides:
+                - A direct `View.lifecycleOwner` property
+                - Safer `activity` and `context` access helpers
+                - Matching `requireActivity()` and `requireContext()` style APIs
+                - Better readability and maintainability
+
+                Examples:
+                ```kotlin
+                // Before
+                view.findViewTreeLifecycleOwner()
+                owner as Activity
+                owner as? Activity
+                owner as Context
+                owner as? Context
+
+                // After
+                view.lifecycleOwner
+                owner.requireActivity()
+                owner.activity
+                owner.requireContext()
+                owner.context
+                ```
             """.trimIndent(),
             category = Category.USABILITY,
             priority = 5,
@@ -107,13 +129,19 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
                 castType.extendsClass(context, CONTEXT_CLASS) -> createContextReplacement(operand, isNullableCast)
                 else -> null
             } ?: return
+            val fixName = when {
+                replacement.first.contains(".$ACTIVITY_PROPERTY") -> ACTIVITY_PROPERTY
+                replacement.first.contains(".$CONTEXT_PROPERTY") -> CONTEXT_PROPERTY
+                replacement.first.contains(".$REQUIRE_ACTIVITY_FUNCTION") -> REQUIRE_ACTIVITY_FUNCTION
+                else -> REQUIRE_CONTEXT_FUNCTION
+            }
 
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
                 message = "Can be replaced with `${replacement.first}`.",
                 quickfixData = buildReplaceFix(
-                    name = "Replace with '${replacement.first.displayShortName()}'",
+                    name = "Replace with '$fixName'",
                     replacement = replacement.first,
                     imports = replacement.second.toTypedArray()
                 )

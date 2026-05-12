@@ -59,8 +59,29 @@ class BitmapUsageDetector : Detector(), Detector.UastScanner {
             id = "ReplaceWithBitmapExtension",
             briefDescription = "Use ui-extension's bitmap decode extensions instead.",
             explanation = """
-                Using `BitmapFactory.decode...(...)` can be simplified by using the bitmap decode \
+                Using `BitmapFactory.decode...(...)` can be simplified by using bitmap decode \
                 extensions from BetterAndroid ui-extension library.
+
+                The `Bitmap.kt` provides:
+                - `decodeToBitmap()` and `decodeToBitmapOrNull()` for common decode sources
+                - `createBitmap()` and `createBitmapOrNull()` for `Resources`
+                - A more direct API around existing decode inputs
+                - Better readability and maintainability
+
+                Examples:
+                ```kotlin
+                // Before
+                BitmapFactory.decodeFile(file.absolutePath, options)
+                BitmapFactory.decodeStream(inputStream, null, options)
+                BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                BitmapFactory.decodeResource(resources, drawableId, options)
+
+                // After
+                file.decodeToBitmapOrNull(options)
+                inputStream.decodeToBitmapOrNull(null, options)
+                bytes.decodeToBitmapOrNull(0, bytes.size)
+                resources.createBitmapOrNull(drawableId, options)
+                ```
             """.trimIndent(),
             category = Category.USABILITY,
             priority = 5,

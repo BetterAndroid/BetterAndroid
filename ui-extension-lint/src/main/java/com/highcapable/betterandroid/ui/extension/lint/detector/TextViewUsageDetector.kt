@@ -31,7 +31,6 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
-import com.highcapable.betterandroid.ui.extension.lint.detector.extension.displayShortName
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.resolveName
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UElement
@@ -53,9 +52,29 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
             id = "ReplaceWithTextViewExtension",
             briefDescription = "Use ui-extension's TextView extensions instead.",
             explanation = """
-                Using `TextView` text and color related APIs can be simplified by using the \
-                `textColor`, `textToString()` and `hintToString()` extensions from BetterAndroid \
-                ui-extension library.
+                Using `TextView` text and color related APIs can be simplified by using TextView \
+                extensions from BetterAndroid ui-extension library.
+
+                The `TextView.kt` provides:
+                - A direct `textColor` property
+                - `textToString()` and `hintToString()` string helpers
+                - Less repeated `toString()` conversion code
+                - Better readability and maintainability
+
+                Examples:
+                ```kotlin
+                // Before
+                textView.setTextColor(color)
+                textView.text.toString()
+                textView.text?.toString()
+                textView.hint.toString()
+                textView.hint?.toString()
+
+                // After
+                textView.textColor = color
+                textView.textToString()
+                textView.hintToString()
+                ```
             """.trimIndent(),
             category = Category.USABILITY,
             priority = 5,
@@ -131,13 +150,14 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
             val importTarget = if (memberName == "text") {
                 "${DeclaredSymbol.VIEW_PACKAGE}.$TEXT_TO_STRING_FUNCTION"
             } else "${DeclaredSymbol.VIEW_PACKAGE}.$HINT_TO_STRING_FUNCTION"
+            val fixName = if (memberName == "text") TEXT_TO_STRING_FUNCTION else HINT_TO_STRING_FUNCTION
 
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(reportNode),
                 message = "Can be replaced with `$replacement`.",
                 quickfixData = buildReplaceFix(
-                    name = "Replace with '${replacement.displayShortName()}'",
+                    name = "Replace with '$fixName'",
                     replacement = replacement,
                     imports = arrayOf(importTarget)
                 )

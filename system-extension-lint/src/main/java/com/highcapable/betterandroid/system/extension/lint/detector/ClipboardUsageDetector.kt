@@ -32,7 +32,6 @@ import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.system.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.asCall
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.buildReplaceFix
-import com.highcapable.betterandroid.system.extension.lint.detector.extension.displayShortName
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.unwrapParenthesized
 import com.intellij.psi.PsiLocalVariable
 import org.jetbrains.uast.UCallExpression
@@ -74,9 +73,34 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
             id = "ReplaceWithClipboardExtension",
             briefDescription = "Use system-extension's clipboard extensions instead.",
             explanation = """
-                Using `setPrimaryClip(ClipData.new...)`, raw clipboard item access, or manual
-                clipboard manager lookups can be simplified by using the clipboard extensions from
+                Using `setPrimaryClip(ClipData.new...)`, raw clipboard item access, or manual \
+                clipboard manager lookups can be simplified by using clipboard extensions from \
                 BetterAndroid system-extension library.
+
+                The `Clipboard.kt` provides:
+                - Direct `copy(...)` helpers for text, HTML and `Intent`
+                - Simpler clipboard manager access
+                - Direct primary clip item helpers
+                - Better readability and maintainability
+
+                Examples:
+                ```kotlin
+                // Before
+                clipboardManager.setPrimaryClip(ClipData.newPlainText("label", "text"))
+                clipboardManager.setPrimaryClip(ClipData.newHtmlText("label", "text", "<b>text</b>"))
+                clipboardManager.setPrimaryClip(ClipData.newIntent("label", intent))
+                clipboardManager.primaryClip?.getItemAt(0)
+                clipboardManager.primaryClip!!.getItemAt(1)
+                context.getSystemService(ClipboardManager::class.java)
+
+                // After
+                clipboardManager.copy("text", "label")
+                clipboardManager.copy("text", "<b>text</b>", "label")
+                clipboardManager.copy(intent, "label")
+                clipboardManager.firstPrimaryClipItemOrNull
+                clipboardManager.primaryClipItems(1)
+                context.clipboardManager
+                ```
             """.trimIndent(),
             category = Category.USABILITY,
             priority = 5,
@@ -131,10 +155,10 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
                 else -> return
             }
 
-            report(
+            reportAndFix(
                 node = node,
                 replacement = replacement,
-                displayName = "$COPY(...)",
+                fixName = COPY,
                 importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.$COPY"
             )
         }
@@ -159,10 +183,10 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
             }
 
             val targetNode = node.unwrapNotNullAssertionParent()
-            report(
+            reportAndFix(
                 node = targetNode,
                 replacement = replacement,
-                displayName = CLIPBOARD_MANAGER,
+                fixName = CLIPBOARD_MANAGER,
                 importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.$CLIPBOARD_MANAGER"
             )
         }
@@ -177,10 +201,10 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
                     "$receiver.$FIRST_PRIMARY_CLIP_ITEM_OR_NULL"
                 } else "$receiver.$PRIMARY_CLIP_ITEMS_OR_NULL($index)"
 
-                report(
+                reportAndFix(
                     node = node,
                     replacement = replacement,
-                    displayName = if (index == "0") FIRST_PRIMARY_CLIP_ITEM_OR_NULL else "$PRIMARY_CLIP_ITEMS_OR_NULL(...)",
+                    fixName = if (index == "0") FIRST_PRIMARY_CLIP_ITEM_OR_NULL else PRIMARY_CLIP_ITEMS_OR_NULL,
                     importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.${if (index == "0") FIRST_PRIMARY_CLIP_ITEM_OR_NULL else PRIMARY_CLIP_ITEMS_OR_NULL}"
                 )
                 return
@@ -193,10 +217,10 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
                     "$receiver.$FIRST_PRIMARY_CLIP_ITEM"
                 else "$receiver.$PRIMARY_CLIP_ITEMS($index)"
 
-                report(
+                reportAndFix(
                     node = node,
                     replacement = replacement,
-                    displayName = if (index == "0") FIRST_PRIMARY_CLIP_ITEM else "$PRIMARY_CLIP_ITEMS(...)",
+                    fixName = if (index == "0") FIRST_PRIMARY_CLIP_ITEM else PRIMARY_CLIP_ITEMS,
                     importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.${if (index == "0") FIRST_PRIMARY_CLIP_ITEM else PRIMARY_CLIP_ITEMS}"
                 )
             }
@@ -233,8 +257,7 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
             if (directCall != null) return directCall
 
             val reference = target as? USimpleNameReferenceExpression ?: return null
-            val resolved = reference.resolve()
-            val localVariable = when (resolved) {
+            val localVariable = when (val resolved = reference.resolve()) {
                 is ULocalVariable -> resolved
                 is PsiLocalVariable -> resolved.toUElementOfType<ULocalVariable>()
                 else -> null
@@ -254,17 +277,17 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
             return if (parent is UPostfixExpression && parent.asSourceString() == "${current.asSourceString()}!!") parent else this
         }
 
-        private fun report(
+        private fun reportAndFix(
             node: UElement,
             replacement: String,
             importTarget: String,
-            displayName: String = replacement.displayShortName()
+            fixName: String
         ) = context.report(
             issue = ISSUE,
             location = context.getLocation(node),
             message = "Can be replaced with `$replacement`.",
             quickfixData = buildReplaceFix(
-                name = "Replace with '$displayName'",
+                name = "Replace with '$fixName'",
                 replacement = replacement,
                 imports = arrayOf(importTarget)
             )

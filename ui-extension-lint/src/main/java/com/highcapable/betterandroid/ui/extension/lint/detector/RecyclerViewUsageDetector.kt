@@ -46,7 +46,22 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
             briefDescription = "Use ui-extension's `RecyclerView.layoutManager()` instead.",
             explanation = """
                 Using `recyclerView.layoutManager as ...` or `as? ...` can be simplified by using \
-                the `layoutManager()` extension from BetterAndroid ui-extension library.
+                `layoutManager()` from BetterAndroid ui-extension library.
+
+                The `RecyclerView.kt` provides:
+                - A generic layout manager access API
+                - Less explicit casting code
+                - Better readability and maintainability
+
+                Examples:
+                ```kotlin
+                // Before
+                recyclerView.layoutManager as LinearLayoutManager
+                recyclerView.layoutManager as? LinearLayoutManager
+
+                // After
+                recyclerView.layoutManager<LinearLayoutManager>()
+                ```
             """.trimIndent(),
             category = Category.USABILITY,
             priority = 5,
@@ -77,7 +92,7 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`.",
                 quickfixData = buildReplaceFix(
-                    name = "Replace with '$LAYOUT_MANAGER_FUNCTION<$targetType>()'",
+                    name = "Replace with '$LAYOUT_MANAGER_FUNCTION'",
                     replacement = replacement,
                     imports = arrayOf("${DeclaredSymbol.VIEW_PACKAGE}.$LAYOUT_MANAGER_FUNCTION")
                 )

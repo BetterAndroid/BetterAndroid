@@ -48,8 +48,23 @@ class ViewTooltipTextUsageDetector : Detector(), Detector.UastScanner {
             id = "ReplaceWithViewTooltipTextCompatExtension",
             briefDescription = "Use ui-extension's `tooltipTextCompat` instead of `TooltipCompat.setTooltipText(...)` or `ViewCompat.setTooltipText(...)`.",
             explanation = """
-                Using `TooltipCompat.setTooltipText(...)` or `ViewCompat.setTooltipText(...)` can be simplified \
-                by using the `tooltipTextCompat` property from BetterAndroid ui-extension library.
+                Using `TooltipCompat.setTooltipText(...)` or `ViewCompat.setTooltipText(...)` can \
+                be simplified by using `tooltipTextCompat` from BetterAndroid ui-extension library.
+
+                The `View.kt` provides:
+                - A direct tooltip compatibility property
+                - Less static compat API code
+                - Better readability and maintainability
+
+                Examples:
+                ```kotlin
+                // Before
+                TooltipCompat.setTooltipText(view, "Tooltip")
+                ViewCompat.setTooltipText(view, "Tooltip")
+
+                // After
+                view.tooltipTextCompat = "Tooltip"
+                ```
             """.trimIndent(),
             category = Category.USABILITY,
             priority = 5,

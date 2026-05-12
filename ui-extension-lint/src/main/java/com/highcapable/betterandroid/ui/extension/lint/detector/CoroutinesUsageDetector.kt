@@ -55,10 +55,10 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
             briefDescription = "Use ui-extension's coroutine extensions instead.",
             explanation = """
                 Using `LifecycleOwner.lifecycleScope.launch`, `LifecycleOwner.lifecycleScope.async` \
-                or `Handler(...).postDelayed(...)` can be simplified by using the coroutine helpers \
-                from BetterAndroid ui-extension library.
+                or `Handler(...).postDelayed(...)` can be simplified by using coroutine helpers from \
+                BetterAndroid ui-extension library.
 
-                The `runDelayed(...)` provides:
+                The `Coroutines.kt` provides:
                 - A shorter coroutine-based delayed task API
                 - Direct support for `LifecycleOwner` and `CoroutineScope`
                 - Optional coroutine context and dispatcher parameters
@@ -81,6 +81,10 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
                 }
 
                 owner.launch {
+                    // Do something.
+                }
+
+                owner.async {
                     // Do something.
                 }
                 ```

@@ -52,9 +52,26 @@ class ServiceUsageDetector : Detector(), Detector.UastScanner {
             id = "ReplaceWithServiceExtension",
             briefDescription = "Use system-extension's service extensions instead.",
             explanation = """
-                Using `startService(Intent(...))` or `startForegroundService(Intent(...))` with an
-                explicit target service class can be simplified by using the corresponding generic
-                extensions from BetterAndroid system-extension library.
+                Using `startService(Intent(...))` or `startForegroundService(Intent(...))` with an \
+                explicit target service class can be simplified by using service extensions from \
+                BetterAndroid system-extension library.
+
+                The `Service.kt` provides:
+                - Generic service start helpers
+                - Matching foreground service start helpers
+                - Less explicit `Intent(context, Service::class.java)` boilerplate
+                - Better readability and maintainability
+
+                Examples:
+                ```kotlin
+                // Before
+                context.startService(Intent(context, DemoService::class.java))
+                context.startForegroundService(Intent(context, DemoService::class.java))
+
+                // After
+                context.startService<DemoService>()
+                context.startForegroundService<DemoService>()
+                ```
             """.trimIndent(),
             category = Category.USABILITY,
             priority = 5,
@@ -93,7 +110,7 @@ class ServiceUsageDetector : Detector(), Detector.UastScanner {
                 location = context.getLocation(node),
                 message = "Can be replaced with `$displayReplacement`.",
                 quickfixData = buildReplaceFix(
-                    name = "Replace with '$methodName<${targetClass.displayShortName()}>()'",
+                    name = "Replace with '$methodName'",
                     replacement = replacement,
                     imports = arrayOf("${DeclaredSymbol.COMPONENT_PACKAGE}.$methodName")
                 )

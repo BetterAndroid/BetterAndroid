@@ -45,8 +45,22 @@ class DrawableUsageDetector : Detector(), Detector.UastScanner {
             briefDescription = "Use ui-extension's `Drawable.setPadding(size)` instead.",
             explanation = """
                 Using `Drawable.setPadding(left, top, right, bottom)` with the same value on all \
-                sides can be simplified by using the `setPadding(size)` extension from BetterAndroid \
-                ui-extension library.
+                sides can be simplified by using `setPadding(size)` from BetterAndroid ui-extension \
+                library.
+
+                The `Drawable.kt` provides:
+                - A shorter API for uniform drawable padding
+                - Less duplicated padding arguments
+                - Better readability and maintainability
+
+                Examples:
+                ```kotlin
+                // Before
+                drawable.setPadding(20, 20, 20, 20)
+
+                // After
+                drawable.setPadding(20)
+                ```
             """.trimIndent(),
             category = Category.USABILITY,
             priority = 5,

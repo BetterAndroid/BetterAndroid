@@ -49,8 +49,8 @@ class ToastUsageDetector : Detector(), Detector.UastScanner {
             id = "ReplaceWithToastExtension",
             briefDescription = "Use ui-extension's `toast(...)` function instead of `Toast.makeText(...).show()`.",
             explanation = """
-                Using `Toast.makeText(...).show()` comparisons can be simplified by using the `Toast.kt` \
-                from BetterAndroid ui-extension library.
+                Using `Toast.makeText(...).show()` can be simplified by using `toast(...)` from \
+                BetterAndroid ui-extension library.
 
                 The `Toast.kt` provides:
                 - `allowBackground` parameter to show a toast from non-main thread

@@ -31,7 +31,6 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
-import com.highcapable.betterandroid.ui.extension.lint.detector.extension.displayShortName
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.resolveName
 import org.jetbrains.uast.UQualifiedReferenceExpression
 
@@ -52,8 +51,24 @@ class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
             id = "ReplaceWithViewWalkExtension",
             briefDescription = "Use ui-extension's `walkToRoot()` or `walkThroughChildren()` instead.",
             explanation = """
-                Using `ancestors` or `descendants` can be replaced with the more direct \
-                `walkToRoot()` and `walkThroughChildren()` from BetterAndroid ui-extension library.
+                Using `ancestors` or `descendants` can be simplified by using `walkToRoot()` or \
+                `walkThroughChildren()` from BetterAndroid ui-extension library.
+
+                The `View.kt` provides:
+                - A more direct walk API for parent and child traversal
+                - Naming closer to actual traversal behavior
+                - Better readability and maintainability
+
+                Examples:
+                ```kotlin
+                // Before
+                view.ancestors
+                view.descendants
+
+                // After
+                view.walkToRoot()
+                view.walkThroughChildren()
+                ```
             """.trimIndent(),
             category = Category.USABILITY,
             priority = 5,
@@ -83,13 +98,14 @@ class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
                 DESCENDANTS_PROPERTY -> WALK_THROUGH_CHILDREN_FULL_NAME
                 else -> return
             }
+            val fixName = if (selectorName == ANCESTORS_PROPERTY) WALK_TO_ROOT_FUNCTION else WALK_THROUGH_CHILDREN_FUNCTION
 
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`.",
                 quickfixData = buildReplaceFix(
-                    name = "Replace with '${replacement.displayShortName()}'",
+                    name = "Replace with '$fixName'",
                     replacement = replacement,
                     imports = arrayOf(importTarget)
                 )

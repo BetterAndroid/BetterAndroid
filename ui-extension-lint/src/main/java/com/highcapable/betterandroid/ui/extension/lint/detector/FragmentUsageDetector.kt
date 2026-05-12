@@ -32,7 +32,6 @@ import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.asCall
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
-import com.highcapable.betterandroid.ui.extension.lint.detector.extension.displayShortName
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.resolveName
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.unwrapParenthesized
 import org.jetbrains.uast.UBinaryExpressionWithType
@@ -58,9 +57,32 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
             id = "ReplaceWithFragmentExtension",
             briefDescription = "Use ui-extension's fragment manager extensions instead.",
             explanation = """
-                Using `supportFragmentManager`, `parentFragmentManager`, `childFragmentManager`,
-                `findFragmentById(...) as? T` or `findFragmentByTag(...) as? T` can be simplified by \
-                using the fragment manager extensions from BetterAndroid ui-extension library.
+                Using `supportFragmentManager`, `parentFragmentManager`, `childFragmentManager`, \
+                `findFragmentById(...) as T` or `findFragmentByTag(...) as T` can be simplified by \
+                using fragment manager extensions from BetterAndroid ui-extension library.
+
+                The `Fragment.kt` provides:
+                - A consistent `fragmentManager()` access API
+                - Generic `findFragment<T>(...)` lookups
+                - Simpler parent and child fragment manager access
+                - Better readability and maintainability
+
+                Examples:
+                ```kotlin
+                // Before
+                activity.supportFragmentManager
+                fragment.parentFragmentManager
+                fragment.childFragmentManager
+                activity.supportFragmentManager.findFragmentById(containerId) as DemoFragment
+                activity.supportFragmentManager.findFragmentByTag("demo") as? DemoFragment
+
+                // After
+                activity.fragmentManager()
+                fragment.fragmentManager(parent = true)
+                fragment.fragmentManager()
+                activity.fragmentManager().findFragment<DemoFragment>(containerId)!!
+                activity.fragmentManager().findFragment<DemoFragment>("demo")
+                ```
             """.trimIndent(),
             category = Category.USABILITY,
             priority = 5,
@@ -95,7 +117,7 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`.",
                 quickfixData = buildReplaceFix(
-                    name = "Replace with '${replacement.displayShortName()}'",
+                    name = "Replace with '$FRAGMENT_MANAGER_FUNCTION'",
                     replacement = replacement,
                     imports = arrayOf("${DeclaredSymbol.COMPONENT_PACKAGE}.$FRAGMENT_MANAGER_FUNCTION")
                 )
@@ -114,7 +136,7 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`.",
                 quickfixData = buildReplaceFix(
-                    name = "Replace with '$replacement'",
+                    name = "Replace with '$FRAGMENT_MANAGER_FUNCTION'",
                     replacement = replacement,
                     imports = arrayOf("${DeclaredSymbol.COMPONENT_PACKAGE}.$FRAGMENT_MANAGER_FUNCTION")
                 )
@@ -143,7 +165,7 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`.",
                 quickfixData = buildReplaceFix(
-                    name = "Replace with '$replacement'",
+                    name = "Replace with '$FIND_FRAGMENT_FUNCTION'",
                     replacement = replacement,
                     imports = arrayOf("${DeclaredSymbol.COMPONENT_PACKAGE}.$FIND_FRAGMENT_FUNCTION")
                 )

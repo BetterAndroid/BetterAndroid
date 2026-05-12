@@ -101,7 +101,7 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
             id = "ReplaceWithAndroidVersion",
             briefDescription = "Use system-extension's `AndroidVersion` instead of `Build.VERSION.SDK_INT`.",
             explanation = """
-                Using `Build.VERSION.SDK_INT` comparisons can be simplified by using the `AndroidVersion` \
+                Using `Build.VERSION.SDK_INT` comparisons can be simplified by using `AndroidVersion` \
                 from BetterAndroid system-extension library.
 
                 The `AndroidVersion` provides:

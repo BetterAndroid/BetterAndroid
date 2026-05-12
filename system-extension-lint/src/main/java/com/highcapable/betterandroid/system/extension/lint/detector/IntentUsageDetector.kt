@@ -63,8 +63,33 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
             id = "ReplaceWithIntentExtension",
             briefDescription = "Use system-extension's intent extensions instead.",
             explanation = """
-                Using official `Intent` and `Bundle` parcelable or serializable access APIs can be
-                simplified by using the compat extensions from BetterAndroid system-extension library.
+                Using official `Intent` and `Bundle` parcelable or serializable access APIs can be \
+                simplified by using compat extensions from BetterAndroid system-extension library.
+
+                The `Intent.kt` provides:
+                - Generic compat access APIs for `Parcelable` and `Serializable`
+                - Consistent usage across both `Intent` and `Bundle`
+                - Less version-specific API branching in call sites
+                - Better readability and maintainability
+
+                Examples:
+                ```kotlin
+                // Before
+                intent.getParcelableExtra("parcelable", DemoParcelable::class.java)
+                bundle.getParcelable("parcelable", DemoParcelable::class.java)
+                intent.getSerializableExtra("serializable", DemoSerializable::class.java)
+                bundle.getSerializable("serializable", DemoSerializable::class.java)
+                intent.getParcelableExtra("parcelable") as? DemoParcelable
+                bundle.getSerializable("serializable") as DemoSerializable
+
+                // After
+                intent.getParcelableExtraCompat<DemoParcelable>("parcelable")
+                bundle.getParcelableCompat<DemoParcelable>("parcelable")
+                intent.getSerializableExtraCompat<DemoSerializable>("serializable")
+                bundle.getSerializableCompat<DemoSerializable>("serializable")
+                intent.getParcelableExtraCompat<DemoParcelable>("parcelable")
+                bundle.getSerializableCompat<DemoSerializable>("serializable")!!
+                ```
             """.trimIndent(),
             category = Category.USABILITY,
             priority = 5,
@@ -102,7 +127,7 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
             val isNullableCast = node.operationKind.name == "as?"
 
             val replacement = "$receiver.${compat.functionName}<$type>($key)${if (isNullableCast) "" else "!!"}"
-            report(node, replacement, compat.importTarget)
+            reportAndFix(node, replacement, compat.importTarget, fixName = compat.functionName)
         }
 
         private fun reportExplicitTypedCompat(node: UCallExpression) {
@@ -114,7 +139,7 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
 
             val replacement = "$receiver.${compat.functionName}<$type>($key)"
             val displayReplacement = "$receiver.${compat.functionName}<${type.displayShortName()}>($key)"
-            report(node, replacement, compat.importTarget, displayReplacement)
+            reportAndFix(node, replacement, compat.importTarget, displayReplacement, compat.functionName)
         }
 
         private fun reportGenericParcelable(node: UCallExpression) {
@@ -129,7 +154,7 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
 
             val replacement = "$receiver.${compat.functionName}<$type>($key)"
             val displayReplacement = "$receiver.${compat.functionName}<${type.displayShortName()}>($key)"
-            report(node, replacement, compat.importTarget, displayReplacement)
+            reportAndFix(node, replacement, compat.importTarget, displayReplacement, compat.functionName)
         }
 
         private fun resolveCompat(node: UCallExpression): CompatTarget? {
@@ -160,17 +185,18 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
             return parent is UBinaryExpressionWithType
         }
 
-        private fun report(
+        private fun reportAndFix(
             node: UElement,
             replacement: String,
             importTarget: String,
-            displayReplacement: String = replacement
+            displayReplacement: String = replacement,
+            fixName: String
         ) = context.report(
             issue = ISSUE,
             location = context.getLocation(node),
             message = "Can be replaced with `$displayReplacement`.",
             quickfixData = buildReplaceFix(
-                name = "Replace with '${displayReplacement.displayShortName()}'",
+                name = "Replace with '$fixName'",
                 replacement = replacement,
                 imports = arrayOf(importTarget)
             )

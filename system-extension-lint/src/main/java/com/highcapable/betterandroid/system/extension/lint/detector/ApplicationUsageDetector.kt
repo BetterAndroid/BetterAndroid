@@ -96,9 +96,35 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             id = "ReplaceWithApplicationExtension",
             briefDescription = "Use system-extension's application extensions instead.",
             explanation = """
-                Using `ComponentName(context, ...)`, `PackageManager` package checks, component state
-                operations, or package version compat wrappers can be simplified by using the
-                application-related extensions from BetterAndroid system-extension library.
+                Using `ComponentName(context, ...)`, `PackageManager` package checks, component \
+                state operations, or package version compat wrappers can be simplified by using \
+                application extensions from BetterAndroid system-extension library.
+
+                The `Application.kt` provides:
+                - Generic component name creation helpers
+                - Package existence and launch activity checks
+                - Component state query and update helpers
+                - A direct `versionCodeCompat` access API
+                - Better readability and maintainability
+
+                Examples:
+                ```kotlin
+                // Before
+                ComponentName(context, DemoActivity::class.java)
+                packageManager.getPackageInfo(packageName, 0) != null
+                packageManager.getLaunchIntentForPackage(packageName) != null
+                packageManager.getComponentEnabledSetting(componentName) == PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+                packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP)
+                PackageInfoCompat.getLongVersionCode(packageInfo)
+
+                // After
+                context.getComponentName<DemoActivity>()
+                packageManager.hasPackage(packageName)
+                packageManager.hasLaunchActivity(packageName)
+                packageManager.isComponentEnabled(componentName)
+                packageManager.disableComponent(componentName, PackageManager.DONT_KILL_APP)
+                packageInfo.versionCodeCompat
+                ```
             """.trimIndent(),
             category = Category.USABILITY,
             priority = 5,
@@ -149,12 +175,12 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             val replacement = "$receiver.$GET_COMPONENT_NAME<$targetClass>()"
             val displayReplacement = "$receiver.$GET_COMPONENT_NAME<${targetClass.displayShortName()}>()"
 
-            report(
+            reportAndFix(
                 context = context,
                 node = node,
                 replacement = replacement,
                 displayReplacement = displayReplacement,
-                displayName = "$GET_COMPONENT_NAME<${targetClass.displayShortName()}>()",
+                fixName = GET_COMPONENT_NAME,
                 importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.$GET_COMPONENT_NAME"
             )
         }
@@ -168,11 +194,11 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
                 val receiver = directCall.receiver?.asSourceString() ?: return
                 val packageName = directCall.valueArguments.firstOrNull()?.asSourceString() ?: return
                 val replacement = "$receiver.$HAS_PACKAGE($packageName)"
-                report(
+                reportAndFix(
                     context = context,
                     node = node,
                     replacement = replacement,
-                    displayName = "$HAS_PACKAGE(...)",
+                    fixName = HAS_PACKAGE,
                     importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.$HAS_PACKAGE"
                 )
                 return
@@ -186,11 +212,11 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             val packageName = match.groupValues[2].trim()
             val replacement = "$receiver.$HAS_PACKAGE($packageName)"
 
-            report(
+            reportAndFix(
                 context = context,
                 node = node,
                 replacement = replacement,
-                displayName = "$HAS_PACKAGE(...)",
+                fixName = HAS_PACKAGE,
                 importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.$HAS_PACKAGE"
             )
         }
@@ -203,11 +229,11 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
                 val packageName = call.valueArguments.firstOrNull()?.asSourceString() ?: return
                 val replacement = "$receiver.$HAS_LAUNCH_ACTIVITY($packageName)"
 
-                report(
+                reportAndFix(
                     context = context,
                     node = node,
                     replacement = replacement,
-                    displayName = "$HAS_LAUNCH_ACTIVITY(...)",
+                    fixName = HAS_LAUNCH_ACTIVITY,
                     importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.$HAS_LAUNCH_ACTIVITY"
                 )
                 return
@@ -225,11 +251,11 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             val packageName = match.groupValues[3].trim()
             val replacement = "$receiver.$HAS_LAUNCH_ACTIVITY($packageName)"
 
-            report(
+            reportAndFix(
                 context = context,
                 node = node,
                 replacement = replacement,
-                displayName = "$HAS_LAUNCH_ACTIVITY(...)",
+                fixName = HAS_LAUNCH_ACTIVITY,
                 importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.$HAS_LAUNCH_ACTIVITY"
             )
         }
@@ -242,11 +268,11 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             val packageName = match.groupValues[3].trim()
             val replacement = "$receiver.$HAS_LAUNCH_ACTIVITY($packageName)"
 
-            report(
+            reportAndFix(
                 context = context,
                 node = node,
                 replacement = replacement,
-                displayName = "$HAS_LAUNCH_ACTIVITY(...)",
+                fixName = HAS_LAUNCH_ACTIVITY,
                 importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.$HAS_LAUNCH_ACTIVITY"
             )
         }
@@ -268,11 +294,11 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             if (!isMatch) return
 
             val replacement = "$receiver.$IS_COMPONENT_ENABLED($componentName)"
-            report(
+            reportAndFix(
                 context = context,
                 node = node,
                 replacement = replacement,
-                displayName = "$IS_COMPONENT_ENABLED(...)",
+                fixName = IS_COMPONENT_ENABLED,
                 importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.$IS_COMPONENT_ENABLED"
             )
         }
@@ -297,11 +323,11 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             }
 
             val replacement = "$receiver.$functionName($componentName, $flags)"
-            report(
+            reportAndFix(
                 context = context,
                 node = node,
                 replacement = replacement,
-                displayName = "$functionName(...)",
+                fixName = functionName,
                 importTarget = importTarget
             )
         }
@@ -313,11 +339,11 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             val receiver = node.valueArguments.firstOrNull()?.asSourceString() ?: return
 
             val replacement = "$receiver.$VERSION_CODE_COMPAT"
-            report(
+            reportAndFix(
                 context = context,
                 node = node,
                 replacement = replacement,
-                displayName = VERSION_CODE_COMPAT,
+                fixName = VERSION_CODE_COMPAT,
                 importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.$VERSION_CODE_COMPAT"
             )
         }
@@ -334,11 +360,11 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             if (thenResolved.second == elseResolved.second) return
 
             val replacement = "${thenResolved.first}.$VERSION_CODE_COMPAT"
-            report(
+            reportAndFix(
                 context = context,
                 node = node,
                 replacement = replacement,
-                displayName = VERSION_CODE_COMPAT,
+                fixName = VERSION_CODE_COMPAT,
                 importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.$VERSION_CODE_COMPAT"
             )
         }
@@ -394,19 +420,19 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             return expression.asSourceString().trim()
         }
 
-        private fun report(
+        private fun reportAndFix(
             context: JavaContext,
             node: UElement,
             replacement: String,
             importTarget: String,
             displayReplacement: String = replacement,
-            displayName: String = displayReplacement.displayShortName()
+            fixName: String
         ) = context.report(
             issue = ISSUE,
             location = context.getLocation(node),
             message = "Can be replaced with `$displayReplacement`.",
             quickfixData = buildReplaceFix(
-                name = "Replace with '$displayName'",
+                name = "Replace with '$fixName'",
                 replacement = replacement,
                 imports = arrayOf(importTarget)
             )
