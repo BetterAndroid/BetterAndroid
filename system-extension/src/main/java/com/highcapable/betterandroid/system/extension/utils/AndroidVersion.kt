@@ -40,7 +40,7 @@ object AndroidVersion {
         B, B_1_1, C, D, E, E_0_1, E_MR1, FROYO, G, G_MR1,
         H, H_MR1, H_MR2, I, I_MR1, J, J_MR1, J_MR2, K,
         K_W, L, L_MR1, M, N, N_MR1, O, O_MR1, P,
-        Q, R, S, S_V2, T, U, V, BAKLAVA
+        Q, R, S, S_V2, T, U, V, BAKLAVA, CINNAMON_BUN
     )
     @Retention(AnnotationRetention.SOURCE)
     annotation class SdkInt
@@ -152,6 +152,9 @@ object AndroidVersion {
 
     /** Android 16 (36) */
     const val BAKLAVA = Build.VERSION_CODES.BAKLAVA
+
+    /** Android 17 (37) */
+    const val CINNAMON_BUN = Build.VERSION_CODES.CINNAMON_BUN
 
     /**
      * Get the current Android version name.
