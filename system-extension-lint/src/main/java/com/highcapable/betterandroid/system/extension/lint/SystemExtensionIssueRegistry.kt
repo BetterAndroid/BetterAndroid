@@ -28,10 +28,20 @@ import com.android.tools.lint.client.api.Vendor
 import com.android.tools.lint.detector.api.CURRENT_API
 import com.highcapable.betterandroid.generated.BetterAndroidProperties
 import com.highcapable.betterandroid.system.extension.lint.detector.AndroidVersionUsageDetector
+import com.highcapable.betterandroid.system.extension.lint.detector.ApplicationUsageDetector
+import com.highcapable.betterandroid.system.extension.lint.detector.BroadcastUsageDetector
+import com.highcapable.betterandroid.system.extension.lint.detector.ClipboardUsageDetector
+import com.highcapable.betterandroid.system.extension.lint.detector.IntentUsageDetector
+import com.highcapable.betterandroid.system.extension.lint.detector.ServiceUsageDetector
 
 class SystemExtensionIssueRegistry : IssueRegistry() {
 
     override val issues get() = listOf(
+        ApplicationUsageDetector.ISSUE,
+        BroadcastUsageDetector.ISSUE,
+        ClipboardUsageDetector.ISSUE,
+        IntentUsageDetector.ISSUE,
+        ServiceUsageDetector.ISSUE,
         AndroidVersionUsageDetector.ISSUE
     )
 

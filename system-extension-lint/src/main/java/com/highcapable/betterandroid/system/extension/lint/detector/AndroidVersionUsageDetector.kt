@@ -27,10 +27,10 @@ import com.android.tools.lint.detector.api.Detector
 import com.android.tools.lint.detector.api.Implementation
 import com.android.tools.lint.detector.api.Issue
 import com.android.tools.lint.detector.api.JavaContext
-import com.android.tools.lint.detector.api.LintFix
 import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.system.extension.lint.DeclaredSymbol
+import com.highcapable.betterandroid.system.extension.lint.detector.extension.buildReplaceFix
 import com.intellij.psi.PsiField
 import org.jetbrains.uast.UBinaryExpression
 import org.jetbrains.uast.UExpression
@@ -93,7 +93,8 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
             "TIRAMISU" to "T",
             "UPSIDE_DOWN_CAKE" to "U",
             "VANILLA_ICE_CREAM" to "V",
-            "BAKLAVA" to "BAKLAVA"
+            "BAKLAVA" to "BAKLAVA",
+            "CINNAMON_BUN" to "CINNAMON_BUN"
         )
 
         val ISSUE = Issue.create(
@@ -185,23 +186,17 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
         }
 
         private fun reportAndFix(context: JavaContext, node: UExpression, replacement: String, fixName: String) {
-            val fix = LintFix.create()
-                .name("Replace with '$fixName'")
-                .replace()
-                .all()
-                .with(replacement)
-                .reformat(true)
-                .shortenNames()
-                .imports(ANDROID_VERSION_CLASS)
-                .build()
-
             val message = "Can be replaced with `$replacement`."
 
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
                 message = message,
-                quickfixData = fix
+                quickfixData = buildReplaceFix(
+                    name = "Replace with '$fixName'",
+                    replacement = replacement,
+                    imports = arrayOf(ANDROID_VERSION_CLASS)
+                )
             )
         }
 

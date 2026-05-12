@@ -17,13 +17,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file is created by fankes on 2025/12/16.
+ * This file is created by fankes on 2026/5/12.
  */
-package com.highcapable.betterandroid.system.extension.lint.detector.entity
+package com.highcapable.betterandroid.system.extension.lint.detector.extension
 
-import org.jetbrains.uast.UCallExpression
+import com.android.tools.lint.detector.api.LintFix
 
-data class ReportDetail(
-    val message: String,
-    val callExpr: UCallExpression
-)
+internal fun buildReplaceFix(name: String, replacement: String, vararg imports: String) =
+    LintFix.create()
+        .name(name)
+        .replace()
+        .all()
+        .with(replacement)
+        .reformat(true)
+        .shortenNames()
+        .imports(*imports)
+        .build()

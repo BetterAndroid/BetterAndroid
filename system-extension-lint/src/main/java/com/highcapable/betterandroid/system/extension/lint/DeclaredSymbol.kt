@@ -26,4 +26,6 @@ import com.highcapable.betterandroid.generated.BetterAndroidProperties
 object DeclaredSymbol {
 
     const val BASE_PACKAGE = BetterAndroidProperties.PROJECT_SYSTEM_EXTENSION_NAMESPACE
+    const val COMPONENT_PACKAGE = "$BASE_PACKAGE.component"
+    const val UTILS_PACKAGE = "$BASE_PACKAGE.utils"
 }
