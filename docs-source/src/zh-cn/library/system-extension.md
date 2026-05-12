@@ -160,6 +160,7 @@ if (AndroidVersion.isAtLeast(AndroidVersion.Q)) {
 | 34       | `U`                   | `UPSIDE_DOWN_CAKE`         | 14                |
 | 35       | `V`                   | `VANILLA_ICE_CREAM`        | 15                |
 | 36       | `BAKLAVA`             | `BAKLAVA`                  | 16                |
+| 37       | `CINNAMON_BUN`        | `CINNAMON_BUN`             | 17                |
 
 除了对 API 等级的判断，你还可以使用以下方式来获取当前 Android 的版本名称。
 

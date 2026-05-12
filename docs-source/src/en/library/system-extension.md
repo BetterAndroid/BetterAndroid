@@ -160,6 +160,7 @@ The following is the constant mapping comparison table for each API, after Andro
 | 34        | `U`                   | `UPSIDE_DOWN_CAKE`         | 14                           |
 | 35        | `V`                   | `VANILLA_ICE_CREAM`        | 15                           |
 | 36        | `BAKLAVA`             | `BAKLAVA`                  | 16                           |
+| 37        | `CINNAMON_BUN`        | `CINNAMON_BUN`             | 17                           |
 
 In addition to judging the API level, you can also use the following method to get the current Android version name.
 
