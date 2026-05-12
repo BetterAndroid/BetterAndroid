@@ -35,6 +35,7 @@ import com.highcapable.betterandroid.ui.extension.lint.detector.extension.extend
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.unwrapParenthesized
 import org.jetbrains.uast.UBinaryExpressionWithType
 import org.jetbrains.uast.UCallExpression
+import org.jetbrains.uast.UClass
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UastBinaryExpressionWithTypeKind
 
@@ -44,6 +45,7 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
 
         private const val ACTIVITY_CLASS = "android.app.Activity"
         private const val CONTEXT_CLASS = "android.content.Context"
+        private const val VIEW_CLASS = "android.view.View"
         private const val FIND_VIEW_TREE_LIFECYCLE_OWNER_METHOD = "findViewTreeLifecycleOwner"
         private const val LIFECYCLE_OWNER_PROPERTY = "lifecycleOwner"
         private const val ACTIVITY_PROPERTY = "activity"
@@ -102,8 +104,9 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
         override fun visitCallExpression(node: UCallExpression) {
             if (node.methodName != FIND_VIEW_TREE_LIFECYCLE_OWNER_METHOD) return
 
-            val receiver = node.receiver?.asSourceString() ?: return
-            val replacement = "$receiver.$LIFECYCLE_OWNER_PROPERTY"
+            val replacement = node.receiver?.asSourceString()?.let { "$it.$LIFECYCLE_OWNER_PROPERTY" }
+                ?: resolveImplicitViewLifecycleOwnerReplacement(node)
+                ?: return
 
             context.report(
                 issue = ISSUE,
@@ -166,6 +169,22 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
                         listOf("${DeclaredSymbol.COMPONENT_PACKAGE}.$functionName")
                 }
             }
+        }
+
+        private fun resolveImplicitViewLifecycleOwnerReplacement(node: UCallExpression): String? {
+            var parent = node.uastParent
+            var containingClass: UClass? = null
+            while (parent != null) {
+                if (parent is UClass) {
+                    containingClass = parent
+                    break
+                }
+                parent = parent.uastParent
+            }
+            val psiClass = containingClass?.javaPsi ?: return null
+            if (!context.evaluator.extendsClass(psiClass, VIEW_CLASS, false)) return null
+
+            return LIFECYCLE_OWNER_PROPERTY
         }
 
         private fun createContextReplacement(
