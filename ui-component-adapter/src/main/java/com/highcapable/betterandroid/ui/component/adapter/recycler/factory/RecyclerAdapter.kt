@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2025/1/24.
  */
-@file:Suppress("unused")
+@file:Suppress("unused", "FunctionName")
 @file:JvmName("RecyclerAdapterUtils")
 
 package com.highcapable.betterandroid.ui.component.adapter.recycler.factory
@@ -140,61 +140,153 @@ fun <T> RecyclerView.Adapter<*>.notifyByDiff(
     getChangePayload: (oldItem: T, newItem: T) -> Any? = { _, _ -> null },
     detectMoves: Boolean = true
 ) {
-    val wrapper = wrapper
+    wrapper?.let {
+        val currentItemCount = itemCount
+        val expectedItemCount = newList.size +
+            (if (it.hasHeaderView) 1 else 0) +
+            (if (it.hasFooterView) 1 else 0)
 
-    when {
-        wrapper != null -> {
-            val currentItemCount = itemCount
-            val expectedItemCount = newList.size +
-                (if (wrapper.hasHeaderView) 1 else 0) +
-                (if (wrapper.hasFooterView) 1 else 0)
-
-            if (currentItemCount != expectedItemCount) Log.w(
-                BetterAndroidProperties.PROJECT_NAME,
-                "notifyByDiff called with mismatched itemCount, current adapter.itemCount is $currentItemCount, but expected $expectedItemCount."
-            )
-        }
-        itemCount != newList.size -> Log.w(
+        if (currentItemCount != expectedItemCount) Log.w(
             BetterAndroidProperties.PROJECT_NAME,
-            "notifyByDiff called with mismatched itemCount, current adapter.itemCount is $itemCount, but expected ${newList.size}."
+            "notifyByDiff called with mismatched itemCount, current adapter.itemCount is $currentItemCount, but expected $expectedItemCount."
         )
     }
 
-    val diffResult = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+    if (itemCount != newList.size) Log.w(
+        BetterAndroidProperties.PROJECT_NAME,
+        "notifyByDiff called with mismatched itemCount, current adapter.itemCount is $itemCount, but expected ${newList.size}."
+    )
 
-        override fun getOldListSize() = oldList.size
-        override fun getNewListSize() = newList.size
+    notifyByDiff(
+        callback = DiffUtilCallback(
+            oldList = oldList,
+            newList = newList,
+            areItemsTheSame = areItemsTheSame,
+            areContentsTheSame = areContentsTheSame,
+            getChangePayload = getChangePayload
+        ),
+        detectMoves = detectMoves
+    )
+}
 
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-            areItemsTheSame(oldList[oldItemPosition], newList[newItemPosition])
-
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-            areContentsTheSame(oldList[oldItemPosition], newList[newItemPosition])
-
-        override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int) =
-            getChangePayload(oldList[oldItemPosition], newList[newItemPosition])
-    }, detectMoves)
+/**
+ * Notify that the adapter has been updated by [DiffUtil.Callback].
+ *
+ * Usage:
+ *
+ * ```kotlin
+ * val callback = DiffUtilCallback(
+ *     oldList = oldList,
+ *     newList = dataSet,
+ *     areItemsTheSame = { oldItem, newItem -> oldItem.id == newItem.id },
+ *     areContentsTheSame = { oldItem, newItem -> oldItem == newItem }
+ * )
+ * adapter.notifyByDiff(callback)
+ * ```
+ *
+ * @see DiffUtil.calculateDiff
+ * @receiver [RecyclerView.Adapter]
+ * @param callback the [DiffUtil.Callback] to calculate differences.
+ * @param detectMoves whether to detect moved items, default is true.
+ */
+fun RecyclerView.Adapter<*>.notifyByDiff(
+    callback: DiffUtil.Callback,
+    detectMoves: Boolean = true
+) {
+    val diffResult = DiffUtil.calculateDiff(callback, detectMoves)
 
     wrapper?.let { wrapper ->
-        diffResult.dispatchUpdatesTo(object : ListUpdateCallback {
-
-            override fun onInserted(position: Int, count: Int) {
-                notifyItemRangeInserted(wrapper.includingPosition(position), count)
-            }
-
-            override fun onRemoved(position: Int, count: Int) {
-                notifyItemRangeRemoved(wrapper.includingPosition(position), count)
-            }
-
-            override fun onMoved(fromPosition: Int, toPosition: Int) {
-                notifyItemMoved(wrapper.includingPosition(fromPosition), wrapper.includingPosition(toPosition))
-            }
-
-            override fun onChanged(position: Int, count: Int, payload: Any?) {
-                notifyItemRangeChanged(wrapper.includingPosition(position), count, payload)
-            }
-        })
+        diffResult.dispatchUpdatesTo(
+            ListUpdateCallback(
+                onInserted = { position, count ->
+                    notifyItemRangeInserted(wrapper.includingPosition(position), count)
+                },
+                onRemoved = { position, count ->
+                    notifyItemRangeRemoved(wrapper.includingPosition(position), count)
+                },
+                onMoved = { fromPosition, toPosition ->
+                    notifyItemMoved(wrapper.includingPosition(fromPosition), wrapper.includingPosition(toPosition))
+                },
+                onChanged = { position, count, payload ->
+                    notifyItemRangeChanged(wrapper.includingPosition(position), count, payload)
+                }
+            )
+        )
     } ?: diffResult.dispatchUpdatesTo(this)
+}
+
+/**
+ * Create a [DiffUtil.Callback] for list diff calculation.
+ *
+ * Usage:
+ *
+ * ```kotlin
+ * val callback = DiffUtilCallback(
+ *     oldList = oldList,
+ *     newList = newList,
+ *     areItemsTheSame = { oldItem, newItem -> oldItem.id == newItem.id },
+ *     areContentsTheSame = { oldItem, newItem -> oldItem == newItem }
+ * )
+ * ```
+ * @see DiffUtil.Callback
+ * @param oldList the old data list snapshot.
+ * @param newList the new data list snapshot.
+ * @param areItemsTheSame compare whether the two items represent the same object.
+ * @param areContentsTheSame compare whether the contents of the two items are the same.
+ * @param getChangePayload get the changed payload between two items, default is null.
+ * @return [DiffUtil.Callback]
+ */
+fun <T> DiffUtilCallback(
+    oldList: List<T>,
+    newList: List<T>,
+    areItemsTheSame: (oldItem: T, newItem: T) -> Boolean,
+    areContentsTheSame: (oldItem: T, newItem: T) -> Boolean,
+    getChangePayload: (oldItem: T, newItem: T) -> Any? = { _, _ -> null }
+) = object : DiffUtil.Callback() {
+
+    override fun getOldListSize() = oldList.size
+    override fun getNewListSize() = newList.size
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+        areItemsTheSame(oldList[oldItemPosition], newList[newItemPosition])
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+        areContentsTheSame(oldList[oldItemPosition], newList[newItemPosition])
+
+    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int) =
+        getChangePayload(oldList[oldItemPosition], newList[newItemPosition])
+}
+
+/**
+ * Create a [ListUpdateCallback] for dispatching diff updates.
+ *
+ * Usage:
+ *
+ * ```kotlin
+ * val callback = ListUpdateCallback(
+ *     onInserted = { position, count -> /* Handle inserted items */ },
+ *     onRemoved = { position, count -> /* Handle removed items */ },
+ *     onMoved = { fromPosition, toPosition -> /* Handle moved items */ },
+ *     onChanged = { position, count, payload -> /* Handle changed items */ } }
+ * )
+ * ```
+ * @see ListUpdateCallback
+ * @param onInserted callback for inserted items, default is no-op.
+ * @param onRemoved callback for removed items, default is no-op.
+ * @param onMoved callback for moved items, default is no-op.
+ * @param onChanged callback for changed items, default is no-op.
+ * @return [ListUpdateCallback]
+ */
+fun ListUpdateCallback(
+    onInserted: (position: Int, count: Int) -> Unit = { _, _ -> },
+    onRemoved: (position: Int, count: Int) -> Unit = { _, _ -> },
+    onMoved: (fromPosition: Int, toPosition: Int) -> Unit = { _, _ -> },
+    onChanged: (position: Int, count: Int, payload: Any?) -> Unit = { _, _, _ -> }
+): ListUpdateCallback = object : ListUpdateCallback {
+    override fun onInserted(position: Int, count: Int) = onInserted(position, count)
+    override fun onRemoved(position: Int, count: Int) = onRemoved(position, count)
+    override fun onMoved(fromPosition: Int, toPosition: Int) = onMoved(fromPosition, toPosition)
+    override fun onChanged(position: Int, count: Int, payload: Any?) = onChanged(position, count, payload)
 }
 
 /**
