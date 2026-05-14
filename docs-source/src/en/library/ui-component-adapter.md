@@ -653,6 +653,10 @@ recyclerView.invalidateItemDecorations()
 
 [RecyclerAdapter → notifyByDiff](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-by-diff)
 
+[RecyclerAdapter → DiffUtilCallback](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter.recycler.factory/diff-util-callback)
+
+[RecyclerAdapter → ListUpdateCallback](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter.recycler.factory/list-update-callback)
+
 [RecyclerAdapter → clearAndNotify](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter.recycler.factory/clear-and-notify)
 
 [RecyclerAdapter → notifyDataSetChangedIgnore](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-data-set-changed-ignore)
@@ -785,6 +789,54 @@ adapter.notifyByDiff(
         // Return the content you want to pass to payload.
         Unit
     }
+)
+```
+
+If you already have a reusable `DiffUtil.Callback`, you can also create it through `DiffUtilCallback` first, and then pass it to `notifyByDiff`.
+
+> The following example
+
+```kotlin
+val callback = DiffUtilCallback(
+    oldList = oldList,
+    newList = dataSet,
+    areItemsTheSame = { oldItem, newItem -> oldItem.id == newItem.id },
+    areContentsTheSame = { oldItem, newItem -> oldItem == newItem }
+)
+
+adapter.notifyByDiff(callback)
+```
+
+This form also supports the `detectMoves` parameter.
+
+> The following example
+
+```kotlin
+adapter.notifyByDiff(callback, detectMoves = false)
+```
+
+If you want to fully handle the dispatch process of `DiffUtil.DiffResult` by yourself, you can also use it directly with `ListUpdateCallback`.
+
+> The following example
+
+```kotlin
+val diffResult = DiffUtil.calculateDiff(callback, detectMoves = true)
+
+diffResult.dispatchUpdatesTo(
+    ListUpdateCallback(
+        onInserted = { position, count ->
+            adapter.notifyItemRangeInserted(position, count)
+        },
+        onRemoved = { position, count ->
+            adapter.notifyItemRangeRemoved(position, count)
+        },
+        onMoved = { fromPosition, toPosition ->
+            adapter.notifyItemMoved(fromPosition, toPosition)
+        },
+        onChanged = { position, count, payload ->
+            adapter.notifyItemRangeChanged(position, count, payload)
+        }
+    )
 )
 ```
 
