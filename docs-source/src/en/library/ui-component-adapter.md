@@ -755,6 +755,22 @@ adapter.notifyByDiff(
 )
 ```
 
+By default, `notifyByDiff` enables `detectMoves = true` to detect move operations in the list.
+
+If you want to disable move detection, you can also specify `detectMoves = false` manually.
+
+> The following example
+
+```kotlin
+adapter.notifyByDiff(
+    oldList = oldList,
+    newList = dataSet,
+    areItemsTheSame = { oldItem, newItem -> oldItem.id == newItem.id },
+    areContentsTheSame = { oldItem, newItem -> oldItem == newItem },
+    detectMoves = false
+)
+```
+
 If you need to further control the payload content of partial refreshes, you can also use `getChangePayload`.
 
 > The following example

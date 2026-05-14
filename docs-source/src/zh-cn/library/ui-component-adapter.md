@@ -748,6 +748,22 @@ adapter.notifyByDiff(
 )
 ```
 
+默认情况下，`notifyByDiff` 会启用 `detectMoves = true` 来检测列表中的移动操作。
+
+如果你希望关闭移动检测，也可以手动指定 `detectMoves = false`。
+
+> 示例如下
+
+```kotlin
+adapter.notifyByDiff(
+    oldList = oldList,
+    newList = dataSet,
+    areItemsTheSame = { oldItem, newItem -> oldItem.id == newItem.id },
+    areContentsTheSame = { oldItem, newItem -> oldItem == newItem },
+    detectMoves = false
+)
+```
+
 如果你需要进一步控制局部刷新的载荷内容，你还可以使用 `getChangePayload`。
 
 > 示例如下
