@@ -45,6 +45,7 @@ gropify {
             isEnabled = false
         }
     }
+
     projects(
         ":ui-component",
         ":ui-component-adapter",
@@ -63,7 +64,9 @@ gropify {
             isEnabled = false
         }
     }
+
     projects(
+        ":ui-component-adapter-lint",
         ":ui-extension-lint",
         ":system-extension-lint"
     ) {
@@ -80,9 +83,14 @@ include(
     ":ui-component",
     ":ui-component-adapter",
     ":ui-extension",
-    ":ui-extension-lint",
-    ":system-extension",
-    ":system-extension-lint",
+    ":system-extension"
+)
+include(
     ":compose-extension",
     ":compose-multiplatform"
+)
+include(
+    ":ui-component-adapter-lint",
+    ":ui-extension-lint",
+    ":system-extension-lint"
 )
