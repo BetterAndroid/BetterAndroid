@@ -117,7 +117,8 @@ fun RecyclerView.Adapter<*>.notifyAllItemsChanged(dataSet: Collection<*>? = null
  *     oldList = oldList,
  *     newList = dataSet,
  *     areItemsTheSame = { oldItem, newItem -> oldItem.id == newItem.id },
- *     areContentsTheSame = { oldItem, newItem -> oldItem == newItem }
+ *     areContentsTheSame = { oldItem, newItem -> oldItem == newItem },
+ *     detectMoves = true
  * )
  * ```
  *
@@ -129,13 +130,15 @@ fun RecyclerView.Adapter<*>.notifyAllItemsChanged(dataSet: Collection<*>? = null
  * @param areItemsTheSame compare whether the two items represent the same object.
  * @param areContentsTheSame compare whether the contents of the two items are the same.
  * @param getChangePayload get the changed payload between two items, default is null.
+ * @param detectMoves whether to detect moved items, default is true.
  */
 fun <T> RecyclerView.Adapter<*>.notifyByDiff(
     oldList: List<T>,
     newList: List<T>,
     areItemsTheSame: (oldItem: T, newItem: T) -> Boolean,
     areContentsTheSame: (oldItem: T, newItem: T) -> Boolean,
-    getChangePayload: (oldItem: T, newItem: T) -> Any? = { _, _ -> null }
+    getChangePayload: (oldItem: T, newItem: T) -> Any? = { _, _ -> null },
+    detectMoves: Boolean = true
 ) {
     val wrapper = wrapper
 
@@ -170,7 +173,7 @@ fun <T> RecyclerView.Adapter<*>.notifyByDiff(
 
         override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int) =
             getChangePayload(oldList[oldItemPosition], newList[newItemPosition])
-    })
+    }, detectMoves)
 
     wrapper?.let { wrapper ->
         diffResult.dispatchUpdatesTo(object : ListUpdateCallback {
