@@ -30,11 +30,17 @@ import com.android.tools.lint.detector.api.JavaContext
 import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.asCall
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.resolveName
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.unwrapParenthesized
+import com.intellij.psi.PsiLocalVariable
 import com.intellij.psi.util.PsiTypesUtil
 import org.jetbrains.uast.UCallExpression
+import org.jetbrains.uast.ULocalVariable
 import org.jetbrains.uast.UQualifiedReferenceExpression
+import org.jetbrains.uast.USimpleNameReferenceExpression
+import org.jetbrains.uast.toUElementOfType
 
 class ViewImeVisibilityUsageDetector : Detector(), Detector.UastScanner {
 
@@ -43,8 +49,11 @@ class ViewImeVisibilityUsageDetector : Detector(), Detector.UastScanner {
         private const val VIEW_CLASS = "android.view.View"
 
         private const val INPUT_METHOD_MANAGER_CLASS = "android.view.inputmethod.InputMethodManager"
+        private const val WINDOW_COMPAT_CLASS = "androidx.core.view.WindowCompat"
         private const val WINDOW_INSETS_CONTROLLER_CLASS = "android.view.WindowInsetsController"
         private const val WINDOW_INSETS_CONTROLLER_COMPAT_CLASS = "androidx.core.view.WindowInsetsControllerCompat"
+        private const val WINDOW_INSETS_TYPE_CLASS = "android.view.WindowInsets.Type"
+        private const val WINDOW_INSETS_COMPAT_TYPE_CLASS = "androidx.core.view.WindowInsetsCompat.Type"
 
         private const val SHOW_SOFT_INPUT_METHOD = "showSoftInput"
         private const val SHOW_SOFT_INPUT_FROM_INPUT_METHOD = "showSoftInputFromInputMethod"
@@ -53,6 +62,7 @@ class ViewImeVisibilityUsageDetector : Detector(), Detector.UastScanner {
         private const val SHOW_METHOD = "show"
         private const val HIDE_METHOD = "hide"
         private const val GET_WINDOW_INSETS_CONTROLLER_METHOD = "getWindowInsetsController"
+        private const val GET_INSETS_CONTROLLER_METHOD = "getInsetsController"
         private const val IME_METHOD = "ime"
         private const val WINDOW_TOKEN_PROPERTY = "windowToken"
 
@@ -119,6 +129,10 @@ class ViewImeVisibilityUsageDetector : Detector(), Detector.UastScanner {
             val isWindowInsetsController = context.evaluator.isMemberInClass(method, WINDOW_INSETS_CONTROLLER_CLASS)
             val isWindowInsetsControllerCompat = context.evaluator.isMemberInClass(method, WINDOW_INSETS_CONTROLLER_COMPAT_CLASS)
             if (!isInputMethodManager && !isWindowInsetsController && !isWindowInsetsControllerCompat) return
+            if ((isWindowInsetsController || isWindowInsetsControllerCompat) &&
+                (methodName == SHOW_METHOD || methodName == HIDE_METHOD) &&
+                !hasImeTypeArgument(node)
+            ) return
 
             val replacement = when {
                 isInputMethodManager && methodName == SHOW_SOFT_INPUT_METHOD ->
@@ -175,27 +189,50 @@ class ViewImeVisibilityUsageDetector : Detector(), Detector.UastScanner {
         }
 
         private fun resolveReceiverViewText(node: UCallExpression): String? {
-            val receiver = node.receiver ?: return null
-            val resolvedReceiver = receiver as? UQualifiedReferenceExpression
+            val receiver = node.receiver.unwrapParenthesized() ?: return null
+            val receiverCall = receiver.asCall()
+            if (receiverCall != null) return resolveViewFromInsetsControllerCall(receiverCall)
 
+            val resolvedReceiver = receiver as? UQualifiedReferenceExpression
             if (resolvedReceiver != null) {
                 val selectorName = resolvedReceiver.selector.resolveName()
-                if (selectorName == IME_METHOD) return resolvedReceiver.receiver.asSourceString()
+                if (selectorName == GET_WINDOW_INSETS_CONTROLLER_METHOD) return resolvedReceiver.receiver.asSourceString()
 
                 val selectorCall = resolvedReceiver.selector as? UCallExpression
                 if (selectorCall?.methodName == GET_WINDOW_INSETS_CONTROLLER_METHOD)
-                    return selectorCall.valueArguments.firstOrNull()?.asSourceString()
+                    return resolveViewFromInsetsControllerCall(selectorCall)
             }
 
-            val firstArg = node.valueArguments.firstOrNull() ?: return null
-            val psiClass = PsiTypesUtil.getPsiClass(firstArg.getExpressionType())
-            if (psiClass != null && context.evaluator.extendsClass(psiClass, VIEW_CLASS, false))
-                return firstArg.asSourceString()
+            val reference = receiver as? USimpleNameReferenceExpression ?: return null
+            val localVariable = when (val resolved = reference.resolve()) {
+                is ULocalVariable -> resolved
+                is PsiLocalVariable -> resolved.toUElementOfType<ULocalVariable>()
+                else -> null
+            } ?: return null
 
-            if (node.methodName != SHOW_METHOD && node.methodName != HIDE_METHOD) return null
-            if (firstArg !is UCallExpression || firstArg.methodName != IME_METHOD) return null
+            return localVariable.uastInitializer.unwrapParenthesized().asCall()?.let(::resolveViewFromInsetsControllerCall)
+        }
 
-            return firstArg.receiver?.asSourceString()
+        private fun resolveViewFromInsetsControllerCall(node: UCallExpression): String? {
+            if (node.methodName != GET_WINDOW_INSETS_CONTROLLER_METHOD &&
+                node.methodName != GET_INSETS_CONTROLLER_METHOD
+            ) return null
+            val method = node.resolve() ?: return null
+
+            return when {
+                context.evaluator.isMemberInClass(method, VIEW_CLASS) -> node.receiver?.asSourceString()
+                context.evaluator.isMemberInClass(method, WINDOW_COMPAT_CLASS) -> node.valueArguments.getOrNull(1)?.asSourceString()
+                else -> null
+            }
+        }
+
+        private fun hasImeTypeArgument(node: UCallExpression): Boolean {
+            val argumentCall = node.valueArguments.firstOrNull().unwrapParenthesized().asCall() ?: return false
+            if (argumentCall.methodName != IME_METHOD) return false
+            val method = argumentCall.resolve() ?: return false
+
+            return context.evaluator.isMemberInClass(method, WINDOW_INSETS_TYPE_CLASS) ||
+                context.evaluator.isMemberInClass(method, WINDOW_INSETS_COMPAT_TYPE_CLASS)
         }
     }
 }
