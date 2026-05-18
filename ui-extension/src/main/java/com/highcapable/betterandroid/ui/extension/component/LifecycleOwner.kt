@@ -72,7 +72,7 @@ val LifecycleOwner.activity get() = when (this) {
 fun LifecycleOwner.requireContext() = when (this) {
     is Context -> this as Context
     is Fragment -> requireContext()
-    else -> error("LifecycleOwner is not a Context.")
+    else -> error("LifecycleOwner $this is not a Context.")
 }
 
 /**
@@ -85,7 +85,7 @@ fun LifecycleOwner.requireContext() = when (this) {
 fun LifecycleOwner.requireActivity() = when (this) {
     is Activity -> this as Activity
     is Fragment -> requireActivity()
-    else -> error("LifecycleOwner is not an Activity.")
+    else -> error("LifecycleOwner $this is not an Activity.")
 }
 
 /**
