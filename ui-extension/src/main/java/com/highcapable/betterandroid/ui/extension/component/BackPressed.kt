@@ -53,7 +53,8 @@ val Fragment.onBackPressedDispatcher get() = requireActivity<ComponentActivity>(
 val View.onBackPressedDispatcher: OnBackPressedDispatcher
     get() {
         val owner = requireLifecycleOwner()
-        val activity = owner.requireActivity<ComponentActivity>()
+        val activity = owner.activity<ComponentActivity>() ?: context as? ComponentActivity?
+            ?: error("View $this is not attached to a ComponentActivity.")
 
         return activity.onBackPressedDispatcher
     }
