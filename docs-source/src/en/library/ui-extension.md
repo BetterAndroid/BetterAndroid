@@ -820,7 +820,85 @@ val lcOwner = context.lifecycleOwner
 val lcOwner = context.requireLifecycleOwner()
 ```
 
-### Coroutines Extensions
+### BackPressed Extension
+
+::: tip Contents of This Section
+
+[BackPressedCallback](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/-back-pressed-callback)
+
+[OnBackPressedDispatcher / ComponentActivity / Fragment / View → addBackPressedCallback](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/add-back-pressed-callback)
+
+Extensions for system back pressed events.
+
+:::
+
+`androidx` already provides `OnBackPressedDispatcher` for handling system back pressed events,
+but in actual use, you still need to frequently deal with the callback object itself and the process of continuing the current back dispatch.
+
+`BetterAndroid` provides a more direct set of extensions for this,
+allowing you to continue using the official capability with a more concise Kotlin call style.
+
+`BetterAndroid` will automatically help you introduce the `androidx.activity:activity` dependency, you can [refer here](https://developer.android.com/reference/androidx/activity/OnBackPressedDispatcher) to get started.
+
+> The following example
+
+```kotlin
+// Assume this is your ComponentActivity.
+val activity: ComponentActivity
+// Add a back pressed callback.
+val callback = activity.addBackPressedCallback {
+    // Your code here.
+}
+// You can still directly use the official capabilities.
+callback.isEnabled = false
+callback.remove()
+```
+
+For `Fragment`, the callback lifecycle will use the current `viewLifecycleOwner` by default.
+
+> The following example
+
+```kotlin
+// Assume this is your Fragment.
+val fragment: Fragment
+// Uses viewLifecycleOwner by default.
+fragment.addBackPressedCallback {
+    // Your code here.
+}
+// You can also manually specify the lifecycle owner.
+fragment.addBackPressedCallback(owner = fragment) {
+    // Your code here.
+}
+```
+
+For `View`, you can directly register a back pressed callback based on its current `LifecycleOwner`
+and host `ComponentActivity`.
+
+> The following example
+
+```kotlin
+// Assume this is your View.
+val view: View
+// Add a back pressed callback.
+view.addBackPressedCallback {
+    // Your code here.
+}
+```
+
+If you want to continue dispatching this back event in the current callback, you can directly call `trigger()`.
+
+> The following example
+
+```kotlin
+activity.addBackPressedCallback {
+    // Ignore the current callback and continue dispatching the back event.
+    trigger()
+    // Or remove the current callback after continuing the dispatch.
+    trigger(removed = true)
+}
+```
+
+### Coroutines Extension
 
 ::: tip Contents of This Section
 

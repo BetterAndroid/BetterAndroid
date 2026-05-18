@@ -792,6 +792,81 @@ val lcOwner = context.lifecycleOwner
 val lcOwner = context.requireLifecycleOwner()
 ```
 
+### BackPressed 扩展
+
+::: tip 本节内容
+
+[BackPressedCallback](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/-back-pressed-callback)
+
+[OnBackPressedDispatcher / ComponentActivity / Fragment / View → addBackPressedCallback](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/add-back-pressed-callback)
+
+适用于系统返回事件的扩展。
+
+:::
+
+`androidx` 已经提供了 `OnBackPressedDispatcher` 用于处理系统返回事件，但是在实际使用时，仍然需要频繁处理回调对象本身以及继续分发当前返回事件的过程。
+
+`BetterAndroid` 为此提供了一组更加直接的扩展写法，让你可以继续基于官方能力使用更简洁的 Kotlin 调用方式。
+
+`BetterAndroid` 会自动帮你引入 `androidx.activity:activity` 依赖，你可以 [参考这里](https://developer.android.com/reference/androidx/activity/OnBackPressedDispatcher) 以开始使用。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 ComponentActivity
+val activity: ComponentActivity
+// 添加一个返回事件回调
+val callback = activity.addBackPressedCallback {
+    // Your code here.
+}
+// 你依然可以直接使用官方提供的能力
+callback.isEnabled = false
+callback.remove()
+```
+
+对于 `Fragment`，默认情况下会自动使用当前 `viewLifecycleOwner` 来绑定回调生命周期。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Fragment
+val fragment: Fragment
+// 默认使用 viewLifecycleOwner
+fragment.addBackPressedCallback {
+    // Your code here.
+}
+// 你也可以手动指定生命周期宿主
+fragment.addBackPressedCallback(owner = fragment) {
+    // Your code here.
+}
+```
+
+对于 `View`，你可以直接基于其所在的 `LifecycleOwner` 和宿主 `ComponentActivity` 来注册返回事件回调。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 View
+val view: View
+// 添加一个返回事件回调
+view.addBackPressedCallback {
+    // Your code here.
+}
+```
+
+如果你希望在当前回调中继续分发这次返回事件，你可以直接调用 `trigger()`。
+
+> 示例如下
+
+```kotlin
+activity.addBackPressedCallback {
+    // 忽略当前回调并继续分发返回事件
+    trigger()
+    // 或者在继续分发后移除当前回调
+    trigger(removed = true)
+}
+```
+
 ### 协程 (Coroutines) 扩展
 
 ::: tip 本节内容
