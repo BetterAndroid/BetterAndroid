@@ -11,7 +11,10 @@ kavaref-extension = "1.0.2"
 # noinspection GradleDependency
 androidx-core-ktx = "1.17.0"
 androidx-fragment-ktx = "1.8.9"
-androidx-activity = "1.13.0"
+# The project current support min sdk version is 21,
+# suppress the warning about using newer versions of dependencies that may require higher min sdk version.
+# noinspection GradleDependency
+androidx-activity = "1.11.0"
 androidx-appcompat = "1.7.1"
 androidx-recyclerview = "1.4.0"
 androidx-viewpager = "1.1.0"
