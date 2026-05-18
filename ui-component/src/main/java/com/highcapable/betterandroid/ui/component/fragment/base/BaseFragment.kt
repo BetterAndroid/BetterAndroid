@@ -23,23 +23,18 @@ package com.highcapable.betterandroid.ui.component.fragment.base
 
 import android.app.Activity
 import androidx.fragment.app.Fragment
-import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
 import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
 
 /**
- * Base fragment with [ISystemBarsController], [IBackPressedController].
+ * Base fragment with [ISystemBarsController].
  *
  * Inherited from [Fragment].
  */
-abstract class BaseFragment internal constructor() : Fragment(), ISystemBarsController, IBackPressedController {
+abstract class BaseFragment internal constructor() : Fragment(), ISystemBarsController {
 
     override val systemBars
         get() = (requireActivity() as? ISystemBarsController?)?.systemBars
             ?: error("This Fragment attached Activity is not implements from ISystemBarsController.")
-
-    override val backPressed
-        get() = (requireActivity() as? IBackPressedController?)?.backPressed
-            ?: error("This Fragment attached Activity is not implements from IBackPressedController.")
 
     /**
      * Get the current activity through [getActivity] and cast to [T].

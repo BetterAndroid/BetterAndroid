@@ -25,37 +25,21 @@ package com.highcapable.betterandroid.ui.component.activity.base
 
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
-import com.highcapable.betterandroid.ui.component.backpress.BackPressedController
-import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
 import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
 import com.highcapable.betterandroid.ui.component.systembar.SystemBarsController
 
 /**
- * Base compat activity with [ISystemBarsController], [IBackPressedController].
+ * Base compat activity with [ISystemBarsController].
  *
  * Inherited from [AppCompatActivity].
  */
-abstract class BaseCompatActivity internal constructor() : AppCompatActivity(), ISystemBarsController, IBackPressedController {
+abstract class BaseCompatActivity internal constructor() : AppCompatActivity(), ISystemBarsController {
 
     override val systemBars by lazy { SystemBarsController.from(window) }
-
-    override val backPressed by lazy { BackPressedController.from(activity = this) }
-
-    @Deprecated(
-        message = "Android has deprecated overriding or calling onBackPressed, " +
-            "please use backPressed.addCallback(...) and backPressed.trigger(...) to replace it.",
-        replaceWith = ReplaceWith("backPressed.trigger()"),
-        level = DeprecationLevel.ERROR
-    )
-    @Suppress("DEPRECATION", "KotlinRedundantDiagnosticSuppress")
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
 
     @CallSuper
     override fun onDestroy() {
         systemBars.destroy()
-        backPressed.destroy()
 
         super.onDestroy()
     }

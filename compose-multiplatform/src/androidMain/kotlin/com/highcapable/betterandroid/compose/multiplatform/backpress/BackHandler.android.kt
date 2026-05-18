@@ -23,19 +23,8 @@
 
 package com.highcapable.betterandroid.compose.multiplatform.backpress
 
-import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
-import com.highcapable.betterandroid.ui.component.backpress.BackPressedController
-import com.highcapable.betterandroid.ui.component.backpress.callback.OnBackPressedCallback
-import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
+import androidx.activity.compose.BackHandler as AndroidBackHandler
 
 /**
  * An effect for handling presses of the system back button.
@@ -53,45 +42,10 @@ import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
  *
  * It is even more impossible to have a "back press" on a desktop platform.
  *
- * Please visit the [compose-multiplatform](https://betterandroid.github.io/BetterAndroid/en/library/compose-multiplatform#system-event)
+ * Please visit the [compose-multiplatform](https://betterandroid.github.io/BetterAndroid/en/library/compose-multiplatform#back-pressed-event)
  * documentation for usage.
  * @param enabled if this BackHandler should be enabled, default true.
  * @param onBack the action invoked by pressing the system back.
  */
 @Composable
-actual fun BackHandler(enabled: Boolean, onBack: () -> Unit) {
-    val backPressed = rememberBackPressedController()
-    val currentOnBack by rememberUpdatedState(onBack)
-
-    val backCallback = remember { OnBackPressedCallback { currentOnBack() } }
-
-    // On every successful composition, update the callback with the `enabled` value.
-    SideEffect { backCallback.isEnabled = enabled }
-
-    // Destroy the callback when the effect leaves the composition.
-    DisposableEffect(backPressed) {
-        backPressed.addCallback(backCallback)
-        onDispose { backPressed.removeCallback(backCallback) }
-    }
-}
-
-/**
- * Creates and remember a [BackPressedController].
- * @return [BackPressedController]
- */
-@Composable
-private fun rememberBackPressedController(): BackPressedController {
-    val activity = LocalContext.current as? ComponentActivity? ?: error("No ComponentActivity provided of composables.")
-    var backPressed by remember { mutableStateOf<BackPressedController?>(null) }
-
-    if (backPressed == null) backPressed = activity.resolveBackPressedController()
-    return backPressed ?: error("No BackPressedController provided of composables.")
-}
-
-/**
- * Resolve the [BackPressedController] from [ComponentActivity].
- * @receiver the current activity.
- * @return [BackPressedController]
- */
-private fun ComponentActivity.resolveBackPressedController() =
-    (this as? IBackPressedController?)?.backPressed ?: BackPressedController.from(activity = this)
+actual fun BackHandler(enabled: Boolean, onBack: () -> Unit) = AndroidBackHandler(enabled, onBack)

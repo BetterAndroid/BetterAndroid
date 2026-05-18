@@ -30,7 +30,6 @@ import androidx.annotation.LayoutRes
 import com.highcapable.betterandroid.ui.component.activity.base.BaseCompatActivity
 import com.highcapable.betterandroid.ui.component.activity.base.BaseComponentActivity
 import com.highcapable.betterandroid.ui.component.fragment.base.BaseFragment
-import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
 import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
 
 /**
@@ -55,12 +54,11 @@ import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
  * ```
  *
  * - You must use an inherited from [BaseCompatActivity] or [BaseComponentActivity]'s activity or implements
- *   [ISystemBarsController], [IBackPressedController] to use this fragment,
- *   otherwise some functions such as [systemBars], [backPressed] will not work.
+ *   [ISystemBarsController] to use this fragment,
+ *   otherwise some functions such as [systemBars] will not work.
  * @see BaseCompatActivity
  * @see BaseComponentActivity
  * @see ISystemBarsController
- * @see IBackPressedController
  * @param layoutResId the layout resource ID to be inflated, default is [View.NO_ID].
  */
 open class AppViewsFragment(@field:LayoutRes private val layoutResId: Int = View.NO_ID) : BaseFragment() {

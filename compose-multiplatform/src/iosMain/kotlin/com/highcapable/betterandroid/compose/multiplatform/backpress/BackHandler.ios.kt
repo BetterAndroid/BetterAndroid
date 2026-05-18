@@ -41,7 +41,7 @@ import androidx.compose.runtime.Composable
  *
  * It is even more impossible to have a "back press" on a desktop platform.
  *
- * Please visit the [compose-multiplatform](https://betterandroid.github.io/BetterAndroid/en/library/compose-multiplatform#system-event)
+ * Please visit the [compose-multiplatform](https://betterandroid.github.io/BetterAndroid/en/library/compose-multiplatform#back-pressed-event)
  * documentation for usage.
  * @param enabled if this BackHandler should be enabled, default true.
  * @param onBack the action invoked by pressing the system back.

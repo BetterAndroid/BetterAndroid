@@ -30,7 +30,6 @@ import androidx.viewbinding.ViewBinding
 import com.highcapable.betterandroid.ui.component.activity.base.BaseCompatActivity
 import com.highcapable.betterandroid.ui.component.activity.base.BaseComponentActivity
 import com.highcapable.betterandroid.ui.component.fragment.base.BaseFragment
-import com.highcapable.betterandroid.ui.component.proxy.IBackPressedController
 import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
 import com.highcapable.betterandroid.ui.component.proxy.IViewBinding
 import com.highcapable.betterandroid.ui.extension.binding.ViewBindingBuilder
@@ -58,12 +57,11 @@ import com.highcapable.betterandroid.ui.extension.view.parentOrNull
  * ```
  *
  * - You must use an inherited from [BaseCompatActivity] or [BaseComponentActivity]'s activity or implements
- *   [ISystemBarsController], [IBackPressedController] to use this fragment,
- *   otherwise some functions such as [systemBars], [backPressed] will not work.
+ *   [ISystemBarsController] to use this fragment,
+ *   otherwise some functions such as [systemBars] will not work.
  * @see BaseCompatActivity
  * @see BaseComponentActivity
  * @see ISystemBarsController
- * @see IBackPressedController
  */
 open class AppBindingFragment<VB : ViewBinding> : BaseFragment(), IViewBinding<VB> {
 
