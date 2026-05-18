@@ -58,6 +58,14 @@ Insets related features have been migrated to [ui-extension → Insets Extension
 
 :::
 
+::: tip Looking for System Event?
+
+Back pressed related features are now recommended to use [ui-extension → BackPressed Extension](./ui-extension.md#backpressed-extension).
+
+If you are migrating from the old `BackPressedController`, you can refer to [Config → Migration Guide → Migrate BackPressedController](../config/migration.md#migrate-backpressedcontroller).
+
+:::
+
 ### Activity
 
 ::: tip Contents of This Section
@@ -80,10 +88,9 @@ Available for Jetpack Compose projects.
 
 ::: tip
 
-The preset components below all implement [IBackPressedController](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.proxy/-i-back-pressed-controller),
-[ISystemBarsController](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.proxy/-i-system-bars-controller) interface.
+The preset components below all implement [ISystemBarsController](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.proxy/-i-system-bars-controller) interface.
 
-You can find detailed usage methods in [System Event](#system-event) and [System Bars (Status Bars, Navigation Bars, etc)](#system-bars-status-bars-navigation-bars-etc) below.
+You can find detailed usage methods in [System Bars (Status Bars, Navigation Bars, etc)](#system-bars-status-bars-navigation-bars-etc) below.
 
 :::
 
@@ -207,10 +214,9 @@ Base view component `Fragment`.
 
 ::: tip
 
-The preset components below all implement [IBackPressedController](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.proxy/-i-back-pressed-controller),
-[ISystemBarsController](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.proxy/-i-system-bars-controller) interfaces.
+The preset components below all implement [ISystemBarsController](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.proxy/-i-system-bars-controller) interface.
 
-You can find detailed usage methods in [System Event](#system-event) and [System Bars (Status Bars, Navigation Bars, etc)](#system-bars-status-bars-navigation-bars-etc) below.
+You can find detailed usage methods in [System Bars (Status Bars, Navigation Bars, etc)](#system-bars-status-bars-navigation-bars-etc) below.
 
 :::
 
@@ -251,106 +257,6 @@ class MainFragment : AppViewsFragment(R.layout.fragment_main) {
 ::: tip
 
 `BetterAndroid` also provides related extensions for `Fragment`, you can refer to [ui-extension → Fragment Extension](../library/ui-extension.md#fragment-extension).
-
-:::
-
-### System Event
-
-::: tip Contents of This Section
-
-[BackPressedController](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.backpress/-back-pressed-controller)
-
-Back pressed event controller.
-
-[OnBackPressedCallback](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.backpress.callback/-on-back-pressed-callback)
-
-Simple back pressed event callback.
-
-[IBackPressedController](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.proxy/-i-back-pressed-controller)
-
-Back pressed event controller interface.
-
-:::
-
-An `OnBackPressedDispatcher` has been provided for developers in the `androidx` dependency `androidx.activity:activity`.
-
-However, out of dissatisfaction with the official rash deprecated overwriting of the `onBackPressed` method, `BetterAndroid` encapsulated the `OnBackPressedDispatcher` related functions.
-
-It supports the back pressed event callback function that is more suitable for Kotlin writing, and also adds the function of ignoring all callback events and directly releasing
-the back pressed event, making it more flexible and easy to use.
-
-`AppBindingActivity`, `AppViewsActivity`, `AppComponentActivity`, `AppBindingFragment`, `AppViewsFragment`
-have implemented the `IBackPressedController` interface by default, you can directly use `backPressed` to obtain `BackPressedController`.
-
-But you can still manually create a `BackPressedController` in `Activity`.
-
-> The following example
-
-```kotlin
-class YourActivity : AppCompatActivity() {
-
-    // Create a lazy object.
-    val backPressed by lazy { BackPressedController.from(this) }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        // Call backPressed here to implement related functions.
-        backPressed
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        // Destroy backPressed, this will remove all callbacks.
-        // Optional, prevent memory leaks.
-        backPressed.destroy()
-    }
-}
-```
-
-The following is the basic usage of `BackPressedController`.
-
-> The following example
-
-```kotlin
-// Add a back pressed callback
-val callback = backPressed.addCallback {
-    // Ignore the current callback within the callback and trigger the back operation.
-    // For example, you can pop up a dialog here to ask the user whether to exit
-    // and select "Yes" at this time.
-    // The object passed in needs to be the backPressed that created this callback.
-    trigger(backPressed)
-    // Or remove itself at the same time after triggering.
-    trigger(backPressed, removed = true)
-    // Remove directly. (Not recommended, you should use backPressed.removeCallback)
-    remove()
-}
-// You can also create a callback manually.
-// Note: Please make sure to import com.highcapable.betterandroid.ui.component.backpress.callback
-//       OnBackPressedCallback under the package name, NOT androidx.activity.OnBackPressedCallback
-val callback = OnBackPressedCallback {
-    // Your code here.
-}
-// Then add to backPressed.
-backPressed.addCallback(callback)
-// Remove a known callback.
-backPressed.removeCallback(callback)
-// Trigger the back operation of the system.
-backPressed.trigger()
-// You can set ignored to true to ignore all added callbacks and back directly.
-backPressed.trigger(ignored = true)
-// Determine whether there is currently an enabled callback
-val hasEnabledCallbacks = backPressed.hasEnabledCallbacks
-// Destroy, this will remove all callbacks.
-backPressed.destroy()
-```
-
-::: warning
-
-After using `BackPressedController`, the current `OnBackPressedDispatcher` has been automatically taken over by it.
-
-You should not continue to use `onBackPressedDispatcher.addCallback(...)` as this will expose unknown (wild)
-callbacks and prevent them from being cleanly removed.
 
 :::
 

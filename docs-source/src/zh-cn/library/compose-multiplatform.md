@@ -283,7 +283,7 @@ fun main() = application {
 }
 ```
 
-### 系统事件
+### 返回事件
 
 ::: tip 本节内容
 
@@ -299,8 +299,7 @@ fun main() = application {
 
 `BetterAndroid` 提供了 `BackHandler` 的多平台分发支持，你可以直接在 `commonMain` 中使用它，但是它仅会在 Android 平台中生效。
 
-`BackHandler` 在 Android 中使用 [ui-component → 系统事件](../library/ui-component.md#系统事件) 中的 `BackPressedController` 实现，
-你可以参考 [ui-component → Activity](../library/ui-component.md#activity) 使用 `AppComponentActivty` 或为你的 `Activity` 手动实现 `IBackPressedController` 接口。
+如果你正在寻找 Android 侧的返回事件处理方式，可以参考 [ui-extension → BackPressed 扩展](../library/ui-extension.md#backpressed-扩展)。
 
 下面是一个使用示例，它与 `androidx.activity:activity-compose` 中提供的 `BackHandler` 用法完全相同。
 

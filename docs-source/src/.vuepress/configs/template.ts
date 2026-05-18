@@ -11,6 +11,7 @@ const navigationLinks = {
         '/guide/quick-start'
     ],
     library: [
+        '/library/android-bom',
         '/library/ui-component',
         '/library/ui-component-adapter',
         '/library/ui-extension',
@@ -21,6 +22,7 @@ const navigationLinks = {
     ],
     config: [
         '/config/basic',
+        '/config/migration',
         '/config/r8-proguard'
     ],
     about: [

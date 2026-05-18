@@ -287,7 +287,7 @@ fun main() = application {
 }
 ```
 
-### System Event
+### Back Pressed Event
 
 ::: tip Contents of This Section
 
@@ -303,8 +303,7 @@ Although `androidx.activity:activity-compose` provides `BackHandler`, it can onl
 
 `BetterAndroid` provides multi-platform distribution support for `BackHandler`, you can use it directly in `commonMain`, but it will only take effect on the Android platform.
 
-`BackHandler` is implemented in Android using `BackPressedController` in [ui-component → System Event](../library/ui-component.md#system-event),
-you can refer to [ui-component → Activity](../library/ui-component.md#activity) to use `AppComponentActivty` or manually implement the `IBackPressedController` interface for your `Activity`.
+If you are looking for the Android-side back pressed handling approach, you can refer to [ui-extension → BackPressed Extension](../library/ui-extension.md#backpressed-extension).
 
 Below is a usage example that is identical to the `BackHandler` usage provided in `androidx.activity:activity-compose`.
 

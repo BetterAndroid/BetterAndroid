@@ -58,6 +58,14 @@ implementation("com.highcapable.betterandroid:ui-component:<version>")
 
 :::
 
+::: tip 在找系统事件吗？
+
+返回事件相关功能现在推荐使用 [ui-extension → BackPressed 扩展](./ui-extension.md#backpressed-扩展)。
+
+如果你正在从旧的 `BackPressedController` 迁移，可以参考 [配置 → 迁移指南 → 迁移 BackPressedController](../config/migration.md#迁移-backpressedcontroller)。
+
+:::
+
 ### Activity
 
 ::: tip 本节内容
@@ -80,10 +88,9 @@ implementation("com.highcapable.betterandroid:ui-component:<version>")
 
 ::: tip
 
-下方的预置组件都实现了 [IBackPressedController](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.proxy/-i-back-pressed-controller)、
-[ISystemBarsController](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.proxy/-i-system-bars-controller) 接口。
+下方的预置组件都实现了 [ISystemBarsController](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.proxy/-i-system-bars-controller) 接口。
 
-你可以在下方的 [系统事件](#系统事件) 和 [系统栏 (状态栏、导航栏等)](#系统栏-状态栏、导航栏等) 中找到详细的使用方法。
+你可以在下方的 [系统栏 (状态栏、导航栏等)](#系统栏-状态栏、导航栏等) 中找到详细的使用方法。
 
 :::
 
@@ -206,10 +213,9 @@ class MainActivity : AppComponentActivity() {
 
 ::: tip
 
-下方的预置组件都实现了 [IBackPressedController](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.proxy/-i-back-pressed-controller)、
-[ISystemBarsController](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.proxy/-i-system-bars-controller) 接口。
+下方的预置组件都实现了 [ISystemBarsController](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.proxy/-i-system-bars-controller) 接口。
 
-你可以在下方的 [系统事件](#系统事件) 和 [系统栏 (状态栏、导航栏等)](#系统栏-状态栏、导航栏等) 中找到详细的使用方法。
+你可以在下方的 [系统栏 (状态栏、导航栏等)](#系统栏-状态栏、导航栏等) 中找到详细的使用方法。
 
 :::
 
@@ -250,101 +256,6 @@ class MainFragment : AppViewsFragment(R.layout.fragment_main) {
 ::: tip
 
 `BetterAndroid` 同样为 `Fragment` 提供了相关扩展，你可以参考 [ui-extension → Fragment 扩展](../library/ui-extension.md#fragment-扩展)。
-
-:::
-
-### 系统事件
-
-::: tip 本节内容
-
-[BackPressedController](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.backpress/-back-pressed-controller)
-
-返回事件控制器。
-
-[OnBackPressedCallback](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.backpress.callback/-on-back-pressed-callback)
-
-简单返回事件回调。
-
-[IBackPressedController](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.proxy/-i-back-pressed-controller)
-
-返回事件控制器接口。
-
-:::
-
-在 `androidx` 的依赖 `androidx.activity:activity` 中已经为开发者提供了一个 `OnBackPressedDispatcher`。
-
-但是出于对官方贸然作废重写 `onBackPressed` 方法的不满，`BetterAndroid` 对 `OnBackPressedDispatcher` 相关功能进行了封装，
-支持了更适用于 Kotlin 写法的返回事件回调功能，同时添加了忽略全部回调事件直接释放返回事件的功能，使其变得更加灵活好用。
-
-`AppBindingActivity`、`AppViewsActivity`、`AppComponentActivity`、`AppBindingFragment`、`AppViewsFragment`
-已经默认实现了 `IBackPressedController` 接口，你可以直接使用 `backPressed` 获取 `BackPressedController`。
-
-但是你依然可以在 `Activity` 中手动创建一个 `BackPressedController`。
-
-> 示例如下
-
-```kotlin
-class YourActivity : AppCompatActivity() {
-
-    // 创建一个懒加载对象
-    val backPressed by lazy { BackPressedController.from(this) }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        // 在这里调用 backPressed 实现相关功能
-        backPressed
-    }
-    
-    override fun onDestroy() {
-        super.onDestroy()
-        // 销毁 backPressed，这会移除所有回调事件
-        // 可选，防止内存泄漏
-        backPressed.destroy()
-    }
-}
-```
-
-下面是 `BackPressedController` 的基本用法。
-
-> 示例如下
-
-```kotlin
-// 添加一个返回回调
-val callback = backPressed.addCallback {
-    // 在回调内忽略当前回调并触发返回操作
-    // 例如你可以在此处弹出一个对话框询问用户是否退出且此时选择了 “是”
-    // 传入的对象需要为创建此回调的 backPressed
-    trigger(backPressed)
-    // 或者在触发后同时移除自身
-    trigger(backPressed, removed = true)
-    // 直接移除 (不推荐，你应该使用 backPressed.removeCallback)
-    remove()
-}
-// 你也可以手动创建一个回调
-// 注意：请确保引入 com.highcapable.betterandroid.ui.component.backpress.callback
-//      包名下的 OnBackPressedCallback，而不是 androidx.activity.OnBackPressedCallback
-val callback = OnBackPressedCallback {
-    // Your code here.
-}
-// 然后添加到 backPressed
-backPressed.addCallback(callback)
-// 移除一个已知的回调
-backPressed.removeCallback(callback)
-// 触发系统的返回操作
-backPressed.trigger()
-// 你可以设置 ignored 为 true 来忽略所有已添加的回调直接返回
-backPressed.trigger(ignored = true)
-// 判断当前是否存在已启用的回调
-val hasEnabledCallbacks = backPressed.hasEnabledCallbacks
-// 销毁，这会移除所有回调事件
-backPressed.destroy()
-```
-
-::: warning
-
-在使用 `BackPressedController` 后，当前的 `OnBackPressedDispatcher` 已被其自动接管，
-你不应该继续使用 `onBackPressedDispatcher.addCallback(...)`，这会造成存在未知的 (野生的) 回调导致无法干净地移除它们。
 
 :::
 
