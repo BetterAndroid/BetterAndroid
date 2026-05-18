@@ -796,9 +796,11 @@ val lcOwner = context.requireLifecycleOwner()
 
 ::: tip 本节内容
 
-[BackPressedCallback](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/-back-pressed-callback)
+[Fragment / View → onBackPressedDispatcher](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/on-back-pressed-dispatcher)
 
-[OnBackPressedDispatcher / ComponentActivity / Fragment / View → addBackPressedCallback](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/add-back-pressed-callback)
+[OnBackPressedCallback](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/-on-back-pressed-callback)
+
+[OnBackPressedCallback → trigger](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/trigger)
 
 适用于系统返回事件的扩展。
 
@@ -815,55 +817,68 @@ val lcOwner = context.requireLifecycleOwner()
 ```kotlin
 // 假设这就是你的 ComponentActivity
 val activity: ComponentActivity
-// 添加一个返回事件回调
-val callback = activity.addBackPressedCallback {
+// 创建一个返回事件回调
+val callback = OnBackPressedCallback {
     // Your code here.
 }
+// 使用官方分发器注册
+activity.onBackPressedDispatcher.addCallback(activity, callback)
 // 你依然可以直接使用官方提供的能力
 callback.isEnabled = false
 callback.remove()
 ```
 
-对于 `Fragment`，默认情况下会自动使用当前 `viewLifecycleOwner` 来绑定回调生命周期。
+对于 `Fragment`，你可以直接取得当前的 `onBackPressedDispatcher`，
+再按需绑定到 `viewLifecycleOwner` 或 `Fragment` 自身。
 
 > 示例如下
 
 ```kotlin
 // 假设这就是你的 Fragment
 val fragment: Fragment
-// 默认使用 viewLifecycleOwner
-fragment.addBackPressedCallback {
+// 绑定到 viewLifecycleOwner
+fragment.onBackPressedDispatcher.addCallback(fragment.viewLifecycleOwner, OnBackPressedCallback {
     // Your code here.
-}
-// 你也可以手动指定生命周期宿主
-fragment.addBackPressedCallback(owner = fragment) {
+})
+// 你也可以绑定到 Fragment 自身
+fragment.onBackPressedDispatcher.addCallback(fragment, OnBackPressedCallback {
     // Your code here.
-}
+})
 ```
 
-对于 `View`，你可以直接基于其所在的 `LifecycleOwner` 和宿主 `ComponentActivity` 来注册返回事件回调。
+对于 `View`，你可以直接通过所在的 `LifecycleOwner` 和宿主 `ComponentActivity` 取得分发器。
 
 > 示例如下
 
 ```kotlin
 // 假设这就是你的 View
 val view: View
-// 添加一个返回事件回调
-view.addBackPressedCallback {
+// 绑定到当前 View 所在的 LifecycleOwner
+view.onBackPressedDispatcher.addCallback(view.requireLifecycleOwner(), OnBackPressedCallback {
     // Your code here.
-}
+})
 ```
 
-如果你希望在当前回调中继续分发这次返回事件，你可以直接调用 `trigger()`。
+如果你希望在当前回调中继续分发这次返回事件，你可以直接调用 `trigger(dispatcher)`。
 
 > 示例如下
 
 ```kotlin
-activity.addBackPressedCallback {
+activity.onBackPressedDispatcher.addCallback(activity, OnBackPressedCallback {
     // 忽略当前回调并继续分发返回事件
-    trigger()
+    trigger(activity.onBackPressedDispatcher)
     // 或者在继续分发后移除当前回调
-    trigger(removed = true)
+    trigger(activity.onBackPressedDispatcher, removed = true)
+})
+```
+
+如果你更倾向直接使用 `androidx` 新版提供的 DSL 写法，也可以这样使用。
+
+> 示例如下
+
+```kotlin
+activity.onBackPressedDispatcher.addCallback(activity) {
+    // Your code here.
 }
 ```
 

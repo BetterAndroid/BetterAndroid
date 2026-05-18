@@ -824,9 +824,11 @@ val lcOwner = context.requireLifecycleOwner()
 
 ::: tip Contents of This Section
 
-[BackPressedCallback](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/-back-pressed-callback)
+[Fragment / View → onBackPressedDispatcher](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/on-back-pressed-dispatcher)
 
-[OnBackPressedDispatcher / ComponentActivity / Fragment / View → addBackPressedCallback](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/add-back-pressed-callback)
+[OnBackPressedCallback](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/-on-back-pressed-callback)
+
+[OnBackPressedCallback → trigger](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/trigger)
 
 Extensions for system back pressed events.
 
@@ -845,33 +847,36 @@ allowing you to continue using the official capability with a more concise Kotli
 ```kotlin
 // Assume this is your ComponentActivity.
 val activity: ComponentActivity
-// Add a back pressed callback.
-val callback = activity.addBackPressedCallback {
+// Create a back pressed callback.
+val callback = OnBackPressedCallback {
     // Your code here.
 }
+// Register it with the official dispatcher.
+activity.onBackPressedDispatcher.addCallback(activity, callback)
 // You can still directly use the official capabilities.
 callback.isEnabled = false
 callback.remove()
 ```
 
-For `Fragment`, the callback lifecycle will use the current `viewLifecycleOwner` by default.
+For `Fragment`, you can directly obtain the current `onBackPressedDispatcher`,
+then bind it to `viewLifecycleOwner` or the `Fragment` itself as needed.
 
 > The following example
 
 ```kotlin
 // Assume this is your Fragment.
 val fragment: Fragment
-// Uses viewLifecycleOwner by default.
-fragment.addBackPressedCallback {
+// Bind to viewLifecycleOwner.
+fragment.onBackPressedDispatcher.addCallback(fragment.viewLifecycleOwner, OnBackPressedCallback {
     // Your code here.
-}
-// You can also manually specify the lifecycle owner.
-fragment.addBackPressedCallback(owner = fragment) {
+})
+// Or bind to the Fragment itself.
+fragment.onBackPressedDispatcher.addCallback(fragment, OnBackPressedCallback {
     // Your code here.
-}
+})
 ```
 
-For `View`, you can directly register a back pressed callback based on its current `LifecycleOwner`
+For `View`, you can directly obtain the dispatcher from its current `LifecycleOwner`
 and host `ComponentActivity`.
 
 > The following example
@@ -879,22 +884,32 @@ and host `ComponentActivity`.
 ```kotlin
 // Assume this is your View.
 val view: View
-// Add a back pressed callback.
-view.addBackPressedCallback {
+// Bind to the current LifecycleOwner of this View.
+view.onBackPressedDispatcher.addCallback(view.requireLifecycleOwner(), OnBackPressedCallback {
     // Your code here.
-}
+})
 ```
 
-If you want to continue dispatching this back event in the current callback, you can directly call `trigger()`.
+If you want to continue dispatching this back event in the current callback, you can directly call `trigger(dispatcher)`.
 
 > The following example
 
 ```kotlin
-activity.addBackPressedCallback {
+activity.onBackPressedDispatcher.addCallback(activity, OnBackPressedCallback {
     // Ignore the current callback and continue dispatching the back event.
-    trigger()
+    trigger(activity.onBackPressedDispatcher)
     // Or remove the current callback after continuing the dispatch.
-    trigger(removed = true)
+    trigger(activity.onBackPressedDispatcher, removed = true)
+})
+```
+
+If you prefer to directly use the new DSL style provided by `androidx`, you can also write it like this.
+
+> The following example
+
+```kotlin
+activity.onBackPressedDispatcher.addCallback(activity) {
+    // Your code here.
 }
 ```
 
