@@ -32,6 +32,7 @@ dependencies {
 
     implementation(projects.systemExtension)
 
+    api(libs.androidx.activity)
     api(libs.androidx.fragment.ktx)
 
     implementation(libs.kavaref.core)
