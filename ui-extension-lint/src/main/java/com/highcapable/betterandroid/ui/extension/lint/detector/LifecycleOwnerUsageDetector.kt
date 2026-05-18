@@ -33,10 +33,14 @@ import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.extendsClass
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.unwrapParenthesized
+import com.intellij.psi.PsiClassType
+import com.intellij.psi.PsiVariable
 import org.jetbrains.uast.UBinaryExpressionWithType
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UClass
 import org.jetbrains.uast.UElement
+import org.jetbrains.uast.UExpression
+import org.jetbrains.uast.UResolvable
 import org.jetbrains.uast.UastBinaryExpressionWithTypeKind
 
 class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
@@ -45,6 +49,7 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
 
         private const val ACTIVITY_CLASS = "android.app.Activity"
         private const val CONTEXT_CLASS = "android.content.Context"
+        private const val LIFECYCLE_OWNER_CLASS = "androidx.lifecycle.LifecycleOwner"
         private const val VIEW_CLASS = "android.view.View"
         private const val FIND_VIEW_TREE_LIFECYCLE_OWNER_METHOD = "findViewTreeLifecycleOwner"
         private const val LIFECYCLE_OWNER_PROPERTY = "lifecycleOwner"
@@ -123,9 +128,13 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
         override fun visitBinaryExpressionWithType(node: UBinaryExpressionWithType) {
             if (node.operationKind !is UastBinaryExpressionWithTypeKind.TypeCast) return
 
-            val operand = node.operand.unwrapParenthesized()?.asSourceString() ?: return
+            val operandNode = node.operand.unwrapParenthesized() ?: return
+            if (!operandNode.isLifecycleOwnerTarget()) return
+
+            val operand = operandNode.asSourceString()
             val castType = node.type
             val isNullableCast = node.operationKind.name == "as?"
+            if (!isNullableCast && node.operationKind.name != "as") return
 
             val replacement = when {
                 castType.extendsClass(context, ACTIVITY_CLASS) -> createActivityReplacement(node, operand, isNullableCast)
@@ -165,7 +174,7 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
                 }
                 else -> {
                     val functionName = if (isNullableCast) ACTIVITY_PROPERTY else REQUIRE_ACTIVITY_FUNCTION
-                    "$operand.$functionName<${node.typeReference?.asSourceString()}>()" to
+                    "$operand.$functionName<${node.typeReference?.asSourceString().orEmpty().trim().removeSuffix("?")}>()" to
                         listOf("${DeclaredSymbol.COMPONENT_PACKAGE}.$functionName")
                 }
             }
@@ -192,5 +201,17 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
             isNullableCast: Boolean
         ) = (if (isNullableCast) "$operand.$CONTEXT_PROPERTY" else "$operand.$REQUIRE_CONTEXT_FUNCTION()") to
             listOf("${DeclaredSymbol.COMPONENT_PACKAGE}.${if (isNullableCast) CONTEXT_PROPERTY else REQUIRE_CONTEXT_FUNCTION}")
+
+        private fun UElement.isLifecycleOwnerTarget(): Boolean {
+            val resolvedVariableType = ((this as? UResolvable?)?.resolve() as? PsiVariable?)?.type
+                ?.canonicalText
+                ?.removeSuffix("?")
+                ?.removeSuffix("!")
+            if (resolvedVariableType == LIFECYCLE_OWNER_CLASS) return true
+
+            val expressionType = (this as? UExpression?)?.getExpressionType() as? PsiClassType ?: return false
+            val canonicalText = expressionType.canonicalText.removeSuffix("?").removeSuffix("!")
+            return expressionType.resolve()?.qualifiedName == LIFECYCLE_OWNER_CLASS || canonicalText == LIFECYCLE_OWNER_CLASS
+        }
     }
 }
