@@ -26,123 +26,68 @@ package com.highcapable.betterandroid.ui.extension.component
 
 import android.view.View
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.activity.OnBackPressedCallback as BaseOnBackPressedCallback
 
 /**
- * Add a new back pressed callback.
+ * Get the current [OnBackPressedDispatcher] from [Fragment].
  *
- * This function is based on AndroidX [OnBackPressedDispatcher.addCallback],
- * but provides a simpler callback receiver and return type.
- * @receiver the current [OnBackPressedDispatcher].
- * @param owner the [LifecycleOwner], default is null.
- * @param enabled whether this callback is enabled, default true.
- * @param callback the callback when back pressed.
- * @return [BackPressedCallback]
- */
-@JvmOverloads
-fun OnBackPressedDispatcher.addBackPressedCallback(
-    owner: LifecycleOwner? = null,
-    enabled: Boolean = true,
-    callback: BackPressedCallback.() -> Unit
-) = BackPressedCallback(this, enabled, callback).also {
-    if (owner != null) addCallback(owner, it)
-    else addCallback(it)
-}
-
-/**
- * Add a new back pressed callback.
- *
- * This function automatically binds the callback to the current [ComponentActivity].
- * @receiver the current [ComponentActivity].
- * @param enabled whether this callback is enabled, default true.
- * @param callback the callback when back pressed.
- * @return [BackPressedCallback]
- */
-@JvmOverloads
-fun ComponentActivity.addBackPressedCallback(
-    enabled: Boolean = true,
-    callback: BackPressedCallback.() -> Unit
-) = onBackPressedDispatcher.addBackPressedCallback(this, enabled, callback)
-
-/**
- * Add a new back pressed callback.
- *
- * This function automatically binds the callback to the current [Fragment.viewLifecycleOwner]
- * by default, and you can also provide a custom [LifecycleOwner].
+ * The current [Fragment] must be attached to a [ComponentActivity].
  * @receiver the current [Fragment].
- * @param owner the [LifecycleOwner], default is [Fragment.viewLifecycleOwner].
- * @param enabled whether this callback is enabled, default true.
- * @param callback the callback when back pressed.
- * @return [BackPressedCallback]
+ * @return [OnBackPressedDispatcher]
+ * @throws IllegalStateException if the current [Fragment] is not attached to a [ComponentActivity].
  */
-@JvmOverloads
-fun Fragment.addBackPressedCallback(
-    owner: LifecycleOwner = viewLifecycleOwner,
-    enabled: Boolean = true,
-    callback: BackPressedCallback.() -> Unit
-) = requireActivity<ComponentActivity>().onBackPressedDispatcher.addBackPressedCallback(owner, enabled, callback)
+val Fragment.onBackPressedDispatcher get() = requireActivity<ComponentActivity>().onBackPressedDispatcher
 
 /**
- * Add a new back pressed callback.
+ * Get the current [OnBackPressedDispatcher] from [View].
  *
- * This function automatically binds the callback to the current [View]'s lifecycle owner.
  * The current [View] must be attached to a view tree and hosted by a [ComponentActivity].
  * @receiver the current [View].
- * @param enabled whether this callback is enabled, default true.
- * @param callback the callback when back pressed.
- * @return [BackPressedCallback]
+ * @return [OnBackPressedDispatcher]
  * @throws IllegalStateException if the current [View] is not attached to a [LifecycleOwner]
  * or its host is not a [ComponentActivity].
  */
-@JvmOverloads
-fun View.addBackPressedCallback(
-    enabled: Boolean = true,
-    callback: BackPressedCallback.() -> Unit
-): BackPressedCallback {
-    val owner = requireLifecycleOwner()
-    val activity = owner.requireActivity<ComponentActivity>()
+val View.onBackPressedDispatcher: OnBackPressedDispatcher
+    get() {
+        val owner = requireLifecycleOwner()
+        val activity = owner.requireActivity<ComponentActivity>()
 
-    return activity.onBackPressedDispatcher.addBackPressedCallback(owner, enabled, callback)
+        return activity.onBackPressedDispatcher
+    }
+
+/**
+ * Create a new [OnBackPressedCallback].
+ * @param enabled whether the callback is enabled, default true.
+ * @param onBackPressed the back pressed event.
+ * @return [OnBackPressedCallback]
+ */
+inline fun OnBackPressedCallback(
+    enabled: Boolean = true,
+    crossinline onBackPressed: OnBackPressedCallback.() -> Unit
+) = object : OnBackPressedCallback(enabled) {
+    override fun handleOnBackPressed() = onBackPressed()
 }
 
 /**
- * A simple back pressed callback.
+ * Trigger the current back pressed event.
  *
- * Inherit from [BaseOnBackPressedCallback].
- *
- * This callback is based on AndroidX [OnBackPressedDispatcher],
- * and provides a [trigger] function to continue dispatching the current back event.
+ * This function temporarily disables itself, then dispatches the current
+ * back pressed event to the next callback or fallback.
+ * @receiver the current [OnBackPressedCallback].
  * @param dispatcher the current [OnBackPressedDispatcher].
- * @param enabled whether this callback is enabled, default true.
- * @param onBackPressed the callback when back pressed.
+ * @param removed whether to remove this callback after triggering, default false.
  */
-class BackPressedCallback internal constructor(
-    private val dispatcher: OnBackPressedDispatcher,
-    enabled: Boolean = true,
-    private val onBackPressed: BackPressedCallback.() -> Unit
-) : BaseOnBackPressedCallback(enabled) {
+@JvmOverloads
+fun OnBackPressedCallback.trigger(dispatcher: OnBackPressedDispatcher, removed: Boolean = false) {
+    isEnabled = false
 
-    /**
-     * Trigger the current back pressed event.
-     *
-     * This function temporarily disables itself, then dispatches the current
-     * back pressed event to the next callback or fallback.
-     * @param removed whether to remove this callback after triggering, default false.
-     */
-    @JvmOverloads
-    fun trigger(removed: Boolean = false) {
-        isEnabled = false
-
-        try {
-            dispatcher.onBackPressed()
-        } finally {
-            if (removed) remove()
-            else isEnabled = true
-        }
+    try {
+        dispatcher.onBackPressed()
+    } finally {
+        if (removed) remove()
+        else isEnabled = true
     }
-
-    override fun handleOnBackPressed() = onBackPressed()
 }
