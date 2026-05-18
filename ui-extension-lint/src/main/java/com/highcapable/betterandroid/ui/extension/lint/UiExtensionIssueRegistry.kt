@@ -28,6 +28,7 @@ import com.android.tools.lint.client.api.Vendor
 import com.android.tools.lint.detector.api.CURRENT_API
 import com.highcapable.betterandroid.generated.BetterAndroidProperties
 import com.highcapable.betterandroid.ui.extension.lint.detector.ActivityUsageDetector
+import com.highcapable.betterandroid.ui.extension.lint.detector.BackPressedUsageDetector
 import com.highcapable.betterandroid.ui.extension.lint.detector.BitmapUsageDetector
 import com.highcapable.betterandroid.ui.extension.lint.detector.CoroutinesUsageDetector
 import com.highcapable.betterandroid.ui.extension.lint.detector.DrawableUsageDetector
@@ -49,6 +50,7 @@ class UiExtensionIssueRegistry : IssueRegistry() {
         ActivityUsageDetector.ISSUE,
         FragmentUsageDetector.ISSUE,
         LifecycleOwnerUsageDetector.ISSUE,
+        BackPressedUsageDetector.ISSUE,
         ResourcesUsageDetector.ISSUE,
         DrawableUsageDetector.ISSUE,
         BitmapUsageDetector.ISSUE,

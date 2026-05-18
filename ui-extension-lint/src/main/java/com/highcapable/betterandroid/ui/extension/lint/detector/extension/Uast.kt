@@ -21,10 +21,17 @@
  */
 package com.highcapable.betterandroid.ui.extension.lint.detector.extension
 
+import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiNamedElement
+import com.intellij.psi.util.PsiTypesUtil
+import org.jetbrains.uast.UBlockExpression
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UCallableReferenceExpression
+import org.jetbrains.uast.UClass
+import org.jetbrains.uast.UDeclaration
 import org.jetbrains.uast.UElement
+import org.jetbrains.uast.UExpression
+import org.jetbrains.uast.UObjectLiteralExpression
 import org.jetbrains.uast.UParenthesizedExpression
 import org.jetbrains.uast.UQualifiedReferenceExpression
 import org.jetbrains.uast.UResolvable
@@ -49,6 +56,33 @@ internal fun UElement?.asCall() = when (this) {
     is UCallExpression -> this
     is UQualifiedReferenceExpression -> selector as? UCallExpression
     else -> null
+}
+
+internal fun UDeclaration.findMethod(name: String) =
+    (this as? UClass)?.methods?.firstOrNull { it.name == name }
+
+internal fun UElement.findContainingStatement(): UExpression? {
+    var current: UElement? = this
+    while (current != null) {
+        val parent = current.uastParent
+        if (parent is UBlockExpression && current is UExpression) return current
+        current = parent
+    }
+    return null
+}
+
+internal fun UObjectLiteralExpression.isObjectLiteralOf(className: String): Boolean {
+    val psiClass = PsiTypesUtil.getPsiClass(getExpressionType()) ?: return false
+    return psiClass.qualifiedName == className || psiClass.supers.any { it.qualifiedName == className }
+}
+
+internal fun UElement.getContainingPsiClass(): PsiClass? {
+    var current = uastParent
+    while (current != null) {
+        if (current.javaPsi is PsiClass) return current.javaPsi as PsiClass
+        current = current.uastParent
+    }
+    return null
 }
 
 internal fun String.displayShortName() = substringAfterLast('.')
