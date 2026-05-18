@@ -27,12 +27,15 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.Icon
 import android.os.Bundle
+import android.widget.RemoteViews
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.BubbleMetadata
+import androidx.core.app.Person
 import androidx.core.content.LocusIdCompat
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.graphics.drawable.IconCompat
@@ -111,6 +114,9 @@ class NotificationBuilder private constructor(
     /** @see NotificationCompat.Builder.setUsesChronometer */
     var isUsesChronometer: Boolean? = null
 
+    /** @see NotificationCompat.Builder.setChronometerCountDown */
+    var isChronometerCountDown: Boolean? = null
+
     /** @see NotificationCompat.Builder.setAutoCancel */
     var isAutoCancel: Boolean? = null
 
@@ -124,7 +130,26 @@ class NotificationBuilder private constructor(
     var isLocalOnly: Boolean? = null
 
     /** @see NotificationCompat.Builder.setLargeIcon */
-    var largeIcon: Bitmap? = null
+    @RequiresApi(AndroidVersion.M)
+    var largeIcon: Icon? = null
+
+    /** @see NotificationCompat.Builder.setLargeIcon */
+    var largeIconBitmap: Bitmap? = null
+
+    /** @see NotificationCompat.Builder.setRemoteInputHistory */
+    var remoteInputHistory: Array<out CharSequence>? = null
+
+    /** @see NotificationCompat.Builder.setContent */
+    var contentView: RemoteViews? = null
+
+    /** @see NotificationCompat.Builder.setCustomContentView */
+    var customContentView: RemoteViews? = null
+
+    /** @see NotificationCompat.Builder.setCustomBigContentView */
+    var customBigContentView: RemoteViews? = null
+
+    /** @see NotificationCompat.Builder.setCustomHeadsUpContentView */
+    var customHeadsUpContentView: RemoteViews? = null
 
     /** @see NotificationCompat.Builder.setBadgeIconType */
     var badgeIconType: Int? = null
@@ -144,6 +169,9 @@ class NotificationBuilder private constructor(
     /** @see NotificationCompat.Builder.setDeleteIntent */
     var deleteIntent: PendingIntent? = null
 
+    /** @see NotificationCompat.Builder.setSilent */
+    var isSilent: Boolean? = null
+
     /**
      * - Note: Some third-party ROMs may modify this function causing it to
      *   not work as expected, such as MIUI (HyperOS), etc.
@@ -153,7 +181,11 @@ class NotificationBuilder private constructor(
     var color: Int? = null
 
     /** @see NotificationCompat.Builder.setVisibility */
+    @NotificationCompat.NotificationVisibility
     var visibility: Int? = null
+
+    /** @see NotificationCompat.Builder.setColorized */
+    var isColorized: Boolean? = null
 
     /** @see NotificationCompat.Builder.setPublicVersion */
     var publicVersion: Notification? = null
@@ -172,6 +204,23 @@ class NotificationBuilder private constructor(
 
     /** @see NotificationCompat.Builder.setAllowSystemGeneratedContextualActions */
     var isAllowSystemGeneratedContextualActions: Boolean? = null
+
+    /** @see NotificationCompat.Builder.setShortCriticalText */
+    var shortCriticalText: String? = null
+
+    /** @see NotificationCompat.Builder.setRequestPromotedOngoing */
+    var isRequestPromotedOngoing: Boolean? = null
+
+    /** @see NotificationCompat.Builder.setGroupAlertBehavior */
+    @NotificationCompat.GroupAlertBehavior
+    var groupAlertBehavior: Int? = null
+
+    /** @see NotificationCompat.Builder.setForegroundServiceBehavior */
+    @NotificationCompat.ServiceNotificationBehavior
+    var foregroundServiceBehavior: Int? = null
+
+    /** @see NotificationCompat.Builder.addPerson */
+    val persons = mutableListOf<Person>()
 
     /**
      * - You must set a small icon before post the notification,
@@ -294,6 +343,13 @@ class NotificationBuilder private constructor(
     fun usesChronometer(usesChronometer: Boolean) = apply { this.isUsesChronometer = usesChronometer }
 
     /**
+     * @see NotificationCompat.Builder.setChronometerCountDown
+     * @param chronometerCountDown
+     * @return [NotificationBuilder]
+     */
+    fun chronometerCountDown(chronometerCountDown: Boolean) = apply { this.isChronometerCountDown = chronometerCountDown }
+
+    /**
      * @see NotificationCompat.Builder.setAutoCancel
      * @param autoCancel
      * @return [NotificationBuilder]
@@ -326,7 +382,50 @@ class NotificationBuilder private constructor(
      * @param largeIcon
      * @return [NotificationBuilder]
      */
-    fun largeIcon(largeIcon: Bitmap) = apply { this.largeIcon = largeIcon }
+    @RequiresApi(AndroidVersion.M)
+    fun largeIcon(largeIcon: Icon) = apply { this.largeIcon = largeIcon }
+
+    /**
+     * @see NotificationCompat.Builder.setLargeIcon
+     * @param largeIcon
+     * @return [NotificationBuilder]
+     */
+    fun largeIcon(largeIcon: Bitmap) = apply { this.largeIconBitmap = largeIcon }
+
+    /**
+     * @see NotificationCompat.Builder.setRemoteInputHistory
+     * @param remoteInputHistory
+     * @return [NotificationBuilder]
+     */
+    fun remoteInputHistory(remoteInputHistory: Array<out CharSequence>) = apply { this.remoteInputHistory = remoteInputHistory }
+
+    /**
+     * @see NotificationCompat.Builder.setContent
+     * @param contentView
+     * @return [NotificationBuilder]
+     */
+    fun content(contentView: RemoteViews) = apply { this.contentView = contentView }
+
+    /**
+     * @see NotificationCompat.Builder.setCustomContentView
+     * @param customContentView
+     * @return [NotificationBuilder]
+     */
+    fun customContent(customContentView: RemoteViews) = apply { this.customContentView = customContentView }
+
+    /**
+     * @see NotificationCompat.Builder.setCustomBigContentView
+     * @param customBigContentView
+     * @return [NotificationBuilder]
+     */
+    fun customBigContent(customBigContentView: RemoteViews) = apply { this.customBigContentView = customBigContentView }
+
+    /**
+     * @see NotificationCompat.Builder.setCustomHeadsUpContentView
+     * @param customHeadsUpContentView
+     * @return [NotificationBuilder]
+     */
+    fun customHeadsUpContent(customHeadsUpContentView: RemoteViews) = apply { this.customHeadsUpContentView = customHeadsUpContentView }
 
     /**
      * @see NotificationCompat.Builder.setBadgeIconType
@@ -371,6 +470,15 @@ class NotificationBuilder private constructor(
     fun deleteIntent(deleteIntent: PendingIntent) = apply { this.deleteIntent = deleteIntent }
 
     /**
+     * @see NotificationCompat.Builder.setSilent
+     * @param silent
+     * @return [NotificationBuilder]
+     */
+    fun silent(silent: Boolean) = apply {
+        this.isSilent = silent
+    }
+
+    /**
      * @see NotificationCompat.Builder.setFullScreenIntent
      * @param intent the current intent.
      * @param highPriority whether to use high priority, default true.
@@ -393,7 +501,14 @@ class NotificationBuilder private constructor(
      * @param visibility
      * @return [NotificationBuilder]
      */
-    fun visibility(visibility: Int) = apply { this.visibility = visibility }
+    fun visibility(@NotificationCompat.NotificationVisibility visibility: Int) = apply { this.visibility = visibility }
+
+    /**
+     * @see NotificationCompat.Builder.setColorized
+     * @param colorized
+     * @return [NotificationBuilder]
+     */
+    fun colorized(colorized: Boolean) = apply { this.isColorized = colorized }
 
     /**
      * @see NotificationCompat.Builder.setPublicVersion
@@ -447,6 +562,49 @@ class NotificationBuilder private constructor(
      */
     fun allowSystemGeneratedContextualActions(allowSystemGeneratedContextualActions: Boolean) =
         apply { this.isAllowSystemGeneratedContextualActions = allowSystemGeneratedContextualActions }
+
+    /**
+     * @see NotificationCompat.Builder.setShortCriticalText
+     * @param shortCriticalText
+     * @return [NotificationBuilder]
+     */
+    fun shortCriticalText(shortCriticalText: String) = apply { this.shortCriticalText = shortCriticalText }
+
+    /**
+     * @see NotificationCompat.Builder.setRequestPromotedOngoing
+     * @param requestPromotedOngoing
+     * @return [NotificationBuilder]
+     */
+    fun requestPromotedOngoing(requestPromotedOngoing: Boolean) = apply { this.isRequestPromotedOngoing = requestPromotedOngoing }
+
+    /**
+     * @see NotificationCompat.Builder.setGroupAlertBehavior
+     * @param groupAlertBehavior
+     * @return [NotificationBuilder]
+     */
+    fun groupAlertBehavior(@NotificationCompat.GroupAlertBehavior groupAlertBehavior: Int) = apply { this.groupAlertBehavior = groupAlertBehavior }
+
+    /**
+     * @see NotificationCompat.Builder.setForegroundServiceBehavior
+     * @param foregroundServiceBehavior
+     * @return [NotificationBuilder]
+     */
+    fun foregroundServiceBehavior(@NotificationCompat.ServiceNotificationBehavior foregroundServiceBehavior: Int) = apply {
+        this.foregroundServiceBehavior = foregroundServiceBehavior
+    }
+
+    /**
+     * @see NotificationCompat.Builder.addPerson
+     * @param person
+     * @return [NotificationBuilder]
+     */
+    fun addPerson(person: Person) = apply { this.persons += person }
+
+    /**
+     * @see NotificationCompat.Builder.clearPeople
+     * @return [NotificationBuilder]
+     */
+    fun clearPeople() = apply { this.persons.clear() }
 
     /**
      * - You must set a small icon before post the notification,

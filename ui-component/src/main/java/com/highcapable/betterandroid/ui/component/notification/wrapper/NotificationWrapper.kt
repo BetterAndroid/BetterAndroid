@@ -102,26 +102,40 @@ class NotificationWrapper internal constructor(internal var builder: Notificatio
             builder.`when`?.also { setWhen(it) }
             builder.isShowWhen?.also { setShowWhen(it) }
             builder.isUsesChronometer?.also { setUsesChronometer(it) }
+            AndroidVersion.require(AndroidVersion.N) { builder.isChronometerCountDown?.also { setChronometerCountDown(it) } }
             builder.isAutoCancel?.also { setAutoCancel(it) }
             builder.isOnlyAlertOnce?.also { setOnlyAlertOnce(it) }
             builder.isOngoing?.also { setOngoing(it) }
             builder.isLocalOnly?.also { setLocalOnly(it) }
-            builder.largeIcon?.also { setLargeIcon(it) }
+            AndroidVersion.require(AndroidVersion.M) { builder.largeIcon?.also { setLargeIcon(it) } }
+            builder.largeIconBitmap?.also { setLargeIcon(it) }
+            builder.remoteInputHistory?.also { setRemoteInputHistory(it) }
+            builder.contentView?.also { setContent(it) }
+            builder.customContentView?.also { setCustomContentView(it) }
+            builder.customBigContentView?.also { setCustomBigContentView(it) }
+            builder.customHeadsUpContentView?.also { setCustomHeadsUpContentView(it) }
             builder.badgeIconType?.also { setBadgeIconType(it) }
             builder.category.takeIf(String::isNotBlank)?.also { setCategory(it) }
             builder.bubbleMetadata?.also { setBubbleMetadata(it) }
             builder.number?.also { setNumber(it) }
             builder.ticker.takeIf(CharSequence::isNotBlank)?.also { setTicker(it) }
             builder.deleteIntent?.also { setDeleteIntent(it) }
+            builder.isSilent?.also { setSilent(it) }
             builder.fullScreenIntent?.also { setFullScreenIntent(it.first, it.second) }
             builder.color?.also { setColor(it) }
             builder.visibility?.also { setVisibility(it) }
+            builder.isColorized?.also { setColorized(it) }
             builder.publicVersion?.also { setPublicVersion(it) }
             builder.sortKey.takeIf(String::isNotBlank)?.also { setSortKey(it) }
             builder.timeoutAfter?.also { setTimeoutAfter(it) }
             builder.shortcutId.takeIf(String::isNotBlank)?.also { setShortcutId(it) }
             builder.shortcutInfo?.also { setShortcutInfo(it) }
             builder.isAllowSystemGeneratedContextualActions?.also { setAllowSystemGeneratedContextualActions(it) }
+            builder.shortCriticalText?.also { setShortCriticalText(it) }
+            builder.isRequestPromotedOngoing?.also { setRequestPromotedOngoing(it) }
+            builder.groupAlertBehavior?.also { setGroupAlertBehavior(it) }
+            builder.foregroundServiceBehavior?.also { setForegroundServiceBehavior(it) }
+            builder.persons.forEach { addPerson(it) }
             builder.smallIconResId?.also { setSmallIcon(it) }
             AndroidVersion.require(AndroidVersion.M) { builder.smallIcon?.also { setSmallIcon(it) } }
             if (builder.smallIconResId == null && AndroidVersion.requireOrNull(AndroidVersion.M, null) { builder.smallIcon } == null)
