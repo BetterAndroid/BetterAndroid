@@ -28,6 +28,8 @@ android {
 }
 
 dependencies {
+    lintPublish(projects.uiComponentLint)
+
     implementation(projects.uiExtension)
     implementation(projects.systemExtension)
 

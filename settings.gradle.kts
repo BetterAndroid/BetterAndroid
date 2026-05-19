@@ -66,6 +66,7 @@ gropify {
     }
 
     projects(
+        ":ui-component-lint",
         ":ui-component-adapter-lint",
         ":ui-extension-lint",
         ":system-extension-lint"
@@ -90,6 +91,7 @@ include(
     ":compose-multiplatform"
 )
 include(
+    ":ui-component-lint",
     ":ui-component-adapter-lint",
     ":ui-extension-lint",
     ":system-extension-lint"

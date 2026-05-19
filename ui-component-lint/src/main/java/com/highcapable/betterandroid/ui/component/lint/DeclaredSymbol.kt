@@ -17,17 +17,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file is created by fankes on 2023/10/25.
+ * This file is created by fankes on 2026/5/15.
  */
-package com.highcapable.betterandroid.ui.component.proxy
+package com.highcapable.betterandroid.ui.component.lint
 
-import com.highcapable.betterandroid.ui.component.backpress.BackPressedController
+import com.highcapable.betterandroid.generated.BetterAndroidProperties
 
-/**
- * An implement [BackPressedController]'s interface.
- */
-interface IBackPressedController {
+object DeclaredSymbol {
 
-    /** The current [BackPressedController]. */
-    val backPressed: BackPressedController
+    const val BASE_PACKAGE = BetterAndroidProperties.PROJECT_UI_COMPONENT_NAMESPACE
+    const val PROXY_PACKAGE = "$BASE_PACKAGE.proxy"
+    const val NOTIFICATION_PACKAGE = "$BASE_PACKAGE.notification"
+    const val NOTIFICATION_FACTORY_PACKAGE = "$NOTIFICATION_PACKAGE.factory"
+    const val SYSTEMBAR_PACKAGE = "$BASE_PACKAGE.systembar"
+    const val SYSTEMBAR_STYLE_PACKAGE = "$SYSTEMBAR_PACKAGE.style"
+    const val SYSTEMBAR_TYPE_PACKAGE = "$SYSTEMBAR_PACKAGE.type"
 }
