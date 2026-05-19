@@ -5,7 +5,7 @@ plugins {
 }
 
 group = gropify.project.groupName
-version = gropify.project.system.extension.version
+version = gropify.project.android.bom.version
 
 android {
     namespace = gropify.project.system.extension.namespace

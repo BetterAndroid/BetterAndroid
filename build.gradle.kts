@@ -1,6 +1,7 @@
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
+import com.vanniktech.maven.publish.JavaPlatform
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
@@ -98,9 +99,11 @@ libraryProjects {
         }
 
         configure<MavenPublishBaseExtension> {
-            if (name == Libraries.COMPOSE_EXTENSION || name == Libraries.COMPOSE_MULTIPLATFORM)
-                configure(KotlinMultiplatform())
-            else configure(AndroidSingleVariantLibrary(JavadocJar.None(), SourcesJar.Sources()))
+            when (name) {
+                Libraries.ANDROID_BOM -> configure(JavaPlatform())
+                Libraries.COMPOSE_EXTENSION, Libraries.COMPOSE_MULTIPLATFORM -> configure(KotlinMultiplatform())
+                else -> configure(AndroidSingleVariantLibrary(JavadocJar.None(), SourcesJar.Sources()))
+            }
         }
     }
 
@@ -132,8 +135,45 @@ libraryProjects {
     }
 }
 
+registerAggregatePublishTask(
+    name = "publishAndroidBomToMavenLocal",
+    description = "Publishes the Android BOM and all Android modules to the local Maven cache.",
+    taskName = "publishToMavenLocal",
+    projectNames = Libraries.androidLibs
+)
+
+registerAggregatePublishTask(
+    name = "publishAndroidBomToMavenCentral",
+    description = "Publishes the Android BOM and all Android modules to the Maven Central repository.",
+    taskName = "publishMavenPublicationToMavenCentralRepository",
+    projectNames = Libraries.androidLibs
+)
+
+registerAggregatePublishTask(
+    name = "publishAndroidBomToHighCapableMavenReleases",
+    description = "Publishes the Android BOM and all Android modules to the HighCapableMavenReleases repository.",
+    taskName = "publishAllPublicationsToHighCapableMavenReleasesRepository",
+    projectNames = Libraries.androidLibs
+)
+
+registerAggregatePublishTask(
+    name = "publishAndroidBomToHighCapableMavenSnapShots",
+    description = "Publishes the Android BOM and all Android modules to the HighCapableMavenSnapShots repository.",
+    taskName = "publishAllPublicationsToHighCapableMavenSnapShotsRepository",
+    projectNames = Libraries.androidLibs
+)
+
+fun registerAggregatePublishTask(name: String, description: String, taskName: String, projectNames: List<String>) {
+    tasks.register(name) {
+        this.group = "publishing"
+        this.description = description
+        dependsOn(projectNames.map { ":$it:$taskName" })
+    }
+}
+
 fun libraryProjects(action: Action<in Project>) {
     val libraries = listOf(
+        Libraries.ANDROID_BOM,
         Libraries.UI_COMPONENT,
         Libraries.UI_COMPONENT_ADAPTER,
         Libraries.UI_EXTENSION,
@@ -145,10 +185,19 @@ fun libraryProjects(action: Action<in Project>) {
 }
 
 object Libraries {
+    const val ANDROID_BOM = "android-bom"
     const val UI_COMPONENT = "ui-component"
     const val UI_COMPONENT_ADAPTER = "ui-component-adapter"
     const val UI_EXTENSION = "ui-extension"
     const val SYSTEM_EXTENSION = "system-extension"
     const val COMPOSE_EXTENSION = "compose-extension"
     const val COMPOSE_MULTIPLATFORM = "compose-multiplatform"
+
+    val androidLibs = listOf(
+        ANDROID_BOM,
+        UI_COMPONENT,
+        UI_COMPONENT_ADAPTER,
+        UI_EXTENSION,
+        SYSTEM_EXTENSION
+    )
 }

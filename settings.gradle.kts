@@ -46,6 +46,12 @@ gropify {
         }
     }
 
+    projects(":android-bom") {
+        jvm {
+            isEnabled = false
+        }
+    }
+
     projects(
         ":ui-component",
         ":ui-component-adapter",
@@ -80,6 +86,7 @@ gropify {
 rootProject.name = "BetterAndroid"
 
 include(":samples:app")
+include(":android-bom")
 include(
     ":ui-component",
     ":ui-component-adapter",
