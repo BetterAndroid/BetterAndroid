@@ -39,14 +39,17 @@ Modify the Java version of Kotlin in your project's `build.gradle.kts` to 17 or 
 
 > Kotlin DSL
 
-```kt
+```kotlin
 android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
+}
+
+tasks.withType<KotlinJvmCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
     }
 }
 ```
@@ -58,21 +61,30 @@ you can choose the modules you want to introduce as dependencies and apply them 
 
 You can click on the corresponding modules below to view detailed functionality introductions.
 
+::: tip Version Notes
+
+Starting from `1.1.0`, Android modules are released with a unified version, so in most cases you only need to care about the same major version,
+and you can also directly refer to [android-bom](../library/android-bom.md) below to use BOM for unified dependency version management.
+
+Jetpack Compose modules currently still keep independent versions, because some modules are still in the Alpha stage and their release cadence is not forced to stay in sync with their submodules.
+
+For details, please see the [changelog](../about/changelog.md).
+
+:::
+
+### Android
+
+- [android-bom](../library/android-bom.md)
 - [ui-component](../library/ui-component.md)
 - [ui-component-adapter](../library/ui-component-adapter.md)
 - [ui-extension](../library/ui-extension.md)
 - [system-extension](../library/system-extension.md)
 - [permission-extension](../library/permission-extension.md)
+
+### Jetpack Compose
+
 - [compose-extension](../library/compose-extension.md)
 - [compose-multiplatform](../library/compose-multiplatform.md)
-
-## Project Template
-
-You can use the project template we provide to quickly create a project that integrates `BetterAndroid` dependencies.
-
-- [android-app-template](https://github.com/BetterAndroid/android-app-template)
-- [android-compose-app-template](https://github.com/BetterAndroid/android-compose-app-template)
-- [compose-multiplatform-template](https://github.com/BetterAndroid/compose-multiplatform-template)
 
 ## Demo
 

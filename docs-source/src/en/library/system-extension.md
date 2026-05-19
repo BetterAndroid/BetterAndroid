@@ -12,6 +12,8 @@ This is a dependency for system layer related extensions.
 
 You can add this module to your project using the following method.
 
+If you are using multiple Android modules at the same time, we recommend that you first refer to [android-bom](./android-bom.md) to use BOM for unified version management.
+
 ### Version Catalog (Recommended)
 
 Add dependency in your project's `gradle/libs.versions.toml`.

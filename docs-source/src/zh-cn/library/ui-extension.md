@@ -12,6 +12,8 @@
 
 你可以使用如下方式将此模块添加到你的项目中。
 
+如果你正在同时使用多个 Android 子模块，我们推荐你优先参考 [android-bom](./android-bom.md) 使用 BOM 统一管理版本。
+
 ### Version Catalog (推荐)
 
 在你的项目 `gradle/libs.versions.toml` 中添加依赖。

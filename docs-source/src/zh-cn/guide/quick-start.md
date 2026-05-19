@@ -36,14 +36,17 @@ repositories {
 
 在你的项目 `build.gradle.kts` 中修改 Kotlin 的 Java 版本为 17 及以上。
 
-```kt
+```kotlin
 android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
+}
+
+tasks.withType<KotlinJvmCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
     }
 }
 ```
@@ -54,21 +57,29 @@ android {
 
 你可以点击下方对应的模块前往查看详细的功能介绍。
 
+::: tip 版本说明
+
+Android 子模块从 `1.1.0` 起开始采用统一版本进行发布，通常情况下你只需要关注同一个主版本即可，你也可以直接参考下方的 [android-bom](../library/android-bom.md) 使用 BOM 统一管理依赖版本。
+
+Jetpack Compose 子模块目前仍保持独立版本，这是因为部分模块仍处于 Alpha 阶段，版本节奏不会强制与其子模块保持一致。
+
+详情请见 [更新日志](../about/changelog.md)。
+
+:::
+
+### Android
+
+- [android-bom](../library/android-bom.md)
 - [ui-component](../library/ui-component.md)
 - [ui-component-adapter](../library/ui-component-adapter.md)
 - [ui-extension](../library/ui-extension.md)
 - [system-extension](../library/system-extension.md)
 - [permission-extension](../library/permission-extension.md)
+
+### Jetpack Compose
+
 - [compose-extension](../library/compose-extension.md)
 - [compose-multiplatform](../library/compose-multiplatform.md)
-
-## 项目模版
-
-你可以使用我们提供的项目模版来快速创建一个集成了 `BetterAndroid` 依赖的项目。
-
-- [android-app-template](https://github.com/BetterAndroid/android-app-template)
-- [android-compose-app-template](https://github.com/BetterAndroid/android-compose-app-template)
-- [compose-multiplatform-template](https://github.com/BetterAndroid/compose-multiplatform-template)
 
 ## Demo
 
