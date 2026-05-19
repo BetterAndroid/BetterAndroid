@@ -157,8 +157,7 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$RUN_DELAYED_EXTENSION(...)`.",
-                quickfixData = null
+                message = "Can be replaced with `$RUN_DELAYED_EXTENSION(...)`."
             )
         }
     }

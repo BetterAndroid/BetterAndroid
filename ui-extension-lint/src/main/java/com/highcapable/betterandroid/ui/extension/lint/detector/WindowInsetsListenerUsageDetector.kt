@@ -93,8 +93,7 @@ class WindowInsetsListenerUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$HANDLE_ON_WINDOW_INSETS_CHANGED(...)`.",
-                quickfixData = null
+                message = "Can be replaced with `$HANDLE_ON_WINDOW_INSETS_CHANGED(...)`."
             )
         }
     }
