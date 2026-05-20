@@ -8,7 +8,6 @@
 现在推荐迁移到 [ui-extension → BackPressed 扩展](../library/ui-extension.md#backpressed-扩展) 中基于官方 `OnBackPressedDispatcher` 的扩展写法。
 
 新的方案不再需要额外的控制器、接口接入或手动销毁过程，而是直接复用 `androidx` 已有的生命周期管理能力。
-`BetterAndroid` 会自动帮你引入 `androidx.activity:activity` 依赖。
 
 ### 迁移方式
 

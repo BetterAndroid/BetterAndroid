@@ -10,7 +10,6 @@ in [ui-extension → BackPressed Extension](../library/ui-extension.md#backpress
 
 The new approach no longer requires an extra controller, interface access, or manual destroy handling,
 and directly reuses the lifecycle management already provided by `androidx`.
-`BetterAndroid` will also automatically help you introduce the `androidx.activity:activity` dependency.
 
 ### How to Migrate
 
