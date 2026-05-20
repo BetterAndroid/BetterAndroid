@@ -51,4 +51,13 @@ internal fun UElement?.asCall() = when (this) {
     else -> null
 }
 
+internal fun UCallExpression.receiverPrefix(): String {
+    val receiverText = receiver?.asSourceString() ?: return ""
+    val source = (uastParent as? UQualifiedReferenceExpression)?.sourcePsi?.text?.trimStart()
+        ?: sourcePsi?.text?.trimStart()
+        ?: asSourceString().trimStart()
+
+    return if (source.startsWith("$receiverText.")) "$receiverText." else ""
+}
+
 internal fun String.displayShortName() = substringAfterLast('.')

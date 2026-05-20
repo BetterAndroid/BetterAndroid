@@ -31,10 +31,12 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.resolveName
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UQualifiedReferenceExpression
+import org.jetbrains.uast.USimpleNameReferenceExpression
 
 class TextViewUsageDetector : Detector(), Detector.UastScanner {
 
@@ -111,9 +113,8 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
             val method = node.resolve() ?: return
             if (!context.evaluator.isMemberInClass(method, TEXT_VIEW_CLASS)) return
 
-            val receiver = node.receiver?.asSourceString() ?: return
             val valueArg = node.valueArguments.firstOrNull() ?: return
-            val replacement = "$receiver.$TEXT_COLOR_PROPERTY = ${valueArg.asSourceString()}"
+            val replacement = "${node.receiverPrefix()}$TEXT_COLOR_PROPERTY = ${valueArg.asSourceString()}"
 
             context.report(
                 issue = ISSUE,
@@ -138,15 +139,20 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
         private fun reportQualifiedToString(qualified: UQualifiedReferenceExpression, reportNode: Any) {
             val toStringCall = qualified.selector as? UCallExpression ?: return
             if (toStringCall.methodName != TO_STRING_METHOD) return
-            val target = qualified.receiver as? UQualifiedReferenceExpression ?: return
-
-            val memberName = target.selector.resolveName() ?: return
+            val target = qualified.receiver
+            val (memberName, receiverPrefix) = when (target) {
+                is UQualifiedReferenceExpression -> {
+                    val resolvedName = target.selector.resolveName() ?: return
+                    resolvedName to "${target.receiver.asSourceString()}."
+                }
+                is USimpleNameReferenceExpression -> target.identifier to ""
+                else -> return
+            }
             if (memberName != "text" && memberName != "hint") return
 
-            val source = target.receiver.asSourceString()
-            val replacement = if (memberName == "text") {
-                "$source.$TEXT_TO_STRING_FUNCTION()"
-            } else "$source.$HINT_TO_STRING_FUNCTION()"
+            val replacement = if (memberName == "text")
+                "$receiverPrefix$TEXT_TO_STRING_FUNCTION()"
+            else "$receiverPrefix$HINT_TO_STRING_FUNCTION()"
             val importTarget = if (memberName == "text") {
                 "${DeclaredSymbol.VIEW_PACKAGE}.$TEXT_TO_STRING_FUNCTION"
             } else "${DeclaredSymbol.VIEW_PACKAGE}.$HINT_TO_STRING_FUNCTION"

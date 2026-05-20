@@ -33,6 +33,7 @@ import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.asCall
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.displayShortName
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.unwrapParenthesized
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UClassLiteralExpression
@@ -101,10 +102,10 @@ class ActivityUsageDetector : Detector(), Detector.UastScanner {
             }
 
             val targetClass = resolveTargetActivityClass(intentCall) ?: return
-            val receiver = node.receiver?.asSourceString() ?: "this"
-            val replacement = "$receiver.$START_ACTIVITY_METHOD<$targetClass>()"
+            val receiverPrefix = node.receiverPrefix()
+            val replacement = "$receiverPrefix$START_ACTIVITY_METHOD<$targetClass>()"
             val displayTargetClass = targetClass.displayShortName()
-            val displayReplacement = "$receiver.$START_ACTIVITY_METHOD<$displayTargetClass>()"
+            val displayReplacement = "$receiverPrefix$START_ACTIVITY_METHOD<$displayTargetClass>()"
 
             context.report(
                 issue = ISSUE,

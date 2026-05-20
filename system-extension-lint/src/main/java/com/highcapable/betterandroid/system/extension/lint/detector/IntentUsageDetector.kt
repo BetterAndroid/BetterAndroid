@@ -33,6 +33,7 @@ import com.highcapable.betterandroid.system.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.asCall
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.buildReplaceFix
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.displayShortName
+import com.highcapable.betterandroid.system.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.unwrapParenthesized
 import org.jetbrains.uast.UBinaryExpressionWithType
 import org.jetbrains.uast.UCallExpression
@@ -121,24 +122,23 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
             val compat = resolveCompat(call) ?: return
             if (call.valueArguments.size != 1) return
 
-            val receiver = call.receiver?.asSourceString() ?: return
             val key = call.valueArguments[0].asSourceString()
             val type = node.typeReference?.asSourceString() ?: return
             val isNullableCast = node.operationKind.name == "as?"
 
-            val replacement = "$receiver.${compat.functionName}<$type>($key)${if (isNullableCast) "" else "!!"}"
+            val replacement = "${call.receiverPrefix()}${compat.functionName}<$type>($key)${if (isNullableCast) "" else "!!"}"
             reportAndFix(node, replacement, compat.importTarget, fixName = compat.functionName)
         }
 
         private fun reportExplicitTypedCompat(node: UCallExpression) {
             if (node.valueArguments.size != 2) return
             val compat = resolveCompat(node) ?: return
-            val receiver = node.receiver?.asSourceString() ?: return
             val key = node.valueArguments[0].asSourceString()
             val type = resolveClassLiteralType(node.valueArguments[1]) ?: return
 
-            val replacement = "$receiver.${compat.functionName}<$type>($key)"
-            val displayReplacement = "$receiver.${compat.functionName}<${type.displayShortName()}>($key)"
+            val receiverPrefix = node.receiverPrefix()
+            val replacement = "$receiverPrefix${compat.functionName}<$type>($key)"
+            val displayReplacement = "$receiverPrefix${compat.functionName}<${type.displayShortName()}>($key)"
             reportAndFix(node, replacement, compat.importTarget, displayReplacement, compat.functionName)
         }
 
@@ -148,12 +148,12 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
             if (compat.functionName != GET_PARCELABLE_EXTRA_COMPAT && compat.functionName != GET_PARCELABLE_COMPAT) return
             if (node.valueArguments.size != 1) return
 
-            val receiver = node.receiver?.asSourceString() ?: return
             val key = node.valueArguments[0].asSourceString()
             val type = node.typeArguments.firstOrNull()?.canonicalText ?: return
 
-            val replacement = "$receiver.${compat.functionName}<$type>($key)"
-            val displayReplacement = "$receiver.${compat.functionName}<${type.displayShortName()}>($key)"
+            val receiverPrefix = node.receiverPrefix()
+            val replacement = "$receiverPrefix${compat.functionName}<$type>($key)"
+            val displayReplacement = "$receiverPrefix${compat.functionName}<${type.displayShortName()}>($key)"
             reportAndFix(node, replacement, compat.importTarget, displayReplacement, compat.functionName)
         }
 

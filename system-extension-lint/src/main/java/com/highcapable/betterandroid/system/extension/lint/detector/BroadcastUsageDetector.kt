@@ -32,6 +32,7 @@ import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.system.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.asCall
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.system.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.unwrapParenthesized
 import com.intellij.psi.PsiLocalVariable
 import org.jetbrains.uast.UCallExpression
@@ -116,13 +117,12 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
         private fun reportSendBroadcast(node: UCallExpression) {
             if (node.methodName != SEND_BROADCAST) return
 
-            val receiver = node.receiver?.asSourceString() ?: "this"
             val intentSpec = resolveIntentSpec(node.valueArguments.firstOrNull()) ?: return
             val receiverPermission = node.valueArguments.getOrNull(1).takeUnlessNullLiteral()?.asSourceString()
             val options = node.valueArguments.getOrNull(2).takeUnlessNullLiteral()?.asSourceString()
 
             val arguments = buildExtensionArguments(intentSpec.packageName, receiverPermission, options)
-            val replacement = buildReplacement(receiver, arguments, intentSpec.bodyStatements)
+            val replacement = buildReplacement(node.receiverPrefix(), arguments, intentSpec.bodyStatements)
 
             context.report(
                 issue = ISSUE,
@@ -223,8 +223,7 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
             return arguments.joinToString(", ")
         }
 
-        private fun buildReplacement(receiver: String, arguments: String, bodyStatements: List<String>): String {
-            val receiverPrefix = receiver.takeUnless { it == "this" }?.plus('.') ?: ""
+        private fun buildReplacement(receiverPrefix: String, arguments: String, bodyStatements: List<String>): String {
             val header = buildString {
                 append(receiverPrefix)
                 append(SEND_BROADCAST)

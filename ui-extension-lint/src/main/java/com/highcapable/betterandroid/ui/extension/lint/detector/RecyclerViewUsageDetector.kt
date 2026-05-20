@@ -81,11 +81,13 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
             if (node.operationKind !is UastBinaryExpressionWithTypeKind.TypeCast) return
 
             val operand = node.operand.asSourceString()
-            val receiver = operand.removeSuffix(".layoutManager")
-            if (receiver == operand) return
             val targetType = node.typeReference?.asSourceString() ?: return
-
-            val replacement = "$receiver.$LAYOUT_MANAGER_FUNCTION<$targetType>()"
+            val replacement = when {
+                operand == "layoutManager" -> "$LAYOUT_MANAGER_FUNCTION<$targetType>()"
+                operand == "this.layoutManager" -> "this.$LAYOUT_MANAGER_FUNCTION<$targetType>()"
+                operand.endsWith(".layoutManager") -> "${operand.removeSuffix(".layoutManager")}.$LAYOUT_MANAGER_FUNCTION<$targetType>()"
+                else -> return
+            }
 
             context.report(
                 issue = ISSUE,

@@ -32,6 +32,7 @@ import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.asCall
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.isQualifiedSelector
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.resolveName
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.unwrapParenthesized
 import org.jetbrains.uast.UBinaryExpressionWithType
@@ -125,9 +126,12 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
         }
 
         override fun visitSimpleNameReferenceExpression(node: USimpleNameReferenceExpression) {
+            if (node.isQualifiedSelector()) return
             val selectorName = node.resolveName() ?: return
             val replacement = when (selectorName) {
                 SUPPORT_FRAGMENT_MANAGER -> "$FRAGMENT_MANAGER_FUNCTION()"
+                PARENT_FRAGMENT_MANAGER -> "$FRAGMENT_MANAGER_FUNCTION(parent = true)"
+                CHILD_FRAGMENT_MANAGER -> "$FRAGMENT_MANAGER_FUNCTION()"
                 else -> return
             }
 

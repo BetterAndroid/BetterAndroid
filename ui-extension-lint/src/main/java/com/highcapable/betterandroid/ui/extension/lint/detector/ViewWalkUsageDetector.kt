@@ -31,8 +31,10 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.isQualifiedSelector
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.resolveName
 import org.jetbrains.uast.UQualifiedReferenceExpression
+import org.jetbrains.uast.USimpleNameReferenceExpression
 
 class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
 
@@ -80,7 +82,10 @@ class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
         )
     }
 
-    override fun getApplicableUastTypes() = listOf(UQualifiedReferenceExpression::class.java)
+    override fun getApplicableUastTypes() = listOf(
+        UQualifiedReferenceExpression::class.java,
+        USimpleNameReferenceExpression::class.java
+    )
 
     override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
 
@@ -91,6 +96,34 @@ class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
             val replacement = when (selectorName) {
                 ANCESTORS_PROPERTY -> "$receiverText.$WALK_TO_ROOT_FUNCTION()"
                 DESCENDANTS_PROPERTY -> "$receiverText.$WALK_THROUGH_CHILDREN_FUNCTION()"
+                else -> return
+            }
+            val importTarget = when (selectorName) {
+                ANCESTORS_PROPERTY -> WALK_TO_ROOT_FULL_NAME
+                DESCENDANTS_PROPERTY -> WALK_THROUGH_CHILDREN_FULL_NAME
+                else -> return
+            }
+            val fixName = if (selectorName == ANCESTORS_PROPERTY) WALK_TO_ROOT_FUNCTION else WALK_THROUGH_CHILDREN_FUNCTION
+
+            context.report(
+                issue = ISSUE,
+                location = context.getLocation(node),
+                message = "Can be replaced with `$replacement`.",
+                quickfixData = buildReplaceFix(
+                    name = "Replace with '$fixName'",
+                    replacement = replacement,
+                    imports = arrayOf(importTarget)
+                )
+            )
+        }
+
+        override fun visitSimpleNameReferenceExpression(node: USimpleNameReferenceExpression) {
+            if (node.isQualifiedSelector()) return
+            val selectorName = node.resolveName() ?: return
+
+            val replacement = when (selectorName) {
+                ANCESTORS_PROPERTY -> "$WALK_TO_ROOT_FUNCTION()"
+                DESCENDANTS_PROPERTY -> "$WALK_THROUGH_CHILDREN_FUNCTION()"
                 else -> return
             }
             val importTarget = when (selectorName) {

@@ -31,6 +31,7 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.receiverPrefix
 import org.jetbrains.uast.UCallExpression
 
 class DrawableUsageDetector : Detector(), Detector.UastScanner {
@@ -91,8 +92,7 @@ class DrawableUsageDetector : Detector(), Detector.UastScanner {
             val values = arguments.map { it.asSourceString() }
             if (values.distinct().size != 1) return
 
-            val receiver = node.receiver?.asSourceString() ?: return
-            val replacement = "$receiver.$SET_PADDING_METHOD(${values.first()})"
+            val replacement = "${node.receiverPrefix()}$SET_PADDING_METHOD(${values.first()})"
 
             context.report(
                 issue = ISSUE,

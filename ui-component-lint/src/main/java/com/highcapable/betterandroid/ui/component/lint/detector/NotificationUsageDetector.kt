@@ -141,7 +141,8 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
             val receiver = node.valueArguments.singleOrNull() ?: return false
             if (!receiver.getExpressionType().extendsClass(context, CONTEXT_CLASS)) return false
 
-            val replacement = "${receiver.asSourceString()}.$NOTIFICATION_MANAGER_PROPERTY"
+            val receiverText = receiver.asSourceString().trim()
+            val replacement = if (receiverText == "this") NOTIFICATION_MANAGER_PROPERTY else "$receiverText.$NOTIFICATION_MANAGER_PROPERTY"
 
             context.report(
                 issue = ISSUE,

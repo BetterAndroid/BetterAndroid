@@ -58,6 +58,18 @@ internal fun UElement?.asCall() = when (this) {
     else -> null
 }
 
+internal fun USimpleNameReferenceExpression.isQualifiedSelector() =
+    (uastParent as? UQualifiedReferenceExpression)?.selector == this
+
+internal fun UCallExpression.receiverPrefix(): String {
+    val receiverText = receiver?.asSourceString() ?: return ""
+    val source = (uastParent as? UQualifiedReferenceExpression)?.sourcePsi?.text?.trimStart()
+        ?: sourcePsi?.text?.trimStart()
+        ?: asSourceString().trimStart()
+
+    return if (source.startsWith("$receiverText.")) "$receiverText." else ""
+}
+
 internal fun UDeclaration.findMethod(name: String) =
     (this as? UClass)?.methods?.firstOrNull { it.name == name }
 
@@ -84,5 +96,8 @@ internal fun UElement.getContainingPsiClass(): PsiClass? {
     }
     return null
 }
+
+internal fun List<UExpression>.joinSourceArguments(startIndex: Int = 0) =
+    drop(startIndex).joinToString(", ") { it.asSourceString() }
 
 internal fun String.displayShortName() = substringAfterLast('.')

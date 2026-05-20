@@ -33,6 +33,7 @@ import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildAlternativesFix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.joinSourceArguments
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UQualifiedReferenceExpression
 import org.jetbrains.uast.USimpleNameReferenceExpression
@@ -111,16 +112,16 @@ class BitmapUsageDetector : Detector(), Detector.UastScanner {
             }
             if (fixes.isEmpty()) return
 
-            val display = fixes.first().getDisplayName() ?: return
+            val display = fixes.first().displayReplacement
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `${display.removePrefix("Replace with '").removeSuffix("'")}`.",
-                quickfixData = buildAlternativesFix(*fixes.toTypedArray())
+                message = "Can be replaced with `$display`.",
+                quickfixData = buildAlternativesFix(*fixes.map { it.fix }.toTypedArray())
             )
         }
 
-        private fun createDecodeFileFixes(node: UCallExpression): List<LintFix> {
+        private fun createDecodeFileFixes(node: UCallExpression): List<BitmapDecodeFix> {
             val arguments = node.valueArguments
             if (arguments.isEmpty()) return emptyList()
 
@@ -129,91 +130,133 @@ class BitmapUsageDetector : Detector(), Detector.UastScanner {
             if (selector.identifier != ABSOLUTE_PATH_PROPERTY) return emptyList()
 
             val file = pathArg.receiver.asSourceString()
-            val optsSuffix = arguments.getOrNull(1)?.let { "(${it.asSourceString()})" } ?: "()"
+            val receiverPrefix = file.extensionReceiverPrefix()
+            val opts = arguments.getOrNull(1)?.asSourceString()
+            val decodeOrNullReplacement = if (opts != null)
+                "$receiverPrefix$DECODE_TO_BITMAP_OR_NULL($opts)"
+            else "$receiverPrefix$DECODE_TO_BITMAP_OR_NULL()"
+            val decodeReplacement = if (opts != null)
+                "$receiverPrefix$DECODE_TO_BITMAP($opts)"
+            else "$receiverPrefix$DECODE_TO_BITMAP()"
 
             return listOf(
-                buildReplaceFix(
-                    name = "Replace with '$DECODE_TO_BITMAP_OR_NULL'",
-                    replacement = "$file.$DECODE_TO_BITMAP_OR_NULL$optsSuffix",
-                    imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP_OR_NULL")
+                BitmapDecodeFix(
+                    fix = buildReplaceFix(
+                        name = "Replace with '$decodeOrNullReplacement'",
+                        replacement = decodeOrNullReplacement,
+                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP_OR_NULL")
+                    ),
+                    displayReplacement = decodeOrNullReplacement
                 ),
-                buildReplaceFix(
-                    name = "Replace with '$DECODE_TO_BITMAP'",
-                    replacement = "$file.$DECODE_TO_BITMAP$optsSuffix",
-                    imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP")
+                BitmapDecodeFix(
+                    fix = buildReplaceFix(
+                        name = "Replace with '$decodeReplacement'",
+                        replacement = decodeReplacement,
+                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP")
+                    ),
+                    displayReplacement = decodeReplacement
                 )
             )
         }
 
-        private fun createDecodeStreamFixes(node: UCallExpression): List<LintFix> {
+        private fun createDecodeStreamFixes(node: UCallExpression): List<BitmapDecodeFix> {
             val arguments = node.valueArguments
             if (arguments.isEmpty()) return emptyList()
 
-            val receiver = arguments[0].asSourceString()
-            val args = buildList {
-                arguments.getOrNull(1)?.also { add(it.asSourceString()) }
-                arguments.getOrNull(2)?.also { add(it.asSourceString()) }
-            }.joinToString(", ")
-            val suffix = "($args)"
+            val receiver = arguments[0].asSourceString().trim()
+            val receiverPrefix = receiver.extensionReceiverPrefix()
+            val args = arguments.joinSourceArguments(startIndex = 1)
+            val decodeOrNullReplacement = buildExtensionCall(receiverPrefix, DECODE_TO_BITMAP_OR_NULL, args)
+            val decodeReplacement = buildExtensionCall(receiverPrefix, DECODE_TO_BITMAP, args)
 
             return listOf(
-                buildReplaceFix(
-                    name = "Replace with '$DECODE_TO_BITMAP_OR_NULL'",
-                    replacement = "$receiver.$DECODE_TO_BITMAP_OR_NULL$suffix",
-                    imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP_OR_NULL")
+                BitmapDecodeFix(
+                    fix = buildReplaceFix(
+                        name = "Replace with '$decodeOrNullReplacement'",
+                        replacement = decodeOrNullReplacement,
+                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP_OR_NULL")
+                    ),
+                    displayReplacement = decodeOrNullReplacement
                 ),
-                buildReplaceFix(
-                    name = "Replace with '$DECODE_TO_BITMAP'",
-                    replacement = "$receiver.$DECODE_TO_BITMAP$suffix",
-                    imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP")
+                BitmapDecodeFix(
+                    fix = buildReplaceFix(
+                        name = "Replace with '$decodeReplacement'",
+                        replacement = decodeReplacement,
+                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP")
+                    ),
+                    displayReplacement = decodeReplacement
                 )
             )
         }
 
-        private fun createDecodeByteArrayFixes(node: UCallExpression): List<LintFix> {
+        private fun createDecodeByteArrayFixes(node: UCallExpression): List<BitmapDecodeFix> {
             val arguments = node.valueArguments
             if (arguments.size < 3) return emptyList()
 
-            val receiver = arguments[0].asSourceString()
-            val suffix = "(${arguments[1].asSourceString()}, ${arguments[2].asSourceString()})"
+            val receiver = arguments[0].asSourceString().trim()
+            val receiverPrefix = receiver.extensionReceiverPrefix()
+            val args = arguments.joinSourceArguments(startIndex = 1)
+            val decodeOrNullReplacement = buildExtensionCall(receiverPrefix, DECODE_TO_BITMAP_OR_NULL, args)
+            val decodeReplacement = buildExtensionCall(receiverPrefix, DECODE_TO_BITMAP, args)
 
             return listOf(
-                buildReplaceFix(
-                    name = "Replace with '$DECODE_TO_BITMAP_OR_NULL'",
-                    replacement = "$receiver.$DECODE_TO_BITMAP_OR_NULL$suffix",
-                    imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP_OR_NULL")
+                BitmapDecodeFix(
+                    fix = buildReplaceFix(
+                        name = "Replace with '$decodeOrNullReplacement'",
+                        replacement = decodeOrNullReplacement,
+                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP_OR_NULL")
+                    ),
+                    displayReplacement = decodeOrNullReplacement
                 ),
-                buildReplaceFix(
-                    name = "Replace with '$DECODE_TO_BITMAP'",
-                    replacement = "$receiver.$DECODE_TO_BITMAP$suffix",
-                    imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP")
+                BitmapDecodeFix(
+                    fix = buildReplaceFix(
+                        name = "Replace with '$decodeReplacement'",
+                        replacement = decodeReplacement,
+                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP")
+                    ),
+                    displayReplacement = decodeReplacement
                 )
             )
         }
 
-        private fun createDecodeResourceFixes(node: UCallExpression): List<LintFix> {
+        private fun createDecodeResourceFixes(node: UCallExpression): List<BitmapDecodeFix> {
             val arguments = node.valueArguments
             if (arguments.size < 2) return emptyList()
 
-            val receiver = arguments[0].asSourceString()
-            val args = buildList {
-                add(arguments[1].asSourceString())
-                arguments.getOrNull(2)?.also { add(it.asSourceString()) }
-            }.joinToString(", ")
-            val suffix = "($args)"
+            val receiver = arguments[0].asSourceString().trim()
+            val receiverPrefix = receiver.extensionReceiverPrefix()
+            val args = arguments.joinSourceArguments(startIndex = 1)
+            val createOrNullReplacement = buildExtensionCall(receiverPrefix, CREATE_BITMAP_OR_NULL, args)
+            val createReplacement = buildExtensionCall(receiverPrefix, CREATE_BITMAP, args)
 
             return listOf(
-                buildReplaceFix(
-                    name = "Replace with '$CREATE_BITMAP_OR_NULL'",
-                    replacement = "$receiver.$CREATE_BITMAP_OR_NULL$suffix",
-                    imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$CREATE_BITMAP_OR_NULL")
+                BitmapDecodeFix(
+                    fix = buildReplaceFix(
+                        name = "Replace with '$createOrNullReplacement'",
+                        replacement = createOrNullReplacement,
+                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$CREATE_BITMAP_OR_NULL")
+                    ),
+                    displayReplacement = createOrNullReplacement
                 ),
-                buildReplaceFix(
-                    name = "Replace with '$CREATE_BITMAP'",
-                    replacement = "$receiver.$CREATE_BITMAP$suffix",
-                    imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$CREATE_BITMAP")
+                BitmapDecodeFix(
+                    fix = buildReplaceFix(
+                        name = "Replace with '$createReplacement'",
+                        replacement = createReplacement,
+                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$CREATE_BITMAP")
+                    ),
+                    displayReplacement = createReplacement
                 )
             )
         }
+
+        private fun buildExtensionCall(receiverPrefix: String, functionName: String, arguments: String) =
+            if (arguments.isBlank()) "$receiverPrefix$functionName()" else "$receiverPrefix$functionName($arguments)"
+
+        private fun String.extensionReceiverPrefix() = if (this == "this") "" else "$this."
     }
+
+    private data class BitmapDecodeFix(
+        val fix: LintFix,
+        val displayReplacement: String
+    )
 }

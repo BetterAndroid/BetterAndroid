@@ -33,6 +33,7 @@ import com.highcapable.betterandroid.system.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.asCall
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.buildReplaceFix
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.displayShortName
+import com.highcapable.betterandroid.system.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.unwrapParenthesized
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UClassLiteralExpression
@@ -92,7 +93,8 @@ class ServiceUsageDetector : Detector(), Detector.UastScanner {
             if (methodName != START_SERVICE_METHOD && methodName != START_FOREGROUND_SERVICE_METHOD) return
 
             val method = node.resolve() ?: return
-            if (!context.evaluator.isMemberInClass(method, CONTEXT_CLASS)) return
+            val containingClass = method.containingClass ?: return
+            if (!context.evaluator.extendsClass(containingClass, CONTEXT_CLASS, false)) return
 
             val intentCall = node.valueArguments.firstOrNull().unwrapParenthesized().asCall() ?: return
             if (intentCall.returnType?.canonicalText != INTENT_CLASS) {
@@ -100,10 +102,10 @@ class ServiceUsageDetector : Detector(), Detector.UastScanner {
                 if (intentMethod.containingClass?.qualifiedName != INTENT_CLASS) return
             }
 
-            val receiver = node.receiver?.asSourceString() ?: "this"
             val targetClass = resolveTargetServiceClass(intentCall) ?: return
-            val replacement = "$receiver.$methodName<$targetClass>()"
-            val displayReplacement = "$receiver.$methodName<${targetClass.displayShortName()}>()"
+            val receiverPrefix = node.receiverPrefix()
+            val replacement = "$receiverPrefix$methodName<$targetClass>()"
+            val displayReplacement = "$receiverPrefix$methodName<${targetClass.displayShortName()}>()"
 
             context.report(
                 issue = ISSUE,

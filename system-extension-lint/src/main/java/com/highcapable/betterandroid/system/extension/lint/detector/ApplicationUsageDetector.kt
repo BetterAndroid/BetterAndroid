@@ -170,10 +170,11 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             if (method.containingClass?.qualifiedName != COMPONENT_NAME_CLASS) return
             if (node.valueArguments.size < 2) return
 
-            val receiver = node.valueArguments[0].asSourceString()
+            val receiver = node.valueArguments[0].asSourceString().trim()
             val targetClass = resolveClassLiteralType(node.valueArguments[1]) ?: return
-            val replacement = "$receiver.$GET_COMPONENT_NAME<$targetClass>()"
-            val displayReplacement = "$receiver.$GET_COMPONENT_NAME<${targetClass.displayShortName()}>()"
+            val receiverPrefix = if (receiver == "this") "" else "$receiver."
+            val replacement = "$receiverPrefix$GET_COMPONENT_NAME<$targetClass>()"
+            val displayReplacement = "$receiverPrefix$GET_COMPONENT_NAME<${targetClass.displayShortName()}>()"
 
             reportAndFix(
                 context = context,
@@ -369,7 +370,7 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             )
         }
 
-        private fun resolveClassLiteralType(expression: UExpression) = when (val target = expression.unwrapParenthesized()) {
+        private fun resolveClassLiteralType(expression: UExpression?) = when (val target = expression.unwrapParenthesized()) {
             is UClassLiteralExpression -> target.type?.canonicalText
             is UQualifiedReferenceExpression -> (target.receiver as? UClassLiteralExpression)?.type?.canonicalText
             else -> null

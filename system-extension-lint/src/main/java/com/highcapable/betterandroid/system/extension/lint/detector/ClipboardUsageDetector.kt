@@ -171,14 +171,11 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
                     node.receiver?.asSourceString()?.let { "$it.$CLIPBOARD_MANAGER" } ?: CLIPBOARD_MANAGER
                 }
                 isContextCompatClipboardManagerLookup(node) -> {
-                    val receiver = node.valueArguments.firstOrNull()?.asSourceString() ?: return
-                    "$receiver.$CLIPBOARD_MANAGER"
+                    val receiver = node.valueArguments.firstOrNull()?.asSourceString()?.trim() ?: return
+                    if (receiver == "this") CLIPBOARD_MANAGER else "$receiver.$CLIPBOARD_MANAGER"
                 }
-                isClipboardManagerTypeArgument(node) -> {
-                    val source = node.asSourceString()
-                    val receiver = source.removeSuffix(".getSystemService<ClipboardManager>()")
-                    if (receiver == source) CLIPBOARD_MANAGER else "$receiver.$CLIPBOARD_MANAGER"
-                }
+                isClipboardManagerTypeArgument(node) ->
+                    node.receiver?.asSourceString()?.let { "$it.$CLIPBOARD_MANAGER" } ?: CLIPBOARD_MANAGER
                 else -> return
             }
 
