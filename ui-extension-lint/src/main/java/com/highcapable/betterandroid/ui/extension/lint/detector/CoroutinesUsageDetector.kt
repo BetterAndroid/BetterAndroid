@@ -58,6 +58,10 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
                 or `Handler(...).postDelayed(...)` can be simplified by using coroutine helpers from \
                 BetterAndroid ui-extension library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-extension#coroutines-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-extension#coroutines-extension
+
                 The `Coroutines.kt` provides:
                 - A shorter coroutine-based delayed task API
                 - Direct support for `LifecycleOwner` and `CoroutineScope`

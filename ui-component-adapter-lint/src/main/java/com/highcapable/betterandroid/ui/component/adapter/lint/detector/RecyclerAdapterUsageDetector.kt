@@ -72,6 +72,10 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
                 or manual clear notifications can be simplified by using RecyclerAdapter extensions \
                 from BetterAndroid ui-component-adapter library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-component-adapter#adapter-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-component-adapter#adapter-extension
+
                 The `RecyclerAdapter.kt` provides:
                 - `DiffUtilCallback(...)` for creating reusable `DiffUtil.Callback`
                 - `ListUpdateCallback(...)` for creating reusable `ListUpdateCallback`

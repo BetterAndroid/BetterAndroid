@@ -77,6 +77,10 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
                 clipboard manager lookups can be simplified by using clipboard extensions from \
                 BetterAndroid system-extension library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/system-extension#clipboard-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/system-extension#clipboard-extension
+
                 The `Clipboard.kt` provides:
                 - Direct `copy(...)` helpers for text, HTML and `Intent`
                 - Simpler clipboard manager access

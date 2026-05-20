@@ -104,6 +104,10 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
                 Using `Build.VERSION.SDK_INT` comparisons can be simplified by using `AndroidVersion` \
                 from BetterAndroid system-extension library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/system-extension#system-infomation
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/system-extension#system-infomation
+
                 The `AndroidVersion` provides:
                 - Type-safe version constants (AndroidVersion.T, AndroidVersion.U, etc.)
                 - Convenient comparison functions (isAtLeast, isGreaterThan, isAtMost, isLessThan)

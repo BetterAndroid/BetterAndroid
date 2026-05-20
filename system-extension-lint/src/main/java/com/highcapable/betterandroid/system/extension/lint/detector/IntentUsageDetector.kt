@@ -67,6 +67,10 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
                 Using official `Intent` and `Bundle` parcelable or serializable access APIs can be \
                 simplified by using compat extensions from BetterAndroid system-extension library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/system-extension#intent-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/system-extension#intent-extension
+
                 The `Intent.kt` provides:
                 - Generic compat access APIs for `Parcelable` and `Serializable`
                 - Consistent usage across both `Intent` and `Bundle`

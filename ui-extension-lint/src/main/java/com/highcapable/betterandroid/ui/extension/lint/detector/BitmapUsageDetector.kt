@@ -63,6 +63,10 @@ class BitmapUsageDetector : Detector(), Detector.UastScanner {
                 Using `BitmapFactory.decode...(...)` can be simplified by using bitmap decode \
                 extensions from BetterAndroid ui-extension library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-extension#bitmap-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-extension#bitmap-extension
+
                 The `Bitmap.kt` provides:
                 - `decodeToBitmap()` and `decodeToBitmapOrNull()` for common decode sources
                 - `createBitmap()` and `createBitmapOrNull()` for `Resources`

@@ -57,6 +57,10 @@ class ServiceUsageDetector : Detector(), Detector.UastScanner {
                 explicit target service class can be simplified by using service extensions from \
                 BetterAndroid system-extension library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/system-extension#service-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/system-extension#service-extension
+
                 The `Service.kt` provides:
                 - Generic service start helpers
                 - Matching foreground service start helpers

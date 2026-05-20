@@ -52,6 +52,10 @@ class ToastUsageDetector : Detector(), Detector.UastScanner {
                 Using `Toast.makeText(...).show()` can be simplified by using `toast(...)` from \
                 BetterAndroid ui-extension library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-extension#toast-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-extension#toast-extension
+
                 The `Toast.kt` provides:
                 - `allowBackground` parameter to show a toast from non-main thread
                 - Shorter syntax for showing toasts

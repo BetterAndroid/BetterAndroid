@@ -64,6 +64,10 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
                 simplified by using the broadcast extensions from BetterAndroid system-extension \
                 library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/system-extension#broadcast-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/system-extension#broadcast-extension
+
                 The `Broadcast.kt` provides:
                 - A shorter builder-style `sendBroadcast(...)` API
                 - Direct support for package name, receiver permission and options

@@ -67,6 +67,10 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
                 `NotificationChannelGroup` can be simplified by using notification APIs from \
                 BetterAndroid ui-component library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-component#notification
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-component#notification
+
                 The `Notification.kt` provides:
                 - `Context.notificationManager`
                 - `Context.createNotification(...)`

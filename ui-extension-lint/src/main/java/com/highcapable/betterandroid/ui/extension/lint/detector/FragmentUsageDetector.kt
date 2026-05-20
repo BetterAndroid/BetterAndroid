@@ -62,6 +62,10 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
                 `findFragmentById(...) as T` or `findFragmentByTag(...) as T` can be simplified by \
                 using fragment manager extensions from BetterAndroid ui-extension library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-extension#fragment-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-extension#fragment-extension
+
                 The `Fragment.kt` provides:
                 - A consistent `fragmentManager()` access API
                 - Generic `findFragment<T>(...)` lookups

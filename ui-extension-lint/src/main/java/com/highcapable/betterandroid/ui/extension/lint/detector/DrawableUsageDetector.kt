@@ -49,6 +49,10 @@ class DrawableUsageDetector : Detector(), Detector.UastScanner {
                 sides can be simplified by using `setPadding(size)` from BetterAndroid ui-extension \
                 library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-extension#drawable-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-extension#drawable-extension
+
                 The `Drawable.kt` provides:
                 - A shorter API for uniform drawable padding
                 - Less duplicated padding arguments

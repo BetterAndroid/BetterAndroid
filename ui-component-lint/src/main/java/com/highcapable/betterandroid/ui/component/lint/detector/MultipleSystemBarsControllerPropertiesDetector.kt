@@ -47,6 +47,10 @@ class MultipleSystemBarsControllerPropertiesDetector : Detector(), Detector.Uast
                 Declaring multiple `SystemBarsController` properties in the same class can make the \
                 ownership of system bars ambiguous and is not supported by BetterAndroid ui-component library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-component#system-bars-status-bars-navigation-bars-etc
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-component#system-bars-status-bars-navigation-bars-etc
+
                 The `SystemBarsController.kt` provides:
                 - A single controller entry for the current `Window`
                 - Unified control of system bar styles, visibility and behavior

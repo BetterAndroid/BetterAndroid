@@ -51,6 +51,10 @@ class ViewTooltipTextUsageDetector : Detector(), Detector.UastScanner {
                 Using `TooltipCompat.setTooltipText(...)` or `ViewCompat.setTooltipText(...)` can \
                 be simplified by using `tooltipTextCompat` from BetterAndroid ui-extension library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-extension#view-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-extension#view-extension
+
                 The `View.kt` provides:
                 - A direct tooltip compatibility property
                 - Less static compat API code

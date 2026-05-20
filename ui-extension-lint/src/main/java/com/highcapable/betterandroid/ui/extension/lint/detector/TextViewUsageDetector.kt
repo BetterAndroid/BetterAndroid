@@ -57,6 +57,10 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
                 Using `TextView` text and color related APIs can be simplified by using TextView \
                 extensions from BetterAndroid ui-extension library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-extension#textview-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-extension#textview-extension
+
                 The `TextView.kt` provides:
                 - A direct `textColor` property
                 - `textToString()` and `hintToString()` string helpers

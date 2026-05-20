@@ -48,6 +48,10 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
                 Using `recyclerView.layoutManager as ...` or `as? ...` can be simplified by using \
                 `layoutManager()` from BetterAndroid ui-extension library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-extension#recyclerview-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-extension#recyclerview-extension
+
                 The `RecyclerView.kt` provides:
                 - A generic layout manager access API
                 - Less explicit casting code

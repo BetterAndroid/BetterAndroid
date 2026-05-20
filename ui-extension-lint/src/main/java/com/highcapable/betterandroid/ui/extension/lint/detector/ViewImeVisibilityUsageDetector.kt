@@ -79,6 +79,10 @@ class ViewImeVisibilityUsageDetector : Detector(), Detector.UastScanner {
                 Using official IME show and hide APIs can be simplified by using `showIme()` and \
                 `hideIme()` from BetterAndroid ui-extension library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-extension#view-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-extension#view-extension
+
                 The `View.kt` provides:
                 - Direct IME control APIs on `View`
                 - A single entry for `InputMethodManager`, `WindowInsetsController` and compat usage

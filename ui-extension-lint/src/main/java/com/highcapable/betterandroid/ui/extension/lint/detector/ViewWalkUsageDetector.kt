@@ -56,6 +56,10 @@ class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
                 Using `ancestors` or `descendants` can be simplified by using `walkToRoot()` or \
                 `walkThroughChildren()` from BetterAndroid ui-extension library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-extension#view-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-extension#view-extension
+
                 The `View.kt` provides:
                 - A more direct walk API for parent and child traversal
                 - Naming closer to actual traversal behavior

@@ -100,6 +100,10 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
                 state operations, or package version compat wrappers can be simplified by using \
                 application extensions from BetterAndroid system-extension library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/system-extension#application-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/system-extension#application-extension
+
                 The `Application.kt` provides:
                 - Generic component name creation helpers
                 - Package existence and launch activity checks

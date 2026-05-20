@@ -107,6 +107,10 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
                 direct `window` system bar assignments, or direct system bars behavior control can be \
                 simplified by using `SystemBarsController` from BetterAndroid ui-component library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-component#system-bars-status-bars-navigation-bars-etc
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-component#system-bars-status-bars-navigation-bars-etc
+
                 The `SystemBarsController.kt` provides:
                 - A unified edge-to-edge initialization entry
                 - Direct `show(...)` and `hide(...)` APIs for system bars

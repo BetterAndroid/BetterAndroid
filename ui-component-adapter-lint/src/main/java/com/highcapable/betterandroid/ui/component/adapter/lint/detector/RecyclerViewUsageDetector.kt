@@ -55,6 +55,10 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
                 Using direct first or last position scrolling on `RecyclerView` can be simplified \
                 by using RecyclerView extensions from BetterAndroid ui-component-adapter library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-component-adapter#adapter-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-component-adapter#adapter-extension
+
                 The `RecyclerView.kt` provides:
                 - `scrollToFirstPosition()` and `scrollToLastPosition()`
                 - `smoothScrollToFirstPosition()` and `smoothScrollToLastPosition()`

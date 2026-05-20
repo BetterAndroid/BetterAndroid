@@ -47,6 +47,10 @@ class WindowInsetsListenerUsageDetector : Detector(), Detector.UastScanner {
                 Using `setOnApplyWindowInsetsListener(...)` can be simplified by using \
                 `handleOnWindowInsetsChanged(...)` from BetterAndroid ui-extension library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-extension#insets-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-extension#insets-extension
+
                 The `WindowInsets.kt` provides:
                 - Direct `WindowInsetsWrapper` callback instead of manually converting `WindowInsetsCompat`
                 - Optional `animated` parameter to handle window insets animation changes together

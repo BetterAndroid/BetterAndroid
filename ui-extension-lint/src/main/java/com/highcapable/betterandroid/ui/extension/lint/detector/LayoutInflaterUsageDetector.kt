@@ -48,6 +48,10 @@ class LayoutInflaterUsageDetector : Detector(), Detector.UastScanner {
                 Using `LayoutInflater.from(...)` can be simplified by using `layoutInflater` from \
                 BetterAndroid ui-extension library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-extension#layoutinflater-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-extension#layoutinflater-extension
+
                 The `LayoutInflater.kt` provides:
                 - A direct `Context.layoutInflater` access API
                 - Shorter inflater lookup code

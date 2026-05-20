@@ -82,6 +82,10 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
                 forwarding can be simplified by using back pressed extensions from BetterAndroid \
                 ui-extension library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-extension#backpressed-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-extension#backpressed-extension
+
                 The `BackPressed.kt` provides:
                 - A direct `Fragment.onBackPressedDispatcher` property
                 - A direct `View.onBackPressedDispatcher` property

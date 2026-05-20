@@ -66,6 +66,10 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
                 `owner as Context` or `owner as? Context` can be simplified by using lifecycle \
                 owner extensions from BetterAndroid ui-extension library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-extension#lifecycleowner-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-extension#lifecycleowner-extension
+
                 The `LifecycleOwner.kt` provides:
                 - A direct `View.lifecycleOwner` property
                 - Safer `activity` and `context` access helpers

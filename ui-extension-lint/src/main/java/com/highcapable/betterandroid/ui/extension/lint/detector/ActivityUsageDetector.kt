@@ -56,6 +56,10 @@ class ActivityUsageDetector : Detector(), Detector.UastScanner {
                 Using `startActivity(Intent(...))` with an explicit target activity class can be \
                 simplified by using `startActivity<T>(...)` from BetterAndroid ui-extension library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-extension#activity-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-extension#activity-extension
+
                 The `Activity.kt` provides:
                 - A shorter generic activity launch API
                 - Consistent usage on both `Context` and `Fragment`

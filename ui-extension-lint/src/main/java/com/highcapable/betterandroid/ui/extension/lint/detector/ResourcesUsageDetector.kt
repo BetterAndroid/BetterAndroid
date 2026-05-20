@@ -59,6 +59,10 @@ class ResourcesUsageDetector : Detector(), Detector.UastScanner {
                 Using `ContextCompat` or `ResourcesCompat` resource access APIs can be simplified by \
                 using resource compatibility extensions from BetterAndroid ui-extension library.
 
+                See the documentation for more details:
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-extension#resources-extension
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-extension#resources-extension
+
                 The `Resources.kt` provides:
                 - Context and Resources based compat access APIs
                 - Direct replacements for drawable, color, color state list, float and font lookups
