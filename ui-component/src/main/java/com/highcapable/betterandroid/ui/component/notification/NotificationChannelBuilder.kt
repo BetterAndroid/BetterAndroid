@@ -112,15 +112,6 @@ class NotificationChannelBuilder private constructor(
     fun description(description: String) = apply { this.description = description }
 
     /**
-     * - This function is deprecated and no effect, use [NotificationChannelGroupBuilder] instead.
-     * @see NotificationChannelGroupBuilder
-     */
-    @Suppress("UNUSED_PARAMETER", "DeprecatedCallableAddReplaceWith")
-    @Deprecated(message = "Use NotificationChannelGroupBuilder instead.")
-    @JvmOverloads
-    fun group(id: String, name: CharSequence = "", description: String = "") = this
-
-    /**
      * @see NotificationChannelCompat.Builder.setShowBadge
      * @param showBadge
      * @return [NotificationChannelBuilder]

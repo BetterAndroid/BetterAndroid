@@ -161,14 +161,6 @@ fun PackageManager.isComponentEnabled(componentName: ComponentName) =
     getComponentEnabledSetting(componentName) != PackageManager.COMPONENT_ENABLED_STATE_DISABLED
 
 /**
- * Determine whether the [componentName] is enabled.
- *
- * - This function is deprecated, use [PackageManager.isComponentEnabled] instead.
- */
-@Deprecated(message = "Use PackageManager.isComponentEnabled instead.", ReplaceWith("isComponentEnabled(componentName)"))
-fun PackageManager.hasComponentEnabled(componentName: ComponentName) = isComponentEnabled(componentName)
-
-/**
  * Enable an [componentName].
  *
  * There will set the component status to [PackageManager.COMPONENT_ENABLED_STATE_ENABLED].
@@ -227,14 +219,6 @@ fun PackageManager.resetComponent(componentName: ComponentName, vararg flags: In
 val PackageInfo.versionCodeCompat
     @Suppress("DEPRECATION")
     get() = AndroidVersion.require(AndroidVersion.P, versionCode.toLong()) { longVersionCode }
-
-/**
- * Get the long version code of package info (compat).
- *
- * - This property is deprecated, use [PackageInfo.versionCodeCompat] instead.
- */
-@Deprecated(message = "Use PackageInfo.versionCodeCompat instead.", ReplaceWith("versionCodeCompat"))
-val PackageInfo.longVersionCodeCompat get() = versionCodeCompat
 
 /**
  * Get the primary cpu abi for the application.
@@ -430,9 +414,3 @@ enum class ApplicationInfoFlagsWrapper(val original: Int) {
     /** @see ApplicationInfo.FLAG_FULL_BACKUP_ONLY */
     FULL_BACKUP_ONLY(ApplicationInfo.FLAG_FULL_BACKUP_ONLY)
 }
-
-/**
- * Workaround for class name changed for [ApplicationInfoFlagsWrapper].
- */
-@Deprecated(message = "Use ApplicationInfoFlagsWrapper instead.", ReplaceWith("ApplicationInfoFlagsWrapper"))
-typealias ApplicationFlagsWrapper = ApplicationInfoFlagsWrapper

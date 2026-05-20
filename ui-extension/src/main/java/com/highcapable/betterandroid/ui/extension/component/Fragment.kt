@@ -34,7 +34,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
-import androidx.fragment.app.commitNow
 import androidx.lifecycle.LifecycleOwner
 import com.highcapable.betterandroid.ui.extension.generated.BetterAndroidProperties
 import com.highcapable.betterandroid.ui.extension.view.firstChildOrNull
@@ -93,7 +92,7 @@ fun FragmentTransaction(body: FragmentTransaction.() -> Unit) = body
  * @param host the host that needs to be bound to, must be [FragmentActivity] or [Fragment].
  * @param container the container view that needs to be bound to, must be a [View] or view id ([Int]),
  * default is get the root view from [host].
- * @param tag the [Fragment] tag, default is random tag.
+ * @param tag the [Fragment] tag, leave null to generate random tag.
  * @param customAnimId the [Fragment] transition animation, see [FragmentTransaction.setCustomAnimations].
  * @param allowStateLoss whether to allow state loss, default is true.
  * @param body the commit [FragmentTransaction] body.
@@ -103,7 +102,7 @@ fun FragmentTransaction(body: FragmentTransaction.() -> Unit) = body
 fun Fragment.attach(
     host: LifecycleOwner,
     container: Any? = null,
-    tag: String = generateRandomTag(),
+    tag: String? = null,
     @AnimRes customAnimId: Int? = null,
     allowStateLoss: Boolean = true,
     body: FragmentTransaction.() -> Unit = {}
@@ -111,7 +110,7 @@ fun Fragment.attach(
     host.fragmentManager().commit(allowStateLoss) {
         val containerViewId = container.resolveFragmentContainer(host.requireRootView())
         customAnimId?.also { setCustomAnimations(it, 0) }
-        add(containerViewId, this@attach, tag)
+        add(containerViewId, this@attach, tag ?: generateRandomTag())
 
         body()
     }
@@ -123,7 +122,7 @@ fun Fragment.attach(
  * @param host the host that needs to be replaced to, must be [FragmentActivity] or [Fragment].
  * @param container the container view that needs to be replaced to, must be a [View] or view id ([Int]),
  * default is get the root view from [host].
- * @param tag the [Fragment] tag, default is random tag.
+ * @param tag the [Fragment] tag, leave null to generate random tag.
  * @param customEnterAnimId the [Fragment] transition enter animation, see [FragmentTransaction.setCustomAnimations].
  * @param customExitAnimId the [Fragment] transition exit animation, see [FragmentTransaction.setCustomAnimations].
  * @param allowStateLoss whether to allow state loss, default is true.
@@ -134,7 +133,7 @@ fun Fragment.attach(
 fun Fragment.replace(
     host: LifecycleOwner,
     container: Any? = null,
-    tag: String = generateRandomTag(),
+    tag: String? = null,
     @AnimRes customEnterAnimId: Int? = null,
     @AnimRes customExitAnimId: Int? = null,
     allowStateLoss: Boolean = true,
@@ -145,7 +144,7 @@ fun Fragment.replace(
 
         if (customEnterAnimId != null || customExitAnimId != null)
             setCustomAnimations(customEnterAnimId ?: 0, customExitAnimId ?: 0)
-        replace(containerViewId, this@replace, tag)
+        replace(containerViewId, this@replace, tag ?: generateRandomTag())
 
         body()
     }
@@ -300,384 +299,4 @@ private fun Fragment.checkIsAdded(action: String): Boolean {
  * @receiver the current fragment.
  * @return [String] random tag.
  */
-internal fun Fragment.generateRandomTag() = "${this}_${System.currentTimeMillis()}_${(999..9999).random()}"
-
-// The following functions are deprecated, you should not use them.
-
-/**
- * Attach [Fragment] to [FragmentActivity].
- *
- * - This function is deprecated and no effect, use [Fragment.attach] instead.
- * @see Fragment.attach
- */
-@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
-@Deprecated(message = "Use Fragment.attach instead.")
-@JvmOverloads
-fun Fragment.attachToActivity(
-    activity: FragmentActivity,
-    @IdRes viewId: Int = View.NO_ID,
-    view: View? = null,
-    @AnimRes animId: Int = 0,
-    tag: String = System.currentTimeMillis().toString(),
-    addToBackStack: String? = null,
-    runOnCommit: Runnable? = null,
-    allowStateLoss: Boolean = true
-) {
-}
-
-/**
- * Attach child [Fragment] to [Fragment].
- *
- * - This function is deprecated and no effect, use [Fragment.attach] instead.
- * @see Fragment.attach
- */
-@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
-@Deprecated(message = "Use Fragment.attach instead.")
-@JvmOverloads
-fun Fragment.attachToFragment(
-    fragment: Fragment,
-    @IdRes viewId: Int = View.NO_ID,
-    view: View? = null,
-    @AnimRes animId: Int = 0,
-    tag: String = System.currentTimeMillis().toString(),
-    addToBackStack: String? = null,
-    runOnCommit: Runnable? = null,
-    allowStateLoss: Boolean = true
-) {
-}
-
-/**
- * Use the current [Fragment] from [FragmentActivity] to replace the existing one.
- *
- * - This function is deprecated and no effect, use [Fragment.replace] instead.
- * @see Fragment.replace
- */
-@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
-@Deprecated(message = "Use Fragment.replace instead.")
-@JvmOverloads
-fun Fragment.replaceFromActivity(
-    activity: FragmentActivity,
-    @IdRes viewId: Int = View.NO_ID,
-    view: View? = null,
-    @AnimRes enterAnimId: Int = 0,
-    @AnimRes exitAnimId: Int = 0,
-    tag: String = System.currentTimeMillis().toString(),
-    addToBackStack: String? = null,
-    runOnCommit: Runnable? = null,
-    allowStateLoss: Boolean = true
-) {
-}
-
-/**
- * Use the current child [Fragment] from [Fragment] to replace the existing one.
- *
- * - This function is deprecated and no effect, use [Fragment.replace] instead.
- * @see Fragment.replace
- */
-@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
-@Deprecated(message = "Use Fragment.replace instead.")
-@JvmOverloads
-fun Fragment.replaceFromFragment(
-    fragment: Fragment,
-    @IdRes viewId: Int = View.NO_ID,
-    view: View? = null,
-    @AnimRes enterAnimId: Int = 0,
-    @AnimRes exitAnimId: Int = 0,
-    tag: String = System.currentTimeMillis().toString(),
-    addToBackStack: String? = null,
-    runOnCommit: Runnable? = null,
-    allowStateLoss: Boolean = true
-) {
-}
-
-/**
- * Show the current [Fragment].
- *
- * - This function is deprecated and no effect, use [Fragment.show] instead.
- * @see Fragment.show
- */
-@Suppress("UNUSED_PARAMETER")
-@Deprecated(message = "Use Fragment.show instead.")
-@JvmName("show_Deprecated")
-@JvmOverloads
-fun Fragment.show(
-    activity: FragmentActivity? = getActivity(),
-    fragment: Fragment? = parentFragment,
-    @AnimRes animId: Int = 0,
-    runOnCommit: Runnable? = null,
-    allowStateLoss: Boolean = true
-) {
-}
-
-/**
- * Hide the current [Fragment].
- *
- * - This function is deprecated and no effect, use [Fragment.hide] instead.
- * @see Fragment.hide
- */
-@Suppress("UNUSED_PARAMETER")
-@Deprecated(message = "Use Fragment.hide instead.")
-@JvmName("hide_Deprecated")
-@JvmOverloads
-fun Fragment.hide(
-    activity: FragmentActivity? = getActivity(),
-    fragment: Fragment? = parentFragment,
-    @AnimRes animId: Int = 0,
-    runOnCommit: Runnable? = null,
-    allowStateLoss: Boolean = true
-) {
-}
-
-/**
- * Detach and remove [Fragment] from [FragmentActivity].
- *
- * - This function is deprecated and no effect, use [Fragment.detach] instead.
- * @see Fragment.detach
- */
-@Suppress("UNUSED_PARAMETER")
-@Deprecated(message = "Use Fragment.detach instead.")
-@JvmOverloads
-fun Fragment.detachFromActivity(
-    activity: FragmentActivity? = getActivity(),
-    @AnimRes animId: Int = 0,
-    runOnCommit: Runnable? = null,
-    allowStateLoss: Boolean = true
-) {
-}
-
-/**
- * Detach and remove child [Fragment] from [Fragment].
- *
- * - This function is deprecated and no effect, use [Fragment.detach] instead.
- * @see Fragment.detach
- */
-@Suppress("UNUSED_PARAMETER")
-@Deprecated(message = "Use Fragment.detach instead.")
-@JvmOverloads
-fun Fragment.detachFromFragment(
-    fragment: Fragment? = parentFragment,
-    @AnimRes animId: Int = 0,
-    runOnCommit: Runnable? = null,
-    allowStateLoss: Boolean = true
-) {
-}
-
-/**
- * Start a [Fragment] transaction and commit.
- *
- * - This function is deprecated, use [FragmentManager.commit] or [FragmentManager.commitNow] instead.
- */
-@Deprecated(
-    message = "Use commit or commitNow instead.",
-    replaceWith = ReplaceWith("commit(allowingStateLoss, initiate)")
-)
-inline fun FragmentManager.commitTransaction(allowingStateLoss: Boolean = true, initiate: FragmentTransaction.() -> Unit) =
-    commit(allowingStateLoss, initiate)
-
-/**
- * - This function is deprecated, use [FragmentManager.commitTransaction] instead.
- * @see FragmentManager.commitTransaction
- */
-@Suppress("DEPRECATION")
-@Deprecated(
-    message = "Use FragmentManager.commitTransaction instead.",
-    replaceWith = ReplaceWith("fragmentManager().commitTransaction(isAllowingStateLoss, initiate)")
-)
-inline fun FragmentActivity.commitFragmentTransaction(isAllowingStateLoss: Boolean = true, initiate: FragmentTransaction.() -> Unit) {
-    fragmentManager().commitTransaction(isAllowingStateLoss, initiate)
-}
-
-/**
- * - This function is deprecated, use [FragmentManager.commitTransaction] instead.
- * @see FragmentManager.commitTransaction
- */
-@Suppress("DEPRECATION")
-@Deprecated(
-    message = "Use FragmentManager.commitTransaction instead.",
-    replaceWith = ReplaceWith("fragmentManager().commitTransaction(isAllowingStateLoss, initiate)")
-)
-inline fun Fragment.commitFragmentTransaction(isAllowingStateLoss: Boolean = true, initiate: FragmentTransaction.() -> Unit) {
-    fragmentManager().commitTransaction(isAllowingStateLoss, initiate)
-}
-
-/**
- * - This function is deprecated, use [FragmentManager.findFragment] instead.
- * @see FragmentManager.findFragment
- */
-@Deprecated(
-    message = "Use FragmentManager.findFragment instead.",
-    replaceWith = ReplaceWith("fragmentManager().findFragment(id)")
-)
-inline fun <reified T : Fragment> FragmentActivity.findFragment(@IdRes id: Int) = fragmentManager().findFragment<T>(id)
-
-/**
- * - This function is deprecated, use [FragmentManager.findFragment] instead.
- * @see FragmentManager.findFragment
- */
-@Deprecated(
-    message = "Use FragmentManager.findFragment instead.",
-    replaceWith = ReplaceWith("fragmentManager().findFragment(tag)")
-)
-inline fun <reified T : Fragment> FragmentActivity.findFragment(tag: String) = fragmentManager().findFragment<T>(tag)
-
-/**
- * - This function is deprecated, use [FragmentManager.findFragment] instead.
- * @see FragmentManager.findFragment
- */
-@Deprecated(
-    message = "Use FragmentManager.findFragment instead.",
-    replaceWith = ReplaceWith("fragmentManager().findFragment(id)")
-)
-inline fun <reified T : Fragment> Fragment.findFragment(@IdRes id: Int) = fragmentManager().findFragment<T>(id)
-
-/**
- * - This function is deprecated, use [FragmentManager.findFragment] instead.
- * @see FragmentManager.findFragment
- */
-@Deprecated(
-    message = "Use FragmentManager.findFragment instead.",
-    replaceWith = ReplaceWith("fragmentManager().findFragment(tag)")
-)
-inline fun <reified T : Fragment> Fragment.findFragment(tag: String) = fragmentManager().findFragment<T>(tag)
-
-/**
- * Batch attach [Fragment] to [FragmentActivity].
- *
- * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
- */
-@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
-@Deprecated(message = "No effect and will be removed in the future.")
-@JvmOverloads
-fun FragmentActivity.attachFragments(
-    vararg fragments: Fragment,
-    @IdRes viewId: Int = View.NO_ID,
-    view: View? = null,
-    @AnimRes beginAnimResId: Int = 0,
-    @AnimRes finishAnimResId: Int = 0,
-    tag: String = System.currentTimeMillis().toString(),
-    runOnCommit: Runnable? = null,
-    allowingStateLoss: Boolean = true
-) {
-}
-
-/**
- * Batch attach child [Fragment] to [Fragment].
- *
- * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
- */
-@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
-@Deprecated(message = "No effect and will be removed in the future.")
-@JvmOverloads
-fun Fragment.attachFragments(
-    vararg fragments: Fragment,
-    @IdRes viewId: Int = View.NO_ID,
-    view: View? = null,
-    @AnimRes beginAnimResId: Int = 0,
-    @AnimRes finishAnimResId: Int = 0,
-    tag: String = System.currentTimeMillis().toString(),
-    runOnCommit: Runnable? = null,
-    allowingStateLoss: Boolean = true
-) {
-}
-
-/**
- * Batch show [Fragment] from [FragmentActivity].
- *
- * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
- */
-@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
-@Deprecated(message = "No effect and will be removed in the future.")
-@JvmOverloads
-fun FragmentActivity.showFragments(
-    vararg fragments: Fragment,
-    @AnimRes beginAnimResId: Int = 0,
-    @AnimRes finishAnimResId: Int = 0,
-    runOnCommit: Runnable? = null,
-    allowingStateLoss: Boolean = true
-) {
-}
-
-/**
- * Batch show child [Fragment] from [Fragment].
- *
- * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
- */
-@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
-@Deprecated(message = "No effect and will be removed in the future.")
-@JvmOverloads
-fun Fragment.showFragments(
-    vararg fragments: Fragment,
-    @AnimRes beginAnimResId: Int = 0,
-    @AnimRes finishAnimResId: Int = 0,
-    runOnCommit: Runnable? = null,
-    allowingStateLoss: Boolean = true
-) {
-}
-
-/**
- * Batch hide [Fragment] from [FragmentActivity].
- *
- * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
- */
-@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
-@Deprecated(message = "No effect and will be removed in the future.")
-@JvmOverloads
-fun FragmentActivity.hideFragments(
-    vararg fragments: Fragment,
-    @AnimRes beginAnimResId: Int = 0,
-    @AnimRes finishAnimResId: Int = 0,
-    runOnCommit: Runnable? = null,
-    allowingStateLoss: Boolean = true
-) {
-}
-
-/**
- * Batch hide child [Fragment] from [Fragment].
- *
- * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
- */
-@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
-@Deprecated(message = "No effect and will be removed in the future.")
-@JvmOverloads
-fun Fragment.hideFragments(
-    vararg fragments: Fragment,
-    @AnimRes beginAnimResId: Int = 0,
-    @AnimRes finishAnimResId: Int = 0,
-    runOnCommit: Runnable? = null,
-    allowingStateLoss: Boolean = true
-) {
-}
-
-/**
- * Batch detach and remove [Fragment] from [FragmentActivity].
- *
- * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
- */
-@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
-@Deprecated(message = "No effect and will be removed in the future.")
-@JvmOverloads
-fun FragmentActivity.detachFragments(
-    vararg fragments: Fragment,
-    @AnimRes beginAnimResId: Int = 0,
-    @AnimRes finishAnimResId: Int = 0,
-    runOnCommit: Runnable? = null,
-    allowingStateLoss: Boolean = true
-) {
-}
-
-/**
- * Batch detach and remove child [Fragment] from [Fragment].
- *
- * - This function is deprecated and no effect, use it may cause errors, will be removed in the future.
- */
-@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
-@Deprecated(message = "No effect and will be removed in the future.")
-@JvmOverloads
-fun Fragment.detachFragments(
-    vararg fragments: Fragment,
-    @AnimRes beginAnimResId: Int = 0,
-    @AnimRes finishAnimResId: Int = 0,
-    runOnCommit: Runnable? = null,
-    allowingStateLoss: Boolean = true
-) {
-}
+private fun Fragment.generateRandomTag() = "${this}_${System.currentTimeMillis()}_${(999..9999).random()}"

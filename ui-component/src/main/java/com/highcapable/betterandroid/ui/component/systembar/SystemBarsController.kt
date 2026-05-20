@@ -24,17 +24,12 @@
 package com.highcapable.betterandroid.ui.component.systembar
 
 import android.app.Activity
-import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
-import androidx.annotation.ColorInt
-import androidx.annotation.DrawableRes
-import androidx.annotation.Px
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -45,7 +40,6 @@ import com.highcapable.betterandroid.ui.component.activity.AppViewsActivity
 import com.highcapable.betterandroid.ui.component.fragment.AppBindingFragment
 import com.highcapable.betterandroid.ui.component.fragment.AppViewsFragment
 import com.highcapable.betterandroid.ui.component.generated.BetterAndroidProperties
-import com.highcapable.betterandroid.ui.component.systembar.SystemBarsController.Companion.from
 import com.highcapable.betterandroid.ui.component.systembar.compat.SystemBarsCompat
 import com.highcapable.betterandroid.ui.component.systembar.style.SystemBarStyle
 import com.highcapable.betterandroid.ui.component.systembar.type.SystemBarBehavior
@@ -100,6 +94,7 @@ class SystemBarsController private constructor(private val window: Window) {
          *     }
          * }
          * ```
+         *
          * Or you can inherit the related activities or fragments.
          * @see AppBindingActivity
          * @see AppViewsActivity
@@ -111,30 +106,6 @@ class SystemBarsController private constructor(private val window: Window) {
          */
         @JvmStatic
         fun from(window: Window) = SystemBarsController(window)
-
-        /**
-         * Create a new [SystemBarsController] from [activity].
-         *
-         * - This function is deprecated, use [from] instead.
-         *
-         * - The root view's initialization timing has been changed.
-         * @see from
-         */
-        @Suppress("UNUSED_PARAMETER")
-        @Deprecated(message = "Use from instead.", ReplaceWith("from(activity.window)"))
-        @JvmStatic
-        fun from(activity: Activity, rootView: View? = null) = from(activity.window)
-
-        /**
-         * Create a new [AbsoluteController].
-         *
-         * - This function is deprecated and no effect, use [WindowInsetsWrapper.Absolute] instead.
-         * @see WindowInsetsWrapper.Absolute
-         */
-        @Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
-        @Deprecated(message = "Use WindowInsetsWrapper.Absolute instead.")
-        @JvmStatic
-        fun createAbsolute(context: Context) = AbsoluteController(context)
     }
 
     /**
@@ -509,252 +480,5 @@ class SystemBarsController private constructor(private val window: Window) {
         hasAppliedStatusBarStyle = false
         hasAppliedNavigationBarStyle = false
         isInitOnce = false
-    }
-
-    // The following functions are deprecated, you should not use them.
-
-    /**
-     * System bars absolute controller.
-     *
-     * - This class is deprecated and no effect, use [WindowInsetsWrapper.Absolute] instead.
-     * @see WindowInsetsWrapper.Absolute
-     */
-    @Deprecated(message = "Use WindowInsetsWrapper.Absolute instead.")
-    class AbsoluteController internal constructor(private val context: Context) {
-
-        /**
-         * Get the status bar height (px).
-         *
-         * - This class is deprecated and no effect, use [WindowInsetsWrapper.Absolute] instead.
-         * @see WindowInsetsWrapper.Absolute
-         */
-        @Suppress("DeprecatedCallableAddReplaceWith")
-        @Deprecated(message = "Use WindowInsetsWrapper.Absolute instead.")
-        val statusBarHeight @Px get() = 0
-
-        /**
-         * Get the navigation bar height (px).
-         *
-         * - This class is deprecated and no effect, use [WindowInsetsWrapper.Absolute] instead.
-         * @see WindowInsetsWrapper.Absolute
-         */
-        @Suppress("DeprecatedCallableAddReplaceWith")
-        @Deprecated(message = "Use WindowInsetsWrapper.Absolute instead.")
-        val navigationBarHeight @Px get() = 0
-    }
-
-    /**
-     * Get the base layout.
-     *
-     * - This function is deprecated and no effect,
-     *   because the root view is controlled by yourself now.
-     *
-     * - You should avoid using the default [Android_R.id.content] to init the root view.
-     */
-    @Deprecated(message = "No longer needed, the root view is controlled by yourself.")
-    val baseLayout get() = rootView
-
-    /**
-     * The current system bars insets.
-     *
-     * - This property is deprecated and no effect, see the [addOnInsetsChangeListener] for more details.
-     * @see addOnInsetsChangeListener
-     */
-    @Suppress("DeprecatedCallableAddReplaceWith")
-    @Deprecated(message = "No effect.")
-    val systemInsets get() = Any()
-
-    /**
-     * Initialize [SystemBarsController].
-     *
-     * - This function is deprecated and no effect, use [init] instead.
-     *
-     * - The root view's initialization timing has been changed.
-     * @see init
-     */
-    @Suppress("UNUSED_PARAMETER")
-    @Deprecated(message = "Use init instead.")
-    fun init(defaultPaddings: Boolean) {
-    }
-
-    /**
-     * - This function is deprecated and no effect,
-     *   because the root view is controlled by yourself now.
-     *
-     * - You should avoid using the default [Android_R.id.content] to init the root view.
-     */
-    @Suppress("UNUSED_PARAMETER")
-    @Deprecated(message = "No longer needed, the root view is controlled by yourself.")
-    fun setBaseBackground(background: Drawable?) {
-    }
-
-    /**
-     * - This function is deprecated and no effect,
-     *   because the root view is controlled by yourself now.
-     *
-     * - You should avoid using the default [Android_R.id.content] to init the root view.
-     */
-    @Suppress("UNUSED_PARAMETER")
-    @Deprecated(message = "No longer needed, the root view is controlled by yourself.")
-    fun setBaseBackgroundColor(@ColorInt color: Int) {
-    }
-
-    /**
-     * - This function is deprecated and no effect,
-     *   because the root view is controlled by yourself now.
-     *
-     * - You should avoid using the default [Android_R.id.content] to init the root view.
-     */
-    @Suppress("UNUSED_PARAMETER")
-    @Deprecated(message = "No longer needed, the root view is controlled by yourself.")
-    fun setBaseBackgroundResource(@DrawableRes resId: Int) {
-    }
-
-    /**
-     * Add the system bars insets changes listener.
-     *
-     * - This function is deprecated and no effect, if you want to add your own insets changes listener,
-     *   please use the [View.handleOnWindowInsetsChanged] to your view,
-     *   [SystemBarsController] will not consume the insets for child views.
-     * @see View.handleOnWindowInsetsChanged
-     */
-    @Suppress("UNUSED_PARAMETER")
-    @Deprecated(message = "Use your own View.handleOnWindowInsetsChanged instead.")
-    fun addOnInsetsChangeListener(onChange: (Any) -> Unit) {
-    }
-
-    /**
-     * Show system bars.
-     *
-     * - This function is deprecated, use [show] instead.
-     * @see show
-     */
-    @Suppress("UNUSED_PARAMETER")
-    @Deprecated(message = "Use show instead.", ReplaceWith("show(type)"))
-    fun show(type: SystemBars, appendExtraPaddings: Boolean = false, ignoredCutout: Boolean = false) = show(type)
-
-    /**
-     * Hide system bars.
-     *
-     * - This function is deprecated, use [hide] instead.
-     * @see hide
-     */
-    @Suppress("UNUSED_PARAMETER")
-    @Deprecated(message = "Use hide instead.", ReplaceWith("hide(type)"))
-    fun hide(type: SystemBars, removeExtraPaddings: Boolean = false, ignoredCutout: Boolean = false) = hide(type)
-
-    /**
-     * Determine whether the system bars is visible.
-     *
-     * - This function is deprecated and no effect, use your own [View.handleOnWindowInsetsChanged] instead.
-     * @see View.handleOnWindowInsetsChanged
-     */
-    @Suppress("UNUSED_PARAMETER", "DeprecatedCallableAddReplaceWith")
-    @Deprecated(message = "Use your own View.handleOnWindowInsetsChanged instead.")
-    fun isVisible(type: SystemBars) = false
-
-    /**
-     * Apply the system bars extra paddings.
-     *
-     * - This function is deprecated and no effect, use your own [View.handleOnWindowInsetsChanged] instead.
-     * @see View.handleOnWindowInsetsChanged
-     */
-    @Suppress("UNUSED_PARAMETER")
-    @Deprecated(message = "Use your own View.handleOnWindowInsetsChanged instead.")
-    @JvmOverloads
-    fun applyExtraPaddings(vararg types: Any, ignoredCutout: Boolean = false) {
-    }
-
-    /**
-     * Append the system bars extra paddings.
-     *
-     * - This function is deprecated and no effect, use your own [View.handleOnWindowInsetsChanged] instead.
-     * @see View.handleOnWindowInsetsChanged
-     */
-    @Suppress("UNUSED_PARAMETER")
-    @Deprecated(message = "Use your own View.handleOnWindowInsetsChanged instead.")
-    @JvmOverloads
-    fun appendExtraPaddings(vararg types: Any, ignoredCutout: Boolean = false) {
-    }
-
-    /**
-     * Remove the system bars extra paddings.
-     *
-     * - This function is deprecated and no effect, use your own [View.handleOnWindowInsetsChanged] instead.
-     * @see View.handleOnWindowInsetsChanged
-     */
-    @Suppress("UNUSED_PARAMETER")
-    @Deprecated(message = "Use your own View.handleOnWindowInsetsChanged instead.")
-    @JvmOverloads
-    fun removeExtraPaddings(vararg types: Any, ignoredCutout: Boolean = false) {
-    }
-
-    /**
-     * Show the system bars stub views.
-     *
-     * - This function is deprecated and no effect, use your own [View.handleOnWindowInsetsChanged] instead.
-     * @see View.handleOnWindowInsetsChanged
-     */
-    @Suppress("UNUSED_PARAMETER")
-    @Deprecated(message = "Use your own View.handleOnWindowInsetsChanged instead.")
-    fun showStub(type: SystemBars) {
-    }
-
-    /**
-     * Hide the system bars stub views.
-     *
-     * - This function is deprecated and no effect, use your own [View.handleOnWindowInsetsChanged] instead.
-     * @see View.handleOnWindowInsetsChanged
-     */
-    @Suppress("UNUSED_PARAMETER")
-    @Deprecated(message = "Use your own View.handleOnWindowInsetsChanged instead.")
-    @JvmOverloads
-    fun hideStub(type: SystemBars, ignoredCutout: Boolean = false) {
-    }
-
-    /**
-     * Set the system bars background color.
-     *
-     * - This function is deprecated and no effect, use [statusBarStyle], [navigationBarStyle], [setStyle] instead.
-     * @see statusBarStyle
-     * @see navigationBarStyle
-     * @see setStyle
-     */
-    @Suppress("UNUSED_PARAMETER")
-    @Deprecated(message = "Use statusBarStyle or navigationBarStyle or setStyle instead.")
-    fun setColor(type: SystemBars, @ColorInt color: Int) {
-    }
-
-    /**
-     * Get or set the dark elements tint color (light appearance) of status bars.
-     *
-     * - This function is deprecated and no effect, use [statusBarStyle], [setStyle] instead.
-     * @see statusBarStyle
-     * @see setStyle
-     */
-    @Deprecated(message = "Use statusBarStyle or setStyle instead.")
-    var isDarkColorStatusBars = false
-
-    /**
-     * Get or set the dark elements tint color (light appearance) of navigation bars.
-     *
-     * - This function is deprecated and no effect, use [navigationBarStyle], [setStyle] instead.
-     * @see navigationBarStyle
-     * @see setStyle
-     */
-    @Deprecated(message = "Use navigationBarStyle or setStyle instead.")
-    var isDarkColorNavigationBars = false
-
-    /**
-     * Automatically adapts the appearance of system bars based on the given [color].
-     *
-     * - This function is deprecated and no effect, use [statusBarStyle], [navigationBarStyle], [setStyle] instead.
-     * @see statusBarStyle
-     * @see navigationBarStyle
-     * @see setStyle
-     */
-    @Suppress("UNUSED_PARAMETER")
-    @Deprecated(message = "Use statusBarStyle or navigationBarStyle or setStyle instead.")
-    fun adaptiveAppearance(color: Int) {
     }
 }

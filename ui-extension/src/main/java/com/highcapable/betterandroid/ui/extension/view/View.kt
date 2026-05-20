@@ -25,13 +25,11 @@
 package com.highcapable.betterandroid.ui.extension.view
 
 import android.app.Activity
-import android.content.Context
 import android.graphics.Outline
 import android.graphics.Point
 import android.os.Handler
 import android.os.Looper
 import android.view.KeyEvent
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -366,22 +364,6 @@ fun View.hideIme() {
 }
 
 /**
- * Show the soft input.
- *
- * - This function is deprecated, use [View.showIme] instead.
- */
-@Deprecated(message = "Use View.showIme instead.", ReplaceWith("showIme()"))
-fun View.showSoftInput() = showIme()
-
-/**
- * Disappear the soft input.
- *
- * - This function is deprecated, use [View.hideIme] instead.
- */
-@Deprecated(message = "Use View.hideIme instead.", ReplaceWith("hideIme()"))
-fun View.hideSoftInput() = hideIme()
-
-/**
  * Get or set the view's tooltip text (compat).
  * 
  * If the target SDK version is lower than 26,
@@ -480,36 +462,6 @@ fun View.updatePadding(@Px horizontal: Int = -1, @Px vertical: Int = -1) {
     if (horizontal >= 0) updatePadding(left = horizontal, right = horizontal)
     if (vertical >= 0) updatePadding(top = vertical, bottom = vertical)
 }
-
-/**
- * Updates this view's margins.
- *
- * - This function is deprecated, use [View.updateMargins] function instead.
- */
-@Deprecated(
-    message = "Use View.updateMargins instead.",
-    replaceWith = ReplaceWith("updateMargins(left, top, right, bottom)")
-)
-@JvmOverloads
-fun View.updateMargin(
-    @Px left: Int = marginLeft,
-    @Px top: Int = marginTop,
-    @Px right: Int = marginRight,
-    @Px bottom: Int = marginBottom
-) = updateMargins(left, top, right, bottom)
-
-/**
- * Updates this view's horizontal or vertical margins.
- *
- * - This function is deprecated, use [View.updateMargins] function instead.
- */
-@Deprecated(
-    message = "Use View.updateMargins instead.",
-    replaceWith = ReplaceWith("updateMargins(horizontal, vertical)")
-)
-@JvmOverloads
-@JvmName("updateHVMargin")
-fun View.updateMargin(@Px horizontal: Int = -1, @Px vertical: Int = -1) = updateMargins(horizontal, vertical)
 
 /**
  * Updates this view's margins.
@@ -670,58 +622,6 @@ inline fun <reified V : View> V.outlineProvider(crossinline provider: (view: V, 
         }
     }
 }
-
-/**
- * Inflate a view using [resId].
- *
- * - This function is deprecated, use [LayoutInflater.inflate] instead.
- */
-@Deprecated(
-    message = "Use LayoutInflater.inflate instead.",
-    ReplaceWith("layoutInflater.inflate<View>(resId, parent, attachToRoot)", "android.view.View")
-)
-@JvmOverloads
-fun Context.inflate(resId: Int, parent: ViewGroup? = null, attachToRoot: Boolean = false) =
-    layoutInflater.inflate<View>(resId, parent, attachToRoot)
-
-/**
- * Inflate a view using [resId].
- *
- * - This function is deprecated, use [LayoutInflater.inflate] instead.
- */
-@Deprecated(
-    message = "Use LayoutInflater.inflate instead.",
-    ReplaceWith("layoutInflater.inflate<V>(resId, parent, attachToRoot)")
-)
-@JvmName("inflateTyped")
-inline fun <reified V : View> Context.inflate(resId: Int, parent: ViewGroup? = null, attachToRoot: Boolean = false): V =
-    layoutInflater.inflate<V>(resId, parent, attachToRoot)
-
-/**
- * Inflate a view using [resId].
- *
- * - This function is deprecated, use [LayoutInflater.inflate] instead.
- */
-@Deprecated(
-    message = "Use LayoutInflater.inflate instead.",
-    ReplaceWith("context.layoutInflater.inflate<View>(resId, root = this, attachToRoot)", "android.view.View")
-)
-@JvmOverloads
-fun ViewGroup.inflate(resId: Int, attachToRoot: Boolean = false) =
-    context.layoutInflater.inflate<View>(resId, root = this, attachToRoot)
-
-/**
- * Inflate a view using [resId].
- *
- * - This function is deprecated, use [LayoutInflater.inflate] instead.
- */
-@Deprecated(
-    message = "Use LayoutInflater.inflate instead.",
-    ReplaceWith("context.layoutInflater.inflate<V>(resId, root = this, attachToRoot)")
-)
-@JvmName("inflateTyped")
-inline fun <reified V : View> ViewGroup.inflate(resId: Int, attachToRoot: Boolean = false) =
-    context.layoutInflater.inflate<V>(resId, root = this, attachToRoot)
 
 /**
  * Create a new [ViewGroup.LayoutParams].

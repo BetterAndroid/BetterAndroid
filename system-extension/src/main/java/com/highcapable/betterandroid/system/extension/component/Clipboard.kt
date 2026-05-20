@@ -24,7 +24,6 @@
 
 package com.highcapable.betterandroid.system.extension.component
 
-import android.app.Dialog
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.ClipboardManager
@@ -32,9 +31,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.view.View
 import androidx.core.content.getSystemService
-import androidx.fragment.app.Fragment
 
 /**
  * Clip data builder.
@@ -291,47 +288,3 @@ val Context.clipboardManager get() = getSystemService<ClipboardManager>() ?: err
 )
 fun ClipboardManager.copy(uri: Uri, label: CharSequence? = null, resolver: ContentResolver?) =
     copy(uri, resolver?.let { uri.resolveMimeTypes(it) } ?: listOf(ClipDescription.MIMETYPE_TEXT_URILIST), label)
-
-/**
- * Copy text to clipboard.
- *
- * - This function is deprecated, use [Context.clipboardManager] instead.
- * @see Context.clipboardManager
- * @see ClipboardManager.copy
- */
-@Deprecated(message = "Use Context.clipboardManager instead.", ReplaceWith("clipboardManager.copy(text, label)"))
-@JvmOverloads
-fun Context.copyToClipboard(text: CharSequence, label: CharSequence? = null) = clipboardManager.copy(text, label)
-
-/**
- * Copy text to clipboard.
- *
- * - This function is deprecated, use [Context.clipboardManager] instead.
- * @see Context.clipboardManager
- * @see ClipboardManager.copy
- */
-@Deprecated(message = "Use Context.clipboardManager instead.", ReplaceWith("context?.clipboardManager?.copy(text, label)"))
-@JvmOverloads
-fun Fragment.copyToClipboard(text: CharSequence, label: CharSequence? = null) = context?.clipboardManager?.copy(text, label)
-
-/**
- * Copy text to clipboard.
- *
- * - This function is deprecated, use [Context.clipboardManager] instead.
- * @see Context.clipboardManager
- * @see ClipboardManager.copy
- */
-@Deprecated(message = "Use Context.clipboardManager instead.", ReplaceWith("context?.clipboardManager?.copy(text, label)"))
-@JvmOverloads
-fun View.copyToClipboard(text: CharSequence, label: CharSequence? = null) = context?.clipboardManager?.copy(text, label)
-
-/**
- * Copy text to clipboard.
- *
- * - This function is deprecated, use [Context.clipboardManager] instead.
- * @see Context.clipboardManager
- * @see ClipboardManager.copy
- */
-@Deprecated(message = "Use Context.clipboardManager instead.", ReplaceWith("context.clipboardManager.copy(text, label)"))
-@JvmOverloads
-fun Dialog.copyToClipboard(text: CharSequence, label: CharSequence? = null) = context.clipboardManager.copy(text, label)

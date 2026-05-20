@@ -176,42 +176,6 @@ fun <N : Number> N.toDp(context: Context) = toDp(context.resources)
 fun <N : Number> N.toDp(resources: Resources) = convertToDp(resources)
 
 /**
- * Convert dp to px.
- *
- * - This function is deprecated, use [toPx] instead.
- */
-@Deprecated(message = "Use toPx instead.", ReplaceWith("toPx(context)"))
-@JvmName("numberAsDp")
-fun <N : Number> N.asDp(context: Context) = toPx(context)
-
-/**
- * Convert dp to px.
- *
- * - This function is deprecated, use [toPx] instead.
- */
-@Deprecated(message = "Use toPx instead.", ReplaceWith("toPx(view.resources)"))
-@JvmName("numberAsDp")
-fun <N : Number> N.asDp(view: View) = toPx(view.resources)
-
-/**
- * Convert px to dp.
- *
- * - This function is deprecated, use [toDp] instead.
- */
-@Deprecated(message = "Use toDp instead.", ReplaceWith("toDp(context)"))
-@JvmName("numberAsPx")
-fun <N : Number> N.asPx(context: Context) = toDp(context)
-
-/**
- * Convert px to dp.
- *
- * - This function is deprecated, use [toDp] instead.
- */
-@Deprecated(message = "Use toDp instead.", ReplaceWith("toDp(view.resources)"))
-@JvmName("numberAsPx")
-fun <N : Number> N.asPx(view: View) = toDp(view.resources)
-
-/**
  * Convert dp to px (base function).
  * @receiver the original dimension.
  * @param resources the current resources.

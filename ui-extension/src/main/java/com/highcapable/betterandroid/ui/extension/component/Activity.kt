@@ -38,16 +38,6 @@ import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
 import com.highcapable.kavaref.extension.classOf
 
 /**
- * Determine whether the current activity is in any special mode,
- * such as mini-window, multi-window, split-screen, etc.
- *
- * - This solution was undesirable, so it was deprecated, use [Activity.isInMultiWindowModeCompat] instead.
- * @see Activity.isInMultiWindowModeCompat
- */
-@Deprecated(message = "Use isInMultiWindowModeCompat instead.", ReplaceWith("isInMultiWindowModeCompat"))
-val Activity.isInSpecialWindowMode get() = isInMultiWindowModeCompat
-
-/**
  * Whether the activity is currently in multi-window mode (compat).
  *
  * - Note: This function will always return false on system version prior to Android 7.

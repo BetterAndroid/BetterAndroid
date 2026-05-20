@@ -156,15 +156,3 @@ fun Context.sendBroadcast(
 fun BroadcastReceiver(
     body: BroadcastReceiver.(context: Context, intent: Intent) -> Unit
 ): BroadcastReceiver.(context: Context, intent: Intent) -> Unit = body
-
-/**
- * Send a broadcast.
- *
- * - This function is deprecated and no effect, use [sendBroadcast] instead.
- * @see sendBroadcast
- */
-@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
-@Deprecated(message = "Use sendBroadcast instead.")
-@JvmOverloads
-fun Context.sendBroadcast(packageName: String = "", vararg action: String, initiate: Intent.() -> Unit = {}) {
-}

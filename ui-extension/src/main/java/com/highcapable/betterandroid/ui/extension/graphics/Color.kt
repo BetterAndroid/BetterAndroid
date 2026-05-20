@@ -121,17 +121,6 @@ fun mixColorOf(@ColorInt color1: Int, @ColorInt color2: Int, ratio: Float = 0.5f
 }
 
 /**
- * Converts to mix color.
- *
- * - This function is deprecated, use [mixColorOf] instead.
- * @see mixColorOf
- */
-@Deprecated(message = "Use mixColorOf instead.", ReplaceWith("mixColorOf(this, color, ratio)"))
-@JvmOverloads
-@JvmName("convertToMixColor")
-fun @receiver:ColorInt Int.toMixColor(@ColorInt color: Int, ratio: Float = 0.5f) = mixColorOf(color1 = this, color, ratio)
-
-/**
  * Event state attribute ID list definition.
  */
 object AttrState {

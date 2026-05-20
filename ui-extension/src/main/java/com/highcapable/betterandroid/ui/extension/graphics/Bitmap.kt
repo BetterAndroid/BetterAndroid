@@ -346,24 +346,3 @@ fun Bitmap.reduce(multiple: Int = 2): Bitmap {
 
     return scale(sWidth, sHeight)
 }
-
-/**
- * Compress the bitmap to reduce its size.
- *
- * - This function is deprecated, use [Bitmap.shrink] instead.
- */
-@Deprecated(message = "Use Bitmap.shrink instead.", ReplaceWith("shrink(maxSize, format, quality)"))
-@JvmOverloads
-fun Bitmap.compress(maxSize: Float, format: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG, quality: Int = 100) =
-    shrink(maxSize, format, quality)
-
-/**
- * Zoom the bitmap width and height.
- *
- * - This function is deprecated, use [Bitmap.scale] instead.
- */
-@Deprecated(
-    message = "Use Bitmap.scale instead.",
-    ReplaceWith("scale(newWidth.toInt(), newHeight.toInt())", "androidx.core.graphics.scale")
-)
-fun Bitmap.zoom(newWidth: Float, newHeight: Float) = scale(newWidth.toInt(), newHeight.toInt())

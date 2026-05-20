@@ -33,13 +33,11 @@ import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
-import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.ContextThemeWrapper
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import android.widget.PopupMenu
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
@@ -49,12 +47,10 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.FontRes
 import androidx.annotation.IdRes
 import androidx.annotation.MenuRes
-import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import androidx.annotation.StyleableRes
 import androidx.core.content.res.ColorStateListInflaterCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.content.withStyledAttributes
 import androidx.core.view.get
 import androidx.core.view.isNotEmpty
 import androidx.core.view.size
@@ -364,15 +360,6 @@ fun Context.areThemeAttrsIdsValueEquals(@AttrRes firstId: Int, @AttrRes lastId: 
 }
 
 /**
- * Get the resource ID of the attribute resource list from the current theme.
- *
- * - This function is deprecated, use [areThemeAttrsIdsValueEquals] instead.
- * @see Context.areThemeAttrsIdsValueEquals
- */
-@Deprecated(message = "Use areThemeAttrsIdsValueEquals instead.", ReplaceWith("areThemeAttrsIdsValueEquals(firstId, lastId)"))
-fun Context.isThemeAttrsIdsValueEquals(@AttrRes firstId: Int, @AttrRes lastId: Int) = areThemeAttrsIdsValueEquals(firstId, lastId)
-
-/**
  * Determine whether the resource ID of
  * the specified attribute resource list exists in the current context.
  *
@@ -599,62 +586,6 @@ fun TypedArray.getDrawableOrNull(@StyleableRes index: Int, defValue: Drawable? =
 @JvmOverloads
 fun TypedArray.getFontOrNull(@StyleableRes index: Int, defValue: Typeface? = null) =
     if (hasValue(index)) getFont(index) ?: defValue else defValue
-
-/**
- * - This function is deprecated and no effect and will be removed in the future.
- *
- * - Please use [toPx] or [toDp] and call [TypedArray.getDimension] yourself.
- */
-@Suppress("UnusedReceiverParameter", "UNUSED_PARAMETER", "DeprecatedCallableAddReplaceWith")
-@Deprecated(message = "Use toPx or toDp and call getDimension yourself.")
-fun TypedArray.getDimensionPx(context: Context, @StyleableRes index: Int, @Px defValue: Float) = 0f
-
-/**
- * - This function is deprecated and no effect and will be removed in the future.
- *
- * - Please use [toPx] or [toDp] and call [TypedArray.getDimension] yourself.
- */
-@Suppress("UnusedReceiverParameter", "UNUSED_PARAMETER", "DeprecatedCallableAddReplaceWith")
-@Deprecated(message = "Use toPx or toDp and call getDimension yourself.")
-fun TypedArray.getDimensionPx(view: View, @StyleableRes index: Int, @Px defValue: Float) = 0f
-
-/**
- * Obtain [View] attributes.
- *
- * - This function is deprecated, use [Context.withStyledAttributes] instead.
- *
- * Before:
- *
- * ```kotlin
- * obtainStyledAttributes(attrs, R.styleable.MyView) {
- *     val myType = it.getInteger(R.styleable.MyView_myType, 0)
- * }
- * ```
- *
- * After:
- *
- * ```kotlin
- * context.withStyledAttributes(attrs, R.styleable.MyView) {
- *     val myType = getInteger(R.styleable.MyView_myType, 0)
- * }
- */
-@Deprecated(
-    message = "Use Context.withStyledAttributes instead.",
-    ReplaceWith("context.withStyledAttributes(attrs, styleIds) { result(this) }", "androidx.core.content.withStyledAttributes"),
-)
-inline fun View.obtainStyledAttributes(attrs: AttributeSet? = null, styleIds: IntArray, result: (TypedArray) -> Unit) {
-    if (attrs == null) return
-    context?.withStyledAttributes(attrs, styleIds) { result(this) }
-}
-
-/**
- * Whether in non-standard (special) floating window mode.
- *
- * - This solution was undesirable, so it was deprecated and no effect, don't use it.
- */
-@Suppress("UnusedReceiverParameter", "DeprecatedCallableAddReplaceWith")
-@Deprecated(message = "No effect and will be removed in the future.")
-val Configuration.isSpecialWindowingMode get() = false
 
 /** The [ContextThemeWrapper] hidden API caller for get theme resource ID. */
 private val mThemeResourceCaller by lazy {
