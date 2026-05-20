@@ -645,7 +645,7 @@ recyclerView.invalidateItemDecorations()
 
 :::
 
-### Adapter Extensions
+### Adapter Extension
 
 ::: tip Contents of This Section
 
