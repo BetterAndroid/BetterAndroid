@@ -149,9 +149,7 @@ Before starting, we recommend that you configure your project structure as follo
 
 ::: tip
 
-We recommend and refer to [Quick Start → Project Template](../guide/quick-start.md#project-template) to create a project without manual configuration.
-
-You can also use the [Kotlin Multiplatform Wizard](https://kmp.jetbrains.com) to automatically help you complete the Gradle script compilation configuration of the iOS project.
+You can use the [Kotlin Multiplatform Wizard](https://kmp.jetbrains.com) to automatically help you complete the Gradle script compilation configuration of the iOS project.
 
 :::
 
@@ -170,9 +168,9 @@ fun App() {
 
 #### Android Platform
 
-First, please import the [ui-component](../library/ui-component.md) module in the corresponding Android project.
+First, please import the [ui-component](ui-component.md) module in the corresponding Android project.
 
-Then, please refer to [ui-component → Activity](../library/ui-component.md#activity) to use `AppComponentActivty` as the starting point for Compose.
+Then, please refer to [ui-component → Activity](ui-component.md#activity) to use `AppComponentActivty` as the starting point for Compose.
 
 > The following example
 
@@ -303,7 +301,7 @@ Although `androidx.activity:activity-compose` provides `BackHandler`, it can onl
 
 `BetterAndroid` provides multi-platform distribution support for `BackHandler`, you can use it directly in `commonMain`, but it will only take effect on the Android platform.
 
-If you are looking for the Android-side back pressed handling approach, you can refer to [ui-extension → BackPressed Extension](../library/ui-extension.md#backpressed-extension).
+If you are looking for the Android-side back pressed handling approach, you can refer to [ui-extension → BackPressed Extension](ui-extension.md#backpressed-extension).
 
 Below is a usage example that is identical to the `BackHandler` usage provided in `androidx.activity:activity-compose`.
 
@@ -378,8 +376,8 @@ The working principle of `PlatformSystemBarsController` is to distribute it to t
 
 Before starting to use it, make sure you have read [Initial Configuration](#initial-configuration) and completed the relevant configuration for the current project.
 
-`PlatformSystemBarsController` uses `SystemBarsController` in [ui-component → System bars (Status bars, Navigation bars, etc)](../library/ui-component.md#system-bars-status-bars-navigation-bars-etc)
-in Android accomplish, you can refer to [ui-component → Activity](../library/ui-component.md#activity) to use `AppComponentActivty` or
+`PlatformSystemBarsController` uses `SystemBarsController` in [ui-component → System bars (Status bars, Navigation bars, etc)](ui-component.md#system-bars-status-bars-navigation-bars-etc)
+in Android accomplish, you can refer to [ui-component → Activity](ui-component.md#activity) to use `AppComponentActivty` or
 manually implement the `ISystemBarsController` interface for your `Activity`.
 
 You can get the `PlatformSystemBarsController` object globally in Compose in the following way.
@@ -402,7 +400,7 @@ otherwise you should ensure that `rememberSystemBarsController` is called before
 
 The following is a detailed usage introduction of `PlatformSystemBarsController`.
 
-Most of the usage here will be consistent with [ui-component → System Bars (Status Bars, Navigation Bars, etc)](../library/ui-component.md#system-bars-status-bars-navigation-bars-etc).
+Most of the usage here will be consistent with [ui-component → System Bars (Status Bars, Navigation Bars, etc)](ui-component.md#system-bars-status-bars-navigation-bars-etc).
 
 Set the behavior of system bars.
 
@@ -522,7 +520,7 @@ val nativeController = systemBars.nativeController
 ::: tip
 
 `BetterAndroid` also provides a native `SystemBarsController` for iOS,
-its usage is basically the same as [ui-component → System Bars (Status Bars, Navigation Bars, etc)](../library/ui-component.md#system-bars-status-bars-navigation-bars-etc)
+its usage is basically the same as [ui-component → System Bars (Status Bars, Navigation Bars, etc)](./ui-component.md#system-bars-status-bars-navigation-bars-etc)
 except for the initialization function, normally you should not need to use it directly, and it will not be introduced in detail here.
 
 :::

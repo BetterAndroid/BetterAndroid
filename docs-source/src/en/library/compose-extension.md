@@ -131,7 +131,7 @@ Extensions for `Color`.
 
 `Color` in Jetpack Compose encapsulates color-related implementations, which solves the problem of using the `Integer` type to pass colors in native Android.
 
-`BetterAndroid` also provides extensions for `Color` similar to those in [ui-extension → Color Extension](../library/ui-extension.md#color-extension), making it easier use.
+`BetterAndroid` also provides extensions for `Color` similar to those in [ui-extension → Color Extension](ui-extension.md#color-extension), making it easier use.
 
 Since `Color` provides the `alpha` property, the `toAlphaColor` extension provided natively is no longer needed in `Color`.
 

@@ -2682,8 +2682,8 @@ class YourActivity : YourBaseActivity<ActivityMainBinding>() {
 
 ::: tip
 
-你还可以参考 [ui-extension → Activity](../library/ui-extension.md#activity) 直接使用已经封装好的 `AppBindingActivity` 或参考
-[ui-extension → Fragment](../library/ui-extension.md#fragment) 直接使用已经封装好的 `AppBindingFragment`。
+你还可以参考 [ui-component → Activity](../library/ui-component.md#activity) 直接使用已经封装好的 `AppBindingActivity` 或参考
+[ui-component → Fragment](../library/ui-component.md#fragment) 直接使用已经封装好的 `AppBindingFragment`。
 
 :::
 

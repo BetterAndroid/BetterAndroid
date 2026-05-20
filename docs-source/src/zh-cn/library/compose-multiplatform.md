@@ -146,9 +146,7 @@ kotlin {
 
 ::: tip
 
-我们建议并参考 [快速开始 → 项目模版](../guide/quick-start.md#项目模版) 来创建项目以免去手动配置。
-
-你也可以使用 [Kotlin Multiplatform Wizard](https://kmp.jetbrains.com) 以自动帮你完成 iOS 项目部分的 Gradle 脚本编译配置。
+你可以使用 [Kotlin Multiplatform Wizard](https://kmp.jetbrains.com) 以自动帮你完成 iOS 项目部分的 Gradle 脚本编译配置。
 
 :::
 
@@ -167,9 +165,9 @@ fun App() {
 
 #### Android 平台
 
-首先，请在对应的 Android 项目中导入 [ui-component](../library/ui-component.md) 模块。
+首先，请在对应的 Android 项目中导入 [ui-component](ui-component.md) 模块。
 
-然后，请参考 [ui-component → Activity](../library/ui-component.md#activity) 使用 `AppComponentActivty` 作为 Compose 的起始点。
+然后，请参考 [ui-component → Activity](ui-component.md#activity) 使用 `AppComponentActivty` 作为 Compose 的起始点。
 
 > 示例如下
 
@@ -299,7 +297,7 @@ fun main() = application {
 
 `BetterAndroid` 提供了 `BackHandler` 的多平台分发支持，你可以直接在 `commonMain` 中使用它，但是它仅会在 Android 平台中生效。
 
-如果你正在寻找 Android 侧的返回事件处理方式，可以参考 [ui-extension → BackPressed 扩展](../library/ui-extension.md#backpressed-扩展)。
+如果你正在寻找 Android 侧的返回事件处理方式，可以参考 [ui-extension → BackPressed 扩展](ui-extension.md#backpressed-扩展)。
 
 下面是一个使用示例，它与 `androidx.activity:activity-compose` 中提供的 `BackHandler` 用法完全相同。
 
@@ -374,8 +372,8 @@ Android、iOS 对应的原生系统栏控制器。
 
 在开始使用前，确保你已经阅读了 [初始化配置](#初始化配置) 并对当前项目完成了相关配置。
 
-`PlatformSystemBarsController` 在 Android 中使用 [ui-component → 系统栏 (状态栏、导航栏等)](../library/ui-component.md#系统栏-状态栏、导航栏等) 中的 `SystemBarsController` 实现，
-你可以参考 [ui-component → Activity](../library/ui-component.md#activity) 使用 `AppComponentActivty` 或为你的 `Activity` 手动实现 `ISystemBarsController` 接口。
+`PlatformSystemBarsController` 在 Android 中使用 [ui-component → 系统栏 (状态栏、导航栏等)](ui-component.md#系统栏-状态栏、导航栏等) 中的 `SystemBarsController` 实现，
+你可以参考 [ui-component → Activity](ui-component.md#activity) 使用 `AppComponentActivty` 或为你的 `Activity` 手动实现 `ISystemBarsController` 接口。
 
 你可以通过以下方式来在 Compose 中全局得到 `PlatformSystemBarsController` 对象。
 
@@ -395,7 +393,7 @@ val systemBars = rememberSystemBarsController()
 
 下面是 `PlatformSystemBarsController` 的详细用法介绍。
 
-这里的大部分用法将与 [ui-component → 系统栏 (状态栏、导航栏等)](../library/ui-component.md#系统栏-状态栏、导航栏等) 中保持一致。
+这里的大部分用法将与 [ui-component → 系统栏 (状态栏、导航栏等)](ui-component.md#系统栏-状态栏、导航栏等) 中保持一致。
 
 设置系统栏的行为。
 
@@ -512,6 +510,6 @@ val nativeController = systemBars.nativeController
 ::: tip
 
 `BetterAndroid` 同样为 iOS 提供了一个原生的 `SystemBarsController`，
-它的用法与 [ui-component → 系统栏 (状态栏、导航栏等)](../library/ui-component.md#系统栏-状态栏、导航栏等) 除了初始化功能外基本保持一致，通常情况下你应该不需要直接使用它，这里也不再进行详细的介绍。
+它的用法与 [ui-component → 系统栏 (状态栏、导航栏等)](ui-component.md#系统栏-状态栏、导航栏等) 除了初始化功能外基本保持一致，通常情况下你应该不需要直接使用它，这里也不再进行详细的介绍。
 
 :::

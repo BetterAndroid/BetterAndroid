@@ -193,9 +193,9 @@ class MainActivity : AppComponentActivity() {
 
 ::: tip
 
-有关 Jetpack Compose 的相关扩展你可以参考 [compose-extension](../library/compose-extension.md)、[compose-multiplatform](../library/compose-multiplatform.md)。
+有关 Jetpack Compose 的相关扩展你可以参考 [compose-extension](compose-extension.md)、[compose-multiplatform](compose-multiplatform.md)。
 
-`BetterAndroid` 同样为 `Activity` 提供了相关扩展，你可以参考 [ui-extension → Activity 扩展](../library/ui-extension.md#activity-扩展)。
+`BetterAndroid` 同样为 `Activity` 提供了相关扩展，你可以参考 [ui-extension → Activity 扩展](ui-extension.md#activity-扩展)。
 
 :::
 
@@ -257,7 +257,7 @@ class MainFragment : AppViewsFragment(R.layout.fragment_main) {
 
 ::: tip
 
-`BetterAndroid` 同样为 `Fragment` 提供了相关扩展，你可以参考 [ui-extension → Fragment 扩展](../library/ui-extension.md#fragment-扩展)。
+`BetterAndroid` 同样为 `Fragment` 提供了相关扩展，你可以参考 [ui-extension → Fragment 扩展](ui-extension.md#fragment-扩展)。
 
 :::
 

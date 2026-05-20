@@ -131,7 +131,7 @@ kotlin {
 
 Jetpack Compose 中的 `Color` 封装了颜色相关的实现，它解决了原生 Android 中使用 `Integer` 类型传递颜色的问题。
 
-`BetterAndroid` 同样为 `Color` 提供了与在 [ui-extension → 颜色 (Color) 扩展](../library/ui-extension.md#颜色-color-扩展) 中类似的扩展，使其更加易用。
+`BetterAndroid` 同样为 `Color` 提供了与在 [ui-extension → 颜色 (Color) 扩展](ui-extension.md#颜色-color-扩展) 中类似的扩展，使其更加易用。
 
 由于 `Color` 提供了 `alpha` 属性，所以原生中提供的 `toAlphaColor` 扩展在 `Color` 中已不再需要。
 

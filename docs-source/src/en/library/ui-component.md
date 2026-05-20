@@ -194,9 +194,9 @@ class MainActivity : AppComponentActivity() {
 
 ::: tip
 
-For related extensions of Jetpack Compose, you can refer to [compose-extension](../library/compose-extension.md), [compose-multiplatform](../library/compose-multiplatform.md).
+For related extensions of Jetpack Compose, you can refer to [compose-extension](compose-extension.md), [compose-multiplatform](compose-multiplatform.md).
 
-`BetterAndroid` also provides related extensions for `Activity`, you can refer to [ui-extension → Activity Extension](../library/ui-extension.md#activity-extension).
+`BetterAndroid` also provides related extensions for `Activity`, you can refer to [ui-extension → Activity Extension](ui-extension.md#activity-extension).
 
 :::
 
@@ -258,7 +258,7 @@ class MainFragment : AppViewsFragment(R.layout.fragment_main) {
 
 ::: tip
 
-`BetterAndroid` also provides related extensions for `Fragment`, you can refer to [ui-extension → Fragment Extension](../library/ui-extension.md#fragment-extension).
+`BetterAndroid` also provides related extensions for `Fragment`, you can refer to [ui-extension → Fragment Extension](ui-extension.md#fragment-extension).
 
 :::
 
