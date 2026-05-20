@@ -80,3 +80,27 @@ binding.root.onBackPressedDispatcher.addCallback(
 - `backPressed.trigger()` → 在 `OnBackPressedCallback` 中调用 `trigger(onBackPressedDispatcher)`
 - `backPressed.destroy()` → 不再需要，交由官方生命周期管理
 - `IBackPressedController` → 不再需要
+
+## 迁移 SystemColors
+
+如果你之前使用的是 `ui-extension → 系统颜色` 中的 `SystemColors`，现在需要注意这些用法已经被移除。
+
+`ui-extension` 不再引入 `material` 依赖，因此 `SystemColors` 相关 API 不再继续保留。
+
+### 迁移方式
+
+如果你之前仅使用了 `SystemColors.isAvailable` 来判断当前系统是否支持动态主题色，现在你可以迁移到官方提供的 `DynamicColors.isDynamicColorAvailable()`。
+
+> 示例如下
+
+```kotlin
+// 之前
+val isAvailable = SystemColors.isAvailable
+
+// 之后
+val isAvailable = DynamicColors.isDynamicColorAvailable()
+```
+
+除此之外，`SystemColors.from(context)` 以及所有颜色获取相关写法均不再支持，也没有继续在 `ui-extension` 中提供替代封装。
+
+如果你的业务仍然依赖这部分能力，请改为直接接入你自己的 `material` 依赖方案，或重新评估是否仍然需要动态主题色取值逻辑。

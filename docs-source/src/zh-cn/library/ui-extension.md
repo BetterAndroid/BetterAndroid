@@ -48,6 +48,14 @@ implementation("com.highcapable.betterandroid:ui-extension:<version>")
 
 你可以 [点击这里](kdoc://ui-extension) 查看 KDoc。
 
+::: tip 在找 SystemColors 吗？
+
+`SystemColors` 相关功能已从 `ui-extension` 中移除。
+
+如果你正在迁移旧版用法，可以参考 [配置 → 迁移指南 → 迁移 SystemColors](../config/migration.md#迁移-systemcolors)。
+
+:::
+
 ### Activity 扩展
 
 ::: tip 本节内容
@@ -1315,67 +1323,6 @@ val context: Context
 // 判断当前系统是否为深色模式
 val isDarkMode = context.resources.configuration.isUiInNightMode
 ```
-
-### 系统颜色 (System Colors)
-
-::: tip 本节内容
-
-[SystemColors](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.feature/-system-colors)
-
-适用于系统颜色 (动态主题色) 的扩展。
-
-:::
-
-在 Android 12 中，官方为我们提供了一个新的功能，即动态主题色 (Dynamic Colors)，不同于传统的壁纸取色，Material 3 中的动态主题色是基于壁纸的层级色调进行计算的。
-
-`BetterAndroid` 将系统提供的主题色封装为了 `SystemColors`，你可以在代码层面动态地获取到系统的主题色。
-
-以下是一个创建 `SystemColors` 并使用的示例。
-
-> 示例如下
-
-```kotlin
-// 假设这就是你的 Context
-val context: Context
-// 创建 SystemColors 对象
-val systemColors = SystemColors.from(context)
-// 获取系统提供的 android.R.color.system_accent1_100 的颜色
-val accentColor = systemColors.systemAccentPrimary(100)
-// 获取 Material 提供的 com.google.android.material.R.color.material_dynamic_primary50 的颜色
-val primaryColor = systemColors.materialDynamicPrimary(50)
-```
-
-不是每个搭载了 Android 12 的设备都支持动态主题色，你可以使用以下方式进行判断。
-
-> 示例如下
-
-```kotlin
-// 你可以直接判断当前系统是否支持动态主题色
-val isAvailable = SystemColors.isAvailable
-```
-
-在不支持的情况下在获取颜色时将返回系统提供的默认颜色，但是如果目标设备低于 Android 12，任何从 `SystemColors` 中获取到的颜色都将会是 `Color.TRANSPARENT`。
-
-以下是完整的 `SystemColors` 支持的颜色方法及其可用参数列表。
-
-| 方法名称                        | 可用参数                                                     |
-| ------------------------------- | ------------------------------------------------------------ |
-| `systemAccentPrimary`           | 0、10、50、100、200、300、400、500、600、700、800、900、1000 |
-| `systemAccentSecondary`         | 0、10、50、100、200、300、400、500、600、700、800、900、1000 |
-| `systemAccentTertiary`          | 0、10、50、100、200、300、400、500、600、700、800、900、1000 |
-| `systemNeutralPrimary`          | 0、10、50、100、200、300、400、500、600、700、800、900、1000 |
-| `systemNeutralSecondary`        | 0、10、50、100、200、300、400、500、600、700、800、900、1000 |
-| `materialDynamicPrimary`        | 0、10、20、30、40、50、60、70、80、90、95、99、100           |
-| `materialDynamicSecondary`      | 0、10、20、30、40、50、60、70、80、90、95、99、100           |
-| `materialDynamicTertiary`       | 0、10、20、30、40、50、60、70、80、90、95、99、100           |
-| `materialDynamicNeutral`        | 0、10、20、30、40、50、60、70、80、90、95、99、100           |
-| `materialDynamicNeutralVariant` | 0、10、20、30、40、50、60、70、80、90、95、99、100           |
-
-::: danger
-
-你仅能在给出的方法中传入上述所列出可用参数中的数值，其它数值均不支持，否则将会抛出异常。
-
-:::
 
 ### 颜色 (Color) 扩展
 

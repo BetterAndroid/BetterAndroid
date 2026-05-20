@@ -48,6 +48,14 @@ Please change `<version>` to the version displayed at the top of this document.
 
 You can view the KDoc [click here](kdoc://ui-extension).
 
+::: tip Looking for SystemColors?
+
+`SystemColors` related features have been removed from `ui-extension`.
+
+If you are migrating old usages, you can refer to [Config → Migration Guide → Migrate SystemColors](../config/migration.md#migrate-systemcolors).
+
+:::
+
 ### Activity Extension
 
 ::: tip Contents of This Section
@@ -1364,72 +1372,6 @@ val context: Context
 // Determine whether the current system is in dark mode.
 val isDarkMode = context.resources.configuration.isUiInNightMode
 ```
-
-### System Colors
-
-::: tip Contents of This Section
-
-[SystemColors](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component.feature/-system-colors)
-
-Extension for system colors (dynamic colors).
-
-:::
-
-In Android 12, the official provides us with a new feature, namely dynamic colors.
-
-Different from the traditional wallpaper color selection, the dynamic colors in Material 3 are calculated based on the hierarchical tones of the wallpaper.
-
-`BetterAndroid` encapsulates the theme colors provided by the system into `SystemColors`, and you can dynamically obtain the system's theme colors at the code level.
-
-Here is an example of creating and using `SystemColors`.
-
-> The following example
-
-```kotlin
-// Assume this is your context.
-val context: Context
-// Create SystemColors object.
-val systemColors = SystemColors.from(context)
-// Get the color of android.R.color.system_accent1_100 provided by the system.
-val accentColor = systemColors.systemAccentPrimary(100)
-// Get the color of com.google.android.material.R.color.material_dynamic_primary50 provided by Material.
-val primaryColor = systemColors.materialDynamicPrimary(50)
-```
-
-Not every device running Android 12 supports dynamic colors, you can use the following methods to determine.
-
-> The following example
-
-```kotlin
-// You can directly determine whether the current system supports dynamic colors.
-val isAvailable = SystemColors.isAvailable
-```
-
-Retrieving colors will return the system-provided default color when not supported, but if the target device is older than Android 12,
-any color retrieved from `SystemColors` will be `Color.TRANSPARENT`.
-
-The following is a complete list of the color methods supported by `SystemColors` and their available parameters.
-
-| Method Name                     | Available Parameters                                         |
-| ------------------------------- | ------------------------------------------------------------ |
-| `systemAccentPrimary`           | 0, 10, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 |
-| `systemAccentSecondary`         | 0, 10, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 |
-| `systemAccentTertiary`          | 0, 10, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 |
-| `systemNeutralPrimary`          | 0, 10, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 |
-| `systemNeutralSecondary`        | 0, 10, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 |
-| `materialDynamicPrimary`        | 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 99, 100           |
-| `materialDynamicSecondary`      | 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 99, 100           |
-| `materialDynamicTertiary`       | 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 99, 100           |
-| `materialDynamicNeutral`        | 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 99, 100           |
-| `materialDynamicNeutralVariant` | 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 99, 100           |
-
-::: danger
-
-You can only pass in the values among the available parameters listed above in the given method.
-
-Other values are not supported, otherwise an exception will be thrown.
-
-:::
 
 ### Color Extension
 

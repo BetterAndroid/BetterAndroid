@@ -83,3 +83,30 @@ binding.root.onBackPressedDispatcher.addCallback(
 - `backPressed.trigger()` → call `trigger(onBackPressedDispatcher)` inside `OnBackPressedCallback`
 - `backPressed.destroy()` → no longer needed, handled by the official lifecycle
 - `IBackPressedController` → no longer needed
+
+## Migrate SystemColors
+
+If you previously used `SystemColors` from `ui-extension → System Colors`, please note that this entire capability has now been removed.
+
+`ui-extension` no longer introduces the `material` dependency, so the `SystemColors` related APIs are no longer retained.
+
+### How to Migrate
+
+If you only used `SystemColors.isAvailable` to determine whether the current system supports dynamic colors,
+you can now migrate to the official `DynamicColors.isDynamicColorAvailable()`.
+
+> The following example
+
+```kotlin
+// Before
+val isAvailable = SystemColors.isAvailable
+
+// After
+val isAvailable = DynamicColors.isDynamicColorAvailable()
+```
+
+Other than that, `SystemColors.from(context)` and all color retrieval related usages are no longer supported,
+and `ui-extension` no longer provides a replacement wrapper for them.
+
+If your business still depends on this capability, please switch to your own `material` dependency solution directly,
+or reevaluate whether you still need dynamic color retrieval logic.
