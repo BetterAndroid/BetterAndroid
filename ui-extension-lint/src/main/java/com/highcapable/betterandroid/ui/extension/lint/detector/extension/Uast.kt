@@ -83,6 +83,15 @@ internal fun UElement.findContainingStatement(): UExpression? {
     return null
 }
 
+internal fun UElement.findEnclosingCall(): UCallExpression? {
+    var current = uastParent
+    while (current != null) {
+        if (current is UCallExpression) return current
+        current = current.uastParent
+    }
+    return null
+}
+
 internal fun UObjectLiteralExpression.isObjectLiteralOf(className: String): Boolean {
     val psiClass = PsiTypesUtil.getPsiClass(getExpressionType()) ?: return false
     return psiClass.qualifiedName == className || psiClass.supers.any { it.qualifiedName == className }

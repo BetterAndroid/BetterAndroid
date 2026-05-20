@@ -39,6 +39,7 @@ import com.highcapable.betterandroid.ui.extension.lint.detector.RecyclerViewUsag
 import com.highcapable.betterandroid.ui.extension.lint.detector.ResourcesUsageDetector
 import com.highcapable.betterandroid.ui.extension.lint.detector.TextViewUsageDetector
 import com.highcapable.betterandroid.ui.extension.lint.detector.ToastUsageDetector
+import com.highcapable.betterandroid.ui.extension.lint.detector.ViewBindingUsageDetector
 import com.highcapable.betterandroid.ui.extension.lint.detector.ViewImeVisibilityUsageDetector
 import com.highcapable.betterandroid.ui.extension.lint.detector.ViewTooltipTextUsageDetector
 import com.highcapable.betterandroid.ui.extension.lint.detector.ViewWalkUsageDetector
@@ -61,6 +62,7 @@ class UiExtensionIssueRegistry : IssueRegistry() {
         TextViewUsageDetector.ISSUE,
         ViewTooltipTextUsageDetector.ISSUE,
         ViewWalkUsageDetector.ISSUE,
+        ViewBindingUsageDetector.ISSUE,
         ViewImeVisibilityUsageDetector.ISSUE,
         WindowInsetsListenerUsageDetector.ISSUE
     )
