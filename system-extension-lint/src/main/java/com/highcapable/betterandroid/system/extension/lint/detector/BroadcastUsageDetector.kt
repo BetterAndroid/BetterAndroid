@@ -32,14 +32,19 @@ import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.system.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.asCall
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.system.extension.lint.detector.extension.extendsClass
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.unwrapParenthesized
 import com.intellij.psi.PsiLocalVariable
+import org.jetbrains.uast.UBlockExpression
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UExpression
+import org.jetbrains.uast.ULambdaExpression
 import org.jetbrains.uast.ULocalVariable
 import org.jetbrains.uast.UObjectLiteralExpression
+import org.jetbrains.uast.UQualifiedReferenceExpression
+import org.jetbrains.uast.UReturnExpression
 import org.jetbrains.uast.USimpleNameReferenceExpression
 import org.jetbrains.uast.toUElementOfType
 
@@ -49,11 +54,10 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
 
         private const val SEND_BROADCAST = "sendBroadcast"
         private const val REGISTER_RECEIVER = "registerReceiver"
-
-        private val setPackageRegex = """^setPackage\((.+)\)$""".toRegex()
-        private val applyIntentRegex = Regex("""^(.*)\.apply\s*\{(.*)}$""", setOf(RegexOption.DOT_MATCHES_ALL))
-        private val setPackageIntentRegex = Regex("""^(.*)\.setPackage\((.+)\)$""", setOf(RegexOption.DOT_MATCHES_ALL))
-        private val intentConstructorRegex = Regex("""^Intent\((.*)\)$""", setOf(RegexOption.DOT_MATCHES_ALL))
+        private const val APPLY_METHOD = "apply"
+        private const val SET_PACKAGE_METHOD = "setPackage"
+        private const val INTENT_CLASS = "android.content.Intent"
+        private const val BROADCAST_RECEIVER_CLASS = "android.content.BroadcastReceiver"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithBroadcastExtension",
@@ -144,7 +148,8 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
             if (node.methodName != REGISTER_RECEIVER) return
 
             val receiverExpression = node.valueArguments.firstOrNull()?.unwrapParenthesized() as? UObjectLiteralExpression ?: return
-            if (!receiverExpression.asSourceString().contains("BroadcastReceiver")) return
+            val receiverType = receiverExpression.getExpressionType()
+            if (!receiverType.extendsClass(context, BROADCAST_RECEIVER_CLASS)) return
 
             context.report(
                 issue = ISSUE,
@@ -153,56 +158,76 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
             )
         }
 
-        private fun resolveIntentSpec(expression: UExpression?): IntentSpec? {
-            val source = expression.resolveInitializerSource()?.asSourceString() ?: return null
-            return parseIntentSource(source)
+        private fun resolveIntentSpec(expression: UExpression?) = expression.resolveInitializerExpression()?.let(::resolveIntentSpec)
+
+        private fun resolveIntentSpec(element: UElement?) = when (val target = element.unwrapParenthesized()) {
+            is UQualifiedReferenceExpression -> resolveQualifiedIntentSpec(target)
+            else -> resolveIntentCall(target.asCall())
         }
 
-        private fun parseIntentSource(source: String): IntentSpec? {
-            val normalized = source.trim()
+        private fun resolveQualifiedIntentSpec(node: UQualifiedReferenceExpression): IntentSpec? {
+            val selectorCall = node.selector.asCall() ?: return resolveIntentCall(node.asCall())
 
-            applyIntentRegex.matchEntire(normalized)?.let {
-                val base = parseIntentSource(it.groupValues[1].trim()) ?: return null
-                val (packageName, bodyStatements) = parseLambdaStatements(it.groupValues[2])
+            return when {
+                selectorCall.methodName == APPLY_METHOD -> {
+                    val base = resolveIntentSpec(node.receiver) ?: return null
+                    val (packageName, bodyStatements) = parseApplyStatements(selectorCall.valueArguments.firstOrNull())
 
-                return base.copy(
-                    packageName = base.packageName ?: packageName,
-                    bodyStatements = base.bodyStatements + bodyStatements
-                )
+                    base.copy(
+                        packageName = base.packageName ?: packageName,
+                        bodyStatements = base.bodyStatements + bodyStatements
+                    )
+                }
+                isIntentSetPackageCall(selectorCall) -> {
+                    val base = resolveIntentSpec(node.receiver) ?: return null
+                    val packageName = selectorCall.valueArguments.firstOrNull()?.asSourceString()?.trim() ?: return null
+                    base.copy(packageName = base.packageName ?: packageName)
+                }
+                else -> resolveIntentCall(selectorCall)
             }
-
-            setPackageIntentRegex.matchEntire(normalized)?.let {
-                val base = parseIntentSource(it.groupValues[1].trim()) ?: return null
-                val packageName = it.groupValues[2].trim()
-                return base.copy(packageName = base.packageName ?: packageName)
-            }
-
-            val constructorMatch = intentConstructorRegex.matchEntire(normalized) ?: return null
-            val constructorArguments = constructorMatch.groupValues[1].trim()
-            if (constructorArguments.isEmpty()) return IntentSpec()
-            if (constructorArguments.contains(',')) return null
-
-            return IntentSpec(action = constructorArguments)
         }
 
-        private fun parseLambdaStatements(source: String): Pair<String?, List<String>> {
-            val bodySource = source.trim()
-            if (bodySource.isBlank()) return null to emptyList()
+        private fun resolveIntentCall(node: UCallExpression?): IntentSpec? {
+            val call = node ?: return null
+
+            return when {
+                isIntentConstructorCall(call) -> resolveIntentConstructorSpec(call)
+                isIntentSetPackageCall(call) -> {
+                    val base = resolveIntentSpec(call.receiver) ?: return null
+                    val packageName = call.valueArguments.firstOrNull()?.asSourceString()?.trim() ?: return null
+                    base.copy(packageName = base.packageName ?: packageName)
+                }
+                else -> null
+            }
+        }
+
+        private fun resolveIntentConstructorSpec(node: UCallExpression): IntentSpec? {
+            if (node.valueArguments.isEmpty()) return IntentSpec()
+            if (node.valueArguments.size != 1) return null
+
+            return IntentSpec(action = node.valueArguments.firstOrNull()?.asSourceString()?.trim() ?: return null)
+        }
+
+        private fun parseApplyStatements(argument: UExpression?): Pair<String?, List<String>> {
+            val body = (argument.unwrapParenthesized() as? ULambdaExpression)?.body ?: return null to emptyList()
+            val expressions = when (body) {
+                is UBlockExpression -> body.expressions
+                else -> listOf(body)
+            }
 
             var packageName: String? = null
             val statements = mutableListOf<String>()
 
-            bodySource.lines()
-                .map { it.trim() }
-                .filter { it.isNotBlank() }
-                .forEach { line ->
-                    val statement = line.removeSuffix(";")
-                    val packageMatch = setPackageRegex.matchEntire(statement)
-
-                    if (packageName == null && packageMatch != null)
-                        packageName = packageMatch.groupValues[1].trim()
-                    else statements += statement
-                }
+            expressions.mapNotNull { expression ->
+                val content = expression.unwrapReturnedExpression()
+                val source = content.asSourceString().trim().removeSuffix(";")
+                source.takeIf { it.isNotBlank() }?.let { content to it }
+            }.forEach { (content, source) ->
+                val call = content.asCall()
+                if (packageName == null && call != null && isIntentSetPackageCall(call))
+                    packageName = call.valueArguments.firstOrNull()?.asSourceString()?.trim()
+                else statements += source
+            }
             return packageName to statements
         }
 
@@ -231,9 +256,12 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
             val header = buildString {
                 append(receiverPrefix)
                 append(SEND_BROADCAST)
-                append('(')
-                append(arguments)
-                append(')')
+
+                if (arguments.isNotEmpty() || bodyStatements.isEmpty()) {
+                    append('(')
+                    append(arguments)
+                    append(')')
+                }
             }
             if (bodyStatements.isEmpty()) return header
 
@@ -245,9 +273,21 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
             }
         }
 
-        private fun UExpression?.resolveInitializerSource(): UElement? {
+        private fun isIntentConstructorCall(node: UCallExpression): Boolean {
+            val method = node.resolve() ?: return false
+            return method.isConstructor && method.containingClass?.qualifiedName == INTENT_CLASS
+        }
+
+        private fun isIntentSetPackageCall(node: UCallExpression): Boolean {
+            if (node.methodName != SET_PACKAGE_METHOD) return false
+            val method = node.resolve() ?: return false
+
+            return context.evaluator.isMemberInClass(method, INTENT_CLASS)
+        }
+
+        private fun UExpression?.resolveInitializerExpression(): UElement? {
             val target = unwrapParenthesized()
-            if (target is org.jetbrains.uast.UQualifiedReferenceExpression) return target
+            if (target is UQualifiedReferenceExpression) return target
 
             val directCall = target.asCall()
             if (directCall != null) return directCall
@@ -260,6 +300,11 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
             } ?: return null
 
             return localVariable.uastInitializer.unwrapParenthesized()
+        }
+
+        private fun UExpression.unwrapReturnedExpression(): UExpression = when (this) {
+            is UReturnExpression -> returnExpression?.unwrapParenthesized() as? UExpression ?: this
+            else -> this
         }
 
         private fun UExpression?.takeUnlessNullLiteral() =

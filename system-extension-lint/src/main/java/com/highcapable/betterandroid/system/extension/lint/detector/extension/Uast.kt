@@ -24,6 +24,7 @@ package com.highcapable.betterandroid.system.extension.lint.detector.extension
 import com.intellij.psi.PsiNamedElement
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UCallableReferenceExpression
+import org.jetbrains.uast.UClass
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UParenthesizedExpression
 import org.jetbrains.uast.UQualifiedReferenceExpression
@@ -58,6 +59,15 @@ internal fun UCallExpression.receiverPrefix(): String {
         ?: asSourceString().trimStart()
 
     return if (source.startsWith("$receiverText.")) "$receiverText." else ""
+}
+
+internal fun UElement?.findContainingUClass(): UClass? {
+    var current = this
+    while (current != null) {
+        if (current is UClass) return current
+        current = current.uastParent
+    }
+    return null
 }
 
 internal fun String.displayShortName() = substringAfterLast('.')

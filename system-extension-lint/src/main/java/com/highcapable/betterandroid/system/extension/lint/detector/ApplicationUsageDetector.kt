@@ -42,8 +42,11 @@ import org.jetbrains.uast.UClassLiteralExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UExpression
 import org.jetbrains.uast.UIfExpression
+import org.jetbrains.uast.ULambdaExpression
+import org.jetbrains.uast.UPostfixExpression
 import org.jetbrains.uast.UQualifiedReferenceExpression
 import org.jetbrains.uast.UastBinaryOperator
+import org.jetbrains.uast.visitor.AbstractUastVisitor
 
 class ApplicationUsageDetector : Detector(), Detector.UastScanner {
 
@@ -69,28 +72,30 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
         private const val SET_COMPONENT_ENABLED_SETTING_METHOD = "setComponentEnabledSetting"
         private const val GET_LONG_VERSION_CODE_METHOD = "getLongVersionCode"
         private const val IS_NOT_EMPTY_METHOD = "isNotEmpty"
+        private const val QUERY_INTENT_ACTIVITIES_METHOD = "queryIntentActivities"
+        private const val RUN_CATCHING_METHOD = "runCatching"
+        private const val SIZE_PROPERTY = "size"
+        private const val VERSION_CODE_LONG_PROPERTY = "longVersionCode"
+        private const val VERSION_CODE_PROPERTY = "versionCode"
+        private const val VERSION_CODE_TO_LONG_CALL = "versionCode.toLong()"
+        private const val VERSION_CODE_COMPAT_LONG = "long"
+        private const val VERSION_CODE_COMPAT_VERSION = "version"
+        private const val VERSION_CODE_COMPAT_28 = "28"
 
         private const val COMPONENT_ENABLED_STATE_DISABLED = "COMPONENT_ENABLED_STATE_DISABLED"
         private const val COMPONENT_ENABLED_STATE_ENABLED = "COMPONENT_ENABLED_STATE_ENABLED"
         private const val COMPONENT_ENABLED_STATE_DEFAULT = "COMPONENT_ENABLED_STATE_DEFAULT"
 
         private const val BUILD_VERSION_NAME = "Build.VERSION"
+        private const val BUILD_SDK_INT_NAME = "$BUILD_VERSION_NAME.SDK_INT"
         private const val BUILD_VERSION_CODES_NAME = "Build.VERSION_CODES"
         private const val ANDROID_VERSION_NAME = "AndroidVersion"
         private const val ANDROID_VERSION_CLASS = "${DeclaredSymbol.UTILS_PACKAGE}.$ANDROID_VERSION_NAME"
         private const val P_FIELD = "P"
         private const val IS_AT_LEAST_METHOD = "isAtLeast"
         private const val IS_GREATER_THAN_METHOD = "isGreaterThan"
-
-        private val runCatchingPackageInfoRegex = Regex(
-            pattern = """^(?:[\w.]+\.)?runCatching\s*\{\s*(.+?)\.getPackageInfo\((.+?)\)\s*}\.getOrNull\(\)$""",
-            options = setOf(RegexOption.DOT_MATCHES_ALL)
-        )
-
-        private val queryLaunchActivitiesRegex = Regex(
-            pattern = """^(.+?)\.queryIntentActivities\(\s*(.+?)\.getLaunchIntentForPackage\((.+?)\)!!\s*,\s*0\s*\)$""",
-            options = setOf(RegexOption.DOT_MATCHES_ALL)
-        )
+        private const val VERSION_CODES_P_QUALIFIED = "$BUILD_VERSION_CODES_NAME.$P_FIELD"
+        private const val ANDROID_VERSION_P_QUALIFIED = "$ANDROID_VERSION_NAME.$P_FIELD"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithApplicationExtension",
@@ -195,7 +200,7 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             if (node.rightOperand.asSourceString() != "null") return
 
             val directCall = node.leftOperand.unwrapParenthesized().asCall()
-            if (directCall?.methodName == GET_PACKAGE_INFO_METHOD) {
+            if (directCall != null && isPackageManagerCall(directCall, GET_PACKAGE_INFO_METHOD)) {
                 val receiver = directCall.receiver?.asSourceString() ?: return
                 val packageName = directCall.valueArguments.firstOrNull()?.asSourceString() ?: return
                 val replacement = "$receiver.$HAS_PACKAGE($packageName)"
@@ -212,9 +217,9 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             val getOrNullCall = node.leftOperand.unwrapParenthesized().asCall() ?: return
             if (getOrNullCall.methodName != GET_OR_NULL_METHOD) return
 
-            val match = runCatchingPackageInfoRegex.matchEntire(getOrNullCall.asSourceString()) ?: return
-            val receiver = match.groupValues[1].trim()
-            val packageName = match.groupValues[2].trim()
+            val packageInfoCall = resolveRunCatchingPackageInfoCall(getOrNullCall) ?: return
+            val receiver = packageInfoCall.receiver?.asSourceString() ?: return
+            val packageName = packageInfoCall.valueArguments.firstOrNull()?.asSourceString() ?: return
             val replacement = "$receiver.$HAS_PACKAGE($packageName)"
 
             reportAndFix(
@@ -229,7 +234,7 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
         private fun reportHasLaunchActivity(node: UBinaryExpression) {
             if (node.operator == UastBinaryOperator.NOT_EQUALS && node.rightOperand.asSourceString() == "null") {
                 val call = node.leftOperand.unwrapParenthesized().asCall() ?: return
-                if (call.methodName != GET_LAUNCH_INTENT_FOR_PACKAGE_METHOD) return
+                if (!isPackageManagerCall(call, GET_LAUNCH_INTENT_FOR_PACKAGE_METHOD)) return
                 val receiver = call.receiver?.asSourceString() ?: return
                 val packageName = call.valueArguments.firstOrNull()?.asSourceString() ?: return
                 val replacement = "$receiver.$HAS_LAUNCH_ACTIVITY($packageName)"
@@ -247,13 +252,10 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             if (node.operator != UastBinaryOperator.GREATER) return
             if (node.rightOperand.asSourceString() != "0") return
 
-            val leftSource = node.leftOperand.asSourceString()
-            if (!leftSource.endsWith(".size")) return
+            val queryAccess = node.leftOperand.unwrapParenthesized() as? UQualifiedReferenceExpression ?: return
+            if (queryAccess.selector.resolveName() != SIZE_PROPERTY) return
 
-            val querySource = leftSource.removeSuffix(".size")
-            val match = queryLaunchActivitiesRegex.matchEntire(querySource) ?: return
-            val receiver = match.groupValues[1].trim()
-            val packageName = match.groupValues[3].trim()
+            val (receiver, packageName) = resolveQueryLaunchActivitiesInfo(queryAccess.receiver.asCall()) ?: return
             val replacement = "$receiver.$HAS_LAUNCH_ACTIVITY($packageName)"
 
             reportAndFix(
@@ -267,10 +269,7 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
 
         private fun reportQueryLaunchActivities(node: UQualifiedReferenceExpression) {
             if (node.selector.resolveName() != IS_NOT_EMPTY_METHOD) return
-            val querySource = node.receiver.asSourceString()
-            val match = queryLaunchActivitiesRegex.matchEntire(querySource) ?: return
-            val receiver = match.groupValues[1].trim()
-            val packageName = match.groupValues[3].trim()
+            val (receiver, packageName) = resolveQueryLaunchActivitiesInfo(node.receiver.asCall()) ?: return
             val replacement = "$receiver.$HAS_LAUNCH_ACTIVITY($packageName)"
 
             reportAndFix(
@@ -284,7 +283,7 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
 
         private fun reportIsComponentEnabled(node: UBinaryExpression) {
             val call = node.leftOperand.unwrapParenthesized().asCall() ?: return
-            if (call.methodName != GET_COMPONENT_ENABLED_SETTING_METHOD) return
+            if (!isPackageManagerCall(call, GET_COMPONENT_ENABLED_SETTING_METHOD)) return
 
             val receiver = call.receiver?.asSourceString() ?: return
             val componentName = call.valueArguments.firstOrNull()?.asSourceString() ?: return
@@ -380,15 +379,42 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             else -> null
         }
 
+        private fun isPackageManagerCall(node: UCallExpression, methodName: String): Boolean {
+            if (node.methodName != methodName) return false
+            val method = node.resolve() ?: return false
+            return context.evaluator.isMemberInClass(method, PACKAGE_MANAGER_CLASS)
+        }
+
+        private fun resolveRunCatchingPackageInfoCall(node: UCallExpression): UCallExpression? {
+            val runCatchingExpression = node.receiver ?: return null
+            val runCatchingCall = runCatchingExpression.findFirstCall { it.methodName == RUN_CATCHING_METHOD } ?: return null
+            return runCatchingCall.findFirstCall { isPackageManagerCall(it, GET_PACKAGE_INFO_METHOD) }
+        }
+
+        private fun resolveQueryLaunchActivitiesInfo(node: UCallExpression?): Pair<String, String>? {
+            val queryCall = node ?: return null
+            if (!isPackageManagerCall(queryCall, QUERY_INTENT_ACTIVITIES_METHOD)) return null
+
+            val receiver = queryCall.receiver?.asSourceString() ?: return null
+            val launchIntentCall = queryCall.valueArguments.firstOrNull()
+                .unwrapNotNullAssertion()
+                .asCall()
+                ?.takeIf { isPackageManagerCall(it, GET_LAUNCH_INTENT_FOR_PACKAGE_METHOD) }
+                ?: return null
+            if (launchIntentCall.receiver?.asSourceString() != receiver) return null
+
+            val packageName = launchIntentCall.valueArguments.firstOrNull()?.asSourceString() ?: return null
+            return receiver to packageName
+        }
+
         private fun isVersionCodeCompatCheck(expression: UExpression): Boolean {
             val binaryExpression = expression as? UBinaryExpression
             if (binaryExpression != null) {
                 val left = binaryExpression.leftOperand.asSourceString()
-                val isBuildVersion = left == "$BUILD_VERSION_NAME.SDK_INT" || left.endsWith(".$BUILD_VERSION_NAME.SDK_INT")
+                val isBuildVersion = left == BUILD_SDK_INT_NAME || left.endsWith(".$BUILD_SDK_INT_NAME")
 
-                return isBuildVersion &&
-                    (binaryExpression.operator == UastBinaryOperator.GREATER_OR_EQUALS || binaryExpression.operator == UastBinaryOperator.GREATER) &&
-                    binaryExpression.rightOperand.isVersionCodeCompatThreshold()
+                return isBuildVersion && (binaryExpression.operator == UastBinaryOperator.GREATER_OR_EQUALS ||
+                    binaryExpression.operator == UastBinaryOperator.GREATER) && binaryExpression.rightOperand.isVersionCodeCompatThreshold()
             }
 
             val callExpression = expression.unwrapParenthesized().asCall() ?: return false
@@ -401,17 +427,20 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
         }
 
         private fun resolveVersionCodeReceiver(source: String) = when {
-            source.endsWith(".longVersionCode") -> source.removeSuffix(".longVersionCode") to "long"
-            source.endsWith(".versionCode.toLong()") -> source.removeSuffix(".versionCode.toLong()") to "version"
-            source.endsWith(".versionCode") -> source.removeSuffix(".versionCode") to "version"
+            source.endsWith(".$VERSION_CODE_LONG_PROPERTY") ->
+                source.removeSuffix(".$VERSION_CODE_LONG_PROPERTY") to VERSION_CODE_COMPAT_LONG
+            source.endsWith(".$VERSION_CODE_TO_LONG_CALL") ->
+                source.removeSuffix(".$VERSION_CODE_TO_LONG_CALL") to VERSION_CODE_COMPAT_VERSION
+            source.endsWith(".$VERSION_CODE_PROPERTY") ->
+                source.removeSuffix(".$VERSION_CODE_PROPERTY") to VERSION_CODE_COMPAT_VERSION
             else -> null
         }
 
         private fun UExpression.isVersionCodeCompatThreshold(): Boolean {
             val source = asSourceString().trim()
-            if (source == "28") return true
-            if (source == "$BUILD_VERSION_CODES_NAME.$P_FIELD" || source.endsWith(".$BUILD_VERSION_CODES_NAME.$P_FIELD")) return true
-            if (source == "$ANDROID_VERSION_NAME.$P_FIELD" || source.endsWith(".$ANDROID_VERSION_NAME.$P_FIELD")) return true
+            if (source == VERSION_CODE_COMPAT_28) return true
+            if (source == VERSION_CODES_P_QUALIFIED || source.endsWith(".$VERSION_CODES_P_QUALIFIED")) return true
+            if (source == ANDROID_VERSION_P_QUALIFIED || source.endsWith(".$ANDROID_VERSION_P_QUALIFIED")) return true
 
             return unwrapParenthesized().resolveName() == P_FIELD
         }
@@ -423,6 +452,39 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             } ?: return null
 
             return expression.asSourceString().trim()
+        }
+
+        private tailrec fun UExpression?.unwrapLambdaBodyExpression(): UExpression? = when (val target = unwrapParenthesized()) {
+            is ULambdaExpression -> target.body.unwrapLambdaBodyExpression()
+            is UBlockExpression -> target.expressions.lastOrNull()
+            else -> target as? UExpression
+        }
+
+        private fun UExpression?.unwrapNotNullAssertion(): UElement? {
+            var current = unwrapParenthesized()
+            while (current is UPostfixExpression && current.asSourceString().endsWith("!!"))
+                current = current.operand.unwrapParenthesized()
+
+            return current
+        }
+
+        private fun UElement?.findFirstCall(predicate: (UCallExpression) -> Boolean): UCallExpression? {
+            if (this == null) return null
+
+            var matched: UCallExpression? = null
+            accept(object : AbstractUastVisitor() {
+
+                override fun visitCallExpression(node: UCallExpression): Boolean {
+                    if (predicate(node)) {
+                        matched = node
+                        return true
+                    }
+
+                    return super.visitCallExpression(node)
+                }
+            })
+
+            return matched
         }
 
         private fun reportAndFix(

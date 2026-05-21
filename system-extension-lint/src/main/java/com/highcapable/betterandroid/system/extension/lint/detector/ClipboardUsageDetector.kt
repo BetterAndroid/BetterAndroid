@@ -32,15 +32,22 @@ import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.system.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.asCall
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.system.extension.lint.detector.extension.extendsClass
+import com.highcapable.betterandroid.system.extension.lint.detector.extension.findContainingUClass
+import com.highcapable.betterandroid.system.extension.lint.detector.extension.resolveJavaClassTypeArgument
+import com.highcapable.betterandroid.system.extension.lint.detector.extension.resolveName
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.unwrapParenthesized
 import com.intellij.psi.PsiLocalVariable
+import com.intellij.psi.PsiMember
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UClassLiteralExpression
 import org.jetbrains.uast.UElement
+import org.jetbrains.uast.UExpression
 import org.jetbrains.uast.ULocalVariable
 import org.jetbrains.uast.UParenthesizedExpression
 import org.jetbrains.uast.UPostfixExpression
 import org.jetbrains.uast.UQualifiedReferenceExpression
+import org.jetbrains.uast.UResolvable
 import org.jetbrains.uast.USimpleNameReferenceExpression
 import org.jetbrains.uast.toUElementOfType
 
@@ -58,6 +65,8 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
         private const val NEW_HTML_TEXT_METHOD = "newHtmlText"
         private const val NEW_INTENT_METHOD = "newIntent"
         private const val GET_SYSTEM_SERVICE_METHOD = "getSystemService"
+        private const val GET_ITEM_AT_METHOD = "getItemAt"
+        private const val PRIMARY_CLIP_PROPERTY = "primaryClip"
 
         private const val COPY = "copy"
         private const val CLIPBOARD_MANAGER = "clipboardManager"
@@ -65,9 +74,6 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
         private const val PRIMARY_CLIP_ITEMS_OR_NULL = "primaryClipItemsOrNull"
         private const val FIRST_PRIMARY_CLIP_ITEM = "firstPrimaryClipItem"
         private const val FIRST_PRIMARY_CLIP_ITEM_OR_NULL = "firstPrimaryClipItemOrNull"
-
-        private val nullablePrimaryClipRegex = Regex("""^(.+)\.primaryClip\?\.getItemAt\((.+)\)$""", RegexOption.DOT_MATCHES_ALL)
-        private val nonNullPrimaryClipRegex = Regex("""^(.+)\.primaryClip!!\.getItemAt\((.+)\)$""", RegexOption.DOT_MATCHES_ALL)
 
         val ISSUE = Issue.create(
             id = "ReplaceWithClipboardExtension",
@@ -143,18 +149,23 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
             val clipDataMethod = clipCall.resolve() ?: return
             if (clipDataMethod.containingClass?.qualifiedName != CLIP_DATA_CLASS) return
 
+            val arguments = clipCall.valueArguments
+            val label = arguments.argumentSource(0) ?: return
+            val text = arguments.argumentSource(1) ?: return
+            val html = arguments.argumentSourceOrNull(2)
+
             val replacement = when (clipMethod) {
                 NEW_PLAIN_TEXT_METHOD -> {
-                    if (clipCall.valueArguments.size < 2) return
-                    "$receiver.$COPY(${clipCall.valueArguments[1].asSourceString()}, ${clipCall.valueArguments[0].asSourceString()})"
+                    if (arguments.size < 2) return
+                    "$receiver.$COPY($text, $label)"
                 }
                 NEW_HTML_TEXT_METHOD -> {
-                    if (clipCall.valueArguments.size < 3) return
-                    "$receiver.$COPY(${clipCall.valueArguments[1].asSourceString()}, ${clipCall.valueArguments[2].asSourceString()}, ${clipCall.valueArguments[0].asSourceString()})"
+                    if (arguments.size < 3) return
+                    "$receiver.$COPY($text, $html, $label)"
                 }
                 NEW_INTENT_METHOD -> {
-                    if (clipCall.valueArguments.size < 2) return
-                    "$receiver.$COPY(${clipCall.valueArguments[1].asSourceString()}, ${clipCall.valueArguments[0].asSourceString()})"
+                    if (arguments.size < 2) return
+                    "$receiver.$COPY(${arguments[1].asSourceString()}, $label)"
                 }
                 else -> return
             }
@@ -193,37 +204,54 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
         }
 
         private fun reportPrimaryClipItem(node: UQualifiedReferenceExpression) {
+            val itemCall = node.selector.asCall() ?: return
+            if (itemCall.methodName != GET_ITEM_AT_METHOD) return
+            val itemMethod = itemCall.resolve() ?: return
+            if (!context.evaluator.isMemberInClass(itemMethod, CLIP_DATA_CLASS)) return
+
+            val primaryClipAccess = node.receiver.unwrapNotNullAssertionElement() as? UQualifiedReferenceExpression ?: return
+            if (primaryClipAccess.selector.resolveName() != PRIMARY_CLIP_PROPERTY) return
+
+            val primaryClipResolved = (primaryClipAccess.selector as? UResolvable)?.resolve()
+                ?: (primaryClipAccess as? UResolvable)?.resolve()
+                ?: return
+            if (!context.evaluator.isMemberInClass(primaryClipResolved as? PsiMember, CLIPBOARD_MANAGER_CLASS)) return
+
+            val receiver = primaryClipAccess.receiver.asSourceString().trim()
+            if (receiver.isEmpty()) return
+
+            val index = itemCall.valueArguments.firstOrNull()?.asSourceString()?.trim() ?: return
             val source = node.asSourceString()
 
-            nullablePrimaryClipRegex.matchEntire(source)?.let {
-                val receiver = it.groupValues[1].trim()
-                val index = it.groupValues[2].trim()
-                val replacement = if (index == "0") {
-                    "$receiver.$FIRST_PRIMARY_CLIP_ITEM_OR_NULL"
-                } else "$receiver.$PRIMARY_CLIP_ITEMS_OR_NULL($index)"
+            when {
+                source.contains(".${PRIMARY_CLIP_PROPERTY}?.") -> {
+                    val replacement = if (index == "0")
+                        "$receiver.$FIRST_PRIMARY_CLIP_ITEM_OR_NULL"
+                    else "$receiver.$PRIMARY_CLIP_ITEMS_OR_NULL($index)"
 
-                reportAndFix(
-                    node = node,
-                    replacement = replacement,
-                    fixName = if (index == "0") FIRST_PRIMARY_CLIP_ITEM_OR_NULL else PRIMARY_CLIP_ITEMS_OR_NULL,
-                    importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.${if (index == "0") FIRST_PRIMARY_CLIP_ITEM_OR_NULL else PRIMARY_CLIP_ITEMS_OR_NULL}"
-                )
-                return
-            }
+                    reportAndFix(
+                        node = node,
+                        replacement = replacement,
+                        fixName = if (index == "0") FIRST_PRIMARY_CLIP_ITEM_OR_NULL else PRIMARY_CLIP_ITEMS_OR_NULL,
+                        importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.${
+                            if (index == "0") FIRST_PRIMARY_CLIP_ITEM_OR_NULL else PRIMARY_CLIP_ITEMS_OR_NULL
+                        }"
+                    )
+                }
+                source.contains(".${PRIMARY_CLIP_PROPERTY}!!.") -> {
+                    val replacement = if (index == "0")
+                        "$receiver.$FIRST_PRIMARY_CLIP_ITEM"
+                    else "$receiver.$PRIMARY_CLIP_ITEMS($index)"
 
-            nonNullPrimaryClipRegex.matchEntire(source)?.let {
-                val receiver = it.groupValues[1].trim()
-                val index = it.groupValues[2].trim()
-                val replacement = if (index == "0")
-                    "$receiver.$FIRST_PRIMARY_CLIP_ITEM"
-                else "$receiver.$PRIMARY_CLIP_ITEMS($index)"
-
-                reportAndFix(
-                    node = node,
-                    replacement = replacement,
-                    fixName = if (index == "0") FIRST_PRIMARY_CLIP_ITEM else PRIMARY_CLIP_ITEMS,
-                    importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.${if (index == "0") FIRST_PRIMARY_CLIP_ITEM else PRIMARY_CLIP_ITEMS}"
-                )
+                    reportAndFix(
+                        node = node,
+                        replacement = replacement,
+                        fixName = if (index == "0") FIRST_PRIMARY_CLIP_ITEM else PRIMARY_CLIP_ITEMS,
+                        importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.${
+                            if (index == "0") FIRST_PRIMARY_CLIP_ITEM else PRIMARY_CLIP_ITEMS
+                        }"
+                    )
+                }
             }
         }
 
@@ -242,13 +270,21 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
             return resolveClassLiteralType(node.valueArguments.getOrNull(1)) == CLIPBOARD_MANAGER_CLASS
         }
 
-        private fun isClipboardManagerTypeArgument(node: UCallExpression) =
-            node.asSourceString().endsWith(".getSystemService<ClipboardManager>()") ||
-                node.asSourceString() == "getSystemService<ClipboardManager>()"
+        private fun isClipboardManagerTypeArgument(node: UCallExpression): Boolean {
+            if (node.typeArguments.firstOrNull()?.canonicalText != CLIPBOARD_MANAGER_CLASS) return false
+
+            val receiverType = node.receiver?.getExpressionType()
+            if (receiverType != null) return receiverType.extendsClass(context, CONTEXT_CLASS)
+
+            val containingClass = node.findContainingUClass()?.javaPsi ?: return false
+            return context.evaluator.extendsClass(containingClass, CONTEXT_CLASS, false)
+        }
 
         private fun resolveClassLiteralType(expression: UElement?) = when (val target = expression.unwrapParenthesized()) {
             is UClassLiteralExpression -> target.type?.canonicalText
             is UQualifiedReferenceExpression -> (target.receiver as? UClassLiteralExpression)?.type?.canonicalText
+                ?: (target as? UExpression)?.getExpressionType().resolveJavaClassTypeArgument()
+            is UExpression -> target.getExpressionType().resolveJavaClassTypeArgument()
             else -> null
         }
 
@@ -276,6 +312,21 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
             }
 
             return if (parent is UPostfixExpression && parent.asSourceString() == "${current.asSourceString()}!!") parent else this
+        }
+
+        private fun UElement?.unwrapNotNullAssertionElement(): UElement? {
+            var current = unwrapParenthesized()
+            while (current is UPostfixExpression && current.asSourceString().endsWith("!!"))
+                current = current.operand.unwrapParenthesized()
+
+            return current
+        }
+
+        private fun List<UExpression>.argumentSource(index: Int): String? = getOrNull(index)?.asSourceString()
+
+        private fun List<UExpression>.argumentSourceOrNull(index: Int): String? {
+            val source = getOrNull(index)?.asSourceString()?.trim() ?: return null
+            return source.takeIf { it != "null" }
         }
 
         private fun reportAndFix(
