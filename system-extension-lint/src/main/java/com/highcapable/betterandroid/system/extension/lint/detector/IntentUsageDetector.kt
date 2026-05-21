@@ -35,13 +35,17 @@ import com.highcapable.betterandroid.system.extension.lint.detector.extension.bu
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.displayShortName
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.unwrapParenthesized
+import com.intellij.psi.PsiLocalVariable
 import org.jetbrains.uast.UBinaryExpressionWithType
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UClassLiteralExpression
 import org.jetbrains.uast.UElement
+import org.jetbrains.uast.ULocalVariable
 import org.jetbrains.uast.UParenthesizedExpression
 import org.jetbrains.uast.UQualifiedReferenceExpression
+import org.jetbrains.uast.USimpleNameReferenceExpression
 import org.jetbrains.uast.UastBinaryExpressionWithTypeKind
+import org.jetbrains.uast.toUElementOfType
 
 class IntentUsageDetector : Detector(), Detector.UastScanner {
 
@@ -60,18 +64,22 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
         private const val GET_SERIALIZABLE_EXTRA_COMPAT = "getSerializableExtraCompat"
         private const val GET_SERIALIZABLE_COMPAT = "getSerializableCompat"
 
+        private const val INTENT_HELPER = "Intent"
+
         val ISSUE = Issue.create(
             id = "ReplaceWithIntentExtension",
             briefDescription = "Use system-extension's intent extensions instead.",
             explanation = """
-                Using official `Intent` and `Bundle` parcelable or serializable access APIs can be \
-                simplified by using compat extensions from BetterAndroid system-extension library.
+                Using official `Intent` constructors for component targets, or `Intent` and \
+                `Bundle` parcelable or serializable access APIs, can be simplified by using \
+                extensions from BetterAndroid system-extension library.
 
                 See the documentation for more details:
                 - English: https://betterandroid.github.io/BetterAndroid/en/library/system-extension#intent-extension
                 - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/system-extension#intent-extension
 
                 The `Intent.kt` provides:
+                - Generic component-targeted `Intent(...)` helpers
                 - Generic compat access APIs for `Parcelable` and `Serializable`
                 - Consistent usage across both `Intent` and `Bundle`
                 - Less version-specific API branching in call sites
@@ -80,6 +88,8 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
                 Examples:
                 ```kotlin
                 // Before
+                Intent(context, DemoActivity::class.java)
+                Intent(Intent.ACTION_VIEW, uri, context, DemoActivity::class.java)
                 intent.getParcelableExtra("parcelable", DemoParcelable::class.java)
                 bundle.getParcelable("parcelable", DemoParcelable::class.java)
                 intent.getSerializableExtra("serializable", DemoSerializable::class.java)
@@ -88,6 +98,8 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
                 bundle.getSerializable("serializable") as DemoSerializable
 
                 // After
+                Intent<DemoActivity>(context)
+                Intent<DemoActivity>(Intent.ACTION_VIEW, uri, context)
                 intent.getParcelableExtraCompat<DemoParcelable>("parcelable")
                 bundle.getParcelableCompat<DemoParcelable>("parcelable")
                 intent.getSerializableExtraCompat<DemoSerializable>("serializable")
@@ -114,6 +126,7 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
     override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
 
         override fun visitCallExpression(node: UCallExpression) {
+            reportIntentConstructor(node)
             reportExplicitTypedCompat(node)
             reportGenericParcelable(node)
         }
@@ -144,6 +157,41 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
             val replacement = "$receiverPrefix${compat.functionName}<$type>($key)"
             val displayReplacement = "$receiverPrefix${compat.functionName}<${type.displayShortName()}>($key)"
             reportAndFix(node, replacement, compat.importTarget, displayReplacement, compat.functionName)
+        }
+
+        private fun reportIntentConstructor(node: UCallExpression) {
+            val method = node.resolve() ?: return
+            if (!method.isConstructor || method.containingClass?.qualifiedName != INTENT_CLASS) return
+
+            val replacement = when (node.valueArguments.size) {
+                2 -> {
+                    val context = node.valueArguments[0].asSourceString()
+                    val type = resolveClassLiteralType(node.valueArguments[1]) ?: return
+                    IntentReplacement(
+                        replacement = "$INTENT_HELPER<$type>($context)",
+                        displayReplacement = "$INTENT_HELPER<${type.displayShortName()}>($context)"
+                    )
+                }
+                4 -> {
+                    val action = node.valueArguments[0].asSourceString()
+                    val uri = node.valueArguments[1].asSourceString()
+                    val context = node.valueArguments[2].asSourceString()
+                    val type = resolveClassLiteralType(node.valueArguments[3]) ?: return
+                    IntentReplacement(
+                        replacement = "$INTENT_HELPER<$type>($action, $uri, $context)",
+                        displayReplacement = "$INTENT_HELPER<${type.displayShortName()}>($action, $uri, $context)"
+                    )
+                }
+                else -> return
+            }
+
+            reportAndFix(
+                node = node,
+                replacement = replacement.replacement,
+                importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.$INTENT_HELPER",
+                displayReplacement = replacement.displayReplacement,
+                fixName = INTENT_HELPER
+            )
         }
 
         private fun reportGenericParcelable(node: UCallExpression) {
@@ -179,7 +227,18 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
         private fun resolveClassLiteralType(expression: UElement?) = when (val target = expression.unwrapParenthesized()) {
             is UClassLiteralExpression -> target.type?.canonicalText
             is UQualifiedReferenceExpression -> (target.receiver as? UClassLiteralExpression)?.type?.canonicalText
+            is USimpleNameReferenceExpression -> resolveReferencedClassLiteralType(target)
             else -> null
+        }
+
+        private fun resolveReferencedClassLiteralType(expression: USimpleNameReferenceExpression): String? {
+            val localVariable = when (val resolved = expression.resolve()) {
+                is ULocalVariable -> resolved
+                is PsiLocalVariable -> resolved.toUElementOfType<ULocalVariable>()
+                else -> null
+            } ?: return null
+
+            return resolveClassLiteralType(localVariable.uastInitializer)
         }
 
         private fun UCallExpression.isInsideTypeCast(): Boolean {
@@ -210,4 +269,9 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
     private data class CompatTarget(val functionName: String) {
         val importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.$functionName"
     }
+
+    private data class IntentReplacement(
+        val replacement: String,
+        val displayReplacement: String
+    )
 }
