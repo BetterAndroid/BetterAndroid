@@ -41,6 +41,7 @@ import com.highcapable.betterandroid.ui.extension.lint.detector.TextViewUsageDet
 import com.highcapable.betterandroid.ui.extension.lint.detector.ToastUsageDetector
 import com.highcapable.betterandroid.ui.extension.lint.detector.ViewBindingUsageDetector
 import com.highcapable.betterandroid.ui.extension.lint.detector.ViewImeVisibilityUsageDetector
+import com.highcapable.betterandroid.ui.extension.lint.detector.ViewOutlineProviderUsageDetector
 import com.highcapable.betterandroid.ui.extension.lint.detector.ViewTooltipTextUsageDetector
 import com.highcapable.betterandroid.ui.extension.lint.detector.ViewWalkUsageDetector
 import com.highcapable.betterandroid.ui.extension.lint.detector.WindowInsetsListenerUsageDetector
@@ -64,6 +65,7 @@ class UiExtensionIssueRegistry : IssueRegistry() {
         ViewWalkUsageDetector.ISSUE,
         ViewBindingUsageDetector.ISSUE,
         ViewImeVisibilityUsageDetector.ISSUE,
+        ViewOutlineProviderUsageDetector.ISSUE,
         WindowInsetsListenerUsageDetector.ISSUE
     )
 
