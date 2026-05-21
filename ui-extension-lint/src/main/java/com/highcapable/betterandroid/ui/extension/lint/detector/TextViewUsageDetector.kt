@@ -50,6 +50,11 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
         private const val SET_TEXT_COLOR_METHOD = "setTextColor"
         private const val TO_STRING_METHOD = "toString"
 
+        private const val GET_TEXT_PROPERTY = "text"
+        private const val GET_HINT_PROPERTY = "hint"
+        private const val GET_TEXT_METHOD = "getText"
+        private const val GET_HINT_METHOD = "getHint"
+
         private const val TEXT_COLOR_PROPERTY = "textColor"
         private const val TEXT_TO_STRING_FUNCTION = "textToString"
         private const val HINT_TO_STRING_FUNCTION = "hintToString"
@@ -153,19 +158,28 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
                     val resolvedName = target.selector.resolveName() ?: return
                     resolvedName to "${target.receiver.asSourceString()}."
                 }
+                is UCallExpression -> {
+                    val resolvedName = target.resolveName() ?: return
+                    val memberName = when (resolvedName) {
+                        GET_TEXT_METHOD -> GET_TEXT_PROPERTY
+                        GET_HINT_METHOD -> GET_HINT_PROPERTY
+                        else -> return
+                    }
+                    memberName to target.receiverPrefix()
+                }
                 is USimpleNameReferenceExpression -> target.identifier to ""
                 else -> return
             }
-            if (memberName != "text" && memberName != "hint") return
+            if (memberName != GET_TEXT_PROPERTY && memberName != GET_HINT_PROPERTY) return
             if (!target.isResolvedTextViewMember(memberName)) return
 
-            val replacement = if (memberName == "text")
+            val replacement = if (memberName == GET_TEXT_PROPERTY)
                 "$receiverPrefix$TEXT_TO_STRING_FUNCTION()"
             else "$receiverPrefix$HINT_TO_STRING_FUNCTION()"
-            val importTarget = if (memberName == "text") {
+            val importTarget = if (memberName == GET_TEXT_PROPERTY) {
                 "${DeclaredSymbol.VIEW_PACKAGE}.$TEXT_TO_STRING_FUNCTION"
             } else "${DeclaredSymbol.VIEW_PACKAGE}.$HINT_TO_STRING_FUNCTION"
-            val fixName = if (memberName == "text") TEXT_TO_STRING_FUNCTION else HINT_TO_STRING_FUNCTION
+            val fixName = if (memberName == GET_TEXT_PROPERTY) TEXT_TO_STRING_FUNCTION else HINT_TO_STRING_FUNCTION
 
             context.report(
                 issue = ISSUE,
@@ -181,6 +195,7 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
 
         private fun UElement.isResolvedTextViewMember(name: String): Boolean {
             val resolved = when (this) {
+                is UCallExpression -> resolve()
                 is UQualifiedReferenceExpression -> (selector as? UResolvable)?.resolve()
                 is USimpleNameReferenceExpression -> resolve()
                 else -> null
@@ -188,11 +203,16 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
 
             return when (resolved) {
                 is PsiMethod -> resolved.name == "get${name.replaceFirstChar { it.titlecase() }}" &&
-                    context.evaluator.isMemberInClass(resolved, TEXT_VIEW_CLASS)
+                    resolved.isDeclaredInTextViewHierarchy()
                 is PsiField -> resolved.name == name &&
-                    context.evaluator.isMemberInClass(resolved, TEXT_VIEW_CLASS)
+                    resolved.isDeclaredInTextViewHierarchy()
                 else -> false
             }
         }
+
+        private fun PsiMember.isDeclaredInTextViewHierarchy() =
+            containingClass?.let {
+                it.qualifiedName == TEXT_VIEW_CLASS || context.evaluator.extendsClass(it, TEXT_VIEW_CLASS, false)
+            } == true
     }
 }
