@@ -34,14 +34,14 @@ import com.highcapable.betterandroid.system.extension.lint.detector.extension.as
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.buildReplaceFix
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.displayShortName
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.receiverPrefix
+import com.highcapable.betterandroid.system.extension.lint.detector.extension.resolveStaticClassLiteralType
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.unwrapParenthesized
-import com.intellij.psi.PsiLocalVariable
+import com.highcapable.betterandroid.system.extension.lint.detector.extension.unwrapReturnedExpression
+import org.jetbrains.uast.UBlockExpression
 import org.jetbrains.uast.UCallExpression
-import org.jetbrains.uast.UClassLiteralExpression
-import org.jetbrains.uast.ULocalVariable
+import org.jetbrains.uast.UExpression
+import org.jetbrains.uast.ULambdaExpression
 import org.jetbrains.uast.UQualifiedReferenceExpression
-import org.jetbrains.uast.USimpleNameReferenceExpression
-import org.jetbrains.uast.toUElementOfType
 
 class ServiceUsageDetector : Detector(), Detector.UastScanner {
 
@@ -49,9 +49,13 @@ class ServiceUsageDetector : Detector(), Detector.UastScanner {
 
         private const val CONTEXT_CLASS = "android.content.Context"
         private const val INTENT_CLASS = "android.content.Intent"
+        private const val INTENT_UTILS_CLASS = "${DeclaredSymbol.COMPONENT_PACKAGE}.IntentUtils"
 
         private const val START_SERVICE_METHOD = "startService"
         private const val START_FOREGROUND_SERVICE_METHOD = "startForegroundService"
+        private const val APPLY_METHOD = "apply"
+        private const val ALSO_METHOD = "also"
+        private const val INTENT_HELPER = "Intent"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithServiceExtension",
@@ -104,49 +108,116 @@ class ServiceUsageDetector : Detector(), Detector.UastScanner {
             val containingClass = method.containingClass ?: return
             if (!context.evaluator.extendsClass(containingClass, CONTEXT_CLASS, false)) return
 
-            val intentCall = node.valueArguments.firstOrNull().unwrapParenthesized().asCall() ?: return
-            if (intentCall.returnType?.canonicalText != INTENT_CLASS) {
-                val intentMethod = intentCall.resolve() ?: return
-                if (intentMethod.containingClass?.qualifiedName != INTENT_CLASS) return
-            }
-
-            val targetClass = resolveTargetServiceClass(intentCall) ?: return
+            val intentSpec = resolveIntentSpec(node.valueArguments.firstOrNull()) ?: return
             val receiverPrefix = node.receiverPrefix()
-            val replacement = "$receiverPrefix$methodName<$targetClass>()"
-            val displayReplacement = "$receiverPrefix$methodName<${targetClass.displayShortName()}>()"
+            val replacement = buildReplacement(receiverPrefix, methodName, intentSpec)
 
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$displayReplacement`.",
+                message = "Can be replaced with `${replacement.displayReplacement}`.",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$methodName'",
-                    replacement = replacement,
+                    replacement = replacement.replacement,
                     imports = arrayOf("${DeclaredSymbol.COMPONENT_PACKAGE}.$methodName")
                 )
             )
         }
 
-        private fun resolveTargetServiceClass(intentCall: UCallExpression) =
-            when (val target = intentCall.valueArguments.getOrNull(1).unwrapParenthesized()) {
-                is UClassLiteralExpression -> target.type?.canonicalText
-                is UQualifiedReferenceExpression -> (target.receiver as? UClassLiteralExpression)?.type?.canonicalText
-                is USimpleNameReferenceExpression -> resolveReferencedClassLiteralType(target)
-                else -> null
+        private fun resolveIntentSpec(expression: UExpression?) = when (val target = expression.unwrapParenthesized()) {
+            is UQualifiedReferenceExpression -> resolveQualifiedIntentSpec(target)
+            else -> resolveIntentCall(target.asCall())
+        }
+
+        private fun resolveQualifiedIntentSpec(node: UQualifiedReferenceExpression): IntentSpec? {
+            val selectorCall = node.selector.asCall() ?: return resolveIntentCall(node.asCall())
+
+            return when (selectorCall.methodName) {
+                APPLY_METHOD, ALSO_METHOD -> {
+                    val base = resolveIntentSpec(node.receiver) ?: return null
+                    val bodyStatements = parseIntentBuilderStatements(
+                        selectorCall.valueArguments.firstOrNull(),
+                        selectorCall.methodName == ALSO_METHOD
+                    )
+                    base.copy(bodyStatements = base.bodyStatements + bodyStatements)
+                }
+                else -> resolveIntentCall(selectorCall)
             }
+        }
 
-        private fun resolveReferencedClassLiteralType(expression: USimpleNameReferenceExpression): String? {
-            val localVariable = when (val resolved = expression.resolve()) {
-                is ULocalVariable -> resolved
-                is PsiLocalVariable -> resolved.toUElementOfType<ULocalVariable>()
-                else -> null
-            } ?: return null
+        private fun resolveIntentCall(node: UCallExpression?): IntentSpec? {
+            val call = node ?: return null
+            val method = call.resolve() ?: return null
 
-            return when (val initializer = localVariable.uastInitializer.unwrapParenthesized()) {
-                is UClassLiteralExpression -> initializer.type?.canonicalText
-                is UQualifiedReferenceExpression -> (initializer.receiver as? UClassLiteralExpression)?.type?.canonicalText
+            return when {
+                method.isConstructor && method.containingClass?.qualifiedName == INTENT_CLASS -> {
+                    val targetClass = resolveTargetServiceClass(call) ?: return null
+                    IntentSpec(targetClass)
+                }
+                call.methodName == INTENT_HELPER &&
+                    method.containingClass?.qualifiedName == INTENT_UTILS_CLASS &&
+                    call.returnType?.canonicalText == INTENT_CLASS -> {
+                    val targetClass = call.typeArguments.firstOrNull()?.canonicalText ?: return null
+                    IntentSpec(targetClass)
+                }
                 else -> null
             }
         }
+
+        private fun buildReplacement(receiverPrefix: String, methodName: String, intentSpec: IntentSpec): ReplacementSpec {
+            val displayTargetClass = intentSpec.targetClass.displayShortName()
+            if (intentSpec.bodyStatements.isEmpty()) {
+                val replacement = "$receiverPrefix$methodName<${intentSpec.targetClass}>()"
+                val displayReplacement = "$receiverPrefix$methodName<$displayTargetClass>()"
+                return ReplacementSpec(replacement, displayReplacement)
+            }
+
+            return ReplacementSpec(
+                replacement = buildString {
+                    append("$receiverPrefix$methodName<${intentSpec.targetClass}> {\n")
+                    intentSpec.bodyStatements.forEach { append("    ").append(it).append('\n') }
+                    append('}')
+                },
+                displayReplacement = buildString {
+                    append("$receiverPrefix$methodName<$displayTargetClass> {\n")
+                    intentSpec.bodyStatements.forEach { append("    ").append(it).append('\n') }
+                    append('}')
+                }
+            )
+        }
+
+        private fun resolveTargetServiceClass(intentCall: UCallExpression) =
+            intentCall.valueArguments.getOrNull(1).resolveStaticClassLiteralType()
+
+        private fun parseIntentBuilderStatements(argument: UExpression?, isAlso: Boolean): List<String> =
+            argument.resolveIntentBuilderStatements(isAlso)
+
+        private fun UExpression?.resolveIntentBuilderStatements(isAlso: Boolean): List<String> {
+            val lambda = unwrapParenthesized() as? ULambdaExpression ?: return emptyList()
+            val expressions = when (val body = lambda.body) {
+                is UBlockExpression -> body.expressions
+                else -> listOf(body)
+            }
+            val parameterName = lambda.valueParameters.firstOrNull()?.name ?: if (isAlso) "it" else null
+
+            return expressions.mapNotNull { expression ->
+                val source = expression.unwrapReturnedExpression().asSourceString().trim().removeSuffix(";")
+                    .removeIntentLambdaPrefix(parameterName)
+                source.takeIf { it.isNotBlank() }
+            }
+        }
+
+        private fun String.removeIntentLambdaPrefix(parameterName: String?) =
+            parameterName?.takeIf { startsWith("$it.") }?.let { removePrefix("$it.") } ?: this
     }
+
+    private data class IntentSpec(
+        val targetClass: String,
+        val bodyStatements: List<String> = emptyList()
+    )
+
+    private data class ReplacementSpec(
+        val replacement: String,
+        val displayReplacement: String
+    )
 }

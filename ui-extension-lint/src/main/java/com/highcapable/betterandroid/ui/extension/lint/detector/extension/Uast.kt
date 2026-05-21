@@ -22,20 +22,25 @@
 package com.highcapable.betterandroid.ui.extension.lint.detector.extension
 
 import com.intellij.psi.PsiClass
+import com.intellij.psi.PsiLocalVariable
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.util.PsiTypesUtil
 import org.jetbrains.uast.UBlockExpression
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UCallableReferenceExpression
 import org.jetbrains.uast.UClass
+import org.jetbrains.uast.UClassLiteralExpression
 import org.jetbrains.uast.UDeclaration
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UExpression
+import org.jetbrains.uast.ULocalVariable
 import org.jetbrains.uast.UObjectLiteralExpression
 import org.jetbrains.uast.UParenthesizedExpression
 import org.jetbrains.uast.UQualifiedReferenceExpression
 import org.jetbrains.uast.UResolvable
+import org.jetbrains.uast.UReturnExpression
 import org.jetbrains.uast.USimpleNameReferenceExpression
+import org.jetbrains.uast.toUElementOfType
 
 internal fun UElement?.resolveName() = when (this) {
     is USimpleNameReferenceExpression -> identifier
@@ -108,5 +113,25 @@ internal fun UElement.getContainingPsiClass(): PsiClass? {
 
 internal fun List<UExpression>.joinSourceArguments(startIndex: Int = 0) =
     drop(startIndex).joinToString(", ") { it.asSourceString() }
+
+internal tailrec fun UElement?.resolveStaticClassLiteralType(): String? = when (val target = unwrapParenthesized()) {
+    is UClassLiteralExpression -> target.type?.canonicalText
+    is UQualifiedReferenceExpression -> (target.receiver as? UClassLiteralExpression)?.type?.canonicalText
+    is USimpleNameReferenceExpression -> {
+        val localVariable = when (val resolved = target.resolve()) {
+            is ULocalVariable -> resolved
+            is PsiLocalVariable -> resolved.toUElementOfType<ULocalVariable>()
+            else -> null
+        } ?: return null
+
+        localVariable.uastInitializer.resolveStaticClassLiteralType()
+    }
+    else -> null
+}
+
+internal fun UExpression.unwrapReturnedExpression() = when (this) {
+    is UReturnExpression -> returnExpression?.unwrapParenthesized() as? UExpression ?: this
+    else -> this
+}
 
 internal fun String.displayShortName() = substringAfterLast('.')

@@ -21,15 +21,21 @@
  */
 package com.highcapable.betterandroid.system.extension.lint.detector.extension
 
+import com.intellij.psi.PsiLocalVariable
 import com.intellij.psi.PsiNamedElement
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UCallableReferenceExpression
 import org.jetbrains.uast.UClass
+import org.jetbrains.uast.UClassLiteralExpression
 import org.jetbrains.uast.UElement
+import org.jetbrains.uast.UExpression
+import org.jetbrains.uast.ULocalVariable
 import org.jetbrains.uast.UParenthesizedExpression
 import org.jetbrains.uast.UQualifiedReferenceExpression
 import org.jetbrains.uast.UResolvable
+import org.jetbrains.uast.UReturnExpression
 import org.jetbrains.uast.USimpleNameReferenceExpression
+import org.jetbrains.uast.toUElementOfType
 
 internal fun UElement?.resolveName() = when (this) {
     is USimpleNameReferenceExpression -> identifier
@@ -68,6 +74,26 @@ internal fun UElement?.findContainingUClass(): UClass? {
         current = current.uastParent
     }
     return null
+}
+
+internal tailrec fun UElement?.resolveStaticClassLiteralType(): String? = when (val target = unwrapParenthesized()) {
+    is UClassLiteralExpression -> target.type?.canonicalText
+    is UQualifiedReferenceExpression -> (target.receiver as? UClassLiteralExpression)?.type?.canonicalText
+    is USimpleNameReferenceExpression -> {
+        val localVariable = when (val resolved = target.resolve()) {
+            is ULocalVariable -> resolved
+            is PsiLocalVariable -> resolved.toUElementOfType<ULocalVariable>()
+            else -> null
+        } ?: return null
+
+        localVariable.uastInitializer.resolveStaticClassLiteralType()
+    }
+    else -> null
+}
+
+internal fun UExpression.unwrapReturnedExpression() = when (this) {
+    is UReturnExpression -> returnExpression?.unwrapParenthesized() as? UExpression ?: this
+    else -> this
 }
 
 internal fun String.displayShortName() = substringAfterLast('.')
