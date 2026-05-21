@@ -69,7 +69,7 @@ var TextView.isStrikeThrough
  * @return [Int]
  */
 var TextView.textColor
-    @ColorInt get() = textColors.defaultColor
+    @ColorInt get() = currentTextColor
     set(@ColorInt value) {
         setTextColor(value)
     }
