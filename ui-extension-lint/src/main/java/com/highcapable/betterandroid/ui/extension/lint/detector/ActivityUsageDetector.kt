@@ -35,9 +35,13 @@ import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildR
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.displayShortName
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.unwrapParenthesized
+import com.intellij.psi.PsiLocalVariable
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UClassLiteralExpression
+import org.jetbrains.uast.ULocalVariable
 import org.jetbrains.uast.UQualifiedReferenceExpression
+import org.jetbrains.uast.USimpleNameReferenceExpression
+import org.jetbrains.uast.toUElementOfType
 
 class ActivityUsageDetector : Detector(), Detector.UastScanner {
 
@@ -127,7 +131,22 @@ class ActivityUsageDetector : Detector(), Detector.UastScanner {
             when (val targetArg = intentCall.valueArguments.getOrNull(1).unwrapParenthesized()) {
                 is UClassLiteralExpression -> targetArg.type?.canonicalText
                 is UQualifiedReferenceExpression -> (targetArg.receiver as? UClassLiteralExpression)?.type?.canonicalText
+                is USimpleNameReferenceExpression -> resolveReferencedClassLiteralType(targetArg)
                 else -> null
             }
+
+        private fun resolveReferencedClassLiteralType(expression: USimpleNameReferenceExpression): String? {
+            val localVariable = when (val resolved = expression.resolve()) {
+                is ULocalVariable -> resolved
+                is PsiLocalVariable -> resolved.toUElementOfType<ULocalVariable>()
+                else -> null
+            } ?: return null
+
+            return when (val initializer = localVariable.uastInitializer.unwrapParenthesized()) {
+                is UClassLiteralExpression -> initializer.type?.canonicalText
+                is UQualifiedReferenceExpression -> (initializer.receiver as? UClassLiteralExpression)?.type?.canonicalText
+                else -> null
+            }
+        }
     }
 }
