@@ -40,6 +40,7 @@ import org.jetbrains.uast.UQualifiedReferenceExpression
 import org.jetbrains.uast.UResolvable
 import org.jetbrains.uast.UReturnExpression
 import org.jetbrains.uast.USimpleNameReferenceExpression
+import org.jetbrains.uast.UThisExpression
 import org.jetbrains.uast.toUElementOfType
 
 internal fun UElement?.resolveName() = when (this) {
@@ -113,6 +114,11 @@ internal fun UElement.getContainingPsiClass(): PsiClass? {
 
 internal fun List<UExpression>.joinSourceArguments(startIndex: Int = 0) =
     drop(startIndex).joinToString(", ") { it.asSourceString() }
+
+internal fun UExpression.asPropertyAccess(name: String): String {
+    val source = asSourceString()
+    return if (unwrapParenthesized() is UThisExpression) name else "$source.$name"
+}
 
 internal tailrec fun UElement?.resolveStaticClassLiteralType(): String? = when (val target = unwrapParenthesized()) {
     is UClassLiteralExpression -> target.type?.canonicalText

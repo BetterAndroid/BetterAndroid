@@ -30,6 +30,7 @@ import com.android.tools.lint.detector.api.JavaContext
 import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.asPropertyAccess
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
 import org.jetbrains.uast.UCallExpression
 
@@ -87,7 +88,7 @@ class LayoutInflaterUsageDetector : Detector(), Detector.UastScanner {
             if (!context.evaluator.isMemberInClass(method, LAYOUT_INFLATER_CLASS)) return
 
             val contextArg = node.valueArguments.firstOrNull() ?: return
-            val replacement = "${contextArg.asSourceString()}.$LAYOUT_INFLATER_PROPERTY"
+            val replacement = contextArg.asPropertyAccess(LAYOUT_INFLATER_PROPERTY)
 
             context.report(
                 issue = ISSUE,
