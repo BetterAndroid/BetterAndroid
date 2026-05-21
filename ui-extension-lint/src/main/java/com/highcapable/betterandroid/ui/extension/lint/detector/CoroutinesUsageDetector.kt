@@ -32,8 +32,11 @@ import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.resolveName
+import com.intellij.psi.PsiMethod
 import org.jetbrains.uast.UCallExpression
+import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UQualifiedReferenceExpression
+import org.jetbrains.uast.UResolvable
 import org.jetbrains.uast.USimpleNameReferenceExpression
 
 class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
@@ -41,6 +44,7 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
     companion object {
 
         private const val HANDLER_CLASS = "android.os.Handler"
+        private const val LIFECYCLE_OWNER_KT_CLASS = "androidx.lifecycle.LifecycleOwnerKt"
         private const val POST_DELAYED_METHOD = "postDelayed"
         private const val LAUNCH_METHOD = "launch"
         private const val ASYNC_METHOD = "async"
@@ -124,15 +128,18 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
                 is UQualifiedReferenceExpression -> {
                     val selectorName = receiver.selector.resolveName() ?: return
                     if (selectorName != LIFECYCLE_SCOPE_PROPERTY) return
+                    if (!receiver.isLifecycleScopeAccess(context)) return
                     "${receiver.receiver.asSourceString()}.$methodName"
                 }
                 is USimpleNameReferenceExpression -> {
                     if (receiver.identifier != LIFECYCLE_SCOPE_PROPERTY) return
+                    if (!receiver.isLifecycleScopeAccess(context)) return
                     methodName
                 }
                 else -> {
                     val selectorName = receiver.resolveName() ?: return
                     if (selectorName != LIFECYCLE_SCOPE_PROPERTY) return
+                    if (!receiver.isLifecycleScopeAccess(context)) return
                     methodName
                 }
             }
@@ -163,6 +170,19 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
                 location = context.getLocation(node),
                 message = "Can be replaced with `$RUN_DELAYED_EXTENSION(...)`."
             )
+        }
+
+        private fun UElement.isLifecycleScopeAccess(context: JavaContext): Boolean {
+            val resolved = when (this) {
+                is UQualifiedReferenceExpression -> (selector as? UResolvable)?.resolve()
+                is USimpleNameReferenceExpression -> resolve()
+                is UCallExpression -> resolve()
+                is UResolvable -> resolve()
+                else -> null
+            } as? PsiMethod ?: return false
+
+            return resolved.name == "getLifecycleScope" &&
+                context.evaluator.isMemberInClass(resolved, LIFECYCLE_OWNER_KT_CLASS)
         }
     }
 }

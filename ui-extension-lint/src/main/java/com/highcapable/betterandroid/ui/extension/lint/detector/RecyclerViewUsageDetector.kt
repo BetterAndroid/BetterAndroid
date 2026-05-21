@@ -31,14 +31,22 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.unwrapParenthesized
+import com.intellij.psi.PsiField
+import com.intellij.psi.PsiMethod
 import org.jetbrains.uast.UBinaryExpressionWithType
 import org.jetbrains.uast.UElement
+import org.jetbrains.uast.UQualifiedReferenceExpression
+import org.jetbrains.uast.UResolvable
+import org.jetbrains.uast.USimpleNameReferenceExpression
 import org.jetbrains.uast.UastBinaryExpressionWithTypeKind
 
 class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
 
     companion object {
 
+        private const val RECYCLER_VIEW_CLASS = "androidx.recyclerview.widget.RecyclerView"
+        private const val LAYOUT_MANAGER_GET_FUNCTION = "getLayoutManager"
         private const val LAYOUT_MANAGER_FUNCTION = "layoutManager"
 
         val ISSUE = Issue.create(
@@ -84,12 +92,16 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
         override fun visitBinaryExpressionWithType(node: UBinaryExpressionWithType) {
             if (node.operationKind !is UastBinaryExpressionWithTypeKind.TypeCast) return
 
-            val operand = node.operand.asSourceString()
+            val operandNode = node.operand.unwrapParenthesized() ?: return
+            if (!operandNode.isRecyclerViewLayoutManagerAccess(context)) return
+
+            val operand = operandNode.asSourceString()
             val targetType = node.typeReference?.asSourceString() ?: return
             val replacement = when {
-                operand == "layoutManager" -> "$LAYOUT_MANAGER_FUNCTION<$targetType>()"
-                operand == "this.layoutManager" -> "this.$LAYOUT_MANAGER_FUNCTION<$targetType>()"
-                operand.endsWith(".layoutManager") -> "${operand.removeSuffix(".layoutManager")}.$LAYOUT_MANAGER_FUNCTION<$targetType>()"
+                operand == LAYOUT_MANAGER_FUNCTION -> "$LAYOUT_MANAGER_FUNCTION<$targetType>()"
+                operand == "this.$LAYOUT_MANAGER_FUNCTION" -> "this.$LAYOUT_MANAGER_FUNCTION<$targetType>()"
+                operand.endsWith(".$LAYOUT_MANAGER_FUNCTION") ->
+                    "${operand.removeSuffix(".$LAYOUT_MANAGER_FUNCTION")}.$LAYOUT_MANAGER_FUNCTION<$targetType>()"
                 else -> return
             }
 
@@ -103,6 +115,24 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
                     imports = arrayOf("${DeclaredSymbol.VIEW_PACKAGE}.$LAYOUT_MANAGER_FUNCTION")
                 )
             )
+        }
+
+        private fun UElement.isRecyclerViewLayoutManagerAccess(context: JavaContext) = when (this) {
+            is UQualifiedReferenceExpression -> when (val resolved = (selector as? UResolvable)?.resolve()) {
+                is PsiMethod -> resolved.name == LAYOUT_MANAGER_GET_FUNCTION &&
+                    context.evaluator.isMemberInClass(resolved, RECYCLER_VIEW_CLASS)
+                is PsiField -> resolved.name == LAYOUT_MANAGER_FUNCTION &&
+                    context.evaluator.isMemberInClass(resolved, RECYCLER_VIEW_CLASS)
+                else -> false
+            }
+            is USimpleNameReferenceExpression -> when (val resolved = resolve()) {
+                is PsiMethod -> resolved.name == LAYOUT_MANAGER_GET_FUNCTION &&
+                    context.evaluator.isMemberInClass(resolved, RECYCLER_VIEW_CLASS)
+                is PsiField -> resolved.name == LAYOUT_MANAGER_FUNCTION &&
+                    context.evaluator.isMemberInClass(resolved, RECYCLER_VIEW_CLASS)
+                else -> false
+            }
+            else -> false
         }
     }
 }

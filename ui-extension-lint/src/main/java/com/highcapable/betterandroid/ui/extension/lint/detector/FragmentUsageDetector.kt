@@ -35,9 +35,12 @@ import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildR
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.isQualifiedSelector
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.resolveName
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.unwrapParenthesized
+import com.intellij.psi.PsiMethod
+import com.intellij.psi.PsiVariable
 import org.jetbrains.uast.UBinaryExpressionWithType
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UQualifiedReferenceExpression
+import org.jetbrains.uast.UResolvable
 import org.jetbrains.uast.USimpleNameReferenceExpression
 import org.jetbrains.uast.UastBinaryExpressionWithTypeKind
 
@@ -45,11 +48,18 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
 
     companion object {
 
+        private const val FRAGMENT_ACTIVITY_CLASS = "androidx.fragment.app.FragmentActivity"
+        private const val FRAGMENT_CLASS = "androidx.fragment.app.Fragment"
+
+        private const val FIND_FRAGMENT_BY_ID_METHOD = "findFragmentById"
+        private const val FIND_FRAGMENT_BY_TAG_METHOD = "findFragmentByTag"
+
         private const val SUPPORT_FRAGMENT_MANAGER = "supportFragmentManager"
         private const val PARENT_FRAGMENT_MANAGER = "parentFragmentManager"
         private const val CHILD_FRAGMENT_MANAGER = "childFragmentManager"
-        private const val FIND_FRAGMENT_BY_ID_METHOD = "findFragmentById"
-        private const val FIND_FRAGMENT_BY_TAG_METHOD = "findFragmentByTag"
+        private const val SUPPORT_FRAGMENT_MANAGER_GET_FUNCTION = "getSupportFragmentManager"
+        private const val PARENT_FRAGMENT_MANAGER_GET_FUNCTION = "getParentFragmentManager"
+        private const val CHILD_FRAGMENT_MANAGER_GET_FUNCTION = "getChildFragmentManager"
 
         private const val FRAGMENT_MANAGER_FUNCTION = "fragmentManager"
         private const val FIND_FRAGMENT_FUNCTION = "findFragment"
@@ -109,6 +119,7 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
 
         override fun visitQualifiedReferenceExpression(node: UQualifiedReferenceExpression) {
             val selectorName = node.selector.resolveName() ?: return
+            if (!node.isFragmentManagerProperty(context, selectorName)) return
             val receiver = node.receiver.asSourceString()
             val replacement = when (selectorName) {
                 SUPPORT_FRAGMENT_MANAGER -> "$receiver.$FRAGMENT_MANAGER_FUNCTION()"
@@ -132,6 +143,7 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
         override fun visitSimpleNameReferenceExpression(node: USimpleNameReferenceExpression) {
             if (node.isQualifiedSelector()) return
             val selectorName = node.resolveName() ?: return
+            if (!node.isFragmentManagerProperty(context, selectorName)) return
             val replacement = when (selectorName) {
                 SUPPORT_FRAGMENT_MANAGER -> "$FRAGMENT_MANAGER_FUNCTION()"
                 PARENT_FRAGMENT_MANAGER -> "$FRAGMENT_MANAGER_FUNCTION(parent = true)"
@@ -178,6 +190,33 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
                     imports = arrayOf("${DeclaredSymbol.COMPONENT_PACKAGE}.$FIND_FRAGMENT_FUNCTION")
                 )
             )
+        }
+
+        private fun UQualifiedReferenceExpression.isFragmentManagerProperty(context: JavaContext, name: String): Boolean {
+            val resolved = (selector as? UResolvable)?.resolve() ?: return false
+            return isFragmentManagerPropertyResolved(context, resolved, name)
+        }
+
+        private fun USimpleNameReferenceExpression.isFragmentManagerProperty(context: JavaContext, name: String): Boolean {
+            val resolved = resolve() ?: return false
+            return isFragmentManagerPropertyResolved(context, resolved, name)
+        }
+
+        private fun isFragmentManagerPropertyResolved(context: JavaContext, resolved: Any, name: String) = when (resolved) {
+            is PsiMethod -> when (name) {
+                SUPPORT_FRAGMENT_MANAGER ->
+                    resolved.name == SUPPORT_FRAGMENT_MANAGER_GET_FUNCTION &&
+                        context.evaluator.isMemberInClass(resolved, FRAGMENT_ACTIVITY_CLASS)
+                PARENT_FRAGMENT_MANAGER ->
+                    resolved.name == PARENT_FRAGMENT_MANAGER_GET_FUNCTION &&
+                        context.evaluator.isMemberInClass(resolved, FRAGMENT_CLASS)
+                CHILD_FRAGMENT_MANAGER ->
+                    resolved.name == CHILD_FRAGMENT_MANAGER_GET_FUNCTION &&
+                        context.evaluator.isMemberInClass(resolved, FRAGMENT_CLASS)
+                else -> false
+            }
+            is PsiVariable -> false
+            else -> false
         }
     }
 }

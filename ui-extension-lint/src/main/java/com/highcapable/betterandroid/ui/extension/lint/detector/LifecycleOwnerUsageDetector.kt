@@ -41,6 +41,7 @@ import org.jetbrains.uast.UClass
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UExpression
 import org.jetbrains.uast.UResolvable
+import org.jetbrains.uast.UThisExpression
 import org.jetbrains.uast.UastBinaryExpressionWithTypeKind
 
 class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
@@ -49,7 +50,9 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
 
         private const val ACTIVITY_CLASS = "android.app.Activity"
         private const val CONTEXT_CLASS = "android.content.Context"
+        private const val LIFECYCLE_PACKAGE = "androidx.lifecycle"
         private const val LIFECYCLE_OWNER_CLASS = "androidx.lifecycle.LifecycleOwner"
+        private const val LIFECYCLE_VIEWTREE_OWNER_CLASS = "androidx.lifecycle.ViewTreeLifecycleOwner"
         private const val VIEW_CLASS = "android.view.View"
         private const val FIND_VIEW_TREE_LIFECYCLE_OWNER_METHOD = "findViewTreeLifecycleOwner"
         private const val LIFECYCLE_OWNER_PROPERTY = "lifecycleOwner"
@@ -57,6 +60,9 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
         private const val CONTEXT_PROPERTY = "context"
         private const val REQUIRE_ACTIVITY_FUNCTION = "requireActivity"
         private const val REQUIRE_CONTEXT_FUNCTION = "requireContext"
+
+        private val FIND_VIEW_TREE_LIFECYCLE_OWNER_IMPORT_REGEX =
+            Regex("""^\s*import\s+androidx\.lifecycle\.findViewTreeLifecycleOwner(?:\s+as\s+(\w+))?\s*$""", RegexOption.MULTILINE)
 
         val ISSUE = Issue.create(
             id = "ReplaceWithLifecycleOwnerExtension",
@@ -111,7 +117,9 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
     override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
 
         override fun visitCallExpression(node: UCallExpression) {
-            if (node.methodName != FIND_VIEW_TREE_LIFECYCLE_OWNER_METHOD) return
+            if (!node.isFindViewTreeLifecycleOwner(context) &&
+                !node.isImportedFindViewTreeLifecycleOwnerFallback(context)
+            ) return
 
             val replacement = node.receiver?.asSourceString()?.let { "$it.$LIFECYCLE_OWNER_PROPERTY" }
                 ?: resolveImplicitViewLifecycleOwnerReplacement(node)
@@ -185,16 +193,7 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
         }
 
         private fun resolveImplicitViewLifecycleOwnerReplacement(node: UCallExpression): String? {
-            var parent = node.uastParent
-            var containingClass: UClass? = null
-            while (parent != null) {
-                if (parent is UClass) {
-                    containingClass = parent
-                    break
-                }
-                parent = parent.uastParent
-            }
-            val psiClass = containingClass?.javaPsi ?: return null
+            val psiClass = node.findContainingUClass()?.javaPsi ?: return null
             if (!context.evaluator.extendsClass(psiClass, VIEW_CLASS, false)) return null
 
             return LIFECYCLE_OWNER_PROPERTY
@@ -217,5 +216,61 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
             val canonicalText = expressionType.canonicalText.removeSuffix("?").removeSuffix("!")
             return expressionType.resolve()?.qualifiedName == LIFECYCLE_OWNER_CLASS || canonicalText == LIFECYCLE_OWNER_CLASS
         }
+
+        private fun UCallExpression.isFindViewTreeLifecycleOwner(context: JavaContext): Boolean {
+            val writtenCallName = writtenCallName() ?: return false
+            if (receiver == null && hasContainingClassMethod(writtenCallName)) return false
+
+            val resolved = resolve() ?: return false
+            return resolved.name == FIND_VIEW_TREE_LIFECYCLE_OWNER_METHOD &&
+                (context.evaluator.isMemberInClass(resolved, LIFECYCLE_VIEWTREE_OWNER_CLASS) ||
+                    resolved.containingClass?.qualifiedName == LIFECYCLE_PACKAGE)
+        }
+
+        private fun UCallExpression.isImportedFindViewTreeLifecycleOwnerFallback(context: JavaContext): Boolean {
+            val importedNames = sourcePsi?.containingFile?.text
+                ?.let {
+                    FIND_VIEW_TREE_LIFECYCLE_OWNER_IMPORT_REGEX.findAll(it).map { match ->
+                        match.groupValues.getOrNull(1).orEmpty().ifBlank { FIND_VIEW_TREE_LIFECYCLE_OWNER_METHOD }
+                    }.toSet()
+                }
+                .orEmpty()
+            if (importedNames.isEmpty()) return false
+
+            val callName = writtenCallName() ?: return false
+            if (callName !in importedNames) return false
+            if (hasContainingClassMethod(callName) && isImplicitOrThisReceiver()) return false
+
+            val receiverType = receiver?.getExpressionType()
+            if (receiverType != null) return receiverType.extendsClass(context, VIEW_CLASS)
+
+            val uClass = findContainingUClass() ?: return false
+            if (!context.evaluator.extendsClass(uClass.javaPsi, VIEW_CLASS, false)) return false
+            if (hasContainingClassMethod(callName)) return false
+
+            return true
+        }
+
+        private fun UCallExpression.findContainingUClass(): UClass? {
+            var parent = uastParent
+            while (parent != null) {
+                if (parent is UClass) return parent
+                parent = parent.uastParent
+            }
+            return null
+        }
+
+        private fun UCallExpression.hasContainingClassMethod(name: String) =
+            findContainingUClass()?.methods?.any { it.name == name } == true
+
+        private fun UCallExpression.isImplicitOrThisReceiver() =
+            receiver == null || receiver is UThisExpression || receiver?.asSourceString() == "this"
+
+        private fun UCallExpression.writtenCallName() = sourcePsi?.text
+            ?.substringBefore('(')
+            ?.trim()
+            ?.substringAfterLast('.')
+            ?.takeIf { it.isNotBlank() }
+            ?: methodName
     }
 }

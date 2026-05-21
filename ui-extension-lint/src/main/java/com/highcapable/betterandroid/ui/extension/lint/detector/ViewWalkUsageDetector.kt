@@ -33,15 +33,20 @@ import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.isQualifiedSelector
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.resolveName
+import com.intellij.psi.PsiMethod
 import org.jetbrains.uast.UQualifiedReferenceExpression
+import org.jetbrains.uast.UResolvable
 import org.jetbrains.uast.USimpleNameReferenceExpression
 
 class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
 
     companion object {
 
+        private const val ANDROIDX_CORE_VIEW_PACKAGE = "androidx.core.view"
         private const val ANCESTORS_PROPERTY = "ancestors"
         private const val DESCENDANTS_PROPERTY = "descendants"
+        private const val ANCESTORS_METHOD = "getAncestors"
+        private const val DESCENDANTS_METHOD = "getDescendants"
 
         private const val WALK_TO_ROOT_FUNCTION = "walkToRoot"
         private const val WALK_THROUGH_CHILDREN_FUNCTION = "walkThroughChildren"
@@ -95,6 +100,7 @@ class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
 
         override fun visitQualifiedReferenceExpression(node: UQualifiedReferenceExpression) {
             val selectorName = node.selector.resolveName() ?: return
+            if (!node.isViewWalkProperty(selectorName)) return
             val receiverText = node.receiver.asSourceString()
 
             val replacement = when (selectorName) {
@@ -124,6 +130,7 @@ class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
         override fun visitSimpleNameReferenceExpression(node: USimpleNameReferenceExpression) {
             if (node.isQualifiedSelector()) return
             val selectorName = node.resolveName() ?: return
+            if (!node.isViewWalkProperty(selectorName)) return
 
             val replacement = when (selectorName) {
                 ANCESTORS_PROPERTY -> "$WALK_TO_ROOT_FUNCTION()"
@@ -147,6 +154,30 @@ class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
                     imports = arrayOf(importTarget)
                 )
             )
+        }
+
+        private fun UQualifiedReferenceExpression.isViewWalkProperty(name: String): Boolean {
+            val resolved = (selector as? UResolvable)?.resolve() as? PsiMethod ?: return false
+            val resolvedClass = resolved.containingClass?.qualifiedName ?: return false
+            if (!resolvedClass.startsWith(ANDROIDX_CORE_VIEW_PACKAGE)) return false
+
+            return when (name) {
+                ANCESTORS_PROPERTY -> resolved.name == ANCESTORS_METHOD || resolved.name == ANCESTORS_PROPERTY
+                DESCENDANTS_PROPERTY -> resolved.name == DESCENDANTS_METHOD || resolved.name == DESCENDANTS_PROPERTY
+                else -> false
+            }
+        }
+
+        private fun USimpleNameReferenceExpression.isViewWalkProperty(name: String): Boolean {
+            val resolved = resolve() as? PsiMethod ?: return false
+            val resolvedClass = resolved.containingClass?.qualifiedName ?: return false
+            if (!resolvedClass.startsWith(ANDROIDX_CORE_VIEW_PACKAGE)) return false
+
+            return when (name) {
+                ANCESTORS_PROPERTY -> resolved.name == ANCESTORS_METHOD || resolved.name == ANCESTORS_PROPERTY
+                DESCENDANTS_PROPERTY -> resolved.name == DESCENDANTS_METHOD || resolved.name == DESCENDANTS_PROPERTY
+                else -> false
+            }
         }
     }
 }
