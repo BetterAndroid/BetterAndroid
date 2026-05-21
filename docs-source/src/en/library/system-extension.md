@@ -895,6 +895,8 @@ Please refer to [Limited access to clipboard data](https://developer.android.com
 
 ::: tip Content of This Section
 
+[Intent → Intent](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/-intent)
+
 [Intent → getSerializableExtraCompat](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-serializable-extra-compat)
 
 [Intent → getSerializableCompat](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-serializable-compat)
@@ -907,7 +909,23 @@ Extensions for `Intent`.
 
 :::
 
-Currently, the extension methods in `Intent` are only used to handle the acquisition methods of `Serializable` and `Parcelable` types.
+
+In normal cases, when we need to create an `Intent` for a specific component, we usually have to write something like `Intent(this, MyActivity::class.java)` manually.
+
+Now, you can complete this directly with generics methods provided by `BetterAndroid`.
+
+> The following example
+
+```kotlin
+// Assume this is your context.
+val context: Context
+// Assume MyActivity is your target component.
+val intent = Intent<MyActivity>(context)
+// You can also specify action and uri at creation time.
+val intent = Intent<MyActivity>(Intent.ACTION_VIEW, "some://uri".toUri(), context)
+```
+
+The remaining extension methods in `Intent` are mainly used to handle the acquisition methods of `Serializable` and `Parcelable` types.
 
 They are marked as deprecated in Android 13 and the official does not provide any effective compatible handling method.
 

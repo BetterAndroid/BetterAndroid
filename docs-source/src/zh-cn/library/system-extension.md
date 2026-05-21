@@ -872,6 +872,8 @@ fun ClipDataBuilder.addBitmap(
 
 ::: tip 本节内容
 
+[Intent → Intent](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/-intent)
+
 [Intent → getSerializableExtraCompat](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-serializable-extra-compat)
 
 [Intent → getSerializableCompat](kdoc://system-extension/system-extension/com.highcapable.betterandroid.system.extension.component/get-serializable-compat)
@@ -884,7 +886,22 @@ fun ClipDataBuilder.addBitmap(
 
 :::
 
-目前，`Intent` 中的扩展方法仅用于处理 `Serializable` 和 `Parcelable` 类型的获取方法在 Android 13 中被标记为作废且官方未提供任何有效的兼容处理方式问题。
+通常情况下，我们需要为指定组件创建一个 `Intent` 时，往往需要手动写出 `Intent(this, MyActivity::class.java)` 这样的形式。
+
+现在，你可以直接使用 `BetterAndroid` 提供的泛型方法完成这个操作。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Context
+val context: Context
+// 假设 MyActivity 就是你的目标组件
+val intent = Intent<MyActivity>(context)
+// 你也可以在创建时同时指定 action 和 uri
+val intent = Intent<MyActivity>(Intent.ACTION_VIEW, "some://uri".toUri(), context)
+```
+
+目前，`Intent` 中的其余扩展方法主要用于处理 `Serializable` 和 `Parcelable` 类型的获取方法在 Android 13 中被标记为作废且官方未提供任何有效的兼容处理方式问题。
 
 你可以使用 `BetterAndroid` 提供的兼容性处理方法来获取 `Serializable` 和 `Parcelable` 类型的数据。
 
