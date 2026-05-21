@@ -24,12 +24,30 @@
 
 package com.highcapable.betterandroid.system.extension.component
 
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
 import com.highcapable.kavaref.extension.classOf
 import java.io.Serializable
+
+/**
+ * Create an intent for a specific component with the class type [T].
+ * @param packageContext a Context of the application package implementing this class.
+ * @return [Intent]
+ */
+inline fun <reified T : Any> Intent(packageContext: Context) = Intent(packageContext, classOf<T>())
+
+/**
+ * Create an intent for a specific component with the class type [T].
+ * @param action the Intent action, such as ACTION_VIEW.
+ * @param uri the Intent data URI.
+ * @param packageContext a Context of the application package implementing this class.
+ * @return [Intent]
+ */
+inline fun <reified T : Any> Intent(action: String, uri: Uri, packageContext: Context) = Intent(action, uri, packageContext, classOf<T>())
 
 /**
  * Get the [Serializable] data (compat).
