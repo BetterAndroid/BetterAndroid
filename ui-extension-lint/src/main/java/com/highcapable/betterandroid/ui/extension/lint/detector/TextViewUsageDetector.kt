@@ -33,9 +33,13 @@ import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.resolveName
+import com.intellij.psi.PsiField
+import com.intellij.psi.PsiMember
+import com.intellij.psi.PsiMethod
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UQualifiedReferenceExpression
+import org.jetbrains.uast.UResolvable
 import org.jetbrains.uast.USimpleNameReferenceExpression
 
 class TextViewUsageDetector : Detector(), Detector.UastScanner {
@@ -153,6 +157,7 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
                 else -> return
             }
             if (memberName != "text" && memberName != "hint") return
+            if (!target.isResolvedTextViewMember(memberName)) return
 
             val replacement = if (memberName == "text")
                 "$receiverPrefix$TEXT_TO_STRING_FUNCTION()"
@@ -172,6 +177,22 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
                     imports = arrayOf(importTarget)
                 )
             )
+        }
+
+        private fun UElement.isResolvedTextViewMember(name: String): Boolean {
+            val resolved = when (this) {
+                is UQualifiedReferenceExpression -> (selector as? UResolvable)?.resolve()
+                is USimpleNameReferenceExpression -> resolve()
+                else -> null
+            } as? PsiMember ?: return false
+
+            return when (resolved) {
+                is PsiMethod -> resolved.name == "get${name.replaceFirstChar { it.titlecase() }}" &&
+                    context.evaluator.isMemberInClass(resolved, TEXT_VIEW_CLASS)
+                is PsiField -> resolved.name == name &&
+                    context.evaluator.isMemberInClass(resolved, TEXT_VIEW_CLASS)
+                else -> false
+            }
         }
     }
 }
