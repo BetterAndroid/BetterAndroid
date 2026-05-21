@@ -81,7 +81,7 @@ var TextView.textColor
  * @receiver [TextView]
  * @return [String]
  */
-fun TextView.textToString() = text?.toString() ?: ""
+fun TextView.textToString() = text as? String? ?: text?.toString() ?: ""
 
 /**
  * Call [TextView.getHint] and [toString].
@@ -90,7 +90,7 @@ fun TextView.textToString() = text?.toString() ?: ""
  * @receiver [TextView]
  * @return [String]
  */
-fun TextView.hintToString() = hint?.toString() ?: ""
+fun TextView.hintToString() = hint as? String? ?: hint?.toString() ?: ""
 
 /**
  * Update the edit text's text and set the cursor to the end.
