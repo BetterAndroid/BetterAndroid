@@ -186,7 +186,7 @@ inline fun RecyclerView.bindAdapter(
  * @param cosmetic the cosmetic to apply.
  */
 fun RecyclerView.applyCosmetic(cosmetic: RecyclerCosmetic<*, *>) {
-    val itemDecorationTag = R.id.betterandroid_recycler_cosmetic_item_decoration_tag
+    val itemDecorationTag = R.id.tag_better_android_recycler_cosmetic_item_decoration
     layoutManager = cosmetic.layoutManager
 
     getTag(itemDecorationTag)?.let { cached ->
