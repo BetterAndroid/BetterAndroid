@@ -765,6 +765,72 @@ Below are all the insets provided in `WindowInsetsWrapper.Absolute`.
 | `navigationBars` | Navigation bars.                               |
 | `systemBars`     | System bars. (`statusBars` + `navigationBars`) |
 
+### Lifecycle Extension
+
+::: tip Contents of This Section
+
+[DefaultLifecycleObserver](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/-default-lifecycle-observer)
+
+[LifecycleEventObserver](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/-lifecycle-event-observer)
+
+[Lifecycle → addObserver](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/add-observer)
+
+Extensions for `Lifecycle`.
+
+:::
+
+In the `androidx` usage, if you want to observe a lifecycle object,
+you usually need to manually create an anonymous observer object and then register it to `Lifecycle`.
+
+`BetterAndroid` provides a more direct way for this. Now you can use Kotlin lambda to quickly create `DefaultLifecycleObserver` and `LifecycleEventObserver`,
+and you can also add them directly to `Lifecycle`.
+
+> The following example
+
+```kotlin
+// Assume this is your Lifecycle.
+val lifecycle: Lifecycle
+// Create a DefaultLifecycleObserver.
+val observer = DefaultLifecycleObserver(
+    onCreate = {
+        // Your code here.
+    },
+    onDestroy = {
+        // Your code here.
+    }
+)
+// Register the observer.
+lifecycle.addObserver(observer)
+// You can also register directly without creating the object separately.
+val observer = lifecycle.addObserver(
+    onStart = {
+        // Your code here.
+    },
+    onStop = {
+        // Your code here.
+    }
+)
+```
+
+If you need to directly observe the full lifecycle event dispatch process, you can also use `LifecycleEventObserver`.
+
+> The following example
+
+```kotlin
+// Assume this is your Lifecycle.
+val lifecycle: Lifecycle
+// Create a LifecycleEventObserver.
+val observer = LifecycleEventObserver { _, event ->
+    // Your code here.
+}
+// Register the observer.
+lifecycle.addObserver(observer)
+// Or register directly.
+val observer = lifecycle.addObserver { _, event ->
+    // Your code here.
+}
+```
+
 ### LifecycleOwner Extension
 
 ::: tip Contents of This Section

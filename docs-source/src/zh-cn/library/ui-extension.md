@@ -737,6 +737,70 @@ val systemBars = absoluteWrapper.systemBars
 | `navigationBars` | 导航栏                                   |
 | `systemBars`     | 系统栏 (`statusBars` + `navigationBars`) |
 
+### Lifecycle 扩展
+
+::: tip 本节内容
+
+[DefaultLifecycleObserver](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/-default-lifecycle-observer)
+
+[LifecycleEventObserver](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/-lifecycle-event-observer)
+
+[Lifecycle → addObserver](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/add-observer)
+
+适用于 `Lifecycle` 的扩展。
+
+:::
+
+在 `androidx` 中，如果你想监听一个生命周期对象，通常都需要手动创建一个匿名观察者对象，再将它注册到 `Lifecycle`。
+
+`BetterAndroid` 为此提供了一个更加直接的方式，现在你可以使用 Kotlin lambda 来快速创建 `DefaultLifecycleObserver` 和 `LifecycleEventObserver`，也可以直接将它们添加到 `Lifecycle`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Lifecycle
+val lifecycle: Lifecycle
+// 创建一个 DefaultLifecycleObserver
+val observer = DefaultLifecycleObserver(
+    onCreate = {
+        // Your code here.
+    },
+    onDestroy = {
+        // Your code here.
+    }
+)
+// 注册观察者
+lifecycle.addObserver(observer)
+// 你也可以在不单独创建对象的情况下直接注册
+val observer = lifecycle.addObserver(
+    onStart = {
+        // Your code here.
+    },
+    onStop = {
+        // Your code here.
+    }
+)
+```
+
+如果你需要直接监听完整的生命周期事件分发过程，也可以使用 `LifecycleEventObserver`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Lifecycle
+val lifecycle: Lifecycle
+// 创建一个 LifecycleEventObserver
+val observer = LifecycleEventObserver { _, event ->
+    // Your code here.
+}
+// 注册观察者
+lifecycle.addObserver(observer)
+// 或者直接注册
+val observer = lifecycle.addObserver { _, event ->
+    // Your code here.
+}
+```
+
 ### LifecycleOwner 扩展
 
 ::: tip 本节内容
