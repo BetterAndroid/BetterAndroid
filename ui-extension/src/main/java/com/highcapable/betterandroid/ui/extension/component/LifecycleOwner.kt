@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2024/12/17.
  */
-@file:Suppress("unused", "USELESS_CAST")
+@file:Suppress("unused")
 @file:JvmName("LifecycleOwnerUtils")
 
 package com.highcapable.betterandroid.ui.extension.component
