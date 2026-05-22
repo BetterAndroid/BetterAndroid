@@ -75,7 +75,7 @@ object SystemProperties {
             .optional(silent = true)
             .firstMethodOrNull {
                 name = "getBoolean"
-                parameters(String::class, Int::class)
+                parameters(String::class, Boolean::class)
             }
     }
 
