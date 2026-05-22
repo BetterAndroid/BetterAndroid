@@ -95,6 +95,7 @@ fun FragmentTransaction(body: FragmentTransaction.() -> Unit) = body
  * @param tag the [Fragment] tag, leave null to generate random tag.
  * @param customAnimId the [Fragment] transition animation, see [FragmentTransaction.setCustomAnimations].
  * @param allowStateLoss whether to allow state loss, default is true.
+ * @param generateViewId whether to generate a view id for the resolved container when it has no id, default is true.
  * @param body the commit [FragmentTransaction] body.
  * @throws IllegalStateException if [host] or [container] unresolved.
  */
@@ -105,10 +106,11 @@ fun Fragment.attach(
     tag: String? = null,
     @AnimRes customAnimId: Int? = null,
     allowStateLoss: Boolean = true,
+    generateViewId: Boolean = true,
     body: FragmentTransaction.() -> Unit = {}
 ) {
     host.fragmentManager().commit(allowStateLoss) {
-        val containerViewId = container.resolveFragmentContainer(host.requireRootView())
+        val containerViewId = container.resolveFragmentContainer(host.requireRootView(generateViewId), generateViewId)
         customAnimId?.also { setCustomAnimations(it, 0) }
         add(containerViewId, this@attach, tag ?: generateRandomTag())
 
@@ -126,6 +128,7 @@ fun Fragment.attach(
  * @param customEnterAnimId the [Fragment] transition enter animation, see [FragmentTransaction.setCustomAnimations].
  * @param customExitAnimId the [Fragment] transition exit animation, see [FragmentTransaction.setCustomAnimations].
  * @param allowStateLoss whether to allow state loss, default is true.
+ * @param generateViewId whether to generate a view id for the resolved container when it has no id, default is true.
  * @param body the commit [FragmentTransaction] body.
  * @throws IllegalStateException if [host] or [container] unresolved.
  */
@@ -137,10 +140,11 @@ fun Fragment.replace(
     @AnimRes customEnterAnimId: Int? = null,
     @AnimRes customExitAnimId: Int? = null,
     allowStateLoss: Boolean = true,
+    generateViewId: Boolean = true,
     body: FragmentTransaction.() -> Unit = {}
 ) {
     host.fragmentManager().commit(allowStateLoss) {
-        val containerViewId = container.resolveFragmentContainer(host.requireRootView())
+        val containerViewId = container.resolveFragmentContainer(host.requireRootView(generateViewId), generateViewId)
 
         if (customEnterAnimId != null || customExitAnimId != null)
             setCustomAnimations(customEnterAnimId ?: 0, customExitAnimId ?: 0)
@@ -249,13 +253,15 @@ private fun LifecycleOwner.fragmentManager() = when (this) {
 /**
  * Get the root view from current host.
  * @receiver the current [LifecycleOwner].
+ * @param generateViewId whether to generate a view id when the resolved root view has no id.
  * @return [ViewGroup]
  */
-private fun LifecycleOwner.requireRootView() = when (this) {
+private fun LifecycleOwner.requireRootView(generateViewId: Boolean) = when (this) {
     is FragmentActivity -> findViewById<ViewGroup>(Android_R.id.content)?.let {
-        it.firstChildOrNull<ViewGroup>()?.apply { if (id == View.NO_ID) id = View.generateViewId() } ?: it
+        it.firstChildOrNull<ViewGroup>()?.apply { ensureFragmentContainerId(generateViewId) }
+            ?: it.apply { ensureFragmentContainerId(generateViewId) }
     } ?: error("FragmentActivity require a root view that is a ViewGroup, also tried android.R.id.content.")
-    is Fragment -> (requireView() as? ViewGroup?)?.apply { if (id == View.NO_ID) id = View.generateViewId() }
+    is Fragment -> (requireView() as? ViewGroup?)?.apply { ensureFragmentContainerId(generateViewId) }
         ?: error("Fragment require a root view that is a ViewGroup.")
     else -> error("The host type must be FragmentActivity or Fragment, but got ${this.javaClass}.")
 }
@@ -264,21 +270,31 @@ private fun LifecycleOwner.requireRootView() = when (this) {
  * Resolve the [Fragment] container view id.
  * @receiver the container that needs to be bound to.
  * @param default the default container view.
+ * @param generateViewId whether to generate a view id when the container view has no id.
  * @return [Int] container view id.
  * @throws IllegalStateException if the container view is not resolved.
  */
-private fun Any?.resolveFragmentContainer(default: View): Int {
+private fun Any?.resolveFragmentContainer(default: View, generateViewId: Boolean): Int {
     val containerViewId = when (this) {
         is Int -> this
         is View -> this.apply {
             // If the view id is not set, generate a new id.
-            if (id == View.NO_ID) id = View.generateViewId()
+            ensureFragmentContainerId(generateViewId)
         }.id
         null -> default.id
         else -> error("The container view type must be Int or View, but got ${this.javaClass}.")
     }.takeIf { it != View.NO_ID }
 
     return containerViewId ?: error("Fragment needs to be attached to an existing view.")
+}
+
+/**
+ * Generate or validate the id of the Fragment container view.
+ */
+private fun View.ensureFragmentContainerId(generateViewId: Boolean) {
+    if (id != View.NO_ID) return
+    if (generateViewId) id = View.generateViewId()
+    else error("Fragment container view $this has no id, please set an id or enable generateViewId.")
 }
 
 /**
