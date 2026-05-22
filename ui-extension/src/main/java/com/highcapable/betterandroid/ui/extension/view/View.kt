@@ -330,9 +330,10 @@ fun View.removeSelfInLayout() {
 fun View.showIme() {
     /** Whatever try to show the input method. */
     fun showSoftInput() {
+        requestFocus()
+
         @Suppress("DEPRECATION")
-        context?.getSystemService<InputMethodManager>()
-            ?.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+        context?.getSystemService<InputMethodManager>()?.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
     }
 
     val windowFromActivity = (context as? Activity?)?.window
@@ -422,11 +423,15 @@ fun View.performTouch(downX: Float, downY: Float, upX: Float, upY: Float, durati
     val downTime = System.currentTimeMillis()
     val eventTime = downTime + duration
     val motionEventDown = MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_DOWN, downX, downY, metaState)
-
-    dispatchTouchEvent(motionEventDown)
-
     val motionEventUp = MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_UP, upX, upY, metaState)
-    dispatchTouchEvent(motionEventUp)
+
+    try {
+        dispatchTouchEvent(motionEventDown)
+        dispatchTouchEvent(motionEventUp)
+    } finally {
+        motionEventDown.recycle()
+        motionEventUp.recycle()
+    }
 }
 
 /**
