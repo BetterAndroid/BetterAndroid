@@ -159,6 +159,23 @@ class MainActivity : AppBindingActivity<ActivityMainBinding>() {
 }
 ```
 
+You can also completely customize the creation process of `ViewBinding` by overriding the `onInflateBinding` method.
+
+> The following example
+
+```kotlin
+class MainActivity : AppBindingActivity<ActivityMainBinding>() {
+
+    override fun onInflateBinding(inflater: LayoutInflater) =
+        ActivityMainBinding.inflate(inflater)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding.mainText.text = "Hello World!"
+    }
+}
+```
+
 :::
 
 You can also use `AppViewsActivity` to create a basic `Activity` and use the `findViewById` method to get the `View`.
@@ -226,7 +243,7 @@ When using `ViewBinding`, you can use `AppBindingFragment` to quickly create a `
 
 In `AppBindingFragment`, you can directly use the `binding` property to obtain the view binding object without manually overriding the `onCreateView` method.
 
-You don’t need to consider the impact of `Fragment`’s lifecycle on `binding`, `BetterAndroid` has already handled these issues for you.
+The `binding` property is only available between `onCreateView` and `onDestroyView`, and `BetterAndroid` will release it automatically in `onDestroyView`.
 
 > The following example
 
@@ -239,6 +256,27 @@ class MainFragment : AppBindingFragment<FragmentMainBinding>() {
     }
 }
 ```
+
+::: tip
+
+You can also completely customize the creation process of `ViewBinding` by overriding the `onInflateBinding` method.
+
+> The following example
+
+```kotlin
+class MainFragment : AppBindingFragment<FragmentMainBinding>() {
+
+    override fun onInflateBinding(inflater: LayoutInflater, container: ViewGroup?) =
+        FragmentMainBinding.inflate(inflater, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.mainText.text = "Hello World!"
+    }
+}
+```
+
+:::
 
 You can also use `AppViewsFragment` to create a basic `Fragment`.
 
@@ -348,7 +386,10 @@ val isCanceled = notification.isCanceled
 
 In Android 13 and above, you need to define and add runtime permission for notifications.
 
-When this permission is not defined correctly, calling the `post` method will automatically ask you to add the permission to `AndroidManifest.xml`.
+When this permission is not defined correctly, calling `post` may trigger the system permission flow or fail directly, so you should request the permission before posting.
+
+Notification channels and channel groups are created automatically on the first `post`.
+If the system already has a channel or group with the same ID, `BetterAndroid` will reuse it instead of trying to create it again.
 
 Please refer to [Notification runtime permission](https://developer.android.com/develop/ui/views/notifications/notification-permission).
 
@@ -606,6 +647,7 @@ systemBars.init(rootView, edgeToEdgeInsets = null)
 ::: warning
 
 `SystemBarsController` will automatically set `Window.setDecorFitsSystemWindows(false)` during initialization
+(and also take over system bar contrast, the navigation bar divider color, and the default transparent system bar style),
 (on cutout display devices, `layoutInDisplayCutoutMode` will also be set to `LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES`),
 you just need to set `edgeToEdgeInsets` in `init` (the default setting),
 then your root view will have a window insets `padding` controlled by `safeDrawingIgnoringIme`,

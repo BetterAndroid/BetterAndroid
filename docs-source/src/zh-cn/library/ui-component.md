@@ -158,6 +158,23 @@ class MainActivity : AppBindingActivity<ActivityMainBinding>() {
 }
 ```
 
+除此之外，你也可以完全自定义 `ViewBinding` 的创建过程，通过重写 `onInflateBinding` 方法来实现。
+
+> 示例如下
+
+```kotlin
+class MainActivity : AppBindingActivity<ActivityMainBinding>() {
+
+    override fun onInflateBinding(inflater: LayoutInflater) =
+        ActivityMainBinding.inflate(inflater)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding.mainText.text = "Hello World!"
+    }
+}
+```
+
 :::
 
 你也可以使用 `AppViewsActivity` 来创建一个基本 `Activity`，使用 `findViewById` 方法来获取 `View`。
@@ -225,7 +242,7 @@ class MainActivity : AppComponentActivity() {
 
 在 `AppBindingFragment` 中，你可以直接使用 `binding` 属性获取视图绑定对象而无需手动重写 `onCreateView` 方法。
 
-你不需要考虑 `Fragment` 的生命周期对 `binding` 的影响，`BetterAndroid` 已经为你处理了这些问题。
+`binding` 仅在 `onCreateView` 到 `onDestroyView` 之间可用，`BetterAndroid` 会在 `onDestroyView` 时自动释放它。
 
 > 示例如下
 
@@ -238,6 +255,27 @@ class MainFragment : AppBindingFragment<FragmentMainBinding>() {
     }
 }
 ```
+
+::: tip
+
+你也可以完全自定义 `ViewBinding` 的创建过程，通过重写 `onInflateBinding` 方法来实现。
+
+> 示例如下
+
+```kotlin
+class MainFragment : AppBindingFragment<FragmentMainBinding>() {
+
+    override fun onInflateBinding(inflater: LayoutInflater, container: ViewGroup?) =
+        FragmentMainBinding.inflate(inflater, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.mainText.text = "Hello World!"
+    }
+}
+```
+
+:::
 
 你也可以使用 `AppViewsFragment` 来创建一个基本 `Fragment`。
 
@@ -343,7 +381,9 @@ val isCanceled = notification.isCanceled
 
 在 Android 13 及以上系统中，你需要为通知定义并添加运行时权限。
 
-当未正确定义此权限时，调用 `post` 方法时将自动要求你添加权限到 `AndroidManifest.xml` 中。
+当未正确定义此权限时，调用 `post` 方法会触发系统权限要求或直接失败，因此你应该在调用前自行完成权限申请。
+
+通知渠道和通知渠道组会在首次 `post` 时自动创建，如果系统中已经存在同 ID 的渠道或渠道组，`BetterAndroid` 将直接复用它们而不会重复创建。
 
 请参考 [Notification runtime permission](https://developer.android.com/develop/ui/views/notifications/notification-permission)。
 
@@ -585,9 +625,9 @@ systemBars.init(rootView, edgeToEdgeInsets = null)
 
 ::: warning
 
-`SystemBarsController` 初始化时会自动设置 `Window.setDecorFitsSystemWindows(false)` (在异形屏设备上会同时设置 `layoutInDisplayCutoutMode` 为 `LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES`)，
-你只要在 `init` 中设置了 `edgeToEdgeInsets` (默认设置)，
-那么你的根布局将会拥有一个 `safeDrawingIgnoringIme` 控制的 Window Insets `padding`，这也是为什么你应该做到在 `Activity` 中能够随时维护一个自己的根布局。 
+`SystemBarsController` 初始化时会自动设置 `Window.setDecorFitsSystemWindows(false)` (在异形屏设备上会同时设置 `layoutInDisplayCutoutMode` 为 `LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES`)，并接管系统栏对比度、导航栏分割线颜色以及默认的透明系统栏样式。
+
+你只要在 `init` 中设置了 `edgeToEdgeInsets` (默认设置)，那么你的根布局将会拥有一个 `safeDrawingIgnoringIme` 控制的 Window Insets `padding`，这也是为什么你应该做到在 `Activity` 中能够随时维护一个自己的根布局。 
 
 如果你在 `init` 中将 `edgeToEdgeInsets` 设为了 `null`，那么你的根布局将会完全扩展到全屏。
 
