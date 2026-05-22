@@ -112,9 +112,8 @@ class RecyclerAdapterWrapper internal constructor(
      */
     fun notifyItemRangeChanged(positionStart: Int, itemCount: Int) {
         val start = includingPosition(positionStart)
-        val count = includingPosition(itemCount)
 
-        instance.notifyItemRangeChanged(start, count)
+        instance.notifyItemRangeChanged(start, itemCount)
     }
 
     /**
@@ -122,9 +121,8 @@ class RecyclerAdapterWrapper internal constructor(
      */
     fun notifyItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
         val start = includingPosition(positionStart)
-        val count = includingPosition(itemCount)
 
-        instance.notifyItemRangeChanged(start, count, payload)
+        instance.notifyItemRangeChanged(start, itemCount, payload)
     }
 
     /**
@@ -151,9 +149,8 @@ class RecyclerAdapterWrapper internal constructor(
      */
     fun notifyItemRangeInserted(positionStart: Int, itemCount: Int) {
         val start = includingPosition(positionStart)
-        val count = includingPosition(itemCount)
 
-        instance.notifyItemRangeInserted(start, count)
+        instance.notifyItemRangeInserted(start, itemCount)
     }
 
     /**
@@ -170,8 +167,7 @@ class RecyclerAdapterWrapper internal constructor(
      */
     fun notifyItemRangeRemoved(positionStart: Int, itemCount: Int) {
         val start = includingPosition(positionStart)
-        val count = includingPosition(itemCount)
 
-        instance.notifyItemRangeRemoved(start, count)
+        instance.notifyItemRangeRemoved(start, itemCount)
     }
 }
