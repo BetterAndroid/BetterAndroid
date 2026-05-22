@@ -46,6 +46,7 @@ import java.io.File
 import java.io.FileDescriptor
 import java.io.InputStream
 import java.io.OutputStream
+import kotlin.math.max
 import kotlin.math.sqrt
 
 /**
@@ -310,10 +311,11 @@ fun Bitmap.round(
  */
 @JvmOverloads
 fun Bitmap.shrink(maxSize: Float, format: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG, quality: Int = 100): Bitmap {
-    var outBitmap = this
+    if (maxSize <= 0f) return this
 
+    var outBitmap = this
     ByteArrayOutputStream().use {
-        outBitmap.compress(format, quality, it)
+        if (!outBitmap.compress(format, quality, it)) return outBitmap
 
         val baosByte = it.toByteArray()
         val mid = baosByte.size / 1024.0
@@ -323,7 +325,7 @@ fun Bitmap.shrink(maxSize: Float, format: Bitmap.CompressFormat = Bitmap.Compres
 
             val floatWidth = (width / sqrt(size)).toFloat()
             val floatHeight = (height / sqrt(size)).toFloat()
-            outBitmap = outBitmap.scale(floatWidth.toInt(), floatHeight.toInt())
+            outBitmap = outBitmap.scale(max(1, floatWidth.toInt()), max(1, floatHeight.toInt()))
         }
     }
 
@@ -341,8 +343,8 @@ fun Bitmap.shrink(maxSize: Float, format: Bitmap.CompressFormat = Bitmap.Compres
 fun Bitmap.reduce(multiple: Int = 2): Bitmap {
     if (multiple <= 1) return this
 
-    val sWidth = width / multiple
-    val sHeight = height / multiple
+    val sWidth = max(1, width / multiple)
+    val sHeight = max(1, height / multiple)
 
     return scale(sWidth, sHeight)
 }
