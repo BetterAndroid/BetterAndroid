@@ -80,8 +80,9 @@ inline fun Context.startForegroundService(packageName: String, serviceClass: Str
  * @param intent the [Intent] builder body, default is empty.
  * @return [Boolean] whether succeed.
  */
-inline fun <reified T : Service> Context.startServiceOrElse(intent: Intent.() -> Unit = {}) =
-    runCatching { startService<T>(intent) }.isSuccess
+inline fun <reified T : Service> Context.startServiceOrElse(intent: Intent.() -> Unit = {}) = runCatching {
+    startService<T>(intent).also { require(it != null) }
+}.isSuccess
 
 /**
  * Start a foreground [Service] instance [T].
@@ -90,8 +91,9 @@ inline fun <reified T : Service> Context.startServiceOrElse(intent: Intent.() ->
  * @return [Boolean] whether succeed.
  */
 @RequiresApi(AndroidVersion.O)
-inline fun <reified T : Service> Context.startForegroundServiceOrElse(intent: Intent.() -> Unit = {}) =
-    runCatching { startForegroundService<T>(intent) }.isSuccess
+inline fun <reified T : Service> Context.startForegroundServiceOrElse(intent: Intent.() -> Unit = {}) = runCatching {
+    startForegroundService<T>(intent).also { require(it != null) }
+}.isSuccess
 
 /**
  * Start a [Service] using [ComponentName].
@@ -101,8 +103,9 @@ inline fun <reified T : Service> Context.startForegroundServiceOrElse(intent: In
  * @param intent the [Intent] builder body, default is empty.
  * @return [Boolean] whether succeed.
  */
-inline fun Context.startServiceOrElse(packageName: String, serviceClass: String, intent: Intent.() -> Unit = {}) =
-    runCatching { startService(packageName, serviceClass, intent) }.isSuccess
+inline fun Context.startServiceOrElse(packageName: String, serviceClass: String, intent: Intent.() -> Unit = {}) = runCatching {
+    startService(packageName, serviceClass, intent).also { require(it != null) }
+}.isSuccess
 
 /**
  * Start a foreground [Service] using [ComponentName].
@@ -113,8 +116,9 @@ inline fun Context.startServiceOrElse(packageName: String, serviceClass: String,
  * @return [Boolean] whether succeed.
  */
 @RequiresApi(AndroidVersion.O)
-inline fun Context.startForegroundServiceOrElse(packageName: String, serviceClass: String, intent: Intent.() -> Unit = {}) =
-    runCatching { startForegroundService(packageName, serviceClass, intent) }.isSuccess
+inline fun Context.startForegroundServiceOrElse(packageName: String, serviceClass: String, intent: Intent.() -> Unit = {}) = runCatching {
+    startForegroundService(packageName, serviceClass, intent).also { require(it != null) }
+}.isSuccess
 
 /**
  * Start a [Service]
@@ -122,7 +126,7 @@ inline fun Context.startForegroundServiceOrElse(packageName: String, serviceClas
  * @param intent the intent to start.
  * @return [Boolean] whether succeed.
  */
-fun Context.startServiceOrElse(intent: Intent) = runCatching { startService(intent) }.isSuccess
+fun Context.startServiceOrElse(intent: Intent) = runCatching { startService(intent).also { require(it != null) } }.isSuccess
 
 /**
  * Start a foreground [Service]
@@ -131,4 +135,6 @@ fun Context.startServiceOrElse(intent: Intent) = runCatching { startService(inte
  * @return [Boolean] whether succeed.
  */
 @RequiresApi(AndroidVersion.O)
-fun Context.startForegroundServiceOrElse(intent: Intent) = runCatching { startForegroundService(intent) }.isSuccess
+fun Context.startForegroundServiceOrElse(intent: Intent) = runCatching {
+    startForegroundService(intent).also { require(it != null) }
+}.isSuccess
