@@ -52,7 +52,7 @@ class NotificationChannelWrapper internal constructor(internal var builder: Noti
             builder.description.takeIf(CharSequence::isNotBlank)?.also { setDescription(it) }
             builder.isShowBadge?.also { setShowBadge(it) }
             builder.sound?.also { setSound(it.first, it.second) }
-            builder.isLightsEnabled?.also { setShowBadge(it) }
+            builder.isLightsEnabled?.also { setLightsEnabled(it) }
             builder.lightColor?.also { setLightColor(it) }
             builder.isVibrationEnabled?.also { setVibrationEnabled(it) }
             builder.vibrationPattern?.also { setVibrationPattern(it) }
