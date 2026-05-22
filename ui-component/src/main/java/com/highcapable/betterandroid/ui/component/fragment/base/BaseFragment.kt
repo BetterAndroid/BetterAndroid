@@ -32,9 +32,14 @@ import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
  */
 abstract class BaseFragment internal constructor() : Fragment(), ISystemBarsController {
 
-    override val systemBars
-        get() = (requireActivity() as? ISystemBarsController?)?.systemBars
-            ?: error("This Fragment attached Activity is not implements from ISystemBarsController.")
+    /**
+     * Get the current [ISystemBarsController] if the host activity provides it.
+     * @return [ISystemBarsController] or null.
+     */
+    val systemBarsOrNull get() = (activity as? ISystemBarsController?)?.systemBars
+
+    override val systemBars get() = systemBarsOrNull
+        ?: error("This Fragment attached Activity is not implements from ISystemBarsController.")
 
     /**
      * Get the current activity through [getActivity] and cast to [T].

@@ -33,7 +33,6 @@ import com.highcapable.betterandroid.ui.component.fragment.base.BaseFragment
 import com.highcapable.betterandroid.ui.component.proxy.ISystemBarsController
 import com.highcapable.betterandroid.ui.component.proxy.IViewBinding
 import com.highcapable.betterandroid.ui.extension.binding.ViewBindingBuilder
-import com.highcapable.betterandroid.ui.extension.view.parentOrNull
 
 /**
  * App binding fragment with [IViewBinding].
@@ -65,23 +64,33 @@ import com.highcapable.betterandroid.ui.extension.view.parentOrNull
  */
 open class AppBindingFragment<VB : ViewBinding> : BaseFragment(), IViewBinding<VB> {
 
-    override val binding get() = baseBinding ?: error("The binding is not available for this time.")
-
     /** The base binding for initialize [binding]. */
     private var baseBinding: VB? = null
 
+    override val binding get() = baseBinding ?: error("The binding is only available between onCreateView and onDestroyView.")
+
     @CallSuper
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        baseBinding = ViewBindingBuilder.fromGeneric<VB>(this).inflate(inflater, container, attachToParent = false)
+        baseBinding = onInflateBinding(inflater, container)
 
         return baseBinding?.root
     }
 
     @CallSuper
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onDestroyView() {
+        baseBinding = null
 
-        if (baseBinding == null) baseBinding = 
-            ViewBindingBuilder.fromGeneric<VB>(this).inflate(layoutInflater, view.parentOrNull(), attachToParent = false)
+        super.onDestroyView()
     }
+
+    /**
+     * Called when inflate the [ViewBinding] for current fragment.
+     *
+     * You can override this function to manually create the current [ViewBinding].
+     * @param inflater the current layout inflater.
+     * @param container the parent container view.
+     * @return [VB]
+     */
+    protected open fun onInflateBinding(inflater: LayoutInflater, container: ViewGroup?) =
+        ViewBindingBuilder.fromGeneric<VB>(this).inflate(inflater, container, attachToParent = false)
 }

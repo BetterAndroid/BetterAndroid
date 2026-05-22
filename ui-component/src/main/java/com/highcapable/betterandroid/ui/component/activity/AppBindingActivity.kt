@@ -56,7 +56,7 @@ import com.highcapable.betterandroid.ui.extension.binding.ViewBindingBuilder
  */
 open class AppBindingActivity<VB : ViewBinding> : BaseCompatActivity(), IViewBinding<VB> {
 
-    override val binding get() = baseBinding ?: error("The binding is not available for this time.")
+    override val binding get() = baseBinding ?: error("The binding is only available after onCreate and before onDestroy.")
 
     /** The base binding for initialize [binding]. */
     private var baseBinding: VB? = null
@@ -66,10 +66,17 @@ open class AppBindingActivity<VB : ViewBinding> : BaseCompatActivity(), IViewBin
         super.onCreate(savedInstanceState)
 
         val inflater = onPrepareContentView(savedInstanceState)
-        baseBinding = ViewBindingBuilder.fromGeneric<VB>(this).inflate(inflater)
+        baseBinding = onInflateBinding(inflater)
 
         super.setContentView(binding.root)
         systemBars.init(binding.root)
+    }
+
+    @CallSuper
+    override fun onDestroy() {
+        baseBinding = null
+
+        super.onDestroy()
     }
 
     /**
@@ -80,7 +87,16 @@ open class AppBindingActivity<VB : ViewBinding> : BaseCompatActivity(), IViewBin
      * @param savedInstanceState the saved instance state.
      * @return [LayoutInflater]
      */
-    open fun onPrepareContentView(savedInstanceState: Bundle?) = layoutInflater
+    protected open fun onPrepareContentView(savedInstanceState: Bundle?) = layoutInflater
+
+    /**
+     * Called when inflate the [ViewBinding] for current activity.
+     *
+     * You can override this function to manually create the current [ViewBinding].
+     * @param inflater the layout inflater prepared by [onPrepareContentView].
+     * @return [VB]
+     */
+    protected open fun onInflateBinding(inflater: LayoutInflater) = ViewBindingBuilder.fromGeneric<VB>(this).inflate(inflater)
 
     @Deprecated(message = "Use binding instead it.", level = DeprecationLevel.ERROR)
     override fun setContentView(layoutResID: Int): Unit = throwUnavailableException()
