@@ -300,6 +300,9 @@ This `View` must already be added to the currently displayed layout, and it is r
 
 A `View` without an ID will use `View.generateViewId` to generate an ID.
 
+This is the default behavior of `attach` and `replace`. If you do not want `BetterAndroid` to generate an ID for a container view automatically,
+set `generateViewId = false` and make sure the container already has a valid ID.
+
 :::
 
 > The following example
@@ -313,6 +316,8 @@ val container: View
 val fragment = YourFragment()
 // Attach Fragment to container.
 fragment.attach(activity, container)
+// Do not generate an ID automatically, the container must already have one.
+fragment.attach(activity, container, generateViewId = false)
 ```
 
 You can also easily set an entry animation for the `Fragment` when attaching.
@@ -675,7 +680,7 @@ This operation will remove all `View.setOnApplyWindowInsetsListener` and `View.s
 
 ```kotlin
 // Assume this is your current view.
-Val view: View
+val view: View
 // Remove view's window insets change listener.
 view.removeWindowInsetsListener()
 ```
@@ -683,6 +688,9 @@ view.removeWindowInsetsListener()
 ::: warning
 
 You can only set one window insets listener for a `View`, repeatedly set listeners will be overwritten by the last one.
+
+`handleOnWindowInsetsChanged` also calls `removeWindowInsetsListener` before setting its own listener,
+so it will replace the current listener and animation callback on the target `View`.
 
 :::
 
@@ -1818,7 +1826,9 @@ thread {
 
 In this way, you can show a `Toast` in any thread, it should be noted that this parameter is `false` by default and you need to set it manually.
 
-You should try to avoid showing `Toast` in non-main threads, because this may lead to some possible "black box problems" and unknown hidden dangers.
+When this parameter is enabled, `BetterAndroid` posts the actual `Toast` operation back to the main thread and does not create a background `Looper`.
+
+You should still try to avoid requesting `Toast` from non-main threads unless necessary, because it may make message timing harder to predict.
 
 ::: warning
 
@@ -2682,6 +2692,13 @@ class YourActvity : Activity() {
     }
 }
 ```
+
+::: warning
+
+When delegate is used from a `Fragment`, the cached binding follows the Fragment view lifecycle and is cleared in `onDestroyView`.
+You can only access it after `onCreateView` and before `onDestroyView`.
+
+:::
 
 If you need to encapsulate `ViewBinding` into the parent class and bind it to the subclass using generics, you can use the following method.
 

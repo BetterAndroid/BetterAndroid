@@ -290,6 +290,8 @@ fragment.attach(activity, R.id.container)
 
 这个 `View` 对象必须已经添加到正在显示的布局中，并建议为其设置一个 ID，未设置 ID 的 `View` 将会使用 `View.generateViewId` 生成一个 ID。
 
+这是 `attach` 与 `replace` 的默认行为，如果你不希望 `BetterAndroid` 自动为容器生成 ID，可以设置 `generateViewId = false`，并确保容器已经拥有有效 ID。
+
 :::
 
 > 示例如下
@@ -303,6 +305,8 @@ val container: View
 val fragment = YourFragment()
 // 绑定 Fragment 到 container
 fragment.attach(activity, container)
+// 不自动生成 ID，此时 container 必须已经拥有 ID
+fragment.attach(activity, container, generateViewId = false)
 ```
 
 你还可以方便地为 `Fragment` 设置绑定时的入场动画。
@@ -659,6 +663,8 @@ view.removeWindowInsetsListener()
 ::: warning
 
 你只能为一个 `View` 设置一个 Window Insets 监听，重复设置的监听会被最后一次覆盖掉。
+
+`handleOnWindowInsetsChanged` 在设置自身监听前也会先调用 `removeWindowInsetsListener`，因此它会接管并替换目标 `View` 当前的 Insets 监听与动画回调。
 
 :::
 
@@ -1754,7 +1760,9 @@ thread {
 
 这样，你就能在任何线程的情况下弹出一个 `Toast`，需要注意的是，这个参数在默认情况下是 `false`，你需要手动设置它。
 
-你应该尽量避免在非主线程中弹出 `Toast`，因为这样可能会导致一些可能的 “黑盒问题” 以及未知的隐患。
+启用这个参数后，`BetterAndroid` 会把实际的 `Toast` 操作投递回主线程，不会创建后台 `Looper`。
+
+除非必要，你仍然应该尽量避免在非主线程中请求弹出 `Toast`，因为这样会让消息显示时机更难预测。
 
 ::: warning
 
@@ -2592,6 +2600,12 @@ class YourActvity : Activity() {
     }
 }
 ```
+
+::: warning
+
+当委托在 `Fragment` 中使用时，缓存的 `binding` 会跟随 `Fragment` 的 `View` 生命周期，并在 `onDestroyView` 时自动清空，你只能在 `onCreateView` 之后、`onDestroyView` 之前访问它。
+
+:::
 
 如果你需要实现将 `ViewBinding` 封装到父类并使用泛型的方式绑定到子类，你可以使用以下方式。
 
