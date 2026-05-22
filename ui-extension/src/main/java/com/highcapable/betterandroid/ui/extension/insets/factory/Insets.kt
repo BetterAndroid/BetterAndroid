@@ -114,6 +114,9 @@ fun Insets.toWrapper(isVisible: Boolean = true) = InsetsWrapper.of(left, top, ri
  *
  * If you find that the callback does not take effect immediately, you can set [requestApplyOnLayout] to true.
  *
+ * This function calls [removeWindowInsetsListener] before setting its listener, so it will replace the current
+ * window insets listener and animation callback on this view.
+ *
  * If you want to remove the window insets listener after, just call [View.removeWindowInsetsListener].
  * @see View.removeWindowInsetsListener
  * @see WindowInsetsWrapper
