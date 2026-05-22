@@ -35,6 +35,7 @@ import com.highcapable.betterandroid.ui.extension.lint.detector.DrawableUsageDet
 import com.highcapable.betterandroid.ui.extension.lint.detector.FragmentUsageDetector
 import com.highcapable.betterandroid.ui.extension.lint.detector.LayoutInflaterUsageDetector
 import com.highcapable.betterandroid.ui.extension.lint.detector.LifecycleOwnerUsageDetector
+import com.highcapable.betterandroid.ui.extension.lint.detector.LifecycleUsageDetector
 import com.highcapable.betterandroid.ui.extension.lint.detector.RecyclerViewUsageDetector
 import com.highcapable.betterandroid.ui.extension.lint.detector.ResourcesUsageDetector
 import com.highcapable.betterandroid.ui.extension.lint.detector.TextViewUsageDetector
@@ -51,6 +52,7 @@ class UiExtensionIssueRegistry : IssueRegistry() {
     override val issues get() = listOf(
         ActivityUsageDetector.ISSUE,
         FragmentUsageDetector.ISSUE,
+        LifecycleUsageDetector.ISSUE,
         LifecycleOwnerUsageDetector.ISSUE,
         BackPressedUsageDetector.ISSUE,
         ResourcesUsageDetector.ISSUE,
