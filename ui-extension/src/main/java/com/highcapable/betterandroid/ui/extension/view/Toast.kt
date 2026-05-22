@@ -28,6 +28,7 @@ import android.Manifest
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.Window
@@ -54,11 +55,7 @@ fun Context.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT, all
         if (!allowBackground) error("Not allowed to show a toast from non-main thread, if you must do this, please set allowBackground to true.")
 
         if (this is Activity) runOnUiThread { continueToast() }
-        else Thread {
-            Looper.prepare()
-            continueToast()
-            Looper.loop()
-        }.start()
+        else Handler(Looper.getMainLooper()).post { continueToast() }
     } else continueToast()
 }
 
