@@ -86,6 +86,9 @@ class BaseAdapterBuilder<E> private constructor(private val adapterContext: Cont
     /** The current [List] data callback. */
     private var listDataCallback: (() -> List<E>)? = null
 
+    /** The empty list shortcut to reduce repeated allocations. */
+    private val emptyDataSet = emptyList<E>()
+
     /** The current entity ID callback. */
     private var entityIdCallback: ((E, Int) -> Long)? = null
 
@@ -99,10 +102,17 @@ class BaseAdapterBuilder<E> private constructor(private val adapterContext: Cont
 
     /**
      * Get the entity [E].
+     * @return [E] or null.
+     */
+    private fun currentDataSet() = listDataCallback?.invoke() ?: emptyDataSet
+
+    /**
+     * Get the entity [E].
+     * @param dataSet the current data set snapshot.
      * @param position the current position.
      * @return [E] or null.
      */
-    private fun getCurrentEntity(position: Int) = (listDataCallback?.invoke() ?: emptyList()).let {
+    private fun getCurrentEntity(dataSet: List<E>, position: Int) = dataSet.let {
         if (it.isEmpty() && dataSetCount > 0) Any() as E else it.getOrNull(position)
     }
 
@@ -240,18 +250,21 @@ class BaseAdapterBuilder<E> private constructor(private val adapterContext: Cont
         private val ownerItemLongClickDispatchers = java.util.WeakHashMap<AdapterView<*>, OwnerItemLongClickDispatcher>()
 
         init {
-            require(dataSetCount <= 0 || listDataCallback?.invoke().isNullOrEmpty()) {
+            require(dataSetCount <= 0 || currentDataSet().isEmpty()) {
                 "You can only use once dataSetCount or entities on BaseAdapter."
             }
         }
 
         override fun getFilter() = filterCallback?.invoke() ?: emptyFilterCallback()
-        override fun getCount() = dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: 0
-        override fun getItem(position: Int) = getCurrentEntity(position)
-        override fun getItemId(position: Int) = getCurrentEntity(position)?.let { entityIdCallback?.invoke(it, position) } ?: position.toLong()
+        override fun getCount() = dataSetCount.takeIf { it >= 0 } ?: currentDataSet().size
+        override fun getItem(position: Int) = getCurrentEntity(currentDataSet(), position)
+        override fun getItemId(position: Int) = getCurrentEntity(currentDataSet(), position)?.let {
+            entityIdCallback?.invoke(it, position)
+        } ?: position.toLong()
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
             val owner = parent as? AdapterView<*>?
+            val dataSet = currentDataSet()
 
             var itemView = convertView
             val viewHolder = if (convertView == null)
@@ -262,40 +275,37 @@ class BaseAdapterBuilder<E> private constructor(private val adapterContext: Cont
                 } ?: error("No ViewHolder found, are you sure you have created one using onBindItemView?")
             else convertView.tag as BaseViewHolderImpl<Any>
 
-            val itemId = getItemId(position)
-            val entity = getCurrentEntity(position)
+            val entity = getCurrentEntity(dataSet, position)
 
             itemView?.apply {
                 tag = viewHolder
 
-                val clickCallbacks = mutableListOf<(View, E, Int) -> Unit>()
-
-                viewHolderOnClickCallbacks.forEach { (key, callback) ->
-                    if (key == ITEM_NO_ID || key == itemId) clickCallbacks.add(callback)
-                }
-
                 if (owner == null)
-                    if (clickCallbacks.isNotEmpty()) setOnClickListener { view ->
-                        entity?.let { currentEntity ->
-                            clickCallbacks.forEach { callback ->
-                                callback(view, currentEntity, position)
+                    if (viewHolderOnClickCallbacks.isNotEmpty()) setOnClickListener { view ->
+                        val latestDataSet = currentDataSet()
+                        getCurrentEntity(latestDataSet, position)?.let { currentEntity ->
+                            val currentItemId = entityIdCallback?.invoke(currentEntity, position) ?: position.toLong()
+
+                            viewHolderOnClickCallbacks.forEach { (key, callback) ->
+                                if (key == ITEM_NO_ID || key == currentItemId) {
+                                    callback(view, currentEntity, position)
+                                }
                             }
                         }
                     } else setOnClickListener(null)
 
-                val longClickCallbacks = mutableListOf<(View, E, Int) -> Boolean>()
-
-                viewHolderOnLongClickCallbacks.forEach { (key, callback) ->
-                    if (key == ITEM_NO_ID || key == itemId) longClickCallbacks.add(callback)
-                }
-
                 if (owner == null)
-                    if (longClickCallbacks.isNotEmpty()) setOnLongClickListener { view ->
+                    if (viewHolderOnLongClickCallbacks.isNotEmpty()) setOnLongClickListener { view ->
                         var result = false
 
-                        entity?.let { currentEntity ->
-                            longClickCallbacks.forEach { callback ->
-                                result = callback(view, currentEntity, position) || result
+                        val latestDataSet = currentDataSet()
+                        getCurrentEntity(latestDataSet, position)?.let { currentEntity ->
+                            val currentItemId = entityIdCallback?.invoke(currentEntity, position) ?: position.toLong()
+
+                            viewHolderOnLongClickCallbacks.forEach { (key, callback) ->
+                                if (key == ITEM_NO_ID || key == currentItemId) {
+                                    result = callback(view, currentEntity, position) || result
+                                }
                             }
                         }
 
@@ -342,8 +352,9 @@ class BaseAdapterBuilder<E> private constructor(private val adapterContext: Cont
          * @param position the current position.
          */
         private fun doOnItemClick(view: View, position: Int) {
-            val currentItemId = getItemId(position)
-            val currentEntity = getCurrentEntity(position) ?: return
+            val dataSet = currentDataSet()
+            val currentEntity = getCurrentEntity(dataSet, position) ?: return
+            val currentItemId = currentEntity.let { entityIdCallback?.invoke(it, position) } ?: position.toLong()
 
             viewHolderOnClickCallbacks.forEach { (key, callback) ->
                 if (key == ITEM_NO_ID || key == currentItemId)
@@ -358,8 +369,9 @@ class BaseAdapterBuilder<E> private constructor(private val adapterContext: Cont
          * @return [Boolean]
          */
         private fun doOnItemLongClick(view: View, position: Int): Boolean {
-            val currentItemId = getItemId(position)
-            val currentEntity = getCurrentEntity(position) ?: return false
+            val dataSet = currentDataSet()
+            val currentEntity = getCurrentEntity(dataSet, position) ?: return false
+            val currentItemId = currentEntity.let { entityIdCallback?.invoke(it, position) } ?: position.toLong()
             var result = false
 
             viewHolderOnLongClickCallbacks.forEach { (key, callback) ->

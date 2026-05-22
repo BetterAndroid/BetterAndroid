@@ -68,12 +68,22 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
     /** The current [List] data callback. */
     private var listDataCallback: (() -> List<E>)? = null
 
+    /** The empty list shortcut to reduce repeated allocations. */
+    private val emptyDataSet = emptyList<E>()
+
     /**
      * Get the entity [E].
+     * @return [E] or null.
+     */
+    private fun currentDataSet() = listDataCallback?.invoke() ?: emptyDataSet
+
+    /**
+     * Get the entity [E].
+     * @param dataSet the current data set snapshot.
      * @param position the current position.
      * @return [E] or null.
      */
-    private fun getCurrentEntity(position: Int) = (listDataCallback?.invoke() ?: emptyList()).let {
+    private fun getCurrentEntity(dataSet: List<E>, position: Int) = dataSet.let {
         if (it.isEmpty() && (dataSetCount > 0 || boundViewHolderCallbacks.isNotEmpty())) Any() as E else it.getOrNull(position)
     }
 
@@ -182,10 +192,12 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
         private val viewHolderImpls = mutableMapOf<Int, BaseViewHolderImpl<Any>>()
 
         init {
-            require(dataSetCount <= 0 || listDataCallback?.invoke().isNullOrEmpty()) {
+            val dataSet = currentDataSet()
+
+            require(dataSetCount <= 0 || dataSet.isEmpty()) {
                 "You can only use once dataSetCount or entities on PagerAdapter."
             }
-            require((dataSetCount <= 0 && listDataCallback?.invoke().isNullOrEmpty()) || callbacks.size <= 1) {
+            require((dataSetCount <= 0 && dataSet.isEmpty()) || callbacks.size <= 1) {
                 "Cannot bound multiple ViewHolders with dataSetCount or entities on PagerAdapter."
             }
         }
@@ -197,28 +209,37 @@ class PagerAdapterBuilder<E> private constructor(private val adapterContext: Con
          */
         private fun getCallback(position: Int) = callbacks.getOrNull(position) ?: callbacks.getOrNull(0)
 
-        override fun instantiateItem(container: ViewGroup, position: Int) =
-            getCallback(position)?.let { callback ->
-                (viewHolderImpls[position] ?: callback.delegate.let {
-                    BaseViewHolderImpl.from(it, adapterContext, container)
-                }.also { viewHolderImpls[position] = it }).let {
-                    container.addView(it.rootView)
+        private fun createOrReuseViewHolder(callback: BaseViewHolder<E>, container: ViewGroup, position: Int): BaseViewHolderImpl<Any> {
+            val cached = viewHolderImpls[position]
+            if (cached != null && cached.rootView.parent == null) return cached
 
-                    getCurrentEntity(position)?.let { entity ->
-                        callback.onBindCallback.invoke(it.delegateInstance, entity, position)
-                    }
+            if (cached != null) viewHolderImpls.remove(position)
 
-                    it.rootView
+            return BaseViewHolderImpl.from(callback.delegate, adapterContext, container).also {
+                viewHolderImpls[position] = it
+            }
+        }
+
+        override fun instantiateItem(container: ViewGroup, position: Int) = getCallback(position)?.let { callback ->
+            val dataSet = currentDataSet()
+            createOrReuseViewHolder(callback, container, position).let {
+                container.addView(it.rootView)
+                getCurrentEntity(dataSet, position)?.let { entity ->
+                    callback.onBindCallback.invoke(it.delegateInstance, entity, position)
                 }
-            } ?: error("No ViewHolder found, are you sure you have created one using onBindPageView?")
+
+                it.rootView
+            }
+        } ?: error("No ViewHolder found, are you sure you have created one using onBindPageView?")
 
         override fun getPageTitle(position: Int) = PagerMediator(position).let { pagerMediatorsCallback?.invoke(it); it.title }
         override fun getPageWidth(position: Int) = PagerMediator(position).let { pagerMediatorsCallback?.invoke(it); it.width }
-        override fun getCount() = (dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: callbacks.size)
+        override fun getCount() = dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.let { currentDataSet().size } ?: callbacks.size
         override fun isViewFromObject(view: View, any: Any) = view == any
 
         override fun destroyItem(container: ViewGroup, position: Int, any: Any) {
             container.removeView(any as? View?)
+            viewHolderImpls.remove(position)
         }
     }
 }

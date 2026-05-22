@@ -86,6 +86,9 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
     /** The current [List] data callback. */
     private var listDataCallback: (() -> List<E>)? = null
 
+    /** The empty list shortcut to reduce repeated allocations. */
+    private val emptyDataSet = emptyList<E>()
+
     /** The current entity ID callback. */
     private var entityIdCallback: ((E, Int) -> Long)? = null
 
@@ -118,10 +121,17 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
 
     /**
      * Get the entity [E].
+     * @return [E] or null.
+     */
+    private fun currentDataSet() = listDataCallback?.invoke() ?: emptyDataSet
+
+    /**
+     * Get the entity [E].
+     * @param dataSet the current data set snapshot.
      * @param position the current position.
      * @return [E] or null.
      */
-    private fun getCurrentEntity(position: Int) = (listDataCallback?.invoke() ?: emptyList()).let {
+    private fun getCurrentEntity(dataSet: List<E>, position: Int) = dataSet.let {
         if (it.isEmpty() && dataSetCount > 0) Any() as E else it.getOrNull(position)
     }
 
@@ -445,9 +455,10 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
         private val boundViewHolderCallbacksByViewType = boundViewHolderCallbacks.groupBy { it.viewType }
 
         init {
-            require(dataSetCount <= 0 || listDataCallback?.invoke().isNullOrEmpty()) {
+            require(dataSetCount <= 0 || currentDataSet().isEmpty()) {
                 "You can only use once dataSetCount or entities on RecyclerView.Adapter."
             }
+            setHasStableIds(entityIdCallback != null)
         }
 
         /**
@@ -494,6 +505,8 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
         override fun onBindViewHolder(holder: RecyclerViewHolderImpl<Any>, position: Int) {
             val isInHeaderOrFooter = isInHeaderViewHolder(position) || isInFooterViewHolder(position)
             val staticPosition = excludingPosition(position)
+            val dataSet = currentDataSet()
+            val currentEntity = if (isInHeaderOrFooter) null else getCurrentEntity(dataSet, staticPosition)
             val dynamicPosition = AdapterPosition.from(
                 layout = { excludingPosition(holder.layoutPosition) },
                 binding = { excludingPosition(holder.bindingAdapterPosition) },
@@ -502,52 +515,47 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
             val callbacks = boundViewHolderCallbacksByViewType[holder.viewType].orEmpty()
 
             callbacks.forEach {
-                val entity = if (isInHeaderOrFooter) null else getCurrentEntity(staticPosition) ?: return
+                val entity = currentEntity ?: return
                 it.onBindCallback(holder.delegateInstance, entity, dynamicPosition)
             }
 
             // Header and footer view does not handle item view click events.
             if (isInHeaderOrFooter) return
 
-            val currentItemId = getItemId(position)
-            val clickCallbacks = mutableListOf<(View, E, Int) -> Unit>()
-
-            viewHolderOnClickCallbacks.forEach { (key, callback) ->
-                val isMatch = when (key) {
-                    is Long -> key == ITEM_NO_ID || key == currentItemId
-                    is Int -> key == DEFAULT_VIEW_TYPE || key == holder.viewType
-                    else -> false
-                }
-
-                if (isMatch) clickCallbacks.add(callback)
-            }
-
-            if (clickCallbacks.isNotEmpty()) holder.itemView.setOnClickListener {
+            if (viewHolderOnClickCallbacks.isNotEmpty()) holder.itemView.setOnClickListener {
                 val value = dynamicPosition.value
-                getCurrentEntity(value)?.let { entity ->
-                    clickCallbacks.forEach { callback -> callback(it, entity, value) }
+                val latestDataSet = currentDataSet()
+                getCurrentEntity(latestDataSet, value)?.let { entity ->
+                    val currentItemId = entityIdCallback?.invoke(entity, value) ?: value.toLong()
+
+                    viewHolderOnClickCallbacks.forEach { (key, callback) ->
+                        val isMatch = when (key) {
+                            is Long -> key == ITEM_NO_ID || key == currentItemId
+                            is Int -> key == DEFAULT_VIEW_TYPE || key == holder.viewType
+                            else -> false
+                        }
+
+                        if (isMatch) callback(it, entity, value)
+                    }
                 }
             } else holder.itemView.setOnClickListener(null)
 
-            val longClickCallbacks = mutableListOf<(View, E, Int) -> Boolean>()
-
-            viewHolderOnLongClickCallbacks.forEach { (key, callback) ->
-                val isMatch = when (key) {
-                    is Long -> key == ITEM_NO_ID || key == currentItemId
-                    is Int -> key == DEFAULT_VIEW_TYPE || key == holder.viewType
-                    else -> false
-                }
-
-                if (isMatch) longClickCallbacks.add(callback)
-            }
-
-            if (longClickCallbacks.isNotEmpty()) holder.rootView.setOnLongClickListener {
+            if (viewHolderOnLongClickCallbacks.isNotEmpty()) holder.rootView.setOnLongClickListener {
                 val value = dynamicPosition.value
                 var result = false
 
-                getCurrentEntity(value)?.let { entity ->
-                    longClickCallbacks.forEach { callback ->
-                        result = callback(it, entity, value) || result
+                val latestDataSet = currentDataSet()
+                getCurrentEntity(latestDataSet, value)?.let { entity ->
+                    val currentItemId = entityIdCallback?.invoke(entity, value) ?: value.toLong()
+
+                    viewHolderOnLongClickCallbacks.forEach { (key, callback) ->
+                        val isMatch = when (key) {
+                            is Long -> key == ITEM_NO_ID || key == currentItemId
+                            is Int -> key == DEFAULT_VIEW_TYPE || key == holder.viewType
+                            else -> false
+                        }
+
+                        if (isMatch) result = callback(it, entity, value) || result
                     }
                 }
 
@@ -558,7 +566,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
         override fun getItemViewType(position: Int) = when {
             isInHeaderViewHolder(position) -> HEADER_VIEW_TYPE
             isInFooterViewHolder(position) -> FOOTER_VIEW_TYPE
-            else -> getCurrentEntity(excludingPosition(position))?.let {
+            else -> getCurrentEntity(currentDataSet(), excludingPosition(position))?.let {
                 entityTypeCallback?.invoke(it, excludingPosition(position))
             } ?: DEFAULT_VIEW_TYPE
         }
@@ -566,13 +574,13 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
         override fun getItemId(position: Int) = when {
             isInHeaderViewHolder(position) -> HEADER_VIEW_TYPE.toLong()
             isInFooterViewHolder(position) -> FOOTER_VIEW_TYPE.toLong()
-            else -> getCurrentEntity(excludingPosition(position))?.let {
+            else -> getCurrentEntity(currentDataSet(), excludingPosition(position))?.let {
                 entityIdCallback?.invoke(it, excludingPosition(position))
             } ?: position.toLong()
         }
 
         override fun getItemCount(): Int {
-            val primaryCount = dataSetCount.takeIf { it >= 0 } ?: listDataCallback?.invoke()?.size ?: 0
+            val primaryCount = dataSetCount.takeIf { it >= 0 } ?: currentDataSet().size
             val headerCount = if (hasHeaderView) 1 else 0
             val footerCount = if (hasFooterView) 1 else 0
 
