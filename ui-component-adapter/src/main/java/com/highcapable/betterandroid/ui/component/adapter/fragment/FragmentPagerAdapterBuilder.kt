@@ -23,34 +23,58 @@
 
 package com.highcapable.betterandroid.ui.component.adapter.fragment
 
-import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.lifecycle.LifecycleOwner
 import androidx.viewpager.widget.ViewPager
 import com.highcapable.betterandroid.ui.component.adapter.base.IAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.factory.bindFragments
+import com.highcapable.betterandroid.ui.component.adapter.fragment.FragmentPagerAdapterBuilder.Companion.from
 import com.highcapable.betterandroid.ui.component.adapter.mediator.PagerMediator
+import com.highcapable.betterandroid.ui.extension.component.activity
 import com.highcapable.betterandroid.ui.extension.component.fragmentManager
 
 /**
  * [FragmentPagerAdapter] builder.
- * @param adapterInstance the adapter context, only can be [Context] or [Fragment].
+ * @param lcOwner the adapter lifecycle owner, only can be [FragmentActivity] or [Fragment].
  * @param behavior the current behavior.
  */
-class FragmentPagerAdapterBuilder private constructor(private val adapterInstance: Any, private val behavior: Int) : IAdapterBuilder {
+class FragmentPagerAdapterBuilder private constructor(private val lcOwner: LifecycleOwner, private val behavior: Int) : IAdapterBuilder {
 
     companion object {
 
         /**
-         * Create a new [FragmentPagerAdapter] from [instance].
+         * Create a new [FragmentPagerAdapter] from [activity].
          * @see ViewPager.bindFragments
-         * @param instance the current instance, only can be [Context] or [Fragment].
+         * @param activity the current activity.
          * @param behavior the current behavior.
          * @return [FragmentPagerAdapter]
          */
         @JvmStatic
-        fun from(instance: Any, behavior: Int) = FragmentPagerAdapterBuilder(instance, behavior)
+        fun from(activity: FragmentActivity, behavior: Int) = FragmentPagerAdapterBuilder(activity, behavior)
+
+        /**
+         * Create a new [FragmentPagerAdapter] from [fragment].
+         * @see ViewPager.bindFragments
+         * @param fragment the current fragment.
+         * @param behavior the current behavior.
+         * @return [FragmentPagerAdapter]
+         */
+        @JvmStatic
+        fun from(fragment: Fragment, behavior: Int) = FragmentPagerAdapterBuilder(fragment, behavior)
+
+        /**
+         * Create a new [FragmentPagerAdapter] from [instance].
+         *
+         * - This function is deprecated, use [from] instead.
+         */
+        @Deprecated(message = "Use the overloads that accept FragmentActivity or Fragment directly.")
+        @JvmStatic
+        fun from(instance: Any, behavior: Int) = FragmentPagerAdapterBuilder(
+            lcOwner = instance as? LifecycleOwner ?: error("FragmentPagerAdapter requires a FragmentActivity or Fragment instance."),
+            behavior = behavior
+        )
     }
 
     /** The current each [Fragment] function callbacks. */
@@ -84,13 +108,13 @@ class FragmentPagerAdapterBuilder private constructor(private val adapterInstanc
     fun onBindFragments(bindFragments: (position: Int) -> Fragment) = apply { onBindFragmentsCallback = bindFragments }
 
     override fun build() = object : FragmentPagerAdapter(
-        (adapterInstance as? Fragment?)?.fragmentManager() ?: (adapterInstance as? FragmentActivity?)?.fragmentManager()
-            ?: error("FragmentPagerAdapter need a FragmentActivity or Fragment instance."), behavior
+        (lcOwner as? Fragment?)?.fragmentManager() ?: lcOwner.activity<FragmentActivity>()?.fragmentManager()
+            ?: error("FragmentPagerAdapter requires a FragmentActivity or Fragment instance."), behavior
     ) {
         override fun getPageTitle(position: Int) = PagerMediator(position).let { pagerMediatorsCallback?.invoke(it); it.title }
         override fun getPageWidth(position: Int) = PagerMediator(position).let { pagerMediatorsCallback?.invoke(it); it.width }
         override fun getCount() = pageCount
         override fun getItem(position: Int) = onBindFragmentsCallback?.invoke(position)
-            ?: error("Cannot bound Fragments on FragmentPagerAdapter, did you forgot to called onBindFragments function?")
+            ?: error("Cannot bind Fragments on FragmentPagerAdapter, did you forget to call onBindFragments?")
     }
 }

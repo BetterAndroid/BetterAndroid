@@ -23,7 +23,6 @@
 
 package com.highcapable.betterandroid.ui.component.adapter.fragment
 
-import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
@@ -31,24 +30,46 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.highcapable.betterandroid.ui.component.adapter.base.IAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.factory.bindFragments
+import com.highcapable.betterandroid.ui.component.adapter.fragment.FragmentStateAdapterBuilder.Companion.from
+import com.highcapable.betterandroid.ui.extension.component.activity
 import com.highcapable.betterandroid.ui.extension.component.fragmentManager
 
 /**
  * [FragmentStateAdapter] builder.
- * @param adapterInstance the adapter context, only can be [Context] or [Fragment].
+ * @param lcOwner the adapter lifecycle owner, only can be [FragmentActivity] or [Fragment].
  */
-class FragmentStateAdapterBuilder private constructor(private val adapterInstance: Any) : IAdapterBuilder {
+class FragmentStateAdapterBuilder private constructor(private val lcOwner: LifecycleOwner) : IAdapterBuilder {
 
     companion object {
 
         /**
-         * Create a new [FragmentStateAdapter] from [instance].
+         * Create a new [FragmentStateAdapter] from [activity].
          * @see ViewPager2.bindFragments
-         * @param instance the current instance, only can be [Context] or [Fragment].
+         * @param activity the current activity.
          * @return [FragmentStateAdapter]
          */
         @JvmStatic
-        fun from(instance: Any) = FragmentStateAdapterBuilder(instance)
+        fun from(activity: FragmentActivity) = FragmentStateAdapterBuilder(activity)
+
+        /**
+         * Create a new [FragmentStateAdapter] from [fragment].
+         * @see ViewPager2.bindFragments
+         * @param fragment the current fragment.
+         * @return [FragmentStateAdapter]
+         */
+        @JvmStatic
+        fun from(fragment: Fragment) = FragmentStateAdapterBuilder(fragment)
+
+        /**
+         * Create a new [FragmentStateAdapter] from [instance].
+         *
+         * - This function is deprecated, use [from] instead.
+         */
+        @Deprecated(message = "Use the overloads that accept FragmentActivity or Fragment directly.")
+        @JvmStatic
+        fun from(instance: Any) = FragmentStateAdapterBuilder(
+            lcOwner = instance as? LifecycleOwner ?: error("FragmentStateAdapter requires a FragmentActivity or Fragment instance.")
+        )
     }
 
     /** The current each [Fragment] function callbacks. */
@@ -72,12 +93,12 @@ class FragmentStateAdapterBuilder private constructor(private val adapterInstanc
     fun onBindFragments(bindFragments: (position: Int) -> Fragment) = apply { onBindFragmentsCallback = bindFragments }
 
     override fun build() = object : FragmentStateAdapter(
-        (adapterInstance as? Fragment?)?.fragmentManager() ?: (adapterInstance as? FragmentActivity?)?.fragmentManager()
-            ?: error("FragmentStateAdapter need a FragmentActivity or Fragment instance."),
-        (adapterInstance as? LifecycleOwner?)?.lifecycle ?: error("FragmentStateAdapter need an implemented instance of LifecycleOwner.")
+        (lcOwner as? Fragment?)?.fragmentManager() ?: lcOwner.activity<FragmentActivity>()?.fragmentManager()
+            ?: error("FragmentStateAdapter requires a FragmentActivity or Fragment instance."),
+        lcOwner.lifecycle
     ) {
         override fun getItemCount() = pageCount
         override fun createFragment(position: Int) = onBindFragmentsCallback?.invoke(position)
-            ?: error("Cannot bound Fragments on FragmentStateAdapter, did you forgot to called onBindFragments function?")
+            ?: error("Cannot bind Fragments on FragmentStateAdapter, did you forget to call onBindFragments?")
     }
 }
