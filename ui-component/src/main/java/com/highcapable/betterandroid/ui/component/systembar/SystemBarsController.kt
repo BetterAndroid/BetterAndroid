@@ -203,6 +203,11 @@ class SystemBarsController private constructor(private val window: Window) {
      *
      * - The initialization operation will not be called repeatedly,
      *   repeated calls will only be performed once.
+     *
+     * - This function takes over several window-level defaults for you:
+     *   `Window.setDecorFitsSystemWindows(false)`, system bar contrast flags,
+     *   the navigation bar divider color, the display cutout mode on Android P+,
+     *   and the default transparent system bar style.
      * @see destroy
      * @param rootView the root view (must have a parent), default is [Android_R.id.content].
      * @param edgeToEdgeInsets handle the [rootView]'s window insets for edge-to-edge, default is [WindowInsetsWrapper.safeDrawingIgnoringIme],
