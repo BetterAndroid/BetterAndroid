@@ -33,18 +33,19 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.highcapable.betterandroid.ui.component.adapter.BaseAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.PagerAdapterBuilder
+import com.highcapable.betterandroid.ui.component.adapter.R
 import com.highcapable.betterandroid.ui.component.adapter.RecyclerAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.fragment.FragmentPagerAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.fragment.FragmentStateAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.recycler.cosmetic.RecyclerCosmetic
 import com.highcapable.betterandroid.ui.component.adapter.viewholder.impl.RecyclerViewHolderImpl
-import com.highcapable.kavaref.KavaRef.Companion.resolve
 import androidx.appcompat.widget.ListPopupWindow as AndroidX_ListPopupWindow
 
 /**
@@ -73,9 +74,7 @@ inline fun ListView.bindAdapter(builder: BaseAdapterBuilder<Any>.() -> Unit) = b
  */
 @JvmName("bindAdapterTyped")
 inline fun <E> AutoCompleteTextView.bindAdapter(builder: BaseAdapterBuilder<E>.() -> Unit) =
-    BaseAdapter(context, builder).also {
-        autoCompleteTextViewSetAdapterMethod?.copy()?.of(this)?.invokeQuietly(it)
-    }
+    BaseAdapter(context, builder).also { setAdapter(it) }
 
 /**
  * Bind the [BaseAdapter] to [AutoCompleteTextView].
@@ -149,8 +148,7 @@ inline fun <E> RecyclerView.bindAdapter(
     cosmetic: RecyclerCosmetic<*, *> = RecyclerCosmetic.fromLinearVertical(context),
     builder: RecyclerAdapterBuilder<E>.() -> Unit
 ): RecyclerView.Adapter<RecyclerViewHolderImpl<Any>> {
-    layoutManager = cosmetic.layoutManager
-    addItemDecoration(cosmetic.itemDecoration)
+    applyCosmetic(cosmetic)
 
     return RecyclerAdapter(context, builder).apply { adapter = this }
 }
@@ -177,6 +175,27 @@ inline fun RecyclerView.bindAdapter(
     cosmetic: RecyclerCosmetic<*, *> = RecyclerCosmetic.fromLinearVertical(context),
     builder: RecyclerAdapterBuilder<Any>.() -> Unit
 ) = bindAdapter<Any>(cosmetic, builder)
+
+/**
+ * Apply the given [RecyclerCosmetic] to [RecyclerView].
+ *
+ * - Note: This function replaces the last managed [ItemDecoration]
+ *   to avoid stacking duplicate spacing when rebinding adapters.
+ *   If you need multiple decorations, manually call [RecyclerView.addItemDecoration] yourself.
+ * @receiver [RecyclerView]
+ * @param cosmetic the cosmetic to apply.
+ */
+fun RecyclerView.applyCosmetic(cosmetic: RecyclerCosmetic<*, *>) {
+    val itemDecorationTag = R.id.betterandroid_recycler_cosmetic_item_decoration_tag
+    layoutManager = cosmetic.layoutManager
+
+    getTag(itemDecorationTag)?.let { cached ->
+        if (cached is ItemDecoration) removeItemDecoration(cached)
+    }
+
+    addItemDecoration(cosmetic.itemDecoration)
+    setTag(itemDecorationTag, cosmetic.itemDecoration)
+}
 
 /**
  * Bind the [PagerAdapter] to [ViewPager], using entity [E].
@@ -327,11 +346,57 @@ inline fun PagerAdapter(context: Context, builder: PagerAdapterBuilder<Any>.() -
  *
  * - This method is officially deprecated,
  *   the recommended approach is to start using [ViewPager2] and use [ViewPager2.bindFragments].
- * @param instance the current instance, only can be [Context] or [Fragment].
+ * @param activity the current activity.
  * @param behavior the current behavior, default is [FragmentPagerAdapter.BEHAVIOR_SET_USER_VISIBLE_HINT].
  * @param builder the [FragmentPagerAdapterBuilder] builder body.
  * @return [FragmentPagerAdapter]
  */
+inline fun FragmentPagerAdapter(
+    activity: FragmentActivity,
+    behavior: Int = FragmentPagerAdapter.BEHAVIOR_SET_USER_VISIBLE_HINT,
+    builder: FragmentPagerAdapterBuilder.() -> Unit
+) = FragmentPagerAdapterBuilder.from(activity, behavior).apply(builder).build()
+
+/**
+ * Create a [FragmentPagerAdapter].
+ *
+ * - This method is officially deprecated,
+ *   the recommended approach is to start using [ViewPager2] and use [ViewPager2.bindFragments].
+ * @param fragment the current fragment.
+ * @param behavior the current behavior, default is [FragmentPagerAdapter.BEHAVIOR_SET_USER_VISIBLE_HINT].
+ * @param builder the [FragmentPagerAdapterBuilder] builder body.
+ * @return [FragmentPagerAdapter]
+ */
+inline fun FragmentPagerAdapter(
+    fragment: Fragment,
+    behavior: Int = FragmentPagerAdapter.BEHAVIOR_SET_USER_VISIBLE_HINT,
+    builder: FragmentPagerAdapterBuilder.() -> Unit
+) = FragmentPagerAdapterBuilder.from(fragment, behavior).apply(builder).build()
+
+/**
+ * Create a [FragmentStateAdapter].
+ * @param activity the current activity.
+ * @param builder the [FragmentStateAdapterBuilder] builder body.
+ * @return [FragmentStateAdapter]
+ */
+inline fun FragmentStateAdapter(activity: FragmentActivity, builder: FragmentStateAdapterBuilder.() -> Unit) =
+    FragmentStateAdapterBuilder.from(activity).apply(builder).build()
+
+/**
+ * Create a [FragmentStateAdapter].
+ * @param fragment the current fragment.
+ * @param builder the [FragmentStateAdapterBuilder] builder body.
+ * @return [FragmentStateAdapter]
+ */
+inline fun FragmentStateAdapter(fragment: Fragment, builder: FragmentStateAdapterBuilder.() -> Unit) =
+    FragmentStateAdapterBuilder.from(fragment).apply(builder).build()
+
+/**
+ * Create a [FragmentPagerAdapter].
+ *
+ * - This function is deprecated, use [FragmentPagerAdapter] instead.
+ */
+@Deprecated(message = "Use the overloads that accept FragmentActivity or Fragment directly.")
 inline fun FragmentPagerAdapter(
     instance: Any,
     behavior: Int = FragmentPagerAdapter.BEHAVIOR_SET_USER_VISIBLE_HINT,
@@ -340,18 +405,9 @@ inline fun FragmentPagerAdapter(
 
 /**
  * Create a [FragmentStateAdapter].
- * @param instance the current instance, only can be [Context] or [Fragment].
- * @param builder the [FragmentStateAdapterBuilder] builder body.
- * @return [FragmentStateAdapter]
+ *
+ * - This function is deprecated, use [FragmentStateAdapter] instead.
  */
+@Deprecated(message = "Use the overloads that accept FragmentActivity or Fragment directly.")
 inline fun FragmentStateAdapter(instance: Any, builder: FragmentStateAdapterBuilder.() -> Unit) =
     FragmentStateAdapterBuilder.from(instance).apply(builder).build()
-
-/** The cached method of [AutoCompleteTextView.setAdapter]. */
-@PublishedApi
-internal val autoCompleteTextViewSetAdapterMethod by lazy {
-    AutoCompleteTextView::class.resolve().optional().firstMethodOrNull {
-        name = "setAdapter"
-        parameterCount = 1
-    }
-}
