@@ -261,7 +261,7 @@ private fun Array<out PackageInfoFlagsWrapper>.toSystemType() =
  * @receiver the [ApplicationInfoFlagsWrapper] type.
  * @return [Int]
  */
-private fun Array<out ApplicationInfoFlagsWrapper>.toSystemType() = fold(-1) { flag, wrapper -> flag or wrapper.original }
+private fun Array<out ApplicationInfoFlagsWrapper>.toSystemType() = map { it.original }.reduceOrNull { acc, flag -> acc or flag } ?: -1
 
 /** The [ApplicationInfo] primary cpu abi caller. */
 private val primaryCpuAbiCaller by lazy {
