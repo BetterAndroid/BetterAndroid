@@ -140,21 +140,14 @@ fun <T> RecyclerView.Adapter<*>.notifyByDiff(
     getChangePayload: (oldItem: T, newItem: T) -> Any? = { _, _ -> null },
     detectMoves: Boolean = true
 ) {
-    wrapper?.let {
-        val currentItemCount = itemCount
-        val expectedItemCount = newList.size +
-            (if (it.hasHeaderView) 1 else 0) +
-            (if (it.hasFooterView) 1 else 0)
+    val wrapper = wrapper
+    val expectedItemCount = newList.size +
+        (if (wrapper?.hasHeaderView == true) 1 else 0) +
+        (if (wrapper?.hasFooterView == true) 1 else 0)
 
-        if (currentItemCount != expectedItemCount) Log.w(
-            BetterAndroidProperties.PROJECT_NAME,
-            "notifyByDiff called with mismatched itemCount, current adapter.itemCount is $currentItemCount, but expected $expectedItemCount."
-        )
-    }
-
-    if (itemCount != newList.size) Log.w(
+    if (itemCount != expectedItemCount) Log.w(
         BetterAndroidProperties.PROJECT_NAME,
-        "notifyByDiff called with mismatched itemCount, current adapter.itemCount is $itemCount, but expected ${newList.size}."
+        "notifyByDiff called with mismatched itemCount, current adapter.itemCount is $itemCount, but expected $expectedItemCount."
     )
 
     notifyByDiff(
