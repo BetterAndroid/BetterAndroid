@@ -302,7 +302,7 @@ val adapter = recyclerView.bindAdapter<MyEntity> {
         binding.textView.text = entity.name
     }
     // 设置每项条目的点击事件
-    onItemViewClick { itemView, viewType, entity, position ->
+    onItemViewClick { itemView, entity, position ->
         // Your code here.
     }
 }
@@ -339,7 +339,7 @@ val adapter = recyclerView.bindAdapter<MyEntity> {
         binding.titleView.text = entity.title
     }
     // 设置每项条目的点击事件
-    onItemViewClick { itemView, viewType, entity, position ->
+    onItemViewClick { itemView, entity, position ->
         // Your code here.
     }
 }
@@ -358,6 +358,8 @@ val adapter = recyclerView.bindAdapter<MyEntity> {
 为 `RecyclerView` 创建头部 `View` 和末位 `View`。
 
 你可以使用 `onBindHeaderView` 和 `onBindFooterView` 方法来添加一个头部 `View` 和末位 `View`，这是两个特殊的条目布局，它们不会被计算入绑定的数据中，且通过 `onBindItemView` 等方法回调的下标 `position` 不受影响。
+
+当你为 `RecyclerAdapterBuilder` 配置了 `onBindItemId` 时，适配器会自动启用 Stable IDs，以便让 `RecyclerView` 真正使用这些 ID 参与复用与动画优化。
 
 ::: warning
 
@@ -450,6 +452,8 @@ onBindItemView(MyViewHolderDelegate(R.layout.adapter_my_layout)) { delegate, ent
 
 由于这些方法在 `RecyclerView.Adapter` 中均为 `final`，无法重写它们，在这种情况下，`BetterAndroid` 为你提供了一个解决方案，在使用 `RecyclerView.Adapter` 时，你可以调用 `wrapper` 方法来获取包装实例，它将会为你自动处理这些问题。
 
+`wrapper` 只负责处理由头部、末位布局引起的下标偏移问题，不会帮你管理数据集本身，也不会替代 `DiffUtil`、`notifyByDiff` 或自定义列表状态同步逻辑。
+
 > 示例如下
 
 ```kotlin
@@ -460,6 +464,8 @@ val wrapper = recyclerView.adapter?.wrapper
 // 正常使用 RecyclerView.Adapter 的通知更新方法
 wrapper?.notifyItemInserted(0)
 wrapper?.notifyItemRemoved(0)
+wrapper?.notifyItemRangeInserted(0, 10)
+wrapper?.notifyItemRangeChanged(5, 3)
 // 头部或末位布局需要单独使用以下方法更新
 wrapper?.notifyHeaderItemChanged()
 wrapper?.notifyFooterItemChanged()
@@ -570,6 +576,12 @@ val adapter = FragmentStateAdapter(activity) {
 viewPager2.adapter = adapter
 ```
 
+::: tip
+
+从 `1.1.0` 开始，构造方法推荐直接传入 `FragmentActivity` 或 `Fragment`，不再推荐使用弱类型的 `Any` 入口。
+
+:::
+
 ### Recycler 装饰器
 
 如果你希望手动创建一个 `RecyclerView.Adapter` 并绑定到 `RecyclerView`、`ViewPager2` 上，请参考以下示例。
@@ -586,8 +598,7 @@ val adapter = RecyclerAdapter<CustomBean>(context) {
 // 手动创建一个装饰器
 val cosmetic = RecyclerCosmetic.fromLinearVertical(context)
 // 然后绑定到 recyclerView
-recyclerView.layoutManager = cosmetic.layoutManager
-recyclerView.addItemDecoration(cosmetic.itemDecoration) 
+recyclerView.applyCosmetic(cosmetic)
 recyclerView.adapter = adapter
 // 绑定到 viewPager2 时你无需设置 layoutManager
 viewPager2.addItemDecoration(cosmetic.itemDecoration) 
@@ -614,10 +625,17 @@ recyclerView.bindAdapter<MyEntity>(lvCosmetic) {
 val adapter = RecyclerAdapter<MyEntity>(context) {
     // ...
 }
-recyclerView.layoutManager = lvCosmetic.layoutManager
-recyclerView.addItemDecoration(lvCosmetic.itemDecoration)
+recyclerView.applyCosmetic(lvCosmetic)
 recyclerView.adapter = adapter
 ```
+
+::: warning
+
+`RecyclerView.bindAdapter` 会自动调用 `applyCosmetic`，重复绑定时会替换掉上一次注入的 `ItemDecoration`，避免间距重复叠加。
+
+如果你需要多个装饰器，请手动额外调用 `addItemDecoration`。
+
+:::
 
 ::: tip
 
@@ -838,6 +856,8 @@ diffResult.dispatchUpdatesTo(
 ::: warning
 
 在调用 `notifyByDiff` 前，请确保 `newList` 已经是当前适配器实际持有的数据，并且 `itemCount` 已经能够正确反映更新后的数量。
+
+同样地，在你使用了 [RecyclerView 适配器](#recyclerview-适配器) 后，`onBindData { ... }` 应始终返回当前时刻稳定的数据视图。不要在一次绑定链路中返回会临时变化、会重复创建不同内容的列表，否则会放大局部刷新、点击回调与 `DiffUtil` 之间的状态漂移风险。
 
 如果你正在使用 `RecyclerAdapterBuilder` 创建的适配器且设置了头部或末位 `View`，`notifyByDiff` 将自动通过 `wrapper` 处理下标偏移问题，你无需手动额外处理。
 

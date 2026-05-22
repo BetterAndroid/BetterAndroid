@@ -302,7 +302,7 @@ val adapter = recyclerView.bindAdapter<MyEntity> {
         binding.textView.text = entity.name
     }
     // Set click event for each item.
-    onItemViewClick { itemView, viewType, entity, position ->
+    onItemViewClick { itemView, entity, position ->
         // Your code here.
     }
 }
@@ -339,7 +339,7 @@ val adapter = recyclerView.bindAdapter<MyEntity> {
         binding.titleView.text = entity.title
     }
     // Set click event for each item.
-    onItemViewClick { itemView, viewType, entity, position ->
+    onItemViewClick { itemView, entity, position ->
         // Your code here.
     }
 }
@@ -358,6 +358,8 @@ Since `RecyclerView.Adapter` can be updated partially, after dynamically adding 
 Create header `View` and footer `View` for `RecyclerView`.
 
 You can use the `onBindHeaderView` and `onBindFooterView` methods to add a header `View` and footer `View`. These are two special item layouts that are not counted in the bound data, and the index `position` called back through methods like `onBindItemView` is not affected.
+
+When you configure `onBindItemId` for `RecyclerAdapterBuilder`, the adapter now automatically enables Stable IDs so those IDs are actually used by `RecyclerView` for reuse and animation optimization.
 
 ::: warning
 
@@ -453,6 +455,8 @@ When you set header or footer `View`, when using `RecyclerView.Adapter`'s `notif
 
 Since these methods are all `final` in `RecyclerView.Adapter` and cannot be overridden, in this case, `BetterAndroid` provides you with a solution. When using `RecyclerView.Adapter`, you can call the `wrapper` method to get a wrapper instance, which will automatically handle these issues for you.
 
+`wrapper` only handles index offset problems introduced by header and footer layouts. It does not manage your dataset itself and does not replace `DiffUtil`, `notifyByDiff`, or your own list state synchronization logic.
+
 > The following example
 
 ```kotlin
@@ -464,6 +468,8 @@ val wrapper = recyclerView.adapter?.wrapper
 // Normally use RecyclerView.Adapter's notification update methods.
 wrapper?.notifyItemInserted(0)
 wrapper?.notifyItemRemoved(0)
+wrapper?.notifyItemRangeInserted(0, 10)
+wrapper?.notifyItemRangeChanged(5, 3)
 // Header or footer layouts need to be updated separately using the following methods.
 wrapper?.notifyHeaderItemChanged()
 wrapper?.notifyFooterItemChanged()
@@ -575,6 +581,12 @@ val adapter = FragmentStateAdapter(activity) {
 viewPager2.adapter = adapter
 ```
 
+::: tip
+
+Since `1.1.0`, the constructor overloads recommend passing `FragmentActivity` or `Fragment` directly instead of using the weakly typed `Any` entry.
+
+:::
+
 ### Recycler Cosmetic
 
 If you want to manually create a `RecyclerView.Adapter` and bind it to `RecyclerView` and `ViewPager2`, please refer to the following example.
@@ -591,8 +603,7 @@ val adapter = RecyclerAdapter<CustomBean>(context) {
 // Manually create a decorator.
 val cosmetic = RecyclerCosmetic.fromLinearVertical(context)
 // Then bind to recyclerView.
-recyclerView.layoutManager = cosmetic.layoutManager
-recyclerView.addItemDecoration(cosmetic.itemDecoration) 
+recyclerView.applyCosmetic(cosmetic)
 recyclerView.adapter = adapter
 // When binding to viewPager2, you don't need to set layoutManager.
 viewPager2.addItemDecoration(cosmetic.itemDecoration) 
@@ -619,10 +630,17 @@ recyclerView.bindAdapter<MyEntity>(lvCosmetic) {
 val adapter = RecyclerAdapter<MyEntity>(context) {
     // ...
 }
-recyclerView.layoutManager = lvCosmetic.layoutManager
-recyclerView.addItemDecoration(lvCosmetic.itemDecoration)
+recyclerView.applyCosmetic(lvCosmetic)
 recyclerView.adapter = adapter
 ```
+
+::: warning
+
+`RecyclerView.bindAdapter` now calls `applyCosmetic` automatically. Rebinding replaces the last managed `ItemDecoration` to avoid stacking duplicate spacing.
+
+If you really need multiple decorations, add them manually by calling `addItemDecoration`.
+
+:::
 
 ::: tip
 
@@ -845,6 +863,10 @@ diffResult.dispatchUpdatesTo(
 ::: warning
 
 Before calling `notifyByDiff`, please ensure that `newList` is already the actual data currently held by the adapter, and that `itemCount` can already correctly reflect the updated count.
+
+Likewise, after you have used the [RecyclerView Adapter](#recyclerview-adapter), the `onBindData { ... }` should always return a stable snapshot of the current data.
+Do not return a list that changes temporarily or recreates different contents within one binding chain,
+otherwise it will amplify state drift risks between partial updates, click callbacks, and `DiffUtil`.
 
 If you are using an adapter created by `RecyclerAdapterBuilder` and have set header or footer `View`, `notifyByDiff` will automatically handle index offset issues through `wrapper`, and you do not need to handle them manually.
 
