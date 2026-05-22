@@ -185,6 +185,7 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
         private val threeArgsMethods = ConcurrentHashMap<Class<*>, MethodResolver<*>>()
         private val twoArgsMethods = ConcurrentHashMap<Class<*>, MethodResolver<*>>()
         private val bindMethods = ConcurrentHashMap<Class<*>, MethodResolver<*>>()
+        private val genericBindingClasses = ConcurrentHashMap<Pair<Class<*>, Boolean>, Class<*>>()
 
         /**
          * Resolve the inflate method with three arguments and cache it.
@@ -282,7 +283,7 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
          */
         fun <VB : ViewBinding> fromGeneric(clazz: Class<*>, onlySuperClass: Boolean = false): ViewBindingBuilder<VB> {
             val currentClass = if (onlySuperClass) clazz.superclass else clazz
-            val bindingClass = currentClass?.findSuperGenericClass()
+            val bindingClass = currentClass?.let { genericBindingClasses.getOrPut(it to onlySuperClass) { it.findSuperGenericClass() } }
 
             require(bindingClass != null) {
                 if (currentClass != null)
