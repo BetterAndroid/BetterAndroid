@@ -30,8 +30,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.viewbinding.ViewBinding
 import com.highcapable.betterandroid.ui.extension.binding.ViewBindingBuilder.Companion.fromGeneric
+import com.highcapable.betterandroid.ui.extension.component.addObserver
 import com.highcapable.betterandroid.ui.extension.view.layoutInflater
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.extension.classOf
@@ -171,8 +174,11 @@ inline fun <reified VB : ViewBinding> Fragment.viewBinding(parent: ViewGroup? = 
  * @param attachToParent whether to attach the parent view, default is false.
  * @return [ViewBindingDelegate]<[VB]>
  */
-fun <VB : ViewBinding> Fragment.viewBinding(bindingClass: Class<VB>, parent: ViewGroup? = null, attachToParent: Boolean = false) =
-    ViewBindingDelegate(bindingClass, { layoutInflater }, parent, attachToParent)
+fun <VB : ViewBinding> Fragment.viewBinding(
+    bindingClass: Class<VB>,
+    parent: ViewGroup? = null,
+    attachToParent: Boolean = false
+): ViewBindingDelegate<VB> = FragmentViewBindingDelegate(this, bindingClass, { layoutInflater }, parent, attachToParent)
 
 /**
  * A [ViewBinding] builder.
@@ -362,8 +368,8 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
  * @param parent the parent view.
  * @param attachToParent whether to attach the parent view.
  */
-class ViewBindingDelegate<VB : ViewBinding> internal constructor(
-    private val bindingClass: Class<VB>,
+open class ViewBindingDelegate<VB : ViewBinding> internal constructor(
+    protected val bindingClass: Class<VB>,
     private val layoutInflater: () -> LayoutInflater,
     private val parent: ViewGroup?,
     private val attachToParent: Boolean
@@ -376,9 +382,77 @@ class ViewBindingDelegate<VB : ViewBinding> internal constructor(
      * Bind the [ViewBinding] instance and cache it.
      * @return [VB]
      */
-    private fun bind() = ViewBindingBuilder(bindingClass).inflate(layoutInflater(), parent, attachToParent).also { binding = it }
+    protected open fun bind() = createBinding()
+
+    /**
+     * Create a [ViewBinding] instance.
+     * @return [VB]
+     */
+    protected fun createBinding() = ViewBindingBuilder(bindingClass).inflate(layoutInflater(), parent, attachToParent).also { binding = it }
+
+    /**
+     * Clear the cached [ViewBinding] instance.
+     */
+    protected fun clearBinding() {
+        binding = null
+    }
 
     operator fun getValue(thisRef: Any?, property: Any?) = binding ?: bind()
 
     override fun toString() = "ViewBinding($bindingClass)"
+}
+
+/**
+ * A Fragment view lifecycle aware delegate for [ViewBinding].
+ * @param fragment the Fragment that owns the view lifecycle.
+ * @param bindingClass the [ViewBinding] class.
+ * @param layoutInflater the layout inflater.
+ * @param parent the parent view.
+ * @param attachToParent whether to attach the parent view.
+ */
+private class FragmentViewBindingDelegate<VB : ViewBinding>(
+    private val fragment: Fragment,
+    bindingClass: Class<VB>,
+    layoutInflater: () -> LayoutInflater,
+    parent: ViewGroup?,
+    attachToParent: Boolean
+) : ViewBindingDelegate<VB>(bindingClass, layoutInflater, parent, attachToParent) {
+
+    private var bindingLifecycleOwner: LifecycleOwner? = null
+    private var isFragmentViewDestroyed = false
+    private var isViewLifecycleObserverInstalled = false
+
+    override fun bind(): VB {
+        fragment.ensureCanBind()
+        return createBinding().also { fragment.bindToViewLifecycle() }
+    }
+
+    /** Check whether the Fragment view binding can be created. */
+    private fun Fragment.ensureCanBind() {
+        if (isFragmentViewDestroyed && viewLifecycleOwnerLiveData.value == null) error(
+            "Cannot access ViewBinding $bindingClass because Fragment $this has no active view. " +
+                "Only access Fragment.viewBinding() after onCreateView and before onDestroyView."
+        )
+    }
+
+    /** Clear the cached binding when Fragment's view lifecycle is destroyed. */
+    private fun Fragment.bindToViewLifecycle() {
+        if (isViewLifecycleObserverInstalled) return
+
+        isViewLifecycleObserverInstalled = true
+        viewLifecycleOwnerLiveData.observe(this, Observer { owner ->
+            if (bindingLifecycleOwner === owner) return@Observer
+
+            isFragmentViewDestroyed = false
+            bindingLifecycleOwner = owner
+            owner.lifecycle.addObserver(
+                onDestroy = { owner ->
+                    clearBinding()
+                    isFragmentViewDestroyed = true
+                    if (bindingLifecycleOwner === owner) bindingLifecycleOwner = null
+                    owner.lifecycle.removeObserver(this)
+                }
+            )
+        })
+    }
 }
