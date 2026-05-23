@@ -218,7 +218,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
                 ),
                 quickfixData = if (hasSystemBarsController) buildDeleteFix(
                     name = "Delete '$ENABLE_EDGE_TO_EDGE_METHOD'",
-                    location = context.getLocation(node.sourcePsi ?: return false)
+                    location = context.getLocation(node.fullCallSourcePsi() ?: return false)
                 ) else null
             )
             return true
