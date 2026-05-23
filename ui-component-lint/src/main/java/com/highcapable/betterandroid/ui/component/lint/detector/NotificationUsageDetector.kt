@@ -51,11 +51,18 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
 
         private const val FROM_METHOD = "from"
         private const val NOTIFICATION_MANAGER_PROPERTY = "notificationManager"
+        private const val THIS_RECEIVER = "this"
 
         private const val CREATE_NOTIFICATION_FUNCTION = "createNotification(...)"
         private const val NOTIFICATION_FUNCTION = "Notification(...)"
         private const val NOTIFICATION_CHANNEL_FUNCTION = "NotificationChannel(...)"
         private const val NOTIFICATION_CHANNEL_GROUP_FUNCTION = "NotificationChannelGroup(...)"
+        private const val NOTIFICATION_COMPAT_BUILDER_FUNCTION = "NotificationCompat.Builder(...)"
+        private const val NOTIFICATION_BUILDER_FUNCTION = "Notification.Builder(...)"
+        private const val NOTIFICATION_CHANNEL_COMPAT_BUILDER_FUNCTION = "NotificationChannelCompat.Builder(...)"
+        private const val NOTIFICATION_CHANNEL_COMPAT_FUNCTION = "NotificationChannel(...)"
+        private const val NOTIFICATION_CHANNEL_GROUP_COMPAT_BUILDER_FUNCTION = "NotificationChannelGroupCompat.Builder(...)"
+        private const val NOTIFICATION_CHANNEL_GROUP_COMPAT_FUNCTION = "NotificationChannelGroup(...)"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithNotificationComponent",
@@ -131,54 +138,55 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
         override fun visitCallExpression(node: UCallExpression) {
             when {
                 reportNotificationManager(node) -> Unit
-                reportNotificationBuilder(node) -> Unit
-                reportNotificationChannelBuilder(node) -> Unit
-                reportNotificationChannelGroupBuilder(node) -> Unit
+                reportHandOverNotificationBuilder(node) -> Unit
+                reportHandOverNotificationChannelBuilder(node) -> Unit
+                reportHandOverNotificationChannelGroupBuilder(node) -> Unit
             }
         }
 
         private fun reportNotificationManager(node: UCallExpression): Boolean {
             if (node.methodName != FROM_METHOD) return false
+
+            // Validation is NotificationManagerCompat class.
             val method = node.resolve() ?: return false
             if (!context.evaluator.isMemberInClass(method, NOTIFICATION_MANAGER_COMPAT_CLASS)) return false
 
+            // This is the `NotificationManagerCompat.from(context)` pattern.
             val receiver = node.valueArguments.singleOrNull() ?: return false
             if (!receiver.getExpressionType().extendsClass(context, CONTEXT_CLASS)) return false
 
             val receiverText = receiver.asSourceString().trim()
-            val replacement = if (receiverText == "this") NOTIFICATION_MANAGER_PROPERTY else "$receiverText.$NOTIFICATION_MANAGER_PROPERTY"
+            val fix = createNotificationManagerLintFix(receiverText)
+            val replaceSuggestion = fix.first
+            val message = "Can be replaced with `$replaceSuggestion`."
 
+            val location = context.getLocation(node)
             context.report(
                 issue = ISSUE,
-                location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
-                quickfixData = buildReplaceFix(
-                    name = "Replace with '$NOTIFICATION_MANAGER_PROPERTY'",
-                    replacement = replacement,
-                    imports = arrayOf(NOTIFICATION_MANAGER_PROPERTY_IMPORT)
-                )
+                location = location,
+                message = message,
+                quickfixData = fix.second
             )
             return true
         }
 
-        private fun reportNotificationBuilder(node: UCallExpression): Boolean {
+        private fun reportHandOverNotificationBuilder(node: UCallExpression): Boolean {
             val constructor = node.resolve() ?: return false
 
+            // Validation is NotificationCompat.Builder or Notification.Builder class.
             return when {
                 context.evaluator.isMemberInClass(constructor, NOTIFICATION_COMPAT_BUILDER_CLASS) -> {
-                    reportHandOver(
-                        context = context,
+                    reportHandOverNotificationComponent(
                         node = node,
-                        source = "NotificationCompat.Builder(...)",
+                        source = NOTIFICATION_COMPAT_BUILDER_FUNCTION,
                         target = "$CREATE_NOTIFICATION_FUNCTION or $NOTIFICATION_FUNCTION"
                     )
                     true
                 }
                 context.evaluator.isMemberInClass(constructor, NOTIFICATION_BUILDER_CLASS) -> {
-                    reportHandOver(
-                        context = context,
+                    reportHandOverNotificationComponent(
                         node = node,
-                        source = "Notification.Builder(...)",
+                        source = NOTIFICATION_BUILDER_FUNCTION,
                         target = "$CREATE_NOTIFICATION_FUNCTION or $NOTIFICATION_FUNCTION"
                     )
                     true
@@ -187,24 +195,23 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
             }
         }
 
-        private fun reportNotificationChannelBuilder(node: UCallExpression): Boolean {
+        private fun reportHandOverNotificationChannelBuilder(node: UCallExpression): Boolean {
             val constructor = node.resolve() ?: return false
 
+            // Validation is NotificationChannelCompat.Builder or NotificationChannel class.
             return when {
                 context.evaluator.isMemberInClass(constructor, NOTIFICATION_CHANNEL_COMPAT_BUILDER_CLASS) -> {
-                    reportHandOver(
-                        context = context,
+                    reportHandOverNotificationComponent(
                         node = node,
-                        source = "NotificationChannelCompat.Builder(...)",
+                        source = NOTIFICATION_CHANNEL_COMPAT_BUILDER_FUNCTION,
                         target = NOTIFICATION_CHANNEL_FUNCTION
                     )
                     true
                 }
                 context.evaluator.isMemberInClass(constructor, NOTIFICATION_CHANNEL_CLASS) -> {
-                    reportHandOver(
-                        context = context,
+                    reportHandOverNotificationComponent(
                         node = node,
-                        source = "NotificationChannel(...)",
+                        source = NOTIFICATION_CHANNEL_COMPAT_FUNCTION,
                         target = NOTIFICATION_CHANNEL_FUNCTION
                     )
                     true
@@ -213,24 +220,23 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
             }
         }
 
-        private fun reportNotificationChannelGroupBuilder(node: UCallExpression): Boolean {
+        private fun reportHandOverNotificationChannelGroupBuilder(node: UCallExpression): Boolean {
             val constructor = node.resolve() ?: return false
 
+            // Validation is NotificationChannelGroupCompat.Builder or NotificationChannelGroup class.
             return when {
                 context.evaluator.isMemberInClass(constructor, NOTIFICATION_CHANNEL_GROUP_COMPAT_BUILDER_CLASS) -> {
-                    reportHandOver(
-                        context = context,
+                    reportHandOverNotificationComponent(
                         node = node,
-                        source = "NotificationChannelGroupCompat.Builder(...)",
+                        source = NOTIFICATION_CHANNEL_GROUP_COMPAT_BUILDER_FUNCTION,
                         target = NOTIFICATION_CHANNEL_GROUP_FUNCTION
                     )
                     true
                 }
                 context.evaluator.isMemberInClass(constructor, NOTIFICATION_CHANNEL_GROUP_CLASS) -> {
-                    reportHandOver(
-                        context = context,
+                    reportHandOverNotificationComponent(
                         node = node,
-                        source = "NotificationChannelGroup(...)",
+                        source = NOTIFICATION_CHANNEL_GROUP_COMPAT_FUNCTION,
                         target = NOTIFICATION_CHANNEL_GROUP_FUNCTION
                     )
                     true
@@ -239,12 +245,28 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
             }
         }
 
-        private fun reportHandOver(context: JavaContext, node: UCallExpression, source: String, target: String) {
+        private fun reportHandOverNotificationComponent(node: UCallExpression, source: String, target: String) {
+            val message = "Consider handing `$source` over to BetterAndroid's `$target`."
+            val location = context.getLocation(node)
+
             context.report(
                 issue = ISSUE,
-                location = context.getLocation(node),
-                message = "Consider handing `$source` over to BetterAndroid's `$target`."
+                location = location,
+                message = message
             )
         }
+    }
+
+    private fun createNotificationManagerLintFix(receiverText: String) = run {
+        // Determine whether to use `notificationManager` or `context.notificationManager`.
+        val replacement = if (receiverText == THIS_RECEIVER)
+            NOTIFICATION_MANAGER_PROPERTY
+        else "$receiverText.$NOTIFICATION_MANAGER_PROPERTY"
+
+        replacement to buildReplaceFix(
+            name = "Replace with '$NOTIFICATION_MANAGER_PROPERTY'",
+            replacement = replacement,
+            imports = arrayOf(NOTIFICATION_MANAGER_PROPERTY_IMPORT)
+        )
     }
 }

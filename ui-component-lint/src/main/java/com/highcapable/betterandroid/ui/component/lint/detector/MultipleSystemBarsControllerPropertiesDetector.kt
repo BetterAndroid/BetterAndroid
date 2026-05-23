@@ -30,6 +30,7 @@ import com.android.tools.lint.detector.api.JavaContext
 import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.component.lint.detector.extension.buildDeleteFix
+import com.intellij.psi.PsiElement
 import org.jetbrains.uast.UClass
 import org.jetbrains.uast.UElement
 
@@ -39,6 +40,7 @@ class MultipleSystemBarsControllerPropertiesDetector : Detector(), Detector.Uast
 
         private const val SYSTEM_BARS_CONTROLLER_CLASS_NAME = SystemBarsControllerUsageDetector.SYSTEM_BARS_CONTROLLER_CLASS_NAME
         private const val SYSTEM_BARS_CONTROLLER_CLASS = SystemBarsControllerUsageDetector.SYSTEM_BARS_CONTROLLER_CLASS
+        private const val GETTER_PREFIX = "get"
 
         val ISSUE = Issue.create(
             id = "MultipleSystemBarsControllerProperties",
@@ -85,31 +87,59 @@ class MultipleSystemBarsControllerPropertiesDetector : Detector(), Detector.Uast
     override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
 
         override fun visitClass(node: UClass) {
-            val members = buildList {
-                node.javaPsi.fields.filter { it.type.canonicalText == SYSTEM_BARS_CONTROLLER_CLASS }
-                    .forEach { add(Triple(it.name, it.navigationElement, it.navigationElement)) }
-                node.javaPsi.methods.filter {
-                    it.parameterList.parametersCount == 0 &&
-                        it.name.startsWith("get") &&
-                        it.returnType?.canonicalText == SYSTEM_BARS_CONTROLLER_CLASS
-                }.forEach {
-                    val propertyName = it.name.removePrefix("get").replaceFirstChar(Char::lowercaseChar)
-                    add(Triple(propertyName, it.navigationElement, it.navigationElement))
-                }
-            }.distinctBy { it.first }
+            val members = node.findSystemBarsControllerProperties()
             if (members.size <= 1) return
 
-            members.forEach { (propertyName, target, deleteTarget) ->
+            // This is the multiple `SystemBarsController` properties pattern.
+            members.forEach { member ->
+                val fix = createLintFix(context, member.propertyName, member.deleteTarget)
+                val message = "Only one `$SYSTEM_BARS_CONTROLLER_CLASS_NAME` property can exist in the same class."
+                val location = context.getLocation(member.target)
+
                 context.report(
                     issue = ISSUE,
-                    location = context.getLocation(target),
-                    message = "Only one `$SYSTEM_BARS_CONTROLLER_CLASS_NAME` property can exist in the same class.",
-                    quickfixData = buildDeleteFix(
-                        name = "Delete '$propertyName'",
-                        location = context.getLocation(deleteTarget)
-                    )
+                    location = location,
+                    message = message,
+                    quickfixData = fix
                 )
             }
         }
+
+        private fun UClass.findSystemBarsControllerProperties() = buildList {
+            // Find property fields whose type is SystemBarsController.
+            javaPsi.fields.filter { it.type.canonicalText == SYSTEM_BARS_CONTROLLER_CLASS }.forEach {
+                add(SystemBarsControllerProperty(
+                    propertyName = it.name,
+                    target = it.navigationElement,
+                    deleteTarget = it.navigationElement
+                ))
+            }
+
+            // Find property getters whose return type is SystemBarsController.
+            javaPsi.methods.filter {
+                it.parameterList.parametersCount == 0 &&
+                    it.name.startsWith(GETTER_PREFIX) &&
+                    it.returnType?.canonicalText == SYSTEM_BARS_CONTROLLER_CLASS
+            }.forEach {
+                val propertyName = it.name.removePrefix(GETTER_PREFIX).replaceFirstChar(Char::lowercaseChar)
+                add(SystemBarsControllerProperty(
+                    propertyName = propertyName,
+                    target = it.navigationElement,
+                    deleteTarget = it.navigationElement
+                ))
+            }
+        }.distinctBy { it.propertyName }
     }
+
+    private fun createLintFix(context: JavaContext, propertyName: String, deleteTarget: PsiElement) =
+        buildDeleteFix(
+            name = "Delete '$propertyName'",
+            location = context.getLocation(deleteTarget)
+        )
+
+    private data class SystemBarsControllerProperty(
+        val propertyName: String,
+        val target: PsiElement,
+        val deleteTarget: PsiElement
+    )
 }
