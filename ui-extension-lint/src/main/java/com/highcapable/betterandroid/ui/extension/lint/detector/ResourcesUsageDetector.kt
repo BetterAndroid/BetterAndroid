@@ -30,8 +30,10 @@ import com.android.tools.lint.detector.api.JavaContext
 import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.asPropertyAccess
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
 import org.jetbrains.uast.UCallExpression
+import org.jetbrains.uast.UExpression
 
 class ResourcesUsageDetector : Detector(), Detector.UastScanner {
 
@@ -142,17 +144,17 @@ class ResourcesUsageDetector : Detector(), Detector.UastScanner {
             return when (methodName) {
                 GET_DRAWABLE_METHOD -> {
                     if (arguments.size < 2) null else
-                        "${arguments[0].asSourceString()}.$GET_DRAWABLE_COMPAT(${arguments[1].asSourceString()})" to
+                        arguments[0].buildExtensionCall(GET_DRAWABLE_COMPAT, arguments[1]) to
                             listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_DRAWABLE_COMPAT")
                 }
                 GET_COLOR_METHOD -> {
                     if (arguments.size < 2) null else
-                        "${arguments[0].asSourceString()}.$GET_COLOR_COMPAT(${arguments[1].asSourceString()})" to
+                        arguments[0].buildExtensionCall(GET_COLOR_COMPAT, arguments[1]) to
                             listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_COLOR_COMPAT")
                 }
                 GET_COLOR_STATE_LIST_METHOD -> {
                     if (arguments.size < 2) null else
-                        "${arguments[0].asSourceString()}.$GET_COLOR_STATE_LIST_COMPAT(${arguments[1].asSourceString()})" to
+                        arguments[0].buildExtensionCall(GET_COLOR_STATE_LIST_COMPAT, arguments[1]) to
                             listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_COLOR_STATE_LIST_COMPAT")
                 }
                 else -> null
@@ -184,11 +186,14 @@ class ResourcesUsageDetector : Detector(), Detector.UastScanner {
                 }
                 GET_FONT_METHOD -> {
                     if (arguments.size < 2) null else
-                        "${arguments[0].asSourceString()}.$GET_FONT_COMPAT(${arguments[1].asSourceString()})" to
+                        arguments[0].buildExtensionCall(GET_FONT_COMPAT, arguments[1]) to
                             listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_FONT_COMPAT")
                 }
                 else -> null
             }
         }
+
+        private fun UExpression.buildExtensionCall(functionName: String, vararg arguments: UExpression) =
+            "${asPropertyAccess(functionName)}(${arguments.joinToString(", ") { it.asSourceString() }})"
     }
 }
