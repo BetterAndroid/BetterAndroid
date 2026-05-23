@@ -63,6 +63,9 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
         private const val DEFAULT_LIFECYCLE_OBSERVER_FUNCTION = "DefaultLifecycleObserver"
         private const val LIFECYCLE_EVENT_OBSERVER_FUNCTION = "LifecycleEventObserver"
         private const val ON_STATE_CHANGED_METHOD = "onStateChanged"
+        private const val SOURCE_PARAMETER = "source"
+        private const val EVENT_PARAMETER = "event"
+        private const val OWNER_PARAMETER = "owner"
 
         private val DEFAULT_EVENTS = listOf("onCreate", "onStart", "onResume", "onPause", "onStop", "onDestroy")
 
@@ -132,6 +135,7 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
             if (node.methodName != ADD_OBSERVER_METHOD) return
             if (!node.isLifecycleAddObserverCall(context)) return
 
+            // This is the `lifecycle.addObserver(...)` pattern.
             val observer = node.valueArguments.firstOrNull()?.unwrapParenthesized() ?: return
             val replacement = when (observer) {
                 is UObjectLiteralExpression -> observer.resolveLifecycleObserverObjectReplacement(node)
@@ -163,6 +167,8 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
 
             val replacement = node.resolveLifecycleObserverFactoryReplacement() ?: return
             node.reportEnclosingAddObserverReplacement(context)
+
+            // This is the `object : DefaultLifecycleObserver/LifecycleEventObserver` pattern.
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
@@ -237,7 +243,7 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
                 type.extendsClass(context, DEFAULT_LIFECYCLE_OBSERVER_CLASS) ->
                     buildDefaultLifecycleAddObserverReplacement(addObserverCall, emptyList())
                 type.extendsClass(context, LIFECYCLE_EVENT_OBSERVER_CLASS) ->
-                    buildEventLifecycleAddObserverReplacement(addObserverCall, "{ source, event ->\n}")
+                    buildEventLifecycleAddObserverReplacement(addObserverCall, "{ $SOURCE_PARAMETER, $EVENT_PARAMETER ->\n}")
                 else -> null
             }
         }
@@ -271,7 +277,7 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
             val eventArguments = DEFAULT_EVENTS.mapNotNull { eventName ->
                 val method = declaration.findMethod(eventName) ?: return@mapNotNull null
                 val body = method.resolveLifecycleMethodBody(eventName)
-                "$eventName = { owner ->${body.asLambdaBlock()}}"
+                "$eventName = { $OWNER_PARAMETER ->${body.asLambdaBlock()}}"
             }
             if (eventArguments.isEmpty()) return null
 
@@ -290,7 +296,7 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
         private fun UObjectLiteralExpression.resolveEventLifecycleObserverFactory(): String? {
             val method = declaration.findMethod(ON_STATE_CHANGED_METHOD) ?: return null
             val body = method.resolveLifecycleMethodBody(ON_STATE_CHANGED_METHOD)
-            return "$LIFECYCLE_EVENT_OBSERVER_FUNCTION { source, event ->${body.asLambdaBlock()}}"
+            return "$LIFECYCLE_EVENT_OBSERVER_FUNCTION { $SOURCE_PARAMETER, $EVENT_PARAMETER ->${body.asLambdaBlock()}}"
         }
 
         private fun buildDefaultLifecycleAddObserverReplacement(

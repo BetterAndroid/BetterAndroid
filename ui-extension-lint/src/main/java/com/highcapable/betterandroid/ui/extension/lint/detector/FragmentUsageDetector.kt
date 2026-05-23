@@ -63,6 +63,9 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
 
         private const val FRAGMENT_MANAGER_FUNCTION = "fragmentManager"
         private const val FIND_FRAGMENT_FUNCTION = "findFragment"
+        private const val AS_OPERATOR = "as"
+        private const val SAFE_AS_OPERATOR = "as?"
+        private const val NOT_NULL_ASSERTION = "!!"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithFragmentExtension",
@@ -120,6 +123,8 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
         override fun visitQualifiedReferenceExpression(node: UQualifiedReferenceExpression) {
             val selectorName = node.selector.resolveName() ?: return
             if (!node.isFragmentManagerProperty(context, selectorName)) return
+
+            // This is the `supportFragmentManager` or Fragment manager property access pattern.
             val receiver = node.receiver.asSourceString()
             val replacement = when (selectorName) {
                 SUPPORT_FRAGMENT_MANAGER -> "$receiver.$FRAGMENT_MANAGER_FUNCTION()"
@@ -144,6 +149,8 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
             if (node.isQualifiedSelector()) return
             val selectorName = node.resolveName() ?: return
             if (!node.isFragmentManagerProperty(context, selectorName)) return
+
+            // This is the implicit Fragment manager property access pattern.
             val replacement = when (selectorName) {
                 SUPPORT_FRAGMENT_MANAGER -> "$FRAGMENT_MANAGER_FUNCTION()"
                 PARENT_FRAGMENT_MANAGER -> "$FRAGMENT_MANAGER_FUNCTION(parent = true)"
@@ -166,8 +173,8 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
         override fun visitBinaryExpressionWithType(node: UBinaryExpressionWithType) {
             if (node.operationKind !is UastBinaryExpressionWithTypeKind.TypeCast) return
 
-            val isNullableCast = node.operationKind.name == "as?"
-            if (!isNullableCast && node.operationKind.name != "as") return
+            val isNullableCast = node.operationKind.name == SAFE_AS_OPERATOR
+            if (!isNullableCast && node.operationKind.name != AS_OPERATOR) return
 
             val call = node.operand.unwrapParenthesized().asCall() ?: return
 
@@ -178,7 +185,8 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
             val arg = call.valueArguments.firstOrNull()?.asSourceString() ?: return
             val targetType = node.typeReference?.asSourceString() ?: return
 
-            val replacement = "$receiver.$FIND_FRAGMENT_FUNCTION<$targetType>($arg)${if (isNullableCast) "" else "!!"}"
+            // This is the `findFragmentById/Tag(...) as/as? T` pattern.
+            val replacement = "$receiver.$FIND_FRAGMENT_FUNCTION<$targetType>($arg)${if (isNullableCast) "" else NOT_NULL_ASSERTION}"
 
             context.report(
                 issue = ISSUE,

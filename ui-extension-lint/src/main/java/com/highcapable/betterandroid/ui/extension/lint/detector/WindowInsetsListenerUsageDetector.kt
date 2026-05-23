@@ -89,11 +89,13 @@ class WindowInsetsListenerUsageDetector : Detector(), Detector.UastScanner {
         override fun visitCallExpression(node: UCallExpression) {
             if (node.methodName != SET_ON_APPLY_WINDOW_INSETS_LISTENER) return
 
+            // Validation is ViewCompat or View class.
             val method = node.resolve() ?: return
             if (!context.evaluator.isMemberInClass(method, VIEW_COMPAT_CLASS) &&
                 !context.evaluator.isMemberInClass(method, VIEW_CLASS)
             ) return
 
+            // This is the `setOnApplyWindowInsetsListener(...)` pattern.
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),

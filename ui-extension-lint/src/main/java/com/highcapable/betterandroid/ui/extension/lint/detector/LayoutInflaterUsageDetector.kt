@@ -84,9 +84,11 @@ class LayoutInflaterUsageDetector : Detector(), Detector.UastScanner {
         override fun visitCallExpression(node: UCallExpression) {
             if (node.methodName != FROM_METHOD) return
 
+            // Validation is LayoutInflater class.
             val method = node.resolve() ?: return
             if (!context.evaluator.isMemberInClass(method, LAYOUT_INFLATER_CLASS)) return
 
+            // This is the `LayoutInflater.from(context)` pattern.
             val contextArg = node.valueArguments.firstOrNull() ?: return
             val replacement = contextArg.asPropertyAccess(LAYOUT_INFLATER_PROPERTY)
 

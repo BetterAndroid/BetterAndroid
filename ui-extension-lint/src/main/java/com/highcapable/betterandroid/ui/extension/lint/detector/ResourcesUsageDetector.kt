@@ -109,8 +109,11 @@ class ResourcesUsageDetector : Detector(), Detector.UastScanner {
 
         override fun visitCallExpression(node: UCallExpression) {
             val methodName = node.methodName ?: return
+
+            // Validation is ContextCompat or ResourcesCompat class.
             val method = node.resolve() ?: return
 
+            // This is the `ContextCompat/ResourcesCompat.get...(receiver, ...)` pattern.
             val replacement = when {
                 context.evaluator.isMemberInClass(method, CONTEXT_COMPAT_CLASS) ->
                     createContextCompatReplacement(node, methodName)

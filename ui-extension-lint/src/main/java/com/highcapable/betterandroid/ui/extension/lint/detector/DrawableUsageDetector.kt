@@ -84,6 +84,7 @@ class DrawableUsageDetector : Detector(), Detector.UastScanner {
         override fun visitCallExpression(node: UCallExpression) {
             if (node.methodName != SET_PADDING_METHOD) return
 
+            // Validation is Drawable class.
             val method = node.resolve() ?: return
             val containingClass = method.containingClass ?: return
             if (containingClass.qualifiedName != DRAWABLE_CLASS &&
@@ -93,6 +94,7 @@ class DrawableUsageDetector : Detector(), Detector.UastScanner {
             val arguments = node.valueArguments
             if (arguments.size != 4) return
 
+            // This is the `drawable.setPadding(size, size, size, size)` pattern.
             val values = arguments.map { it.asSourceString() }
             if (values.distinct().size != 1) return
 

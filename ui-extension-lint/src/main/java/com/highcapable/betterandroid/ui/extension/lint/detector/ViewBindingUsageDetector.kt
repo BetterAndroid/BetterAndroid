@@ -54,6 +54,9 @@ class ViewBindingUsageDetector : Detector(), Detector.UastScanner {
         private const val METHOD_NAME_PROPERTY = "name"
         private const val INFLATE_METHOD = "inflate"
         private const val BIND_METHOD = "bind"
+        private const val CLASS_OF_METHOD = "classOf"
+        private const val CLASS_LITERAL_SUFFIX = "::class.java"
+        private const val VIEW_BINDING_BUILDER_NAME = "ViewBindingBuilder"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithViewBindingExtension",
@@ -112,6 +115,7 @@ class ViewBindingUsageDetector : Detector(), Detector.UastScanner {
         override fun visitCallExpression(node: UCallExpression) {
             if (!node.isViewBindingMethodLookup(context) && !node.isViewBindingMethodsIteration(context)) return
 
+            // This is the ViewBinding reflection method lookup or iteration pattern.
             report(node, context)
         }
 
@@ -123,12 +127,11 @@ class ViewBindingUsageDetector : Detector(), Detector.UastScanner {
 
         private fun report(node: UElement, context: JavaContext) {
             val suggestion = node.resolveViewBindingSuggestion()
-            val varSuggestion = suggestion.replaceFirstChar { it.lowercase() }
 
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Consider handing this reflection over to `$suggestion` or `context.$varSuggestion}`."
+                message = "Consider handing this reflection over to `$suggestion` or `$VIEW_BINDING_BUILDER_NAME`."
             )
         }
 
@@ -168,10 +171,10 @@ class ViewBindingUsageDetector : Detector(), Detector.UastScanner {
 
         private fun UExpression.resolveConcreteViewBindingNameFromSource(): String? {
             val source = asSourceString().trim()
-            if (source.endsWith("::class.java")) return source.removeSuffix("::class.java")
+            if (source.endsWith(CLASS_LITERAL_SUFFIX)) return source.removeSuffix(CLASS_LITERAL_SUFFIX)
 
             val methodName = (this as? UCallExpression)?.methodName
-            if (methodName == "classOf") {
+            if (methodName == CLASS_OF_METHOD) {
                 val generic = source.substringAfter('<', "").substringBeforeLast('>', "")
                 if (generic.isNotBlank()) return generic.trim()
             }
@@ -198,7 +201,7 @@ class ViewBindingUsageDetector : Detector(), Detector.UastScanner {
             val source = asSourceString()
             if (!source.contains(METHOD_NAME_PROPERTY)) return false
 
-            return source.contains("\"$INFLATE_METHOD\"") || source.contains("\"$BIND_METHOD\"")
+            return source.containsMethodName(INFLATE_METHOD) || source.containsMethodName(BIND_METHOD)
         }
 
         private fun UQualifiedReferenceExpression.isViewBindingMethodNameCheck(context: JavaContext): Boolean {
@@ -229,5 +232,7 @@ class ViewBindingUsageDetector : Detector(), Detector.UastScanner {
             val classType = this as? PsiClassType ?: return false
             return classType.parameters.any { it.extendsClass(context, VIEW_BINDING_CLASS) }
         }
+
+        private fun String.containsMethodName(name: String) = contains("\"$name\"")
     }
 }

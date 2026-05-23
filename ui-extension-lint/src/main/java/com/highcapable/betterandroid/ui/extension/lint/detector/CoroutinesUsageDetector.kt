@@ -49,6 +49,7 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
         private const val LAUNCH_METHOD = "launch"
         private const val ASYNC_METHOD = "async"
         private const val LIFECYCLE_SCOPE_PROPERTY = "lifecycleScope"
+        private const val GET_LIFECYCLE_SCOPE_METHOD = "getLifecycleScope"
 
         private const val LAUNCH_EXTENSION = "launch"
         private const val ASYNC_EXTENSION = "async"
@@ -124,6 +125,7 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
             val receiverSource = receiver.asSourceString()
             val methodName = node.methodName ?: return
 
+            // This is the `owner.lifecycleScope.launch/async(...)` pattern.
             val replacementPrefix = when (receiver) {
                 is UQualifiedReferenceExpression -> {
                     val selectorName = receiver.selector.resolveName() ?: return
@@ -162,6 +164,7 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
         }
 
         private fun reportPostDelayed(node: UCallExpression) {
+            // Validation is Handler class.
             val method = node.resolve() ?: return
             if (!context.evaluator.isMemberInClass(method, HANDLER_CLASS)) return
 
@@ -181,7 +184,7 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
                 else -> null
             } as? PsiMethod ?: return false
 
-            return resolved.name == "getLifecycleScope" &&
+            return resolved.name == GET_LIFECYCLE_SCOPE_METHOD &&
                 context.evaluator.isMemberInClass(resolved, LIFECYCLE_OWNER_KT_CLASS)
         }
     }

@@ -106,6 +106,7 @@ class ViewOutlineProviderUsageDetector : Detector(), Detector.UastScanner {
             val objectLiteral = node.rightOperand as? UObjectLiteralExpression ?: return
             if (!objectLiteral.isObjectLiteralOf(VIEW_OUTLINE_PROVIDER_CLASS)) return
 
+            // This is the `view.outlineProvider = object : ViewOutlineProvider()` pattern.
             val replacement = buildReplacement(receiver, objectLiteral) ?: return
             context.report(
                 issue = ISSUE,

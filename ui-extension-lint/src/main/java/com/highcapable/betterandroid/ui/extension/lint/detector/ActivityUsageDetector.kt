@@ -56,6 +56,8 @@ class ActivityUsageDetector : Detector(), Detector.UastScanner {
         private const val APPLY_METHOD = "apply"
         private const val ALSO_METHOD = "also"
         private const val INTENT_HELPER = "Intent"
+        private const val DEFAULT_ALSO_PARAMETER = "it"
+        private const val STATEMENT_SEPARATOR = ";"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithActivityExtension",
@@ -101,12 +103,14 @@ class ActivityUsageDetector : Detector(), Detector.UastScanner {
         override fun visitCallExpression(node: UCallExpression) {
             if (node.methodName != START_ACTIVITY_METHOD) return
 
+            // Validation is Context or Fragment `startActivity(...)`.
             val method = node.resolve() ?: return
             val containingClass = method.containingClass
             val isContext = containingClass?.let { context.evaluator.extendsClass(it, CONTEXT_CLASS, false) } == true
             val isFragment = containingClass?.let { context.evaluator.extendsClass(it, FRAGMENT_CLASS, false) } == true
             if (!isContext && !isFragment) return
 
+            // This is the `startActivity(Intent(context, TargetActivity::class.java))` pattern.
             val intentSpec = resolveIntentSpec(node.valueArguments.firstOrNull()) ?: return
             val receiverPrefix = node.receiverPrefix()
             val replacement = buildReplacement(receiverPrefix, intentSpec)
@@ -197,10 +201,10 @@ class ActivityUsageDetector : Detector(), Detector.UastScanner {
                 is UBlockExpression -> body.expressions
                 else -> listOf(body)
             }
-            val parameterName = lambda.valueParameters.firstOrNull()?.name ?: if (isAlso) "it" else null
+            val parameterName = lambda.valueParameters.firstOrNull()?.name ?: if (isAlso) DEFAULT_ALSO_PARAMETER else null
 
             return expressions.mapNotNull { expression ->
-                val source = expression.unwrapReturnedExpression().asSourceString().trim().removeSuffix(";")
+                val source = expression.unwrapReturnedExpression().asSourceString().trim().removeSuffix(STATEMENT_SEPARATOR)
                     .removeIntentLambdaPrefix(parameterName)
                 source.takeIf { it.isNotBlank() }
             }

@@ -101,6 +101,8 @@ class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
         override fun visitQualifiedReferenceExpression(node: UQualifiedReferenceExpression) {
             val selectorName = node.selector.resolveName() ?: return
             if (!node.isViewWalkProperty(selectorName)) return
+
+            // This is the `view.ancestors/descendants` property access pattern.
             val receiverText = node.receiver.asSourceString()
 
             val replacement = when (selectorName) {
@@ -132,6 +134,7 @@ class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
             val selectorName = node.resolveName() ?: return
             if (!node.isViewWalkProperty(selectorName)) return
 
+            // This is the implicit `ancestors/descendants` property access pattern.
             val replacement = when (selectorName) {
                 ANCESTORS_PROPERTY -> "$WALK_TO_ROOT_FUNCTION()"
                 DESCENDANTS_PROPERTY -> "$WALK_THROUGH_CHILDREN_FUNCTION()"

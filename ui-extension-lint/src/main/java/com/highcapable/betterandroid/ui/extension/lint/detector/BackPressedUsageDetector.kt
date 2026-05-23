@@ -45,6 +45,7 @@ import org.jetbrains.uast.UBlockExpression
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UExpression
+import org.jetbrains.uast.ULambdaExpression
 import org.jetbrains.uast.UObjectLiteralExpression
 import org.jetbrains.uast.UQualifiedReferenceExpression
 
@@ -72,6 +73,13 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
         private const val REQUIRE_ACTIVITY_CALL = "requireActivity()"
         private const val ACTIVITY_NOT_NULL_RECEIVER = "$ACTIVITY_PROPERTY!!"
         private const val ACTIVITY_NULLABLE_RECEIVER = "$ACTIVITY_PROPERTY?"
+        private const val CONTEXT_PROPERTY = "context"
+        private const val THIS_RECEIVER = "this"
+        private const val TRUE_VALUE = "true"
+        private const val FALSE_VALUE = "false"
+        private const val REMOVED_PARAMETER = "removed"
+        private const val SAFE_CALL_OPERATOR = "?."
+        private const val NULLABLE_SUFFIX = "?"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithBackPressedExtension",
@@ -194,54 +202,47 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
                 node.valueArguments.any { it.unwrapParenthesized().asCall()?.methodName == ON_BACK_PRESSED_CALLBACK_FUNCTION }
             ) return
 
-            val sourcePsi = node.sourcePsi ?: return
-            val source = sourcePsi.text ?: return
-            val statements = source
-                .substringAfter("{", "")
-                .substringBeforeLast("}", "")
-                .lines()
-                .map { it.trim() }
-                .filter { it.isNotEmpty() }
-            if (statements.size != 3) return
-
-            val previous = statements[0]
-            val statement = statements[1]
-            val next = statements[2]
-            if (previous != "$IS_ENABLED_PROPERTY = false" && previous != "this.$IS_ENABLED_PROPERTY = false") return
-            if (!statement.endsWith(".$ON_BACK_PRESSED_METHOD()")) return
-
-            val dispatcher = statement.substringBeforeLast(".$ON_BACK_PRESSED_METHOD()")
-            val normalizedDispatcher = node.normalizeDispatcherSource(context, dispatcher) ?: return
-            val replacement = when (next) {
-                "$IS_ENABLED_PROPERTY = true", "this.$IS_ENABLED_PROPERTY = true" -> "$TRIGGER_METHOD($normalizedDispatcher)"
-                "$REMOVE_METHOD()", "this.$REMOVE_METHOD()" -> "$TRIGGER_METHOD($normalizedDispatcher, removed = true)"
-                else -> return
+            // This is the `isEnabled = false; dispatcher.onBackPressed(); isEnabled = true/remove()` lambda pattern.
+            val lambda = node.valueArguments
+                .mapNotNull { it.unwrapParenthesized() as? ULambdaExpression }
+                .lastOrNull()
+                ?: return
+            val expressions = when (val body = lambda.body) {
+                is UBlockExpression -> body.expressions
+                else -> listOf(body)
             }
+            if (expressions.size != 3) return
 
-            val start = source.indexOf(previous)
-            val end = source.lastIndexOf(next)
-            if (start < 0 || end < 0) return
-            val location = com.android.tools.lint.detector.api.Location.create(
-                context.file,
-                context.getContents(),
-                sourcePsi.textRange.startOffset + start,
-                sourcePsi.textRange.startOffset + end + next.length
-            )
+            val previous = expressions[0]
+            val statement = expressions[1]
+            val next = expressions[2]
+            if (!previous.isDisableCurrentBackPressedCallback()) return
+
+            val onBackPressedCall = statement.unwrapParenthesized().asCall() ?: return
+            if (onBackPressedCall.methodName != ON_BACK_PRESSED_METHOD) return
+            val method = onBackPressedCall.resolve() ?: return
+            if (!context.evaluator.isMemberInClass(method, ON_BACK_PRESSED_DISPATCHER_CLASS)) return
+
+            val replacement = when {
+                next.isEnableCurrentBackPressedCallback() -> onBackPressedCall.resolveTriggerReplacement(context)
+                next.isRemoveCurrentBackPressedCallback() -> onBackPressedCall.resolveTriggerReplacement(context, removed = true)
+                else -> null
+            } ?: return
+            val location = context.getRangeLocation(previous, 0, next, 0)
 
             context.report(
                 issue = ISSUE,
                 scope = node,
                 location = location,
                 message = "Can be replaced with `$replacement`.",
-                quickfixData = LintFix.create()
-                    .name("Replace with '$TRIGGER_METHOD'")
-                    .replace()
-                    .range(location)
-                    .with(replacement)
-                    .reformat(true)
-                    .shortenNames()
-                    .imports(*node.resolveTriggerImports(context, dispatcher).toTypedArray())
-                    .build()
+                quickfixData = buildTriggerFix(
+                    context = context,
+                    previous = previous,
+                    statement = statement,
+                    next = next,
+                    replacement = replacement,
+                    imports = onBackPressedCall.resolveTriggerImports(context)
+                )
             )
         }
 
@@ -249,9 +250,11 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
             if (node.methodName != ON_BACK_PRESSED_METHOD) return
             if (node.isInsideOnBackPressedCallbackFactory()) return
 
+            // Validation is OnBackPressedDispatcher class.
             val method = node.resolve() ?: return
             if (!context.evaluator.isMemberInClass(method, ON_BACK_PRESSED_DISPATCHER_CLASS)) return
 
+            // This is the `isEnabled = false; dispatcher.onBackPressed(); isEnabled = true/remove()` statement pattern.
             val statement = node.findContainingStatement() ?: return
             val block = statement.uastParent as? UBlockExpression ?: return
             val expressions = block.expressions
@@ -295,7 +298,7 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
                 .substringAfter("(", "")
                 .substringBefore(")", "")
                 .trim()
-                .takeUnless { it.isBlank() || it == "true" }
+                .takeUnless { it.isBlank() || it == TRUE_VALUE }
             val method = node.declaration.findMethod(HANDLE_ON_BACK_PRESSED_METHOD) ?: return null
             val body = method.uastBody?.sourcePsi?.text
                 ?.removePrefix("{")
@@ -322,16 +325,16 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
             if (!isInsideClass(context, VIEW_CLASS)) return false
 
             val castExpression = receiver.unwrapParenthesized() as? UBinaryExpressionWithType ?: return false
-            if (castExpression.operand.asSourceString() != "context") return false
+            if (castExpression.operand.asSourceString() != CONTEXT_PROPERTY) return false
 
             return castExpression.typeReference?.type.extendsClass(context, COMPONENT_ACTIVITY_CLASS)
         }
 
         private fun UExpression.isDisableCurrentBackPressedCallback() =
-            isCurrentBackPressedExpression("$IS_ENABLED_PROPERTY = false")
+            isCurrentBackPressedExpression("$IS_ENABLED_PROPERTY = $FALSE_VALUE")
 
         private fun UExpression.isEnableCurrentBackPressedCallback() =
-            isCurrentBackPressedExpression("$IS_ENABLED_PROPERTY = true")
+            isCurrentBackPressedExpression("$IS_ENABLED_PROPERTY = $TRUE_VALUE")
 
         private fun UExpression.isRemoveCurrentBackPressedCallback() =
             isCurrentBackPressedExpression("$REMOVE_METHOD()")
@@ -343,19 +346,12 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
 
         private fun UCallExpression.resolveTriggerReplacement(context: JavaContext, removed: Boolean = false): String? {
             val dispatcher = normalizeDispatcherSource(context) ?: return null
-            return if (removed) "$TRIGGER_METHOD($dispatcher, removed = true)" else "$TRIGGER_METHOD($dispatcher)"
+            return if (removed) "$TRIGGER_METHOD($dispatcher, $REMOVED_PARAMETER = $TRUE_VALUE)" else "$TRIGGER_METHOD($dispatcher)"
         }
 
         private fun UCallExpression.resolveTriggerImports(context: JavaContext): Set<String> = buildSet {
             add("${DeclaredSymbol.COMPONENT_PACKAGE}.$TRIGGER_METHOD")
             if (normalizeDispatcherSource(context) == ON_BACK_PRESSED_DISPATCHER_PROPERTY &&
-                isInsideFragment(context)
-            ) add("${DeclaredSymbol.COMPONENT_PACKAGE}.$ON_BACK_PRESSED_DISPATCHER_PROPERTY")
-        }
-
-        private fun UElement.resolveTriggerImports(context: JavaContext, dispatcherSource: String): Set<String> = buildSet {
-            add("${DeclaredSymbol.COMPONENT_PACKAGE}.$TRIGGER_METHOD")
-            if (normalizeDispatcherSource(context, dispatcherSource) == ON_BACK_PRESSED_DISPATCHER_PROPERTY &&
                 isInsideFragment(context)
             ) add("${DeclaredSymbol.COMPONENT_PACKAGE}.$ON_BACK_PRESSED_DISPATCHER_PROPERTY")
         }
@@ -367,7 +363,7 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
 
         private fun UElement.normalizeDispatcherSource(context: JavaContext, dispatcherSource: String): String? {
             val receiver = dispatcherSource.trim()
-            if (receiver.isBlank() || receiver.contains("?.")) return null
+            if (receiver.isBlank() || receiver.contains(SAFE_CALL_OPERATOR)) return null
             if (receiver == ON_BACK_PRESSED_DISPATCHER_PROPERTY) return ON_BACK_PRESSED_DISPATCHER_PROPERTY
 
             if (isInsideFragment(context) && receiver in setOf(REQUIRE_ACTIVITY_CALL, ACTIVITY_NOT_NULL_RECEIVER))
@@ -384,7 +380,7 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
                 source.startsWith("$ACTIVITY_NULLABLE_RECEIVER.$ON_BACK_PRESSED_DISPATCHER_PROPERTY") -> return ACTIVITY_NULLABLE_RECEIVER
             }
 
-            val receiverSource = receiver.unwrapParenthesized()?.asSourceString()?.trim()?.removeSuffix("?") ?: return null
+            val receiverSource = receiver.unwrapParenthesized()?.asSourceString()?.trim()?.removeSuffix(NULLABLE_SUFFIX) ?: return null
             return receiverSource.takeIf {
                 it == REQUIRE_ACTIVITY_CALL || it == ACTIVITY_NOT_NULL_RECEIVER || it == ACTIVITY_NULLABLE_RECEIVER
             }
@@ -392,7 +388,7 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
 
         private fun UExpression.isCurrentBackPressedExpression(expected: String): Boolean {
             val source = unwrapParenthesized()?.asSourceString()?.trim() ?: return false
-            return source == expected || source == "this.$expected"
+            return source == expected || source == "$THIS_RECEIVER.$expected"
         }
 
         private fun UElement.isInsideOnBackPressedCallbackFactory(): Boolean {

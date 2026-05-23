@@ -128,6 +128,7 @@ class ViewImeVisibilityUsageDetector : Detector(), Detector.UastScanner {
                 methodName != HIDE_METHOD
             ) return
 
+            // Validation is InputMethodManager or WindowInsetsController class.
             val method = node.resolve() ?: return
             val isInputMethodManager = context.evaluator.isMemberInClass(method, INPUT_METHOD_MANAGER_CLASS)
             val isWindowInsetsController = context.evaluator.isMemberInClass(method, WINDOW_INSETS_CONTROLLER_CLASS)
@@ -138,6 +139,7 @@ class ViewImeVisibilityUsageDetector : Detector(), Detector.UastScanner {
                 !hasImeTypeArgument(node)
             ) return
 
+            // This is the official IME show/hide API usage pattern.
             val replacement = when {
                 isInputMethodManager && methodName == SHOW_SOFT_INPUT_METHOD ->
                     resolveTargetViewText(node)?.let { "$it.$SHOW_IME_FUNCTION()" }

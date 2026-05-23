@@ -54,6 +54,7 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
         private const val GET_HINT_PROPERTY = "hint"
         private const val GET_TEXT_METHOD = "getText"
         private const val GET_HINT_METHOD = "getHint"
+        private const val GET_PREFIX = "get"
 
         private const val TEXT_COLOR_PROPERTY = "textColor"
         private const val TEXT_TO_STRING_FUNCTION = "textToString"
@@ -123,9 +124,11 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
         }
 
         private fun reportSetTextColor(node: UCallExpression) {
+            // Validation is TextView class.
             val method = node.resolve() ?: return
             if (!context.evaluator.isMemberInClass(method, TEXT_VIEW_CLASS)) return
 
+            // This is the `textView.setTextColor(color)` pattern.
             val valueArg = node.valueArguments.firstOrNull() ?: return
             val replacement = "${node.receiverPrefix()}$TEXT_COLOR_PROPERTY = ${valueArg.asSourceString()}"
 
@@ -173,6 +176,7 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
             if (memberName != GET_TEXT_PROPERTY && memberName != GET_HINT_PROPERTY) return
             if (!target.isResolvedTextViewMember(memberName)) return
 
+            // This is the `textView.text/hint.toString()` pattern.
             val replacement = if (memberName == GET_TEXT_PROPERTY)
                 "$receiverPrefix$TEXT_TO_STRING_FUNCTION()"
             else "$receiverPrefix$HINT_TO_STRING_FUNCTION()"
@@ -202,7 +206,7 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
             } as? PsiMember ?: return false
 
             return when (resolved) {
-                is PsiMethod -> resolved.name == "get${name.replaceFirstChar { it.titlecase() }}" &&
+                is PsiMethod -> resolved.name == "$GET_PREFIX${name.replaceFirstChar { it.titlecase() }}" &&
                     resolved.isDeclaredInTextViewHierarchy()
                 is PsiField -> resolved.name == name &&
                     resolved.isDeclaredInTextViewHierarchy()

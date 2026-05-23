@@ -87,6 +87,7 @@ class ViewTooltipTextUsageDetector : Detector(), Detector.UastScanner {
         override fun visitCallExpression(node: UCallExpression) {
             if (node.methodName != SET_TOOLTIP_TEXT_METHOD) return
 
+            // Validation is TooltipCompat or ViewCompat class.
             val method = node.resolve() ?: return
             if (!context.evaluator.isMemberInClass(method, TOOLTIP_COMPAT_CLASS) &&
                 !context.evaluator.isMemberInClass(method, VIEW_COMPAT_CLASS)
@@ -95,6 +96,7 @@ class ViewTooltipTextUsageDetector : Detector(), Detector.UastScanner {
             val arguments = node.valueArguments
             if (arguments.size < 2) return
 
+            // This is the `TooltipCompat/ViewCompat.setTooltipText(view, text)` pattern.
             val viewText = arguments[0].asSourceString()
             val tooltipText = arguments[1].asSourceString()
             val replacement = "$viewText.$TOOLTIP_TEXT_COMPAT_PROPERTY = $tooltipText"

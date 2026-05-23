@@ -55,6 +55,7 @@ class BitmapUsageDetector : Detector(), Detector.UastScanner {
         private const val CREATE_BITMAP_OR_NULL = "createBitmapOrNull"
 
         private const val ABSOLUTE_PATH_PROPERTY = "absolutePath"
+        private const val THIS_RECEIVER = "this"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithBitmapExtension",
@@ -104,9 +105,12 @@ class BitmapUsageDetector : Detector(), Detector.UastScanner {
 
         override fun visitCallExpression(node: UCallExpression) {
             val methodName = node.methodName ?: return
+
+            // Validation is BitmapFactory class.
             val method = node.resolve() ?: return
             if (!context.evaluator.isMemberInClass(method, BITMAP_FACTORY_CLASS)) return
 
+            // This is the `BitmapFactory.decode...(...)` pattern.
             val fixes = when (methodName) {
                 DECODE_FILE_METHOD -> createDecodeFileFixes(node)
                 DECODE_STREAM_METHOD -> createDecodeStreamFixes(node)
@@ -256,7 +260,7 @@ class BitmapUsageDetector : Detector(), Detector.UastScanner {
         private fun buildExtensionCall(receiverPrefix: String, functionName: String, arguments: String) =
             if (arguments.isBlank()) "$receiverPrefix$functionName()" else "$receiverPrefix$functionName($arguments)"
 
-        private fun String.extensionReceiverPrefix() = if (this == "this") "" else "$this."
+        private fun String.extensionReceiverPrefix() = if (this == THIS_RECEIVER) "" else "$this."
     }
 
     private data class BitmapDecodeFix(

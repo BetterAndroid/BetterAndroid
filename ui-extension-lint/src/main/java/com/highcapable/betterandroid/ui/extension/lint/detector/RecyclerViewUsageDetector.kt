@@ -48,6 +48,7 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
         private const val RECYCLER_VIEW_CLASS = "androidx.recyclerview.widget.RecyclerView"
         private const val LAYOUT_MANAGER_GET_FUNCTION = "getLayoutManager"
         private const val LAYOUT_MANAGER_FUNCTION = "layoutManager"
+        private const val THIS_RECEIVER = "this"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithRecyclerViewExtension",
@@ -95,11 +96,12 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
             val operandNode = node.operand.unwrapParenthesized() ?: return
             if (!operandNode.isRecyclerViewLayoutManagerAccess(context)) return
 
+            // This is the `recyclerView.layoutManager as/as? LayoutManager` pattern.
             val operand = operandNode.asSourceString()
             val targetType = node.typeReference?.asSourceString() ?: return
             val replacement = when {
                 operand == LAYOUT_MANAGER_FUNCTION -> "$LAYOUT_MANAGER_FUNCTION<$targetType>()"
-                operand == "this.$LAYOUT_MANAGER_FUNCTION" -> "this.$LAYOUT_MANAGER_FUNCTION<$targetType>()"
+                operand == "$THIS_RECEIVER.$LAYOUT_MANAGER_FUNCTION" -> "$THIS_RECEIVER.$LAYOUT_MANAGER_FUNCTION<$targetType>()"
                 operand.endsWith(".$LAYOUT_MANAGER_FUNCTION") ->
                     "${operand.removeSuffix(".$LAYOUT_MANAGER_FUNCTION")}.$LAYOUT_MANAGER_FUNCTION<$targetType>()"
                 else -> return
