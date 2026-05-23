@@ -140,10 +140,10 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
             if (call.valueArguments.size != 1) return
 
             val key = call.valueArguments[0].asSourceString()
-            val type = node.typeReference?.asSourceString() ?: return
-            val isNullableCast = node.operationKind.name == "as?"
+            val castType = node.resolveCastType() ?: return
+            val isNullableCast = node.operationKind.name == "as?" || castType.isNullable
 
-            val replacement = "${call.receiverPrefix()}${compat.functionName}<$type>($key)${if (isNullableCast) "" else "!!"}"
+            val replacement = "${call.receiverPrefix()}${compat.functionName}<${castType.name}>($key)${if (isNullableCast) "" else "!!"}"
             reportAndFix(node, replacement, compat.importTarget, fixName = compat.functionName)
         }
 
@@ -248,6 +248,16 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
             return parent is UBinaryExpressionWithType
         }
 
+        private fun UBinaryExpressionWithType.resolveCastType(): CastType? {
+            val type = typeReference?.asSourceString()?.trim() ?: return null
+            val isNullable = type.endsWith("?")
+
+            return CastType(
+                name = if (isNullable) type.dropLast(1).trimEnd() else type,
+                isNullable = isNullable
+            )
+        }
+
         private fun reportAndFix(
             node: UElement,
             replacement: String,
@@ -273,5 +283,10 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
     private data class IntentReplacement(
         val replacement: String,
         val displayReplacement: String
+    )
+
+    private data class CastType(
+        val name: String,
+        val isNullable: Boolean
     )
 }
