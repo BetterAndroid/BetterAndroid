@@ -33,8 +33,19 @@ import com.highcapable.betterandroid.ui.component.adapter.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.buildReplaceFix
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.resolveLocalVariableInitializer
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.unwrapParenthesized
+import com.intellij.psi.PsiClass
+import org.jetbrains.uast.UBinaryExpression
+import org.jetbrains.uast.UBlockExpression
 import org.jetbrains.uast.UCallExpression
+import org.jetbrains.uast.UDeclarationsExpression
 import org.jetbrains.uast.UElement
+import org.jetbrains.uast.UIfExpression
+import org.jetbrains.uast.ULocalVariable
+import org.jetbrains.uast.UQualifiedReferenceExpression
+import org.jetbrains.uast.USimpleNameReferenceExpression
+import org.jetbrains.uast.UUnaryExpression
+import org.jetbrains.uast.UastBinaryOperator
+import org.jetbrains.uast.getContainingUClass
 
 class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
 
@@ -47,6 +58,13 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
         private const val SCROLL_TO_LAST_POSITION_FUNCTION = "scrollToLastPosition"
         private const val SMOOTH_SCROLL_TO_FIRST_POSITION_FUNCTION = "smoothScrollToFirstPosition"
         private const val SMOOTH_SCROLL_TO_LAST_POSITION_FUNCTION = "smoothScrollToLastPosition"
+        private const val ADAPTER_PROPERTY = "adapter"
+        private const val ITEM_COUNT_PROPERTY = "itemCount"
+        private const val MINUS_METHOD = "minus"
+        private const val ZERO_ARGUMENT = "0"
+        private const val ONE_ARGUMENT = "1"
+        private const val THIS_RECEIVER = "this"
+        private const val ELVIS_OPERATOR = "?:"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithRecyclerViewExtension",
@@ -134,26 +152,158 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
             !context.evaluator.extendsClass(containingClass, RECYCLER_VIEW_CLASS, false)
         ) return null
 
-        val receiver = node.receiver?.asSourceString() ?: return null
+        val receiver = node.recyclerViewReceiver(context) ?: return null
         val position = node.valueArguments.firstOrNull()?.unwrapParenthesized() ?: return null
+        val replacementReceiver = node.receiverPrefix()
 
         return when {
-            position.asSourceString() == "0" -> "$receiver.$firstFunction()"
-            isLastPositionExpression(receiver, position) -> "$receiver.$lastFunction()"
+            position.isZeroExpression() -> "$replacementReceiver$firstFunction()"
+            isLastPositionExpression(receiver, position) -> "$replacementReceiver$lastFunction()"
             else -> null
         }
     }
 
     private fun isLastPositionExpression(receiver: String, expression: UElement): Boolean {
         val target = expression.resolveLocalVariableInitializer() ?: expression
-        val source = target.asSourceString()
+        return target.isAdapterItemCountMinusOne(receiver)
+    }
 
-        return source == "$receiver.adapter!!.itemCount - 1" ||
-            source == "($receiver.adapter!!.itemCount - 1)" ||
-            source == "($receiver.adapter?.itemCount ?: 0) - 1" ||
-            source == "(($receiver.adapter?.itemCount ?: 0) - 1)" ||
-            source == "($receiver.adapter?.itemCount ?: 0).minus(1)" ||
-            source == "$receiver.adapter?.itemCount?.minus(1)" ||
-            source == "($receiver.adapter?.itemCount?.minus(1))"
+    private fun UElement.isAdapterItemCountMinusOne(receiver: String): Boolean {
+        val target = resolveLocalVariableInitializer() ?: unwrapParenthesized() ?: return false
+
+        return when (target) {
+            is UIfExpression -> target.elseExpression?.isZeroExpression() == true &&
+                (target.thenExpression?.isAdapterItemCountMinusOne(receiver) == true ||
+                    target.thenExpression?.resolveLocalVariableInitializer()
+                        ?.isAdapterItemCountMinusOne(receiver) == true ||
+                    target.thenExpression?.resolveLocalVariableInitializerFromBlock()
+                        ?.isAdapterItemCountMinusOne(receiver) == true)
+            is UBinaryExpression -> when (target.operator) {
+                UastBinaryOperator.MINUS -> target.leftOperand.isAdapterItemCountOrZero(receiver) &&
+                    target.rightOperand.isOneExpression()
+                UastBinaryOperator.OTHER -> target.rightOperand.isZeroExpression() &&
+                    (target.leftOperand.isAdapterItemCountMinusOne(receiver) ||
+                        target.leftOperand.resolveLocalVariableInitializer()
+                            ?.isAdapterItemCountMinusOne(receiver) == true ||
+                        target.leftOperand.resolveLocalVariableInitializerFromBlock()
+                            ?.isAdapterItemCountMinusOne(receiver) == true ||
+                        target.isElvisWrappedLastPosition(receiver))
+                else -> false
+            }
+            is UCallExpression -> target.methodName == MINUS_METHOD &&
+                target.valueArguments.singleOrNull()?.isOneExpression() == true &&
+                target.receiver.isAdapterItemCountOrZero(receiver)
+            is UQualifiedReferenceExpression -> {
+                val call = target.selector as? UCallExpression
+                call != null &&
+                    call.methodName == MINUS_METHOD &&
+                    call.valueArguments.singleOrNull()?.isOneExpression() == true &&
+                    target.receiver.isAdapterItemCountOrZero(receiver)
+            }
+            else -> target.isElvisWrappedLastPosition(receiver)
+        }
+    }
+
+    private fun UElement.isElvisWrappedLastPosition(receiver: String): Boolean {
+        val source = asSourceString()
+        if (!source.endsWith(" $ELVIS_OPERATOR $ZERO_ARGUMENT")) return false
+
+        val leftSource = source.removeSuffix(" $ELVIS_OPERATOR $ZERO_ARGUMENT")
+        return leftSource.isLastPositionSource(receiver) ||
+            resolveLocalVariableInitializerFromBlock(leftSource)
+                ?.isAdapterItemCountMinusOne(receiver) == true
+    }
+
+    private fun UElement?.isAdapterItemCountOrZero(receiver: String): Boolean {
+        val target = resolveLocalVariableInitializer() ?: unwrapParenthesized() ?: return false
+
+        return when (target) {
+            is UIfExpression -> target.elseExpression?.isZeroExpression() == true &&
+                target.thenExpression.isAdapterItemCount(receiver)
+            else -> target.isAdapterItemCount(receiver) || target.asSourceString().isAdapterItemCountSource(receiver)
+        }
+    }
+
+    private fun UElement?.isAdapterItemCount(receiver: String): Boolean {
+        val target = resolveLocalVariableInitializer() ?: unwrapParenthesized() ?: return false
+        if (target !is UQualifiedReferenceExpression) return false
+        if (target.selector.asSourceString() != ITEM_COUNT_PROPERTY) return false
+
+        return target.receiver.isRecyclerViewAdapter(receiver)
+    }
+
+    private fun UElement?.isRecyclerViewAdapter(receiver: String): Boolean {
+        val target = unwrapParenthesized() ?: return false
+
+        return when (target) {
+            is UQualifiedReferenceExpression -> {
+                val receiverText = target.receiver.asSourceString()
+                val selectorText = target.selector.asSourceString()
+                receiverText == receiver && selectorText == ADAPTER_PROPERTY ||
+                    receiverText == "$receiver.$ADAPTER_PROPERTY" && selectorText == ITEM_COUNT_PROPERTY
+            }
+            is UUnaryExpression -> target.operand.isRecyclerViewAdapter(receiver)
+            else -> false
+        }
+    }
+
+    private fun UElement?.isZeroExpression() = (resolveLocalVariableInitializer() ?: unwrapParenthesized())
+        ?.asSourceString() == ZERO_ARGUMENT
+
+    private fun UElement?.isOneExpression() = (resolveLocalVariableInitializer() ?: unwrapParenthesized())
+        ?.asSourceString() == ONE_ARGUMENT
+
+    private fun UCallExpression.recyclerViewReceiver(context: JavaContext) = receiver?.asSourceString()
+        ?: THIS_RECEIVER.takeIf { getContainingUClass()?.javaPsi.isRecyclerViewClass(context) }
+
+    private fun UCallExpression.receiverPrefix() = receiver?.asSourceString()?.let { "$it." }.orEmpty()
+
+    private fun UElement?.resolveLocalVariableInitializerFromBlock(): UElement? {
+        val reference = this.unwrapParenthesized() as? USimpleNameReferenceExpression ?: return null
+        return reference.resolveLocalVariableInitializerFromBlock(reference.identifier)
+    }
+
+    private fun UElement.resolveLocalVariableInitializerFromBlock(name: String): UElement? {
+        var parent = uastParent
+
+        while (parent != null) {
+            if (parent is UBlockExpression) {
+                return parent.expressions
+                    .flatMap { expression ->
+                        when (expression) {
+                            is ULocalVariable -> listOf(expression)
+                            is UDeclarationsExpression -> expression.declarations.filterIsInstance<ULocalVariable>()
+                            else -> emptyList()
+                        }
+                    }
+                    .firstOrNull { it.name == name }
+                    ?.uastInitializer
+                    ?.unwrapParenthesized()
+            }
+            parent = parent.uastParent
+        }
+
+        return null
+    }
+
+    private fun String.isLastPositionSource(receiver: String) =
+        startsWith("$receiver.$ADAPTER_PROPERTY") &&
+            containsItemCountAccess() &&
+            containsMinusOneCall()
+
+    private fun String.isAdapterItemCountSource(receiver: String) =
+        startsWith("$receiver.$ADAPTER_PROPERTY") &&
+            containsItemCountAccess()
+
+    private fun String.containsItemCountAccess() =
+        contains(".$ITEM_COUNT_PROPERTY") || contains("?.$ITEM_COUNT_PROPERTY")
+
+    private fun String.containsMinusOneCall() =
+        contains(".$MINUS_METHOD($ONE_ARGUMENT)") || contains("?.$MINUS_METHOD($ONE_ARGUMENT)")
+
+    private fun PsiClass?.isRecyclerViewClass(context: JavaContext): Boolean {
+        val psiClass = this ?: return false
+        return psiClass.qualifiedName == RECYCLER_VIEW_CLASS ||
+            context.evaluator.extendsClass(psiClass, RECYCLER_VIEW_CLASS, false)
     }
 }

@@ -37,11 +37,13 @@ import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extensio
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.findMethodExpressionSource
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.isObjectLiteralOf
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.unwrapParenthesized
+import com.intellij.psi.PsiClass
 import com.intellij.psi.util.PsiTypesUtil
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UExpression
 import org.jetbrains.uast.UObjectLiteralExpression
+import org.jetbrains.uast.getContainingUClass
 
 class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
 
@@ -62,6 +64,19 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
         private const val NOTIFY_ALL_ITEMS_CHANGED_FUNCTION = "notifyAllItemsChanged"
         private const val NOTIFY_BY_DIFF_FUNCTION = "notifyByDiff"
         private const val CLEAR_AND_NOTIFY_FUNCTION = "clearAndNotify"
+        private const val DISPATCH_UPDATES_TO_METHOD = "dispatchUpdatesTo"
+        private const val CALCULATE_DIFF_METHOD = "calculateDiff"
+        private const val CLEAR_METHOD = "clear"
+        private const val ITEM_COUNT_PROPERTY = "itemCount"
+        private const val SIZE_PROPERTY = "size"
+        private const val OLD_SIZE_VARIABLE = "oldSize"
+        private const val ZERO_ARGUMENT = "0"
+        private const val TRUE_ARGUMENT = "true"
+        private const val THIS_RECEIVER = "this"
+        private const val OLD_ITEM_POSITION_PARAMETER = "oldItemPosition"
+        private const val NEW_ITEM_POSITION_PARAMETER = "newItemPosition"
+        private const val OLD_ITEM_PARAMETER = "oldItem"
+        private const val NEW_ITEM_PARAMETER = "newItem"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithRecyclerAdapterExtension",
@@ -135,7 +150,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
         }
 
         private fun reportDiffDispatch(node: UCallExpression): Boolean {
-            if (node.methodName != "dispatchUpdatesTo") return false
+            if (node.methodName != DISPATCH_UPDATES_TO_METHOD) return false
             val method = node.resolve() ?: return false
             if (method.containingClass?.qualifiedName != DIFF_RESULT_CLASS &&
                 !context.evaluator.extendsClass(method.containingClass, DIFF_RESULT_CLASS, false)
@@ -143,7 +158,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
             if (node.valueArgumentCount != 1) return false
 
             val receiver = node.receiver.asCall() ?: return false
-            if (receiver.methodName != "calculateDiff") return false
+            if (receiver.methodName != CALCULATE_DIFF_METHOD) return false
             val receiverMethod = receiver.resolve() ?: return false
             if (receiverMethod.containingClass?.qualifiedName != DIFF_UTIL_CLASS) return false
 
@@ -207,10 +222,11 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
             if (!isZeroArgument(node.valueArguments.getOrNull(0))) return false
 
             val countArgument = node.valueArguments.getOrNull(1)?.unwrapParenthesized() ?: return false
-            val receiver = node.receiver?.asSourceString() ?: return false
+            val receiver = node.adapterReceiver() ?: return false
+            val replacementReceiver = node.receiverPrefix()
             val replacement = when {
-                countArgument.asSourceString() == "$receiver.itemCount" -> "$receiver.$NOTIFY_ALL_ITEMS_INSERTED_FUNCTION()"
-                else -> "$receiver.$NOTIFY_ALL_ITEMS_INSERTED_FUNCTION(${countArgument.asSourceString()})"
+                countArgument.asSourceString() == "$receiver.$ITEM_COUNT_PROPERTY" -> "$replacementReceiver$NOTIFY_ALL_ITEMS_INSERTED_FUNCTION()"
+                else -> "$replacementReceiver$NOTIFY_ALL_ITEMS_INSERTED_FUNCTION(${countArgument.asSourceString()})"
             }
 
             context.report(
@@ -232,12 +248,13 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
             if (!isZeroArgument(node.valueArguments.getOrNull(0))) return false
 
             val countArgument = node.valueArguments.getOrNull(1)?.unwrapParenthesized() ?: return false
-            val receiver = node.receiver?.asSourceString() ?: return false
+            val receiver = node.adapterReceiver() ?: return false
+            val replacementReceiver = node.receiverPrefix()
             val payloadArgument = node.valueArguments.getOrNull(2)?.unwrapParenthesized()?.asSourceString()
             val replacement = when {
                 payloadArgument != null -> return false
-                countArgument.asSourceString() == "$receiver.itemCount" -> "$receiver.$NOTIFY_ALL_ITEMS_CHANGED_FUNCTION()"
-                else -> "$receiver.$NOTIFY_ALL_ITEMS_CHANGED_FUNCTION(${countArgument.asSourceString()})"
+                countArgument.asSourceString() == "$receiver.$ITEM_COUNT_PROPERTY" -> "$replacementReceiver$NOTIFY_ALL_ITEMS_CHANGED_FUNCTION()"
+                else -> "$replacementReceiver$NOTIFY_ALL_ITEMS_CHANGED_FUNCTION(${countArgument.asSourceString()})"
             }
 
             context.report(
@@ -262,24 +279,21 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
             val expressions = block.expressions
             val index = expressions.indexOfFirst { expression ->
                 val current = expression.asCall()
-                if (current == null) false
-                else current == node || (current.methodName == node.methodName &&
-                    current.receiver?.asSourceString() == node.receiver?.asSourceString() &&
-                    current.valueArguments.map { it.asSourceString() } == node.valueArguments.map { it.asSourceString() })
+                current == node
             }
             if (index <= 0) return false
 
             val clearExpression = expressions.getOrNull(index - 1)?.unwrapParenthesized() ?: return false
             val notifyExpression = expressions.getOrNull(index)?.unwrapParenthesized() ?: return false
             val clearCall = clearExpression.asCall() ?: return false
-            if (clearCall.methodName != "clear") return false
+            if (clearCall.methodName != CLEAR_METHOD) return false
 
             val dataSet = clearCall.receiver?.asSourceString() ?: return false
             val countArgument = node.valueArguments.getOrNull(1)?.unwrapParenthesized()?.asSourceString() ?: return false
-            if (countArgument != "$dataSet.size" && countArgument != "oldSize") return false
+            if (countArgument != "$dataSet.$SIZE_PROPERTY" && countArgument != OLD_SIZE_VARIABLE) return false
 
-            val adapterReceiver = node.receiver?.asSourceString() ?: return false
-            val replacement = "$adapterReceiver.$CLEAR_AND_NOTIFY_FUNCTION($dataSet)"
+            node.adapterReceiver() ?: return false
+            val replacement = "${node.receiverPrefix()}$CLEAR_AND_NOTIFY_FUNCTION($dataSet)"
 
             context.report(
                 issue = ISSUE,
@@ -299,7 +313,12 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
                 context.evaluator.extendsClass(containingClass, ADAPTER_CLASS, false)
         }
 
-        private fun isZeroArgument(element: UElement?) = element?.unwrapParenthesized()?.asSourceString() == "0"
+        private fun UCallExpression.adapterReceiver() = receiver?.asSourceString()
+            ?: THIS_RECEIVER.takeIf { getContainingUClass()?.javaPsi.isRecyclerViewAdapterClass() }
+
+        private fun UCallExpression.receiverPrefix() = receiver?.asSourceString()?.let { "$it." }.orEmpty()
+
+        private fun isZeroArgument(element: UElement?) = element?.unwrapParenthesized()?.asSourceString() == ZERO_ARGUMENT
 
         private fun resolveNotifyByDiffReplacement(
             dispatchTarget: UExpression,
@@ -310,21 +329,24 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
             val callbackArgument = calculateDiffNode.valueArguments.firstOrNull()?.unwrapParenthesized() ?: return null
             val callbackExpression = callbackArgument as? UObjectLiteralExpression ?: return null
             val adapter = dispatchTarget.asSourceString()
-            val oldList = callbackExpression.findMethodExpressionSource("getOldListSize", "size") ?: return null
-            val newList = callbackExpression.findMethodExpressionSource("getNewListSize", "size") ?: return null
-            val areItemsTheSame = callbackExpression.findMethodExpressionSource("areItemsTheSame") ?: return null
-            val areContentsTheSame = callbackExpression.findMethodExpressionSource("areContentsTheSame") ?: return null
+            val oldList = callbackExpression.findMethodExpressionSource("getOldListSize", SIZE_PROPERTY) ?: return null
+            val newList = callbackExpression.findMethodExpressionSource("getNewListSize", SIZE_PROPERTY) ?: return null
+            val areItemsTheSame = callbackExpression.findMethodExpressionSource("areItemsTheSame")
+                ?.normalizeDiffItemExpression(oldList, newList) ?: return null
+            val areContentsTheSame = callbackExpression.findMethodExpressionSource("areContentsTheSame")
+                ?.normalizeDiffItemExpression(oldList, newList) ?: return null
             val getChangePayload = callbackExpression.findMethodExpressionSource("getChangePayload")
+                ?.normalizeDiffItemExpression(oldList, newList)
             val detectMoves = calculateDiffNode.valueArguments.getOrNull(1)?.unwrapParenthesized()?.asSourceString()
 
             return buildString {
                 append("$adapter.$NOTIFY_BY_DIFF_FUNCTION(")
                 append("oldList = $oldList, ")
                 append("newList = $newList, ")
-                append("areItemsTheSame = { oldItem, newItem -> $areItemsTheSame }, ")
-                append("areContentsTheSame = { oldItem, newItem -> $areContentsTheSame }")
-                if (getChangePayload != null) append(", getChangePayload = { oldItem, newItem -> $getChangePayload }")
-                if (detectMoves != null && detectMoves != "true") append(", detectMoves = $detectMoves")
+                append("areItemsTheSame = { $OLD_ITEM_PARAMETER, $NEW_ITEM_PARAMETER -> $areItemsTheSame }, ")
+                append("areContentsTheSame = { $OLD_ITEM_PARAMETER, $NEW_ITEM_PARAMETER -> $areContentsTheSame }")
+                if (getChangePayload != null) append(", getChangePayload = { $OLD_ITEM_PARAMETER, $NEW_ITEM_PARAMETER -> $getChangePayload }")
+                if (detectMoves != null && detectMoves != TRUE_ARGUMENT) append(", detectMoves = $detectMoves")
                 append(")")
             }
         }
@@ -339,10 +361,14 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
 
             val callback = calculateDiffNode.valueArguments.firstOrNull()?.unwrapParenthesized()?.asSourceString() ?: return null
             val detectMoves = calculateDiffNode.valueArguments.getOrNull(1)?.unwrapParenthesized()?.asSourceString()
+            val adapter = adapterArgument.asSourceString()
+                .takeUnless { it == THIS_RECEIVER }
+                ?.let { "$it." }
+                .orEmpty()
 
             return buildString {
-                append("${adapterArgument.asSourceString()}.$NOTIFY_BY_DIFF_FUNCTION($callback")
-                if (detectMoves != null && detectMoves != "true") append(", detectMoves = $detectMoves")
+                append("$adapter$NOTIFY_BY_DIFF_FUNCTION($callback")
+                if (detectMoves != null && detectMoves != TRUE_ARGUMENT) append(", detectMoves = $detectMoves")
                 append(")")
             }
         }
@@ -350,26 +376,38 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
 
     private fun UExpression.isRecyclerViewAdapter(): Boolean {
         val psiClass = PsiTypesUtil.getPsiClass(getExpressionType()) ?: return false
-        return psiClass.qualifiedName == ADAPTER_CLASS_NAME ||
-            psiClass.supers.any { it.qualifiedName == ADAPTER_CLASS_NAME }
+        return psiClass.isRecyclerViewAdapterClass()
     }
 
     private fun resolveDiffUtilCallbackReplacement(node: UObjectLiteralExpression): String? {
-        val oldList = node.findMethodExpressionSource("getOldListSize", "size") ?: return null
-        val newList = node.findMethodExpressionSource("getNewListSize", "size") ?: return null
-        val areItemsTheSame = node.findMethodExpressionSource("areItemsTheSame") ?: return null
-        val areContentsTheSame = node.findMethodExpressionSource("areContentsTheSame") ?: return null
+        val oldList = node.findMethodExpressionSource("getOldListSize", SIZE_PROPERTY) ?: return null
+        val newList = node.findMethodExpressionSource("getNewListSize", SIZE_PROPERTY) ?: return null
+        val areItemsTheSame = node.findMethodExpressionSource("areItemsTheSame")
+            ?.normalizeDiffItemExpression(oldList, newList) ?: return null
+        val areContentsTheSame = node.findMethodExpressionSource("areContentsTheSame")
+            ?.normalizeDiffItemExpression(oldList, newList) ?: return null
         val getChangePayload = node.findMethodExpressionSource("getChangePayload")
+            ?.normalizeDiffItemExpression(oldList, newList)
 
         return buildString {
             append("$DIFF_UTIL_CALLBACK_FUNCTION(")
             append("oldList = $oldList, ")
             append("newList = $newList, ")
-            append("areItemsTheSame = { oldItem, newItem -> $areItemsTheSame }, ")
-            append("areContentsTheSame = { oldItem, newItem -> $areContentsTheSame }")
-            if (getChangePayload != null) append(", getChangePayload = { oldItem, newItem -> $getChangePayload }")
+            append("areItemsTheSame = { $OLD_ITEM_PARAMETER, $NEW_ITEM_PARAMETER -> $areItemsTheSame }, ")
+            append("areContentsTheSame = { $OLD_ITEM_PARAMETER, $NEW_ITEM_PARAMETER -> $areContentsTheSame }")
+            if (getChangePayload != null) append(", getChangePayload = { $OLD_ITEM_PARAMETER, $NEW_ITEM_PARAMETER -> $getChangePayload }")
             append(")")
         }
+    }
+
+    private fun String.normalizeDiffItemExpression(oldList: String, newList: String) =
+        replace("$oldList[$OLD_ITEM_POSITION_PARAMETER]", OLD_ITEM_PARAMETER)
+            .replace("$newList[$NEW_ITEM_POSITION_PARAMETER]", NEW_ITEM_PARAMETER)
+
+    private fun PsiClass?.isRecyclerViewAdapterClass(): Boolean {
+        val psiClass = this ?: return false
+        return psiClass.qualifiedName == ADAPTER_CLASS_NAME ||
+            psiClass.supers.any { it.qualifiedName == ADAPTER_CLASS_NAME }
     }
 
     private fun resolveListUpdateCallbackReplacement(node: UObjectLiteralExpression): String? {
