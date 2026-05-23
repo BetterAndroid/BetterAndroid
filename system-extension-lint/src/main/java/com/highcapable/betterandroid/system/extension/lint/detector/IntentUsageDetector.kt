@@ -66,6 +66,11 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
 
         private const val INTENT_HELPER = "Intent"
 
+        private const val AS_CAST = "as"
+        private const val AS_SAFE_CAST = "as?"
+        private const val NOT_NULL_ASSERTION = "!!"
+        private const val NULLABLE_MARK = "?"
+
         val ISSUE = Issue.create(
             id = "ReplaceWithIntentExtension",
             briefDescription = "Use system-extension's intent extensions instead.",
@@ -133,23 +138,26 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
 
         override fun visitBinaryExpressionWithType(node: UBinaryExpressionWithType) {
             if (node.operationKind !is UastBinaryExpressionWithTypeKind.TypeCast) return
-            if (node.operationKind.name != "as" && node.operationKind.name != "as?") return
+            if (node.operationKind.name != AS_CAST && node.operationKind.name != AS_SAFE_CAST) return
 
             val call = node.operand.unwrapParenthesized().asCall() ?: return
             val compat = resolveCompat(call) ?: return
             if (call.valueArguments.size != 1) return
 
+            // This is the `getParcelableExtra(...) as/as? Type` pattern.
             val key = call.valueArguments[0].asSourceString()
             val castType = node.resolveCastType() ?: return
-            val isNullableCast = node.operationKind.name == "as?" || castType.isNullable
+            val isNullableCast = node.operationKind.name == AS_SAFE_CAST || castType.isNullable
 
-            val replacement = "${call.receiverPrefix()}${compat.functionName}<${castType.name}>($key)${if (isNullableCast) "" else "!!"}"
+            val replacement = "${call.receiverPrefix()}${compat.functionName}<${castType.name}>($key)${if (isNullableCast) "" else NOT_NULL_ASSERTION}"
             reportAndFix(node, replacement, compat.importTarget, fixName = compat.functionName)
         }
 
         private fun reportExplicitTypedCompat(node: UCallExpression) {
             if (node.valueArguments.size != 2) return
             val compat = resolveCompat(node) ?: return
+
+            // This is the `getParcelableExtra(name, Type::class.java)` pattern.
             val key = node.valueArguments[0].asSourceString()
             val type = resolveClassLiteralType(node.valueArguments[1]) ?: return
 
@@ -161,8 +169,11 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
 
         private fun reportIntentConstructor(node: UCallExpression) {
             val method = node.resolve() ?: return
+
+            // Validation is Intent constructor.
             if (!method.isConstructor || method.containingClass?.qualifiedName != INTENT_CLASS) return
 
+            // This is the `Intent(context, Target::class.java)` or `Intent(action, uri, context, Target::class.java)` pattern.
             val replacement = when (node.valueArguments.size) {
                 2 -> {
                     val context = node.valueArguments[0].asSourceString()
@@ -200,6 +211,7 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
             if (compat.functionName != GET_PARCELABLE_EXTRA_COMPAT && compat.functionName != GET_PARCELABLE_COMPAT) return
             if (node.valueArguments.size != 1) return
 
+            // This is the legacy generic `getParcelableExtra<Type>(name)` pattern.
             val key = node.valueArguments[0].asSourceString()
             val type = node.typeArguments.firstOrNull()?.canonicalText ?: return
 
@@ -211,6 +223,8 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
 
         private fun resolveCompat(node: UCallExpression): CompatTarget? {
             val method = node.resolve() ?: return null
+
+            // Validation is Intent or Bundle class.
             return when {
                 context.evaluator.isMemberInClass(method, INTENT_CLASS) && node.methodName == GET_PARCELABLE_EXTRA_METHOD ->
                     CompatTarget(GET_PARCELABLE_EXTRA_COMPAT)
@@ -250,7 +264,7 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
 
         private fun UBinaryExpressionWithType.resolveCastType(): CastType? {
             val type = typeReference?.asSourceString()?.trim() ?: return null
-            val isNullable = type.endsWith("?")
+            val isNullable = type.endsWith(NULLABLE_MARK)
 
             return CastType(
                 name = if (isNullable) type.dropLast(1).trimEnd() else type,

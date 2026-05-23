@@ -59,6 +59,11 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
         private const val INTENT_CLASS = "android.content.Intent"
         private const val BROADCAST_RECEIVER_CLASS = "android.content.BroadcastReceiver"
 
+        private const val ACTION_PROPERTY = "action"
+        private const val OPTIONS_ARGUMENT = "options"
+        private const val RECEIVER_PERMISSION_ARGUMENT = "receiverPermission"
+        private const val NULL_LITERAL = "null"
+
         val ISSUE = Issue.create(
             id = "ReplaceWithBroadcastExtension",
             briefDescription = "Use system-extension's broadcast extensions instead.",
@@ -125,6 +130,7 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
         private fun reportSendBroadcast(node: UCallExpression) {
             if (node.methodName != SEND_BROADCAST) return
 
+            // This is the `context.sendBroadcast(Intent(...))` pattern.
             val intentSpec = resolveIntentSpec(node.valueArguments.firstOrNull()) ?: return
             val receiverPermission = node.valueArguments.getOrNull(1).takeUnlessNullLiteral()?.asSourceString()
             val options = node.valueArguments.getOrNull(2).takeUnlessNullLiteral()?.asSourceString()
@@ -149,8 +155,11 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
 
             val receiverExpression = node.valueArguments.firstOrNull()?.unwrapParenthesized() as? UObjectLiteralExpression ?: return
             val receiverType = receiverExpression.getExpressionType()
+
+            // Validation is BroadcastReceiver class.
             if (!receiverType.extendsClass(context, BROADCAST_RECEIVER_CLASS)) return
 
+            // This is the `registerReceiver(object : BroadcastReceiver() { ... }, ...)` pattern.
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
@@ -242,11 +251,11 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
                         arguments += options
                     }
                     receiverPermission != null -> arguments += receiverPermission
-                    options != null -> arguments += "options = $options"
+                    options != null -> arguments += "$OPTIONS_ARGUMENT = $options"
                 }
             } else {
-                if (receiverPermission != null) arguments += "receiverPermission = $receiverPermission"
-                if (options != null) arguments += "options = $options"
+                if (receiverPermission != null) arguments += "$RECEIVER_PERMISSION_ARGUMENT = $receiverPermission"
+                if (options != null) arguments += "$OPTIONS_ARGUMENT = $options"
             }
 
             return arguments.joinToString(", ")
@@ -275,6 +284,8 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
 
         private fun isIntentConstructorCall(node: UCallExpression): Boolean {
             val method = node.resolve() ?: return false
+
+            // Validation is Intent constructor.
             return method.isConstructor && method.containingClass?.qualifiedName == INTENT_CLASS
         }
 
@@ -308,12 +319,12 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
         }
 
         private fun UExpression?.takeUnlessNullLiteral() =
-            this?.takeUnless { it.asSourceString() == "null" }
+            this?.takeUnless { it.asSourceString() == NULL_LITERAL }
     }
 
     private data class IntentSpec(
         val action: String? = null,
         val packageName: String? = null,
-        val bodyStatements: List<String> = action?.let { listOf("action = $it") } ?: emptyList()
+        val bodyStatements: List<String> = action?.let { listOf("$ACTION_PROPERTY = $it") } ?: emptyList()
     )
 }

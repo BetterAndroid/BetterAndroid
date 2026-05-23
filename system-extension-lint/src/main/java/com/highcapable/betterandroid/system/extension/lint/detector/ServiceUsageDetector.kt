@@ -56,6 +56,7 @@ class ServiceUsageDetector : Detector(), Detector.UastScanner {
         private const val APPLY_METHOD = "apply"
         private const val ALSO_METHOD = "also"
         private const val INTENT_HELPER = "Intent"
+        private const val ALSO_DEFAULT_PARAMETER = "it"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithServiceExtension",
@@ -104,10 +105,12 @@ class ServiceUsageDetector : Detector(), Detector.UastScanner {
             val methodName = node.methodName ?: return
             if (methodName != START_SERVICE_METHOD && methodName != START_FOREGROUND_SERVICE_METHOD) return
 
+            // Validation is Context class.
             val method = node.resolve() ?: return
             val containingClass = method.containingClass ?: return
             if (!context.evaluator.extendsClass(containingClass, CONTEXT_CLASS, false)) return
 
+            // This is the `context.startService(Intent(context, Service::class.java))` pattern.
             val intentSpec = resolveIntentSpec(node.valueArguments.firstOrNull()) ?: return
             val receiverPrefix = node.receiverPrefix()
             val replacement = buildReplacement(receiverPrefix, methodName, intentSpec)
@@ -149,6 +152,7 @@ class ServiceUsageDetector : Detector(), Detector.UastScanner {
             val call = node ?: return null
             val method = call.resolve() ?: return null
 
+            // Validation is Intent constructor or BetterAndroid Intent helper.
             return when {
                 method.isConstructor && method.containingClass?.qualifiedName == INTENT_CLASS -> {
                     val targetClass = resolveTargetServiceClass(call) ?: return null
@@ -198,7 +202,7 @@ class ServiceUsageDetector : Detector(), Detector.UastScanner {
                 is UBlockExpression -> body.expressions
                 else -> listOf(body)
             }
-            val parameterName = lambda.valueParameters.firstOrNull()?.name ?: if (isAlso) "it" else null
+            val parameterName = lambda.valueParameters.firstOrNull()?.name ?: if (isAlso) ALSO_DEFAULT_PARAMETER else null
 
             return expressions.mapNotNull { expression ->
                 val source = expression.unwrapReturnedExpression().asSourceString().trim().removeSuffix(";")

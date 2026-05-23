@@ -42,7 +42,6 @@ import org.jetbrains.uast.UClassLiteralExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UExpression
 import org.jetbrains.uast.UIfExpression
-import org.jetbrains.uast.ULambdaExpression
 import org.jetbrains.uast.UPostfixExpression
 import org.jetbrains.uast.UQualifiedReferenceExpression
 import org.jetbrains.uast.UastBinaryOperator
@@ -96,6 +95,11 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
         private const val IS_GREATER_THAN_METHOD = "isGreaterThan"
         private const val VERSION_CODES_P_QUALIFIED = "$BUILD_VERSION_CODES_NAME.$P_FIELD"
         private const val ANDROID_VERSION_P_QUALIFIED = "$ANDROID_VERSION_NAME.$P_FIELD"
+
+        private const val THIS_EXPRESSION = "this"
+        private const val NULL_LITERAL = "null"
+        private const val ZERO_LITERAL = "0"
+        private const val NOT_NULL_ASSERTION = "!!"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithApplicationExtension",
@@ -176,12 +180,15 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
 
         private fun reportComponentName(node: UCallExpression) {
             val method = node.resolve() ?: return
+
+            // Validation is ComponentName constructor.
             if (method.containingClass?.qualifiedName != COMPONENT_NAME_CLASS) return
             if (node.valueArguments.size < 2) return
 
+            // This is the `ComponentName(context, Target::class.java)` pattern.
             val receiver = node.valueArguments[0].asSourceString().trim()
             val targetClass = resolveClassLiteralType(node.valueArguments[1]) ?: return
-            val receiverPrefix = if (receiver == "this") "" else "$receiver."
+            val receiverPrefix = if (receiver == THIS_EXPRESSION) "" else "$receiver."
             val replacement = "$receiverPrefix$GET_COMPONENT_NAME<$targetClass>()"
             val displayReplacement = "$receiverPrefix$GET_COMPONENT_NAME<${targetClass.displayShortName()}>()"
 
@@ -197,10 +204,11 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
 
         private fun reportHasPackage(node: UBinaryExpression) {
             if (node.operator != UastBinaryOperator.NOT_EQUALS) return
-            if (node.rightOperand.asSourceString() != "null") return
+            if (node.rightOperand.asSourceString() != NULL_LITERAL) return
 
             val directCall = node.leftOperand.unwrapParenthesized().asCall()
             if (directCall != null && isPackageManagerCall(directCall, GET_PACKAGE_INFO_METHOD)) {
+                // This is the `packageManager.getPackageInfo(...) != null` pattern.
                 val receiver = directCall.receiver?.asSourceString() ?: return
                 val packageName = directCall.valueArguments.firstOrNull()?.asSourceString() ?: return
                 val replacement = "$receiver.$HAS_PACKAGE($packageName)"
@@ -217,6 +225,7 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             val getOrNullCall = node.leftOperand.unwrapParenthesized().asCall() ?: return
             if (getOrNullCall.methodName != GET_OR_NULL_METHOD) return
 
+            // This is the `runCatching { packageManager.getPackageInfo(...) }.getOrNull() != null` pattern.
             val packageInfoCall = resolveRunCatchingPackageInfoCall(getOrNullCall) ?: return
             val receiver = packageInfoCall.receiver?.asSourceString() ?: return
             val packageName = packageInfoCall.valueArguments.firstOrNull()?.asSourceString() ?: return
@@ -232,8 +241,10 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
         }
 
         private fun reportHasLaunchActivity(node: UBinaryExpression) {
-            if (node.operator == UastBinaryOperator.NOT_EQUALS && node.rightOperand.asSourceString() == "null") {
+            if (node.operator == UastBinaryOperator.NOT_EQUALS && node.rightOperand.asSourceString() == NULL_LITERAL) {
                 val call = node.leftOperand.unwrapParenthesized().asCall() ?: return
+
+                // This is the `packageManager.getLaunchIntentForPackage(...) != null` pattern.
                 if (!isPackageManagerCall(call, GET_LAUNCH_INTENT_FOR_PACKAGE_METHOD)) return
                 val receiver = call.receiver?.asSourceString() ?: return
                 val packageName = call.valueArguments.firstOrNull()?.asSourceString() ?: return
@@ -250,11 +261,12 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             }
 
             if (node.operator != UastBinaryOperator.GREATER) return
-            if (node.rightOperand.asSourceString() != "0") return
+            if (node.rightOperand.asSourceString() != ZERO_LITERAL) return
 
             val queryAccess = node.leftOperand.unwrapParenthesized() as? UQualifiedReferenceExpression ?: return
             if (queryAccess.selector.resolveName() != SIZE_PROPERTY) return
 
+            // This is the `queryIntentActivities(...).size > 0` pattern.
             val (receiver, packageName) = resolveQueryLaunchActivitiesInfo(queryAccess.receiver.asCall()) ?: return
             val replacement = "$receiver.$HAS_LAUNCH_ACTIVITY($packageName)"
 
@@ -269,6 +281,8 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
 
         private fun reportQueryLaunchActivities(node: UQualifiedReferenceExpression) {
             if (node.selector.resolveName() != IS_NOT_EMPTY_METHOD) return
+
+            // This is the `queryIntentActivities(...).isNotEmpty()` pattern.
             val (receiver, packageName) = resolveQueryLaunchActivitiesInfo(node.receiver.asCall()) ?: return
             val replacement = "$receiver.$HAS_LAUNCH_ACTIVITY($packageName)"
 
@@ -283,8 +297,11 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
 
         private fun reportIsComponentEnabled(node: UBinaryExpression) {
             val call = node.leftOperand.unwrapParenthesized().asCall() ?: return
+
+            // Validation is PackageManager component state query.
             if (!isPackageManagerCall(call, GET_COMPONENT_ENABLED_SETTING_METHOD)) return
 
+            // This is the `getComponentEnabledSetting(...) ==/!= PackageManager.COMPONENT_ENABLED_STATE_*` pattern.
             val receiver = call.receiver?.asSourceString() ?: return
             val componentName = call.valueArguments.firstOrNull()?.asSourceString() ?: return
             val rightName = node.rightOperand.unwrapParenthesized().resolveName() ?: return
@@ -310,10 +327,12 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
         private fun reportSetComponentEnabledSetting(node: UCallExpression) {
             if (node.methodName != SET_COMPONENT_ENABLED_SETTING_METHOD) return
 
+            // Validation is PackageManager component state update.
             val method = node.resolve() ?: return
             if (!context.evaluator.isMemberInClass(method, PACKAGE_MANAGER_CLASS)) return
             if (node.valueArguments.size < 3) return
 
+            // This is the `setComponentEnabledSetting(..., PackageManager.COMPONENT_ENABLED_STATE_*, ...)` pattern.
             val receiver = node.receiver?.asSourceString() ?: return
             val componentName = node.valueArguments[0].asSourceString()
             val state = node.valueArguments[1].unwrapParenthesized().resolveName() ?: return
@@ -338,8 +357,12 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
 
         private fun reportPackageInfoCompat(node: UCallExpression) {
             if (node.methodName != GET_LONG_VERSION_CODE_METHOD) return
+
+            // Validation is PackageInfoCompat class.
             val method = node.resolve() ?: return
             if (!context.evaluator.isMemberInClass(method, PACKAGE_INFO_COMPAT_CLASS)) return
+
+            // This is the `PackageInfoCompat.getLongVersionCode(packageInfo)` pattern.
             val receiver = node.valueArguments.firstOrNull()?.asSourceString() ?: return
 
             val replacement = "$receiver.$VERSION_CODE_COMPAT"
@@ -353,11 +376,13 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
         }
 
         private fun reportVersionCodeCompat(node: UIfExpression) {
+            // Validation is Android P version check.
             if (!isVersionCodeCompatCheck(node.condition)) return
 
             val thenBranch = node.thenExpression.unwrapBranchSource() ?: return
             val elseBranch = node.elseExpression.unwrapBranchSource() ?: return
 
+            // This is the `if (version >= P) longVersionCode else versionCode.toLong()` pattern.
             val thenResolved = resolveVersionCodeReceiver(thenBranch) ?: return
             val elseResolved = resolveVersionCodeReceiver(elseBranch) ?: return
             if (thenResolved.first != elseResolved.first) return
@@ -454,15 +479,9 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             return expression.asSourceString().trim()
         }
 
-        private tailrec fun UExpression?.unwrapLambdaBodyExpression(): UExpression? = when (val target = unwrapParenthesized()) {
-            is ULambdaExpression -> target.body.unwrapLambdaBodyExpression()
-            is UBlockExpression -> target.expressions.lastOrNull()
-            else -> target as? UExpression
-        }
-
         private fun UExpression?.unwrapNotNullAssertion(): UElement? {
             var current = unwrapParenthesized()
-            while (current is UPostfixExpression && current.asSourceString().endsWith("!!"))
+            while (current is UPostfixExpression && current.asSourceString().endsWith(NOT_NULL_ASSERTION))
                 current = current.operand.unwrapParenthesized()
 
             return current
