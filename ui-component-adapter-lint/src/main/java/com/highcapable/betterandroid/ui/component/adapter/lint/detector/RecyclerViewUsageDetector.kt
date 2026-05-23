@@ -51,7 +51,9 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
 
     companion object {
 
+        private const val RECYCLER_FACTORY_PACKAGE = DeclaredSymbol.RECYCLER_FACTORY_PACKAGE
         private const val RECYCLER_VIEW_CLASS = "androidx.recyclerview.widget.RecyclerView"
+
         private const val SCROLL_TO_POSITION_METHOD = "scrollToPosition"
         private const val SMOOTH_SCROLL_TO_POSITION_METHOD = "smoothScrollToPosition"
         private const val SCROLL_TO_FIRST_POSITION_FUNCTION = "scrollToFirstPosition"
@@ -124,8 +126,9 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
                 else -> null
             } ?: return
 
+            // This is the first or last position scrolling pattern.
             val fixName = replacement.substringAfterLast('.').substringBefore('(')
-            val importTarget = "${DeclaredSymbol.RECYCLER_FACTORY_PACKAGE}.$fixName"
+            val importTarget = "$RECYCLER_FACTORY_PACKAGE.$fixName"
 
             context.report(
                 issue = ISSUE,
@@ -148,6 +151,8 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
     ): String? {
         val method = node.resolve() ?: return null
         val containingClass = method.containingClass ?: return null
+
+        // Validation is `RecyclerView.scrollToPosition(...)` or `RecyclerView.smoothScrollToPosition(...)`.
         if (containingClass.qualifiedName != RECYCLER_VIEW_CLASS &&
             !context.evaluator.extendsClass(containingClass, RECYCLER_VIEW_CLASS, false)
         ) return null

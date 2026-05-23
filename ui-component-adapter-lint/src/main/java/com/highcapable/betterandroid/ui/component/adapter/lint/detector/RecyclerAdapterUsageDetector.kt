@@ -66,17 +66,28 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
         private const val CLEAR_AND_NOTIFY_FUNCTION = "clearAndNotify"
         private const val DISPATCH_UPDATES_TO_METHOD = "dispatchUpdatesTo"
         private const val CALCULATE_DIFF_METHOD = "calculateDiff"
+        private const val GET_OLD_LIST_SIZE_METHOD = "getOldListSize"
+        private const val GET_NEW_LIST_SIZE_METHOD = "getNewListSize"
+        private const val ARE_ITEMS_THE_SAME_METHOD = "areItemsTheSame"
+        private const val ARE_CONTENTS_THE_SAME_METHOD = "areContentsTheSame"
+        private const val GET_CHANGE_PAYLOAD_METHOD = "getChangePayload"
+        private const val ON_INSERTED_METHOD = "onInserted"
+        private const val ON_REMOVED_METHOD = "onRemoved"
+        private const val ON_MOVED_METHOD = "onMoved"
+        private const val ON_CHANGED_METHOD = "onChanged"
         private const val CLEAR_METHOD = "clear"
         private const val ITEM_COUNT_PROPERTY = "itemCount"
         private const val SIZE_PROPERTY = "size"
         private const val OLD_SIZE_VARIABLE = "oldSize"
         private const val ZERO_ARGUMENT = "0"
         private const val TRUE_ARGUMENT = "true"
+        private const val UNRESOLVED_REPLACEMENT = "..."
         private const val THIS_RECEIVER = "this"
         private const val OLD_ITEM_POSITION_PARAMETER = "oldItemPosition"
         private const val NEW_ITEM_POSITION_PARAMETER = "newItemPosition"
         private const val OLD_ITEM_PARAMETER = "oldItem"
         private const val NEW_ITEM_PARAMETER = "newItem"
+        private const val RECYCLER_FACTORY_PACKAGE = DeclaredSymbol.RECYCLER_FACTORY_PACKAGE
 
         val ISSUE = Issue.create(
             id = "ReplaceWithRecyclerAdapterExtension",
@@ -151,12 +162,15 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
 
         private fun reportDiffDispatch(node: UCallExpression): Boolean {
             if (node.methodName != DISPATCH_UPDATES_TO_METHOD) return false
+
+            // Validation is `DiffUtil.DiffResult.dispatchUpdatesTo(...)`.
             val method = node.resolve() ?: return false
             if (method.containingClass?.qualifiedName != DIFF_RESULT_CLASS &&
                 !context.evaluator.extendsClass(method.containingClass, DIFF_RESULT_CLASS, false)
             ) return false
             if (node.valueArgumentCount != 1) return false
 
+            // This is the `DiffUtil.calculateDiff(...).dispatchUpdatesTo(adapter)` pattern.
             val receiver = node.receiver.asCall() ?: return false
             if (receiver.methodName != CALCULATE_DIFF_METHOD) return false
             val receiverMethod = receiver.resolve() ?: return false
@@ -167,10 +181,10 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
                 ?: resolveNotifyByDiffCallbackReplacement(node, receiver)
                 ?: return false
 
-            val quickFix = if (replacement.contains("...")) null else buildReplaceFix(
+            val quickFix = if (replacement.contains(UNRESOLVED_REPLACEMENT)) null else buildReplaceFix(
                 name = "Replace with '$NOTIFY_BY_DIFF_FUNCTION'",
                 replacement = replacement,
-                imports = arrayOf("${DeclaredSymbol.RECYCLER_FACTORY_PACKAGE}.$NOTIFY_BY_DIFF_FUNCTION")
+                imports = arrayOf("$RECYCLER_FACTORY_PACKAGE.$NOTIFY_BY_DIFF_FUNCTION")
             )
 
             context.report(
@@ -184,6 +198,8 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
 
         private fun reportDiffUtilCallback(node: UObjectLiteralExpression): Boolean {
             if (!node.isObjectLiteralOf(DIFF_CALLBACK_CLASS)) return false
+
+            // This is the `object : DiffUtil.Callback()` pattern.
             val replacement = resolveDiffUtilCallbackReplacement(node) ?: return false
 
             context.report(
@@ -193,7 +209,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$DIFF_UTIL_CALLBACK_FUNCTION'",
                     replacement = replacement,
-                    imports = arrayOf("${DeclaredSymbol.RECYCLER_FACTORY_PACKAGE}.$DIFF_UTIL_CALLBACK_FUNCTION")
+                    imports = arrayOf("$RECYCLER_FACTORY_PACKAGE.$DIFF_UTIL_CALLBACK_FUNCTION")
                 )
             )
             return true
@@ -201,6 +217,8 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
 
         private fun reportListUpdateCallback(node: UObjectLiteralExpression): Boolean {
             if (!node.isObjectLiteralOf(LIST_UPDATE_CALLBACK_CLASS)) return false
+
+            // This is the `object : ListUpdateCallback` pattern.
             val replacement = resolveListUpdateCallbackReplacement(node) ?: return false
 
             context.report(
@@ -210,7 +228,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$LIST_UPDATE_CALLBACK_FUNCTION'",
                     replacement = replacement,
-                    imports = arrayOf("${DeclaredSymbol.RECYCLER_FACTORY_PACKAGE}.$LIST_UPDATE_CALLBACK_FUNCTION")
+                    imports = arrayOf("$RECYCLER_FACTORY_PACKAGE.$LIST_UPDATE_CALLBACK_FUNCTION")
                 )
             )
             return true
@@ -218,9 +236,12 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
 
         private fun reportNotifyAllItemsInserted(node: UCallExpression): Boolean {
             if (node.methodName != NOTIFY_ITEM_RANGE_INSERTED_METHOD) return false
+
+            // Validation is `RecyclerView.Adapter.notifyItemRangeInserted(...)`.
             if (!isRecyclerViewAdapterMethod(node)) return false
             if (!isZeroArgument(node.valueArguments.getOrNull(0))) return false
 
+            // This is the full-range inserted notification pattern.
             val countArgument = node.valueArguments.getOrNull(1)?.unwrapParenthesized() ?: return false
             val receiver = node.adapterReceiver() ?: return false
             val replacementReceiver = node.receiverPrefix()
@@ -236,7 +257,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$NOTIFY_ALL_ITEMS_INSERTED_FUNCTION'",
                     replacement = replacement,
-                    imports = arrayOf("${DeclaredSymbol.RECYCLER_FACTORY_PACKAGE}.$NOTIFY_ALL_ITEMS_INSERTED_FUNCTION")
+                    imports = arrayOf("$RECYCLER_FACTORY_PACKAGE.$NOTIFY_ALL_ITEMS_INSERTED_FUNCTION")
                 )
             )
             return true
@@ -244,9 +265,12 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
 
         private fun reportNotifyAllItemsChanged(node: UCallExpression): Boolean {
             if (node.methodName != NOTIFY_ITEM_RANGE_CHANGED_METHOD) return false
+
+            // Validation is `RecyclerView.Adapter.notifyItemRangeChanged(...)`.
             if (!isRecyclerViewAdapterMethod(node)) return false
             if (!isZeroArgument(node.valueArguments.getOrNull(0))) return false
 
+            // This is the full-range changed notification pattern.
             val countArgument = node.valueArguments.getOrNull(1)?.unwrapParenthesized() ?: return false
             val receiver = node.adapterReceiver() ?: return false
             val replacementReceiver = node.receiverPrefix()
@@ -264,7 +288,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$NOTIFY_ALL_ITEMS_CHANGED_FUNCTION'",
                     replacement = replacement,
-                    imports = arrayOf("${DeclaredSymbol.RECYCLER_FACTORY_PACKAGE}.$NOTIFY_ALL_ITEMS_CHANGED_FUNCTION")
+                    imports = arrayOf("$RECYCLER_FACTORY_PACKAGE.$NOTIFY_ALL_ITEMS_CHANGED_FUNCTION")
                 )
             )
             return true
@@ -272,9 +296,12 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
 
         private fun reportClearAndNotify(node: UCallExpression): Boolean {
             if (node.methodName != NOTIFY_ITEM_RANGE_REMOVED_METHOD) return false
+
+            // Validation is `RecyclerView.Adapter.notifyItemRangeRemoved(...)`.
             if (!isRecyclerViewAdapterMethod(node)) return false
             if (!isZeroArgument(node.valueArguments.getOrNull(0))) return false
 
+            // This is the `dataSet.clear()` + `notifyItemRangeRemoved(...)` pattern.
             val block = node.findContainingBlock() ?: return false
             val expressions = block.expressions
             val index = expressions.indexOfFirst { expression ->
@@ -329,13 +356,13 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
             val callbackArgument = calculateDiffNode.valueArguments.firstOrNull()?.unwrapParenthesized() ?: return null
             val callbackExpression = callbackArgument as? UObjectLiteralExpression ?: return null
             val adapter = dispatchTarget.asSourceString()
-            val oldList = callbackExpression.findMethodExpressionSource("getOldListSize", SIZE_PROPERTY) ?: return null
-            val newList = callbackExpression.findMethodExpressionSource("getNewListSize", SIZE_PROPERTY) ?: return null
-            val areItemsTheSame = callbackExpression.findMethodExpressionSource("areItemsTheSame")
+            val oldList = callbackExpression.findMethodExpressionSource(GET_OLD_LIST_SIZE_METHOD, SIZE_PROPERTY) ?: return null
+            val newList = callbackExpression.findMethodExpressionSource(GET_NEW_LIST_SIZE_METHOD, SIZE_PROPERTY) ?: return null
+            val areItemsTheSame = callbackExpression.findMethodExpressionSource(ARE_ITEMS_THE_SAME_METHOD)
                 ?.normalizeDiffItemExpression(oldList, newList) ?: return null
-            val areContentsTheSame = callbackExpression.findMethodExpressionSource("areContentsTheSame")
+            val areContentsTheSame = callbackExpression.findMethodExpressionSource(ARE_CONTENTS_THE_SAME_METHOD)
                 ?.normalizeDiffItemExpression(oldList, newList) ?: return null
-            val getChangePayload = callbackExpression.findMethodExpressionSource("getChangePayload")
+            val getChangePayload = callbackExpression.findMethodExpressionSource(GET_CHANGE_PAYLOAD_METHOD)
                 ?.normalizeDiffItemExpression(oldList, newList)
             val detectMoves = calculateDiffNode.valueArguments.getOrNull(1)?.unwrapParenthesized()?.asSourceString()
 
@@ -380,13 +407,13 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
     }
 
     private fun resolveDiffUtilCallbackReplacement(node: UObjectLiteralExpression): String? {
-        val oldList = node.findMethodExpressionSource("getOldListSize", SIZE_PROPERTY) ?: return null
-        val newList = node.findMethodExpressionSource("getNewListSize", SIZE_PROPERTY) ?: return null
-        val areItemsTheSame = node.findMethodExpressionSource("areItemsTheSame")
+        val oldList = node.findMethodExpressionSource(GET_OLD_LIST_SIZE_METHOD, SIZE_PROPERTY) ?: return null
+        val newList = node.findMethodExpressionSource(GET_NEW_LIST_SIZE_METHOD, SIZE_PROPERTY) ?: return null
+        val areItemsTheSame = node.findMethodExpressionSource(ARE_ITEMS_THE_SAME_METHOD)
             ?.normalizeDiffItemExpression(oldList, newList) ?: return null
-        val areContentsTheSame = node.findMethodExpressionSource("areContentsTheSame")
+        val areContentsTheSame = node.findMethodExpressionSource(ARE_CONTENTS_THE_SAME_METHOD)
             ?.normalizeDiffItemExpression(oldList, newList) ?: return null
-        val getChangePayload = node.findMethodExpressionSource("getChangePayload")
+        val getChangePayload = node.findMethodExpressionSource(GET_CHANGE_PAYLOAD_METHOD)
             ?.normalizeDiffItemExpression(oldList, newList)
 
         return buildString {
@@ -411,10 +438,10 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
     }
 
     private fun resolveListUpdateCallbackReplacement(node: UObjectLiteralExpression): String? {
-        val onInserted = node.findMethodExpressionSource("onInserted") ?: return null
-        val onRemoved = node.findMethodExpressionSource("onRemoved") ?: return null
-        val onMoved = node.findMethodExpressionSource("onMoved") ?: return null
-        val onChanged = node.findMethodExpressionSource("onChanged") ?: return null
+        val onInserted = node.findMethodExpressionSource(ON_INSERTED_METHOD) ?: return null
+        val onRemoved = node.findMethodExpressionSource(ON_REMOVED_METHOD) ?: return null
+        val onMoved = node.findMethodExpressionSource(ON_MOVED_METHOD) ?: return null
+        val onChanged = node.findMethodExpressionSource(ON_CHANGED_METHOD) ?: return null
 
         return buildString {
             append("$LIST_UPDATE_CALLBACK_FUNCTION(")
@@ -434,13 +461,11 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
     ): LintFix {
         val clearSourcePsi = clearExpression.sourcePsi
         val notifySourcePsi = notifyExpression.sourcePsi
-        if (clearSourcePsi == null || notifySourcePsi == null) {
-            return buildReplaceFix(
-                name = "Replace with 'clearAndNotify'",
-                replacement = replacement,
-                imports = arrayOf("${DeclaredSymbol.RECYCLER_FACTORY_PACKAGE}.clearAndNotify")
-            )
-        }
+        if (clearSourcePsi == null || notifySourcePsi == null) return buildReplaceFix(
+            name = "Replace with 'clearAndNotify'",
+            replacement = replacement,
+            imports = arrayOf("$RECYCLER_FACTORY_PACKAGE.$CLEAR_AND_NOTIFY_FUNCTION")
+        )
 
         val deleteClearFix = LintFix.create()
             .replace()
@@ -455,7 +480,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
             .with(replacement)
             .reformat(true)
             .shortenNames()
-            .imports("${DeclaredSymbol.RECYCLER_FACTORY_PACKAGE}.clearAndNotify")
+            .imports("$RECYCLER_FACTORY_PACKAGE.$CLEAR_AND_NOTIFY_FUNCTION")
             .build()
 
         return LintFix.create()
