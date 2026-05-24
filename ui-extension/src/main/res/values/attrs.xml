@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="WindowInsetsLayout">
+        <!-- Whether to fits left insets to the child view. -->
+        <attr name="fitsLeftInsets" format="boolean" />
+        <!-- Whether to fits top insets to the child view. -->
+        <attr name="fitsTopInsets" format="boolean" />
+        <!-- Whether to fits right insets to the child view. -->
+        <attr name="fitsRightInsets" format="boolean" />
+        <!-- Whether to fits bottom insets to the child view. -->
+        <attr name="fitsBottomInsets" format="boolean" />
+        <!-- Whether to consume window insets for sublayouts. -->
+        <attr name="consumed" format="boolean" />
+        <!-- Whether to use animation effects when window insets change.
+             Only supports Android 11 and above. -->
+        <attr name="animated" format="boolean" />
+        <!-- Window insets types. -->
+        <attr name="windowInsetsType">
+            <enum name="statusBars" value="0" />
+            <enum name="navigationBars" value="1" />
+            <enum name="captionBar" value="2" />
+            <enum name="systemBars" value="3" />
+            <enum name="ime" value="4" />
+            <enum name="tappableElement" value="5" />
+            <enum name="systemGestures" value="6" />
+            <enum name="mandatorySystemGestures" value="7" />
+            <enum name="displayCutout" value="8" />
+            <enum name="waterFall" value="9" />
+            <enum name="safeGestures" value="10" />
+            <enum name="safeDrawing" value="11" />
+            <enum name="safeDrawingIgnoringIme" value="12" />
+            <enum name="safeContent" value="13" />
+        </attr>
+    </declare-styleable>
+</resources>
