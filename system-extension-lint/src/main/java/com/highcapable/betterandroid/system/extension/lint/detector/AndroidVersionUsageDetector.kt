@@ -105,8 +105,8 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
                 from BetterAndroid system-extension library.
 
                 See the documentation for more details:
-                - English: https://betterandroid.github.io/BetterAndroid/en/library/system-extension#system-infomation
-                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/system-extension#system-infomation
+                - English: https://betterandroid.github.io/BetterAndroid/en/library/system-extension#system-information
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/system-extension#system-information
 
                 The `AndroidVersion` provides:
                 - Type-safe version constants (AndroidVersion.T, AndroidVersion.U, etc.)
