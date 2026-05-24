@@ -425,6 +425,10 @@ fragment.attach(activity, body = myTransaction)
 [InsetsWrapper](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.insets/-insets-wrapper)
 `Insets` 的包装器。
 
+[WindowInsetsLayout](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.insets.widget/-window-insets-layout)
+
+自动处理 Window Insets 的布局容器。
+
 [Insets](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.insets.factory)
 
 适用于 `Insets`、`WindowInsets` 的扩展方法。
@@ -736,6 +740,65 @@ val systemBars = absoluteWrapper.systemBars
 | `statusBars`     | 状态栏                                   |
 | `navigationBars` | 导航栏                                   |
 | `systemBars`     | 系统栏 (`statusBars` + `navigationBars`) |
+
+如果你的场景只是想让一个布局自动根据 Window Insets 调整 `padding`，而不想每次都手动处理 `handleOnWindowInsetsChanged`，那么你还可以直接使用 `WindowInsetsLayout`。
+
+它本质上是一个 `FrameLayout`，会在布局附加到窗口后自动监听 Window Insets 的变化，并根据配置将目标 Insets 应用到自身的 `padding` 上。
+
+默认情况下，它会使用 `safeDrawingIgnoringIme` 作为 Insets 类型，并同时适配上下左右四个方向。
+
+> 示例如下
+
+```xml
+<com.highcapable.betterandroid.ui.extension.insets.widget.WindowInsetsLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:windowInsetsType="safeDrawingIgnoringIme">
+
+    <!-- Your views here. -->
+
+</com.highcapable.betterandroid.ui.extension.insets.widget.WindowInsetsLayout>
+```
+
+如果你只想让它处理部分方向，也可以配合 `fitsTopInsets`、`fitsLeftInsets`、`fitsRightInsets`、`fitsBottomInsets` 来进行控制。
+
+> 示例如下
+
+```xml
+<com.highcapable.betterandroid.ui.extension.insets.widget.WindowInsetsLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:fitsLeftInsets="false"
+    app:fitsRightInsets="false"
+    app:fitsBottomInsets="false"
+    app:windowInsetsType="statusBars">
+
+    <!-- Your views here. -->
+
+</com.highcapable.betterandroid.ui.extension.insets.widget.WindowInsetsLayout>
+```
+
+它支持的 `windowInsetsType` 与 `WindowInsetsWrapper` 中的 Insets 类型保持一致。
+
+除此之外，你还可以通过以下属性调整行为：
+
+| 属性名             | 默认值                   | 说明                                                           |
+| ------------------ | ------------------------ | -------------------------------------------------------------- |
+| `consumed`         | `false`                  | 是否在当前布局消费 Window Insets，消费后将不再继续向子视图传递 |
+| `animated`         | `false`                  | 是否在 Window Insets 变化时启用动画回调                        |
+| `fitsTopInsets`    | `true`                   | 是否应用顶部 Insets                                            |
+| `fitsLeftInsets`   | `true`                   | 是否应用左侧 Insets                                            |
+| `fitsRightInsets`  | `true`                   | 是否应用右侧 Insets                                            |
+| `fitsBottomInsets` | `true`                   | 是否应用底部 Insets                                            |
+| `windowInsetsType` | `safeDrawingIgnoringIme` | 当前布局要应用的 Insets 类型                                   |
+
+::: tip
+
+`WindowInsetsLayout` 更适合静态布局场景。
+
+如果你还需要在 Insets 变化时执行额外逻辑，例如同步修改子视图状态、参与动画过程或动态组合多个 Insets，仍然更推荐使用 `handleOnWindowInsetsChanged` 自行处理。
+
+:::
 
 ### Lifecycle 扩展
 

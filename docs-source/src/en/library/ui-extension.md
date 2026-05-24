@@ -439,6 +439,10 @@ An absolute insets for `WindowInsetsWrapper`.
 
 A wrapper for `Insets`.
 
+[WindowInsetsLayout](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.insets.widget/-window-insets-layout)
+
+An automatic layout container for handling window insets.
+
 [Insets](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.insets.factory)
 
 Extension methods for `Insets`, `WindowInsets`.
@@ -764,6 +768,70 @@ Below are all the insets provided in `WindowInsetsWrapper.Absolute`.
 | `statusBars`     | Status bars.                                   |
 | `navigationBars` | Navigation bars.                               |
 | `systemBars`     | System bars. (`statusBars` + `navigationBars`) |
+
+If your scenario only needs a layout to automatically adjust its `padding` according to window insets,
+and you do not want to manually handle `handleOnWindowInsetsChanged` every time,
+then you can also directly use `WindowInsetsLayout`.
+
+It is essentially a `FrameLayout` that automatically listens for window insets changes after being attached to the window,
+and applies the target insets to its own `padding` according to the current configuration.
+
+By default, it uses `safeDrawingIgnoringIme` as the insets type and applies it to all four directions.
+
+> The following example
+
+```xml
+<com.highcapable.betterandroid.ui.extension.insets.widget.WindowInsetsLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:windowInsetsType="safeDrawingIgnoringIme">
+
+    <!-- Your views here. -->
+
+</com.highcapable.betterandroid.ui.extension.insets.widget.WindowInsetsLayout>
+```
+
+If you only want it to handle specific directions, you can also control it with `fitsTopInsets`, `fitsLeftInsets`, `fitsRightInsets`, and `fitsBottomInsets`.
+
+> The following example
+
+```xml
+<com.highcapable.betterandroid.ui.extension.insets.widget.WindowInsetsLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:fitsLeftInsets="false"
+    app:fitsRightInsets="false"
+    app:fitsBottomInsets="false"
+    app:windowInsetsType="statusBars">
+
+    <!-- Your views here. -->
+
+</com.highcapable.betterandroid.ui.extension.insets.widget.WindowInsetsLayout>
+```
+
+The supported `windowInsetsType` values are aligned with the insets types in `WindowInsetsWrapper`.
+
+In addition, you can adjust its behavior through the following attributes:
+
+| Attribute Name     | Default Value            | Description                                                                                                         |
+| ------------------ | ------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| `consumed`         | `false`                  | Whether to consume window insets in the current layout. Once consumed, they will no longer continue to child views. |
+| `animated`         | `false`                  | Whether to enable animation callbacks when window insets change.                                                    |
+| `fitsTopInsets`    | `true`                   | Whether to apply top insets.                                                                                        |
+| `fitsLeftInsets`   | `true`                   | Whether to apply left insets.                                                                                       |
+| `fitsRightInsets`  | `true`                   | Whether to apply right insets.                                                                                      |
+| `fitsBottomInsets` | `true`                   | Whether to apply bottom insets.                                                                                     |
+| `windowInsetsType` | `safeDrawingIgnoringIme` | The insets type currently applied by this layout.                                                                   |
+
+::: tip
+
+`WindowInsetsLayout` is more suitable for static layout scenarios.
+
+If you still need to execute additional logic when insets change,
+such as synchronizing child view states, participating in animations,
+or dynamically combining multiple insets, it is still more recommended to use `handleOnWindowInsetsChanged` directly.
+
+:::
 
 ### Lifecycle Extension
 
