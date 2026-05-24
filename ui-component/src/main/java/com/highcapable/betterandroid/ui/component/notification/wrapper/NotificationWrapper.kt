@@ -139,7 +139,7 @@ class NotificationWrapper internal constructor(internal var builder: Notificatio
             builder.smallIconResId?.also { setSmallIcon(it) }
             AndroidVersion.require(AndroidVersion.M) { builder.smallIcon?.also { setSmallIcon(it) } }
             if (builder.smallIconResId == null && AndroidVersion.requireOrNull(AndroidVersion.M, null) { builder.smallIcon } == null)
-                setSmallIcon(R.drawable.ic_simple_notification)
+                setSmallIcon(R.drawable.ic_better_android_simple_notification)
             builder.extras?.also { setExtras(it) }
             if (AndroidVersion.isLessThan(AndroidVersion.O))
                 builder.channel.builder.also { channel ->

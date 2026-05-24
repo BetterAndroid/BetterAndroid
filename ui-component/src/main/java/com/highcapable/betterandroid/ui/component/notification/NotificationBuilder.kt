@@ -224,7 +224,7 @@ class NotificationBuilder private constructor(
 
     /**
      * - You must set a small icon before post the notification,
-     *   if you not set it, it will be set to defaults [R.drawable.ic_simple_notification].
+     *   if you not set it, it will be set to defaults [R.drawable.ic_better_android_simple_notification].
      *
      * - Note: Some third-party ROMs may modify this function causing it to
      *   not work as expected, such as MIUI (HyperOS),
@@ -237,7 +237,7 @@ class NotificationBuilder private constructor(
 
     /**
      * - You must set a small icon before post the notification,
-     *   if you not set it, it will be set to defaults [R.drawable.ic_simple_notification].
+     *   if you not set it, it will be set to defaults [R.drawable.ic_better_android_simple_notification].
      *
      * - Note: Some third-party ROMs may modify this function causing it to
      *   not work as expected, such as MIUI (HyperOS),
@@ -608,7 +608,7 @@ class NotificationBuilder private constructor(
 
     /**
      * - You must set a small icon before post the notification,
-     *   if you not set it, it will be set to defaults [R.drawable.ic_simple_notification].
+     *   if you not set it, it will be set to defaults [R.drawable.ic_better_android_simple_notification].
      *
      * - Note: Some third-party ROMs may modify this function causing it to
      *   not work as expected, such as MIUI (HyperOS),
@@ -622,7 +622,7 @@ class NotificationBuilder private constructor(
 
     /**
      * - You must set a small icon before post the notification,
-     *   if you not set it, it will be set to defaults [R.drawable.ic_simple_notification].
+     *   if you not set it, it will be set to defaults [R.drawable.ic_better_android_simple_notification].
      *
      * - Note: Some third-party ROMs may modify this function causing it to
      *   not work as expected, such as MIUI (HyperOS),
