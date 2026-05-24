@@ -48,7 +48,7 @@ Please change `<version>` to the version displayed at the top of this document.
 
 You can view the KDoc [click here](kdoc://system-extension).
 
-### System Infomation
+### System Information
 
 ::: tip Content of This Section
 
