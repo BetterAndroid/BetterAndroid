@@ -45,14 +45,13 @@ import com.highcapable.betterandroid.ui.component.adapter.RecyclerAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.fragment.FragmentPagerAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.fragment.FragmentStateAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.recycler.cosmetic.RecyclerCosmetic
-import com.highcapable.betterandroid.ui.component.adapter.viewholder.impl.RecyclerViewHolderImpl
 import androidx.appcompat.widget.ListPopupWindow as AndroidX_ListPopupWindow
 
 /**
  * Bind the [BaseAdapter] to [ListView], using entity [E].
  * @receiver [ListView]
  * @param builder the [BaseAdapterBuilder] builder body.
- * @return [BaseAdapter]
+ * @return [BaseAdapterBuilder.Instance]
  */
 @JvmName("bindAdapterTyped")
 inline fun <E> ListView.bindAdapter(builder: BaseAdapterBuilder<E>.() -> Unit) =
@@ -62,7 +61,7 @@ inline fun <E> ListView.bindAdapter(builder: BaseAdapterBuilder<E>.() -> Unit) =
  * Bind the [BaseAdapter] to [ListView].
  * @receiver [ListView]
  * @param builder the [BaseAdapterBuilder] builder body.
- * @return [BaseAdapter]
+ * @return [BaseAdapterBuilder.Instance]
  */
 inline fun ListView.bindAdapter(builder: BaseAdapterBuilder<Any>.() -> Unit) = bindAdapter<Any>(builder)
 
@@ -70,7 +69,7 @@ inline fun ListView.bindAdapter(builder: BaseAdapterBuilder<Any>.() -> Unit) = b
  * Bind the [BaseAdapter] to [AutoCompleteTextView], using entity [E].
  * @receiver [AutoCompleteTextView]
  * @param builder the [BaseAdapterBuilder] builder body.
- * @return [BaseAdapter]
+ * @return [BaseAdapterBuilder.Instance]
  */
 @JvmName("bindAdapterTyped")
 inline fun <E> AutoCompleteTextView.bindAdapter(builder: BaseAdapterBuilder<E>.() -> Unit) =
@@ -80,7 +79,7 @@ inline fun <E> AutoCompleteTextView.bindAdapter(builder: BaseAdapterBuilder<E>.(
  * Bind the [BaseAdapter] to [AutoCompleteTextView].
  * @receiver [AutoCompleteTextView]
  * @param builder the [BaseAdapterBuilder] builder body.
- * @return [BaseAdapter]
+ * @return [BaseAdapterBuilder.Instance]
  */
 inline fun AutoCompleteTextView.bindAdapter(builder: BaseAdapterBuilder<Any>.() -> Unit) = bindAdapter<Any>(builder)
 
@@ -89,7 +88,7 @@ inline fun AutoCompleteTextView.bindAdapter(builder: BaseAdapterBuilder<Any>.() 
  * @receiver [ListPopupWindow]
  * @param context the current context.
  * @param builder the [BaseAdapterBuilder] builder body.
- * @return [BaseAdapter]
+ * @return [BaseAdapterBuilder.Instance]
  */
 @JvmName("bindAdapterTyped")
 inline fun <E> ListPopupWindow.bindAdapter(context: Context, builder: BaseAdapterBuilder<E>.() -> Unit) =
@@ -100,7 +99,7 @@ inline fun <E> ListPopupWindow.bindAdapter(context: Context, builder: BaseAdapte
  * @receiver [ListPopupWindow]
  * @param context the current context.
  * @param builder the [BaseAdapterBuilder] builder body.
- * @return [BaseAdapter]
+ * @return [BaseAdapterBuilder.Instance]
  */
 inline fun ListPopupWindow.bindAdapter(context: Context, builder: BaseAdapterBuilder<Any>.() -> Unit) = bindAdapter<Any>(context, builder)
 
@@ -109,7 +108,7 @@ inline fun ListPopupWindow.bindAdapter(context: Context, builder: BaseAdapterBui
  * @receiver [AndroidX_ListPopupWindow]
  * @param context the current context.
  * @param builder the [BaseAdapterBuilder] builder body.
- * @return [BaseAdapter]
+ * @return [BaseAdapterBuilder.Instance]
  */
 @JvmName("bindAdapterTyped")
 inline fun <E> AndroidX_ListPopupWindow.bindAdapter(context: Context, builder: BaseAdapterBuilder<E>.() -> Unit) =
@@ -120,7 +119,7 @@ inline fun <E> AndroidX_ListPopupWindow.bindAdapter(context: Context, builder: B
  * @receiver [AndroidX_ListPopupWindow]
  * @param context the current context.
  * @param builder the [BaseAdapterBuilder] builder body.
- * @return [BaseAdapter]
+ * @return [BaseAdapterBuilder.Instance]
  */
 inline fun AndroidX_ListPopupWindow.bindAdapter(context: Context, builder: BaseAdapterBuilder<Any>.() -> Unit) =
     bindAdapter<Any>(context, builder)
@@ -141,13 +140,13 @@ inline fun AndroidX_ListPopupWindow.bindAdapter(context: Context, builder: BaseA
  * @receiver [RecyclerView]
  * @param cosmetic the cosmetic, default is [RecyclerCosmetic.fromLinearVertical].
  * @param builder the [RecyclerAdapterBuilder] builder body.
- * @return [RecyclerView.Adapter]<[RecyclerViewHolderImpl]>
+ * @return [RecyclerAdapterBuilder.Instance]
  */
 @JvmName("bindAdapterTyped")
 inline fun <E> RecyclerView.bindAdapter(
     cosmetic: RecyclerCosmetic<*, *> = RecyclerCosmetic.fromLinearVertical(context),
     builder: RecyclerAdapterBuilder<E>.() -> Unit
-): RecyclerView.Adapter<RecyclerViewHolderImpl<Any>> {
+): RecyclerAdapterBuilder<E>.Instance {
     applyCosmetic(cosmetic)
 
     return RecyclerAdapter(context, builder).apply { adapter = this }
@@ -169,7 +168,7 @@ inline fun <E> RecyclerView.bindAdapter(
  * @receiver [RecyclerView]
  * @param cosmetic the cosmetic, default is [RecyclerCosmetic.fromLinearVertical].
  * @param builder the [RecyclerAdapterBuilder] builder body.
- * @return [RecyclerView.Adapter]<[RecyclerViewHolderImpl]>
+ * @return [RecyclerAdapterBuilder.Instance]
  */
 inline fun RecyclerView.bindAdapter(
     cosmetic: RecyclerCosmetic<*, *> = RecyclerCosmetic.fromLinearVertical(context),
@@ -201,7 +200,7 @@ fun RecyclerView.applyCosmetic(cosmetic: RecyclerCosmetic<*, *>) {
  * Bind the [PagerAdapter] to [ViewPager], using entity [E].
  * @receiver [ViewPager]
  * @param builder the [PagerAdapterBuilder] builder body.
- * @return [PagerAdapter]
+ * @return [PagerAdapterBuilder.Instance]
  */
 @JvmName("bindAdapterTyped")
 inline fun <E> ViewPager.bindAdapter(builder: PagerAdapterBuilder<E>.() -> Unit) =
@@ -211,7 +210,7 @@ inline fun <E> ViewPager.bindAdapter(builder: PagerAdapterBuilder<E>.() -> Unit)
  * Bind the [PagerAdapter] to [ViewPager].
  * @receiver [ViewPager]
  * @param builder the [PagerAdapterBuilder] builder body.
- * @return [PagerAdapter]
+ * @return [PagerAdapterBuilder.Instance]
  */
 inline fun ViewPager.bindAdapter(builder: PagerAdapterBuilder<Any>.() -> Unit) = bindAdapter<Any>(builder)
 
@@ -253,7 +252,7 @@ inline fun ViewPager.bindFragments(
  * Bind the [RecyclerView.Adapter] to [ViewPager2], using entity [E].
  * @receiver [ViewPager2]
  * @param builder the [RecyclerAdapterBuilder] builder body.
- * @return [RecyclerView.Adapter]<[RecyclerViewHolderImpl]>
+ * @return [RecyclerAdapterBuilder.Instance]
  */
 @JvmName("bindAdapterTyped")
 inline fun <E> ViewPager2.bindAdapter(builder: RecyclerAdapterBuilder<E>.() -> Unit) =
@@ -263,7 +262,7 @@ inline fun <E> ViewPager2.bindAdapter(builder: RecyclerAdapterBuilder<E>.() -> U
  * Bind the [RecyclerView.Adapter] to [ViewPager2].
  * @receiver [ViewPager2]
  * @param builder the [RecyclerAdapterBuilder] builder body.
- * @return [RecyclerView.Adapter]<[RecyclerViewHolderImpl]>
+ * @return [RecyclerAdapterBuilder.Instance]
  */
 inline fun ViewPager2.bindAdapter(builder: RecyclerAdapterBuilder<Any>.() -> Unit) = bindAdapter<Any>(builder)
 
@@ -291,7 +290,7 @@ inline fun ViewPager2.bindFragments(fragment: Fragment, builder: FragmentStateAd
  * Create a [BaseAdapter], using entity [E].
  * @param context the current context.
  * @param builder the [BaseAdapterBuilder] builder body.
- * @return [BaseAdapter]
+ * @return [BaseAdapterBuilder.Instance]
  */
 @JvmName("BaseAdapterTyped")
 inline fun <E> BaseAdapter(context: Context, builder: BaseAdapterBuilder<E>.() -> Unit) =
@@ -301,7 +300,7 @@ inline fun <E> BaseAdapter(context: Context, builder: BaseAdapterBuilder<E>.() -
  * Create a [BaseAdapter].
  * @param context the current context.
  * @param builder the [BaseAdapterBuilder] builder body.
- * @return [BaseAdapter]
+ * @return [BaseAdapterBuilder.Instance]
  */
 inline fun BaseAdapter(context: Context, builder: BaseAdapterBuilder<Any>.() -> Unit) = BaseAdapter<Any>(context, builder)
 
@@ -309,7 +308,7 @@ inline fun BaseAdapter(context: Context, builder: BaseAdapterBuilder<Any>.() -> 
  * Create a [RecyclerView.Adapter], using entity [E].
  * @param context the current context.
  * @param builder the [RecyclerAdapterBuilder] builder body.
- * @return [RecyclerView.Adapter]<[RecyclerViewHolderImpl]>
+ * @return [RecyclerAdapterBuilder.Instance]
  */
 @JvmName("RecyclerAdapterTyped")
 inline fun <E> RecyclerAdapter(context: Context, builder: RecyclerAdapterBuilder<E>.() -> Unit) =
@@ -319,7 +318,7 @@ inline fun <E> RecyclerAdapter(context: Context, builder: RecyclerAdapterBuilder
  * Create a [RecyclerView.Adapter].
  * @param context the current context.
  * @param builder the [RecyclerAdapterBuilder] builder body.
- * @return [RecyclerView.Adapter]<[RecyclerViewHolderImpl]>
+ * @return [RecyclerAdapterBuilder.Instance]
  */
 inline fun RecyclerAdapter(context: Context, builder: RecyclerAdapterBuilder<Any>.() -> Unit) = RecyclerAdapter<Any>(context, builder)
 
@@ -327,7 +326,7 @@ inline fun RecyclerAdapter(context: Context, builder: RecyclerAdapterBuilder<Any
  * Create a [PagerAdapter], using entity [E].
  * @param context the current context.
  * @param builder the [PagerAdapterBuilder] builder body.
- * @return [PagerAdapter]
+ * @return [PagerAdapterBuilder.Instance]
  */
 @JvmName("PagerAdapterTyped")
 inline fun <E> PagerAdapter(context: Context, builder: PagerAdapterBuilder<E>.() -> Unit) =
@@ -337,7 +336,7 @@ inline fun <E> PagerAdapter(context: Context, builder: PagerAdapterBuilder<E>.()
  * Create a [PagerAdapter].
  * @param context the current context.
  * @param builder the [PagerAdapterBuilder] builder body.
- * @return [PagerAdapter]
+ * @return [PagerAdapterBuilder.Instance]
  */
 inline fun PagerAdapter(context: Context, builder: PagerAdapterBuilder<Any>.() -> Unit) = PagerAdapter<Any>(context, builder)
 
