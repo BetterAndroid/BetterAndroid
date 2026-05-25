@@ -98,6 +98,10 @@ Enhanced layout manager base class for `RecyclerView`.
 
 Custom adapter wrapper class for `RecyclerView`.
 
+[RecyclerAsyncDiffer](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter.recycler.diff/-recycler-async-differ)
+
+Async diff submission instance for `RecyclerView`.
+
 [RecyclerView, RecyclerAdapter](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter.recycler.factory)
 
 Extension methods for `RecyclerView` and its adapter builds.
@@ -307,6 +311,121 @@ val adapter = recyclerView.bindAdapter<MyEntity> {
     }
 }
 ```
+
+If you prefer a more modern list submission workflow, you can bind `RecyclerAsyncDiffer` to `RecyclerAdapterBuilder` and then submit new data through `submitList`.
+
+> The following example
+
+```kotlin
+// Assume that's your entity class.
+data class MyEntity(
+    var id: Long,
+    var name: String
+)
+// Create and bind to a custom RecyclerView.Adapter.
+val adapter = recyclerView.bindAdapter<MyEntity> {
+    // Bind differ.
+    onBindDiffer(
+        areItemsTheSame = { oldItem, newItem -> oldItem.id == newItem.id },
+        areContentsTheSame = { oldItem, newItem -> oldItem == newItem }
+    )
+    // Bind the custom adapter layout adapter_my_layout.xml
+    onBindItemView<AdapterMyLayoutBinding> { binding, entity, position ->
+        binding.textView.text = entity.name
+    }
+}
+// Submit the current list directly.
+adapter.submitList(newList)
+```
+
+If you want to reuse the same diff configuration, you can also create a `RecyclerAsyncDiffer.Callback` manually and pass it directly to `onBindDiffer`.
+
+> The following example
+
+```kotlin
+val differCallback = RecyclerAsyncDiffer.Callback<MyEntity>(
+    areItemsTheSame = { oldItem, newItem -> oldItem.id == newItem.id },
+    areContentsTheSame = { oldItem, newItem -> oldItem == newItem },
+    getChangePayload = { _, _ -> null },
+    detectMoves = true
+)
+val adapter = recyclerView.bindAdapter<MyEntity> {
+    onBindDiffer(differCallback)
+    onBindItemView<AdapterMyLayoutBinding> { binding, entity, position ->
+        binding.textView.text = entity.name
+    }
+}
+adapter.submitList(newList)
+```
+
+If you are already using an observer-style data source, keep the observation outside the adapter and continue calling `submitList`.
+
+> The following example
+
+```kotlin
+viewModel.some.observe(viewLifecycleOwner) {
+    adapter.submitList(it)
+}
+```
+
+::: tip
+
+If you prefer to control the timing of old and new dataset switching yourself, you can also refer to the [Adapter Extension](#adapter-extension) below and use `notifyByDiff` as another workflow.
+
+:::
+
+If you do not want `RecyclerAdapterBuilder` to own the `differ`, you can also create `RecyclerAsyncDiffer` manually and wire it to any `RecyclerView.Adapter` yourself.
+
+> The following example
+
+```kotlin
+// Assume that's the dataset you currently hold.
+val listData = mutableListOf<MyEntity>()
+val adapter = recyclerView.bindAdapter<MyEntity> {
+    onBindData { listData }
+    onBindItemView<AdapterMyLayoutBinding> { binding, entity, position ->
+        binding.textView.text = entity.name
+    }
+}
+val differ = RecyclerAsyncDiffer.from(
+    adapter = adapter,
+    dataSet = emptyList(),
+    callback = RecyclerAsyncDiffer.Callback(
+        areItemsTheSame = { oldItem, newItem -> oldItem.id == newItem.id },
+        areContentsTheSame = { oldItem, newItem -> oldItem == newItem },
+        detectMoves = true
+    )
+)
+val newList = loadNewList()
+differ.submitList(newList) {
+    listData.clear()
+    listData.addAll(differ.currentList)
+}
+```
+
+::: tip
+
+Compared with the official [AsyncListDiffer](https://developer.android.com/reference/androidx/recyclerview/widget/AsyncListDiffer),
+`RecyclerAsyncDiffer` is already aligned with the way this module handles `RecyclerAdapterBuilder`, `RecyclerAdapterWrapper`,
+and header or footer layouts, so you do not need to add another adaptation layer for these cases.
+
+At the same time, `RecyclerAsyncDiffer` also packages the async submission flow and background diff calculation strategy used, it is more complete and stable.
+
+If you are already using the adapter system provided by BetterAndroid here, we no longer recommend wiring in the official `AsyncListDiffer` again, and suggest using `RecyclerAsyncDiffer` or `onBindDiffer` consistently instead.
+
+:::
+
+::: warning
+
+`onBindDiffer` cannot be used with `onBindData` and `dataSetCount`.
+
+`differ.currentList` only represents the primary data list and does not include header or footer layouts.
+
+`onBindDiffer` is backed by `RecyclerAsyncDiffer`, and you can also create and use it manually when needed.
+
+`adapter.submitList(...)` can only be used when the current adapter is configured with `onBindDiffer`, otherwise it will throw an exception directly.
+
+:::
 
 Create a multi-`View` type `RecyclerView.Adapter` for `RecyclerView` and `ViewPager2`.
 

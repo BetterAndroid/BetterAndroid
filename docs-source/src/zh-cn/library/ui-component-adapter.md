@@ -98,6 +98,10 @@ implementation("com.highcapable.betterandroid:ui-component-adapter:<version>")
 
 `RecyclerView` 的自定义适配器包装类。
 
+[RecyclerAsyncDiffer](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter.recycler.diff/-recycler-async-differ)
+
+`RecyclerView` 的异步差分提交实例。
+
 [RecyclerView、RecyclerAdapter](kdoc://ui-component-adapter/ui-component-adapter/com.highcapable.betterandroid.ui.component.adapter.recycler.factory)
 
 适用于 `RecyclerView` 和其适配器构建的扩展方法。
@@ -307,6 +311,119 @@ val adapter = recyclerView.bindAdapter<MyEntity> {
     }
 }
 ```
+
+如果你希望使用更现代化的列表提交方式，也可以为 `RecyclerAdapterBuilder` 绑定 `RecyclerAsyncDiffer`，然后通过 `submitList` 提交新数据。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的实体类
+data class MyEntity(
+    var id: Long,
+    var name: String
+)
+// 创建并绑定到自定义的 RecyclerView.Adapter
+val adapter = recyclerView.bindAdapter<MyEntity> {
+    // 绑定 differ
+    onBindDiffer(
+        areItemsTheSame = { oldItem, newItem -> oldItem.id == newItem.id },
+        areContentsTheSame = { oldItem, newItem -> oldItem == newItem }
+    )
+    // 绑定自定义适配器布局 adapter_my_layout.xml
+    onBindItemView<AdapterMyLayoutBinding> { binding, entity, position ->
+        binding.textView.text = entity.name
+    }
+}
+// 直接提交当前列表
+adapter.submitList(newList)
+```
+
+如果你希望复用一份差分配置，也可以手动创建 `RecyclerAsyncDiffer.Callback`，然后直接传给 `onBindDiffer`。
+
+> 示例如下
+
+```kotlin
+val differCallback = RecyclerAsyncDiffer.Callback<MyEntity>(
+    areItemsTheSame = { oldItem, newItem -> oldItem.id == newItem.id },
+    areContentsTheSame = { oldItem, newItem -> oldItem == newItem },
+    getChangePayload = { _, _ -> null },
+    detectMoves = true
+)
+val adapter = recyclerView.bindAdapter<MyEntity> {
+    onBindDiffer(differCallback)
+    onBindItemView<AdapterMyLayoutBinding> { binding, entity, position ->
+        binding.textView.text = entity.name
+    }
+}
+adapter.submitList(newList)
+```
+
+如果你正在配合观察者模式使用，只需要在外部监听数据变化，然后继续调用 `submitList` 即可。
+
+> 示例如下
+
+```kotlin
+viewModel.some.observe(viewLifecycleOwner) {
+    adapter.submitList(it)
+}
+```
+
+::: tip
+
+如果你更希望自己控制前后两份数据集的切换时机，也可以参考后续的 [适配器扩展](#适配器扩展)，使用 `notifyByDiff` 完成另一种工作流。
+
+:::
+
+如果你不希望让 `RecyclerAdapterBuilder` 托管 `differ`，也可以手动创建 `RecyclerAsyncDiffer` 自行接入任意 `RecyclerView.Adapter`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你当前持有的数据集
+val listData = mutableListOf<MyEntity>()
+val adapter = recyclerView.bindAdapter<MyEntity> {
+    onBindData { listData }
+    onBindItemView<AdapterMyLayoutBinding> { binding, entity, position ->
+        binding.textView.text = entity.name
+    }
+}
+val differ = RecyclerAsyncDiffer.from(
+    adapter = adapter,
+    dataSet = emptyList(),
+    callback = RecyclerAsyncDiffer.Callback(
+        areItemsTheSame = { oldItem, newItem -> oldItem.id == newItem.id },
+        areContentsTheSame = { oldItem, newItem -> oldItem == newItem },
+        detectMoves = true
+    )
+)
+val newList = loadNewList()
+differ.submitList(newList) {
+    listData.clear()
+    listData.addAll(differ.currentList)
+}
+```
+
+::: tip
+
+与官方的 [AsyncListDiffer](https://developer.android.com/reference/androidx/recyclerview/widget/AsyncListDiffer) 相比，`RecyclerAsyncDiffer` 已经直接对齐了当前模块中的 `RecyclerAdapterBuilder`、`RecyclerAdapterWrapper` 以及头部、末位布局的处理方式，你不需要再为这些场景额外进行适配。
+
+同时，`RecyclerAsyncDiffer` 也已经一并处理了异步提交流程与后台差分计算策略，它的使用方式更加完整和稳定。
+
+如果你已经在这里使用了 `BetterAndroid` 提供的适配器体系，我们不再建议你继续额外接入官方的 `AsyncListDiffer`，而是统一使用 `RecyclerAsyncDiffer` 或 `onBindDiffer`。
+
+:::
+
+::: warning
+
+`onBindDiffer` 无法与 `onBindData` 和 `dataSetCount` 共存。
+
+`differ.currentList` 仅表示主数据列表，不包含头部与末位布局。
+
+`onBindDiffer` 底层使用的是 `RecyclerAsyncDiffer`，你也可以在需要时手动创建并独立使用它。
+
+`adapter.submitList(...)` 只有在当前适配器配置了 `onBindDiffer` 时才能使用，否则会直接抛出异常。
+
+:::
 
 为 `RecyclerView`、`ViewPager2` 创建一个多 `View` 类型的 `RecyclerView.Adapter`。
 
