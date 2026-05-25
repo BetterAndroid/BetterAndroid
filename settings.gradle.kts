@@ -40,7 +40,7 @@ gropify {
             isEnabled = false
         }
     }
-    projects(":samples:app") {
+    projects(":samples:demo-android") {
         android {
             isEnabled = false
         }
@@ -85,7 +85,7 @@ gropify {
 
 rootProject.name = "BetterAndroid"
 
-include(":samples:app")
+include(":samples:demo-android")
 include(":android-bom")
 include(
     ":ui-component",
