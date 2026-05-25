@@ -26,6 +26,7 @@ package com.highcapable.betterandroid.ui.component.adapter.recycler.wrapper
 import android.annotation.SuppressLint
 import androidx.recyclerview.widget.RecyclerView
 import com.highcapable.betterandroid.ui.component.adapter.RecyclerAdapterBuilder
+import com.highcapable.betterandroid.ui.component.adapter.recycler.diff.RecyclerAsyncDiffer
 
 /**
  * The adapter wrapper of [RecyclerAdapterBuilder].
@@ -54,6 +55,13 @@ class RecyclerAdapterWrapper internal constructor(
     internal fun includingPosition(position: Int) = builder.includingPosition(position)
 
     /**
+     * Get the [RecyclerAdapterBuilder] differ.
+     * @see RecyclerAdapterBuilder.Instance.differ
+     * @return [RecyclerAsyncDiffer] or null.
+     */
+    val differ get() = instance.differ
+
+    /**
      * Whether the adapter has a header view.
      * @see RecyclerAdapterBuilder.hasHeaderView
      * @return [Boolean]
@@ -72,6 +80,13 @@ class RecyclerAdapterWrapper internal constructor(
      */
     @SuppressLint("NotifyDataSetChanged")
     fun notifyDataSetChanged() = instance.notifyDataSetChanged()
+
+    /**
+     * Submit the current list.
+     * @see RecyclerAdapterBuilder.Instance.submitList
+     */
+    @JvmOverloads
+    fun submitList(list: List<*>?, commitCallback: Runnable? = null) = instance.submitListUnchecked(list, commitCallback)
 
     /**
      * Notify the header view changed whether it exists, if not will ignore.

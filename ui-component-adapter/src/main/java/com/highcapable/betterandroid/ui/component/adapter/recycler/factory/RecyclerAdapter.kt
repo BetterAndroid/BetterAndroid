@@ -25,6 +25,7 @@
 package com.highcapable.betterandroid.ui.component.adapter.recycler.factory
 
 import android.util.Log
+import androidx.recyclerview.widget.AdapterListUpdateCallback
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
 import androidx.recyclerview.widget.RecyclerView
@@ -43,6 +44,28 @@ val RecyclerView.Adapter<*>.wrapper get() = when (this) {
     is RecyclerAdapterBuilder<*>.Instance -> this.wrapper
     else -> null
 }
+
+/**
+ * Create the [ListUpdateCallback] of current adapter.
+ * @receiver [RecyclerView.Adapter]
+ * @return [ListUpdateCallback]
+ */
+internal fun RecyclerView.Adapter<*>.createAdapterListUpdateCallback() = wrapper?.let { wrapper ->
+    ListUpdateCallback(
+        onInserted = { position, count ->
+            notifyItemRangeInserted(wrapper.includingPosition(position), count)
+        },
+        onRemoved = { position, count ->
+            notifyItemRangeRemoved(wrapper.includingPosition(position), count)
+        },
+        onMoved = { fromPosition, toPosition ->
+            notifyItemMoved(wrapper.includingPosition(fromPosition), wrapper.includingPosition(toPosition))
+        },
+        onChanged = { position, count, payload ->
+            notifyItemRangeChanged(wrapper.includingPosition(position), count, payload)
+        }
+    )
+} ?: AdapterListUpdateCallback(this)
 
 /**
  * Notify that all items in the adapter have been inserted.
@@ -187,25 +210,7 @@ fun RecyclerView.Adapter<*>.notifyByDiff(
     detectMoves: Boolean = true
 ) {
     val diffResult = DiffUtil.calculateDiff(callback, detectMoves)
-
-    wrapper?.let { wrapper ->
-        diffResult.dispatchUpdatesTo(
-            ListUpdateCallback(
-                onInserted = { position, count ->
-                    notifyItemRangeInserted(wrapper.includingPosition(position), count)
-                },
-                onRemoved = { position, count ->
-                    notifyItemRangeRemoved(wrapper.includingPosition(position), count)
-                },
-                onMoved = { fromPosition, toPosition ->
-                    notifyItemMoved(wrapper.includingPosition(fromPosition), wrapper.includingPosition(toPosition))
-                },
-                onChanged = { position, count, payload ->
-                    notifyItemRangeChanged(wrapper.includingPosition(position), count, payload)
-                }
-            )
-        )
-    } ?: diffResult.dispatchUpdatesTo(this)
+    diffResult.dispatchUpdatesTo(createAdapterListUpdateCallback())
 }
 
 /**

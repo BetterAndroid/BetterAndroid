@@ -34,6 +34,7 @@ import com.highcapable.betterandroid.ui.component.adapter.RecyclerAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.base.IAdapterBuilder
 import com.highcapable.betterandroid.ui.component.adapter.entity.AdapterPosition
 import com.highcapable.betterandroid.ui.component.adapter.factory.bindAdapter
+import com.highcapable.betterandroid.ui.component.adapter.recycler.diff.RecyclerAsyncDiffer
 import com.highcapable.betterandroid.ui.component.adapter.recycler.wrapper.RecyclerAdapterWrapper
 import com.highcapable.betterandroid.ui.component.adapter.viewholder.RecyclerViewHolder
 import com.highcapable.betterandroid.ui.component.adapter.viewholder.delegate.ViewBindingHolderDelegate
@@ -85,6 +86,9 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
 
     /** The current [List] data callback. */
     private var listDataCallback: (() -> List<E>)? = null
+
+    /** The current diff callback. */
+    private var diffCallback: RecyclerAsyncDiffer.Callback<E>? = null
 
     /** The empty list shortcut to reduce repeated allocations. */
     private val emptyDataSet = emptyList<E>()
@@ -144,6 +148,10 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      *   do not readjust the number here, wrong number may cause error.
      */
     var dataSetCount = -1
+        set(value) {
+            require(diffCallback == null) { "dataSetCount cannot be used with onBindDiffer." }
+            field = value
+        }
 
     /**
      * Manually set the total number of data to be displayed.
@@ -155,14 +163,55 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      * @param dataSetCount
      * @return [RecyclerAdapterBuilder]<[E]>
      */
-    fun dataSetCount(dataSetCount: Int) = apply { this.dataSetCount = dataSetCount }
+    fun dataSetCount(dataSetCount: Int) = apply {
+        require(diffCallback == null) { "dataSetCount cannot be used with onBindDiffer." }
+        this.dataSetCount = dataSetCount
+    }
 
     /**
      * Bind [List] to [RecyclerView.Adapter].
      * @param result callback the data.
      * @return [RecyclerAdapterBuilder]<[E]>
      */
-    fun onBindData(result: (() -> List<E>)) = apply { listDataCallback = result }
+    fun onBindData(result: (() -> List<E>)) = apply {
+        require(diffCallback == null) { "onBindData cannot be used with onBindDiffer." }
+        listDataCallback = result
+    }
+
+    /**
+     * Bind the async list differ to [RecyclerView.Adapter].
+     * @param areItemsTheSame compare whether the two items represent the same object.
+     * @param areContentsTheSame compare whether the contents of the two items are the same.
+     * @param getChangePayload get the changed payload between two items, default is null.
+     * @param detectMoves whether to detect moved items, default is true.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     */
+    @JvmOverloads
+    fun onBindDiffer(
+        areItemsTheSame: (oldItem: E, newItem: E) -> Boolean,
+        areContentsTheSame: (oldItem: E, newItem: E) -> Boolean,
+        getChangePayload: (oldItem: E, newItem: E) -> Any? = { _, _ -> null },
+        detectMoves: Boolean = true
+    ) = onBindDiffer(
+        RecyclerAsyncDiffer.Callback(
+            areItemsTheSame = areItemsTheSame,
+            areContentsTheSame = areContentsTheSame,
+            getChangePayload = getChangePayload,
+            detectMoves = detectMoves
+        )
+    )
+
+    /**
+     * Bind the async list differ to [RecyclerView.Adapter].
+     * @param callback the diff callback.
+     * @return [RecyclerAdapterBuilder]<[E]>
+     */
+    fun onBindDiffer(callback: RecyclerAsyncDiffer.Callback<E>) = apply {
+        require(listDataCallback == null) { "onBindDiffer cannot be used with onBindData." }
+        require(dataSetCount < 0) { "onBindDiffer cannot be used with dataSetCount." }
+
+        diffCallback = callback
+    }
 
     /**
      * Bind each item ID to [RecyclerView.Adapter].
@@ -461,11 +510,40 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
             setHasStableIds(entityIdCallback != null)
         }
 
+        /** The differ. */
+        val differ = diffCallback?.let { RecyclerAsyncDiffer.from(this, emptyDataSet, it) }
+
         /**
          * Get the wrapper of [RecyclerView.Adapter].
          * @return [RecyclerAdapterWrapper]
          */
         val wrapper = RecyclerAdapterWrapper(this@RecyclerAdapterBuilder, this)
+
+        /**
+         * Submit the current list.
+         * @see RecyclerAsyncDiffer.submitList
+         * @param list the current list.
+         * @param commitCallback the commit callback.
+         */
+        @JvmOverloads
+        fun submitList(list: List<E>?, commitCallback: Runnable? = null) {
+            requireNotNull(differ) { "You can only use submitList when onBindDiffer is configured." }
+            differ.submitList(list, commitCallback)
+        }
+
+        /**
+         * Submit the current list without generic checks.
+         * @param list the current list.
+         * @param commitCallback the commit callback, default is null.
+         */
+        internal fun submitListUnchecked(list: List<*>?, commitCallback: Runnable? = null) =
+            submitList(list as List<E>?, commitCallback)
+
+        /**
+         * Get the current data set snapshot.
+         * @return [List]<[E]>
+         */
+        private fun currentDataSet() = differ?.currentList ?: this@RecyclerAdapterBuilder.currentDataSet()
 
         /**
          * Whether the current position is in the header view holder.
