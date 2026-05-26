@@ -32,6 +32,7 @@ import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.extendsClass
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.getContainingPsiClass
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.unwrapParenthesized
 import com.intellij.psi.PsiClassType
 import com.intellij.psi.PsiVariable
@@ -39,6 +40,7 @@ import org.jetbrains.uast.UBinaryExpressionWithType
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UExpression
 import org.jetbrains.uast.UResolvable
+import org.jetbrains.uast.UThisExpression
 import org.jetbrains.uast.UastBinaryExpressionWithTypeKind
 
 class ContextUsageDetector : Detector(), Detector.UastScanner {
@@ -48,6 +50,7 @@ class ContextUsageDetector : Detector(), Detector.UastScanner {
         private const val ACTIVITY_CLASS = "android.app.Activity"
         private const val CONTEXT_CLASS = "android.content.Context"
         private const val CONTEXT_WRAPPER_CLASS = "android.content.ContextWrapper"
+        private const val CONTEXT_THEME_WRAPPER_CLASS = "android.view.ContextThemeWrapper"
 
         private const val HOST_ACTIVITY_PROPERTY = "hostActivity"
         private const val REQUIRE_HOST_ACTIVITY_FUNCTION = "requireHostActivity"
@@ -62,8 +65,9 @@ class ContextUsageDetector : Detector(), Detector.UastScanner {
             briefDescription = "Use ui-extension's context host activity extensions instead.",
             explanation = """
                 Using `context as Activity`, `context as? Activity`, `context as YourActivity` or \
-                `context as? YourActivity` can be simplified by using context host activity \
-                extensions from BetterAndroid ui-extension library.
+                `context as? YourActivity` on `Context`, `ContextWrapper` or `ContextThemeWrapper` \
+                can be simplified by using context host activity extensions from BetterAndroid \
+                ui-extension library.
 
                 See the documentation for more details:
                 - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-extension#context-extension
@@ -155,15 +159,27 @@ class ContextUsageDetector : Detector(), Detector.UastScanner {
         }
 
         private fun UExpression.isExplicitContextTarget(): Boolean {
+            if (this is UThisExpression) {
+                val ownerClass = getContainingPsiClass() ?: return false
+                return context.evaluator.extendsClass(ownerClass, CONTEXT_CLASS, false) ||
+                    context.evaluator.extendsClass(ownerClass, CONTEXT_WRAPPER_CLASS, false) ||
+                    context.evaluator.extendsClass(ownerClass, CONTEXT_THEME_WRAPPER_CLASS, false)
+            }
+
             val resolvedVariableType = ((this as? UResolvable)?.resolve() as? PsiVariable)?.type
                 ?.canonicalText
                 ?.removeSuffix(NULLABLE_SUFFIX)
                 ?.removeSuffix(PLATFORM_SUFFIX)
-            if (resolvedVariableType == CONTEXT_CLASS || resolvedVariableType == CONTEXT_WRAPPER_CLASS) return true
+            if (resolvedVariableType == CONTEXT_CLASS ||
+                resolvedVariableType == CONTEXT_WRAPPER_CLASS ||
+                resolvedVariableType == CONTEXT_THEME_WRAPPER_CLASS
+            ) return true
 
             val expressionType = getExpressionType() as? PsiClassType ?: return false
             val canonicalText = expressionType.canonicalText.removeSuffix(NULLABLE_SUFFIX).removeSuffix(PLATFORM_SUFFIX)
-            return canonicalText == CONTEXT_CLASS || canonicalText == CONTEXT_WRAPPER_CLASS
+            return canonicalText == CONTEXT_CLASS ||
+                canonicalText == CONTEXT_WRAPPER_CLASS ||
+                canonicalText == CONTEXT_THEME_WRAPPER_CLASS
         }
     }
 }
