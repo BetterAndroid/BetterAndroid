@@ -56,6 +56,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
 import androidx.core.view.updateMarginsRelative
 import androidx.core.view.updatePadding
+import androidx.core.view.updatePaddingRelative
 import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
 import com.highcapable.betterandroid.ui.extension.R
 import com.highcapable.kavaref.extension.classOf
@@ -456,6 +457,32 @@ fun View.setIntervalOnClickListener(timeMillis: Long = 300L, listener: View.OnCl
 }
 
 /**
+ * Get the view's padding.
+ * @see View.setPadding
+ * @see View.setPaddingRelative
+ * @see ViewPadding
+ * @see AbsolutePadding
+ * @see RelativePadding
+ * @see PaddingValues
+ * @receiver [View]
+ * @return [ViewPadding]
+ */
+val View.padding get() = ViewPadding(this)
+
+/**
+ * Set the view's padding.
+ * @see View.setPadding
+ * @see View.setPaddingRelative
+ * @see ViewPadding
+ * @see AbsolutePadding
+ * @see RelativePadding
+ * @see PaddingValues
+ * @receiver [View]
+ * @param values the padding values.
+ */
+fun View.setPadding(values: PaddingValues) = values.applyTo(this)
+
+/**
  * Updates this view's horizontal or vertical padding.
  * @see View.updatePadding
  * @receiver [View]
@@ -705,3 +732,189 @@ const val LayoutParamsMatchParent = ViewGroup.LayoutParams.MATCH_PARENT
 
 /** Reference to [ViewGroup.LayoutParams.WRAP_CONTENT]. */
 const val LayoutParamsWrapContent = ViewGroup.LayoutParams.WRAP_CONTENT
+
+/**
+ * The view's padding.
+ * @see AbsolutePadding
+ * @see RelativePadding
+ * @see PaddingValues
+ */
+@JvmInline
+value class ViewPadding internal constructor(private val view: View) {
+
+    /**
+     * Get or set the view's left padding (px).
+     * @return [Int]
+     */
+    var left: Int
+        @Px get() = view.paddingLeft
+        set(@Px value) = view.updatePadding(left = value)
+
+    /**
+     * Get or set the view's right padding (px).
+     * @return [Int]
+     */
+    var right: Int
+        @Px get() = view.paddingRight
+        set(@Px value) = view.updatePadding(right = value)
+
+    /**
+     * Get or set the view's start padding (px).
+     * @return [Int]
+     */
+    var start: Int
+        @Px get() = view.paddingStart
+        set(@Px value) = view.updatePaddingRelative(start = value)
+
+    /**
+     * Get or set the view's end padding (px).
+     * @return [Int]
+     */
+    var end: Int
+        @Px get() = view.paddingEnd
+        set(@Px value) = view.updatePaddingRelative(end = value)
+
+    /** Get the view's top padding (px). */
+    var top: Int
+        @Px get() = view.paddingTop
+        set(@Px value) = view.updatePadding(top = value)
+
+    /** Get the view's bottom padding (px). */
+    var bottom: Int
+        @Px get() = view.paddingBottom
+        set(@Px value) = view.updatePadding(bottom = value)
+
+    /**
+     * Convert to [AbsolutePadding] with current padding values.
+     * @return [AbsolutePadding]
+     */
+    fun toAbsolute() = AbsolutePadding(left, top, right, bottom)
+
+    /**
+     * Convert to [RelativePadding] with current padding values.
+     * @return [RelativePadding]
+     */
+    fun toRelative() = RelativePadding(start, top, end, bottom)
+
+    operator fun plusAssign(other: AbsolutePadding) {
+        if (other == AbsolutePadding.Zero) return
+        view.updatePadding(
+            left = view.paddingLeft + other.left,
+            top = view.paddingTop + other.top,
+            right = view.paddingRight + other.right,
+            bottom = view.paddingBottom + other.bottom
+        )
+    }
+
+    operator fun minusAssign(other: AbsolutePadding) {
+        if (other == AbsolutePadding.Zero) return
+        view.updatePadding(
+            left = view.paddingLeft - other.left,
+            top = view.paddingTop - other.top,
+            right = view.paddingRight - other.right,
+            bottom = view.paddingBottom - other.bottom
+        )
+    }
+
+    operator fun plusAssign(other: RelativePadding) {
+        if (other == RelativePadding.Zero) return
+        view.updatePaddingRelative(
+            start = view.paddingStart + other.start,
+            top = view.paddingTop + other.top,
+            end = view.paddingEnd + other.end,
+            bottom = view.paddingBottom + other.bottom
+        )
+    }
+
+    operator fun minusAssign(other: RelativePadding) {
+        if (other == RelativePadding.Zero) return
+        view.updatePaddingRelative(
+            start = view.paddingStart - other.start,
+            top = view.paddingTop - other.top,
+            end = view.paddingEnd - other.end,
+            bottom = view.paddingBottom - other.bottom
+        )
+    }
+}
+
+/**
+ * The absolute padding values.
+ * @see RelativePadding
+ * @see PaddingValues
+ */
+data class AbsolutePadding(
+    @field:Px val left: Int = 0,
+    @field:Px val top: Int = 0,
+    @field:Px val right: Int = 0,
+    @field:Px val bottom: Int = 0
+) : PaddingValues {
+
+    companion object {
+
+        /** The zero padding values. */
+        val Zero = AbsolutePadding()
+    }
+
+    override fun applyTo(view: View) = view.setPadding(left, top, right, bottom)
+
+    operator fun plus(other: AbsolutePadding) = AbsolutePadding(
+        left = left + other.left,
+        top = top + other.top,
+        right = right + other.right,
+        bottom = bottom + other.bottom
+    )
+
+    operator fun minus(other: AbsolutePadding) = AbsolutePadding(
+        left = left - other.left,
+        top = top - other.top,
+        right = right - other.right,
+        bottom = bottom - other.bottom
+    )
+}
+
+/**
+ * The relative padding values.
+ * @see AbsolutePadding
+ * @see PaddingValues
+ */
+data class RelativePadding(
+    @field:Px val start: Int = 0,
+    @field:Px val top: Int = 0,
+    @field:Px val end: Int = 0,
+    @field:Px val bottom: Int = 0
+) : PaddingValues {
+
+    companion object {
+
+        /** The zero padding values. */
+        val Zero = RelativePadding()
+    }
+
+    override fun applyTo(view: View) = view.setPaddingRelative(start, top, end, bottom)
+
+    operator fun plus(other: RelativePadding) = RelativePadding(
+        start = start + other.start,
+        top = top + other.top,
+        end = end + other.end,
+        bottom = bottom + other.bottom
+    )
+
+    operator fun minus(other: RelativePadding) = RelativePadding(
+        start = start - other.start,
+        top = top - other.top,
+        end = end - other.end,
+        bottom = bottom - other.bottom
+    )
+}
+
+/**
+ * The padding values.
+ */
+sealed interface PaddingValues {
+
+    /**
+     * Apply the padding values to the view.
+     * @param view the target view.
+     */
+    fun applyTo(view: View)
+}
