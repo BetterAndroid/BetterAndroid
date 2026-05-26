@@ -160,6 +160,39 @@ val activity: Activity
 val isInMultiWindowMode = activity.isInMultiWindowModeCompat
 ```
 
+### Context 扩展
+
+::: tip 本节内容
+
+[Context → hostActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/host-activity)
+
+[Context → requireHostActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/require-host-activity)
+
+适用于 `Context` 的扩展。
+
+:::
+
+在有些场景下，你只拿到了一个 `Context`，但是最后还是得把它转换回 `Activity` 才能继续。
+
+这时候如果继续手动写 `as? Activity`，遇到 `ContextThemeWrapper`、多层 `ContextWrapper` 这类场景就会显得有些麻烦。
+
+`BetterAndroid` 为此提供了一个更加简单的方式，它会自动帮你沿着 `ContextWrapper` 继续向下查找，直到拿到最终的 `Activity`。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 Context
+val context: Context
+// 获取 Context 所在的 Activity
+val activity = context.hostActivity
+// 获取非空 Activity (获取失败会抛出异常)
+val activity = context.requireHostActivity()
+// 获取指定类型的 Activity
+val componentActivity = context.hostActivity<ComponentActivity>()
+// 获取指定类型的非空 Activity (获取失败会抛出异常)
+val componentActivity = context.requireHostActivity<ComponentActivity>()
+```
+
 ### Fragment 扩展
 
 ::: tip 本节内容

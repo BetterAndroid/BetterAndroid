@@ -163,6 +163,39 @@ val activity: Activity
 val isInMultiWindowMode = activity.isInMultiWindowModeCompat
 ```
 
+### Context Extension
+
+::: tip Contents of This Section
+
+[Context → hostActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/host-activity)
+
+[Context → requireHostActivity](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.component/require-host-activity)
+
+Extensions for `Context`.
+
+:::
+
+In some cases, you may only have a `Context`, but still need to turn it back into an `Activity` before continuing.
+
+If you keep writing `as? Activity` manually, cases such as `ContextThemeWrapper` or multiple layers of `ContextWrapper` can quickly become awkward.
+
+`BetterAndroid` provides a simpler way for this. It will keep unwrapping the current `ContextWrapper` chain for you until it finds the final `Activity`.
+
+> The following example
+
+```kotlin
+// Assume this is your Context.
+val context: Context
+// Get the Activity attached to this Context.
+val activity = context.hostActivity
+// Get the non-null Activity (throws exception if failed).
+val activity = context.requireHostActivity()
+// Get the Activity of the specified type.
+val componentActivity = context.hostActivity<ComponentActivity>()
+// Get the non-null Activity of the specified type (throws exception if failed).
+val componentActivity = context.requireHostActivity<ComponentActivity>()
+```
+
 ### Fragment Extension
 
 ::: tip Contents of This Section
