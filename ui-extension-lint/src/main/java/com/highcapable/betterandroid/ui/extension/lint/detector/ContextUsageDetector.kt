@@ -61,7 +61,7 @@ class ContextUsageDetector : Detector(), Detector.UastScanner {
         private const val PLATFORM_SUFFIX = "!"
 
         val ISSUE = Issue.create(
-            id = "ReplaceWithContextHostActivityExtension",
+            id = "ReplaceWithContextExtension",
             briefDescription = "Use ui-extension's context host activity extensions instead.",
             explanation = """
                 Using `context as Activity`, `context as? Activity`, `context as YourActivity` or \
