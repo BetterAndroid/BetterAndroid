@@ -61,6 +61,7 @@ import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
 import com.highcapable.betterandroid.ui.extension.R
 import com.highcapable.kavaref.extension.classOf
 import com.highcapable.kavaref.extension.createInstanceOrNull
+import kotlin.reflect.KClass
 
 /**
  * Get the view's location on screen.
@@ -680,7 +681,36 @@ inline fun <reified LP : ViewGroup.LayoutParams> ViewLayoutParams(
     matchParent: Boolean = false,
     widthMatchParent: Boolean = false,
     heightMatchParent: Boolean = false
-) = ViewLayoutParams(classOf<LP>(), width, height, matchParent, widthMatchParent, heightMatchParent)
+) = ViewLayoutParams(LP::class, width, height, matchParent, widthMatchParent, heightMatchParent)
+
+/**
+ * Create a new [ViewGroup.LayoutParams].
+ *
+ * Usage:
+ *
+ * ```kotlin
+ * // Create a LinearLayout.LayoutParams with fully WRAP_CONTENT.
+ * val linLayoutParams = ViewLayoutParams(LinearLayout.LayoutParams::class)
+ * // Create a FrameLayout.LayoutParams with fully MATCH_PARENT.
+ * val fraLayoutParams = ViewLayoutParams(FrameLayout.LayoutParams::class, matchParent = true)
+ * ```
+ * @param width the layout params width (px).
+ * @param height the layout params height (px).
+ * @param matchParent set width and height to [LayoutParamsMatchParent], default false.
+ * @param widthMatchParent set width to [LayoutParamsMatchParent], default false.
+ * @param heightMatchParent set height to [LayoutParamsMatchParent], default false.
+ * @return [LP]
+ * @throws IllegalStateException if [LP] create failed.
+ */
+@JvmOverloads
+fun <LP : ViewGroup.LayoutParams> ViewLayoutParams(
+    lpClass: KClass<LP>,
+    @Px width: Int? = null,
+    @Px height: Int? = null,
+    matchParent: Boolean = false,
+    widthMatchParent: Boolean = false,
+    heightMatchParent: Boolean = false
+) = ViewLayoutParams(lpClass.java, width, height, matchParent, widthMatchParent, heightMatchParent)
 
 /**
  * Create a new [ViewGroup.LayoutParams].
