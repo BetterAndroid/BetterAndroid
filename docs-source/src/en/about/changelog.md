@@ -16,22 +16,109 @@ Time zone of version release date: **UTC+8**
 
 :::
 
-## ui-component
+## Android
 
-### 1.0.10 | 2025.12.16 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.1.0 | 2026.05.27 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Updated Target SDK to 37 (Android 17)
+- Removed all APIs that have been deprecated for more than about half a year in all modules
+- Completed Lint functionality for all modules
+
+#### ui-component
+
+- **<u>⚠️ Breaking Change</u>**: Removed the system back pressed APIs related to `BackPressedController` and `IBackPressedController`; please migrate to [ui-extension → BackPressed Extension](../library/ui-extension.md#backpressed-extension) or refer to [Config → Migration Guide → Migrate BackPressedController](../config/migration.md#migrate-backpressedcontroller)
+- Completed more features aligned with `NotificationCompat.Builder` in `NotificationBuilder`
+- Optimized the reflective lookup cache strategy related to legacy system status bar dark mode adaptation in `SystemBarsCompat` to reduce repeated resolution overhead
+- Optimized the system bar style setting logic in `SystemBarsController` to avoid extra overhead caused by repeatedly applying the same style
+- Optimized the creation strategy of notification channels and groups in `NotificationPoster` to reduce repeated system call overhead
+- Optimized the main-thread `Handler` reuse strategy of notification timeout tasks in `NotificationPoster` to reduce repeated object creation overhead
+- Added overridable `onInflateBinding` methods to `AppBindingActivity` and `AppBindingFragment`
+- Adjusted the `binding` lifecycle management in `AppBindingFragment`, it is now only available between `onCreateView` and `onDestroyView`, and will be released automatically in `onDestroyView`
+- Added `systemBarsOrNull` to `BaseFragment` so you can safely check whether the current system bars controller is available when the host does not implement `ISystemBarsController`
+- Adjusted `NotificationPoster.cancel` to be idempotent, and added thread-safe and package-scoped key strategy for notification channel and group caches
+- Fixed the issue where `isLightsEnabled` in `NotificationChannelWrapper` was incorrectly mapped to `setShowBadge`
+
+#### ui-component-adapter
+
+- Optimized the data snapshot and item binding logic in `RecyclerAdapterBuilder`, `BaseAdapterBuilder`, and `PagerAdapterBuilder` to reduce repeated data reads and state drift risk within one binding chain
+- Optimized the page `ViewHolder` cache release strategy in `PagerAdapterBuilder`; destroyed pages now release cached instances and invalid cached views are rebuilt automatically
+- Added `applyCosmetic` based `RecyclerCosmetic` management for `RecyclerView.bindAdapter`; repeated binding now replaces the last managed decoration by default to avoid stacked spacing
+- `RecyclerAdapterBuilder` now automatically enables Stable IDs after configuring `onBindItemId`
+- `AutoCompleteTextView` adapter binding in `CommonAdapter` now calls the public `setAdapter` directly and removes the reflection fallback dependency
+- Added strongly typed constructor overloads for `FragmentPagerAdapter` and `FragmentStateAdapter` that accept `FragmentActivity` or `Fragment` directly
+- Fixed the issue where `RecyclerAdapterWrapper` incorrectly offset `itemCount` in range notification methods
+- Fixed the issue where `BaseRecyclerItemDecoration` still calculated `offsets` during `NO_POSITION` and empty-list stages
+- Added `onBindDiffer` to `RecyclerAdapterBuilder`, allowing the diff submission flow to be connected directly to adapter building through `RecyclerAsyncDiffer`
+- Added standalone `RecyclerAsyncDiffer`, allowing manual creation of async diff submission instances while reusing the existing update chain of `RecyclerView.Adapter`
+- Added `differ` and `submitList` to `RecyclerAdapterWrapper`, so new lists can be submitted directly after `onBindDiffer` is configured
+- Adjusted the return types and `@return` documentation of the `BaseAdapter`, `PagerAdapter`, and `RecyclerAdapter` related constructor and binding entries in `CommonAdapter` to match the actual `Instance` returned by each builder
+- Added the `notifyByDiff` method in the `RecyclerAdapter` extension to automatically notify updates based on dataset differences through `DiffUtil`
+- Added `DiffUtilCallback` and `ListUpdateCallback` methods to manually build `DiffUtil.Callback` and `ListUpdateCallback` in the `RecyclerAdapter` extension
+
+#### ui-extension
+
+- Added the `BackPressed` extension, providing `onBackPressedDispatcher` for `Fragment` and `View`, along with `OnBackPressedCallback` and `trigger`
+- **<u>⚠️ Breaking Change</u>**: Removed the `SystemColors` related system colors feature, please refer to [Config → Migration Guide → Migrate SystemColors](../config/migration.md#migrate-systemcolors)
+- Removed the `material` dependency from `ui-extension`
+- Modified some extension features in the `TextView` extension to align with the behavior of the official `TextView` and fix some potential misuse issues
+- `walkToRoot` and `walkThroughChildren` in the `View` extension are now aligned with the traversal semantics of the official `ancestors` and `descendants`
+- **<u>⚠️ Breaking Change</u>**, the return types of `walkToRoot` and `walkThroughChildren` have changed from `List` to `Sequence`; append `toList()` if you need eager results
+- Added the `Lifecycle` extension, allowing you to quickly create `DefaultLifecycleObserver` and `LifecycleEventObserver` with lambda, and register them directly through `Lifecycle.addObserver`
+- Added `Context.lifecycleOwner` and `Context.requireLifecycleOwner` methods in the `LifecycleOwner` extension
+- Added the `Context` extension, providing `Context.hostActivity`, `Context.requireHostActivity`, and their typed generic variants
+- Adjusted the lookup logic of `View.lifecycleOwner`, now delegating to `findViewTreeLifecycleOwner` first and falling back to `Context` when unavailable
+- Adjusted the compatibility logic of `View.tooltipTextCompat` on lower Android versions, now delegating to `TooltipCompat` for full behavior simulation while still retaining tag-based tooltip text storage
+- Added `View.padding`, `ViewPadding`, `AbsolutePadding`, `RelativePadding`, and `PaddingValues` in the `View` extension
+- Added a `KClass` overload to `ViewLayoutParams` in the `View` extension, allowing direct creation of target `LayoutParams` through forms such as `LinearLayout.LayoutParams::class`
+- Added `toPaddingValues` for `Insets` and `InsetsWrapper`, allowing direct conversion to `AbsolutePadding`
+- Adjusted the internal calculation model of `setInsetsPadding` and `updateInsetsPadding`, and added `syncInsetsPadding`, which now calculates results by combining the user's original `padding` baseline with the current Insets `padding`
+- Optimized the object reuse strategy of theme attribute resolution in the `Resources` extension, now using a `ThreadLocal` based `TypedValue`
+- Optimized the comparison logic of `areThemeAttrsIdsValueEquals` in the `Resources` extension to reduce repeated theme attribute resolution and type probing
+- Removed the global `ColorStateList` cache implementation to avoid potential result reuse issues across different `Theme` and `Configuration`
+- Added `WindowInsetsLayout`, allowing automatic listening for Window Insets changes and applying the target Insets to layout `padding` through XML configuration
+- Optimized the reflective method lookup logic in the `ViewBinding` build process by adding caches for `bind` and `inflate` methods to reduce repeated resolution overhead
+- Optimized the reflective lookup cache strategy related to legacy display cutout adaptation in `WindowInsetsWrapperCompat` to reduce repeated resolution overhead
+- Adjusted `Fragment.viewBinding` delegate lifecycle management; cached bindings are now cleared with the Fragment View lifecycle
+- Adjusted `toast(..., allowBackground = true)` to dispatch back to the main thread without creating a background `Looper`
+- Adjusted `View.showIme` compatibility behavior to use focus plus `InputMethodManager.showSoftInput` instead of forced soft-input toggling
+- Fixed the issue where `View.performTouch` did not recycle generated `MotionEvent` instances
+- Added the `generateViewId` parameter to Fragment `attach` and `replace`, keeping automatic container ID generation enabled by default
+- Added boundary protection for `Bitmap.shrink` and `Bitmap.reduce` to avoid invalid target sizes
+
+#### system-extension
+
+- Added Android 17 version constants in `AndroidVersion`
+- Completed more ROM type constants and detection logic in `RomType`, now supporting additional system detection such as `RealmeUI`, `MagicOS`, `OxygenOS`, `H2OS`, `ZUXOS`, `NebulaAIOS`, `MyOS`, `MifavorUI`, `SmartisanOS`, `EUI`, `360OS`, and `HarmonyOS NEXT`
+- Optimized the cache strategy of the ROM type matching result in `RomType.current` to reduce repeated judgment overhead
+- Fixed the `Boolean` method binding in `SystemProperties`
+- Corrected false-positive success results in `startServiceOrElse` and `startForegroundServiceOrElse`
+- Added generic methods in the `Intent` extension to quickly create `Intent` for a specific component
+- Refactored the `Clipboard` extension, separated `ClipDataBuilder`, and supported chain calls and the `build` method
+- Added the `Uri.resolveMimeTypes` method in the `Clipboard` extension to resolve MIME types of `Uri` through `ContentResolver`
+- Added support for passing multiple MIME types to the `addUri` and `copy` methods in the `Clipboard` extension
+- Added `primaryClipItems`, `primaryClipItemsOrNull`, `firstPrimaryClipItem`, and `firstPrimaryClipItemOrNull` methods to `ClipboardManager`
+- Optimized the clipboard item reading logic in the `Clipboard` extension to reduce unnecessary list creation overhead
+- Optimized the reflective lookup cache strategy of CPU ABI related fields in `ApplicationInfo` to reduce repeated resolution overhead
+- Removed all content under the old package name `tool`
+
+### Historical Versions
+
+#### ui-component
+
+##### 1.0.10 | 2025.12.16 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Adapted to Kotlin 2.2+
 
-### 1.0.9 | 2025.12.14 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.9 | 2025.12.14 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Breaking change: Migrate Insets-related functionality to [ui-extension](#ui-extension)
 
-### 1.0.8 | 2025.08.03 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.8 | 2025.08.03 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Remove adapter-related functions and merge them into [ui-component-adapter](#ui-component-adapter)
 - Migrate Java reflection-related behavior from [YukiReflection](https://github.com/HighCapable/YukiReflection) to [KavaRef](https://github.com/HighCapable/KavaRef)
 
-### 1.0.7 | 2025.03.08 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.7 | 2025.03.08 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Removed Material dependencies and refactored into corresponding dependencies
 - Extensively refactored adapter (Adapter) underlying APIs
@@ -40,7 +127,7 @@ Time zone of version release date: **UTC+8**
 - `AdapterPosition` now supports `layout` and `absolute` indexes
 - Other known adapter-related issues fixed
 
-### 1.0.6 | 2025.01.25 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.6 | 2025.01.25 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Added `onPrepareContentView` method in `AppBindingActivity` to customize operations before loading the layout
 - Fixed the issue of out-of-bounds index when the data set is empty in the adapter builder
@@ -50,7 +137,7 @@ Time zone of version release date: **UTC+8**
 - Added `wrapper` extension method for `RecyclerView.Adapter` to correctly handle indexes when custom header and footer layouts are added by wrapping instances
 - Fixed a critical error where the footer layout was added as a header layout in `RecyclerAdapterBuilder`
 
-### 1.0.5 | 2024.03.08 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.5 | 2024.03.08 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Removed `Factory` suffix from all extension method `kt` files
 - Removed deprecated files in the previous version
@@ -62,7 +149,7 @@ Time zone of version release date: **UTC+8**
 - Added `onBindHeaderView` and `onBindFooterView` methods in `RecyclerAdapterBuilder`
 - If the `trigger` method is called in `OnBackPressedCallback` and is not removed, the callback event will be re-enabled
 
-### 1.0.4 | 2024.01.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.4 | 2024.01.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - `SystemBarsController` has been fully migrated to window insets API, please refer to the documentation to start using the new usage
 - Reconstructed `SystemBarsController` and modified the initialization method, please refer to the documentation to get started using the new method
@@ -76,7 +163,7 @@ Time zone of version release date: **UTC+8**
 - Reconstructed notification related functions, please refer to the documentation to start using the new usage
 - Renamed and modified some other functions
 
-### 1.0.3 | 2023.12.03 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.3 | 2023.12.03 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - The `init` method of `SystemBarsController` adds the `defaultPaddings` parameter, which can configure whether to automatically add the corresponding
   system bars padding during initialization
@@ -86,46 +173,46 @@ Time zone of version release date: **UTC+8**
 - When using `AppBindingActivity`, `AppViewsActivity`, `AppComponentActivity`, the added layout background color will be automatically filled into the
   parent layout
 
-### 1.0.2 | 2023.11.24 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.2 | 2023.11.24 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Refactor the System Insets function in `SystemBarsController` to fix the problem that the maximum layout size cannot be calculated on Compose View
 - Added `SystemInsets.Paddings` and `setBaseBackgroundResource`, `isVisible` functions to `SystemBarsController`
 - `SystemBarsView` is obsolete, please start using the new way to customize the System Insets function
 - Added `View.applySystemInsets`, `View.appendSystemInsets`, `View.removeSystemInsets` methods
 
-### 1.0.1 | 2023.11.18 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.1 | 2023.11.18 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Fix the loading exception catching problem in `SystemBarsController`
 
-### 1.0.0 | 2023.11.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.0 | 2023.11.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - The first version is submitted to Maven
 
-## ui-component-adapter
+#### ui-component-adapter
 
-### 1.0.1 | 2025.12.16 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+##### 1.0.1 | 2025.12.16 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Adapted to Kotlin 2.2+
 - Removed unnecessary `reified` keyword from some inline methods
 
-### 1.0.0 | 2025.08.03 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.0 | 2025.08.03 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - The first version is submitted to Maven
 
-## ui-extension
+#### ui-extension
 
-### 1.0.9 | 2025.12.16 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+##### 1.0.9 | 2025.12.16 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Adapted to Kotlin 2.2+
 - Adjusted the default values of `width` and `height` parameters in `ViewLayoutParams` in the `View` extension to `null`, no longer using `-2` as the default value for not setting width and height
 
-### 1.0.8 | 2025.12.14 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.8 | 2025.12.14 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Added [ui-component](#ui-component) Insets-related functionality
 - Insets extension `handleOnWindowInsetsChanged` method added `requestApplyOnLayout` parameter
 - Added Lint functionality (experimental)
 
-### 1.0.7 | 2025.08.03 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.7 | 2025.08.03 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Remove the `Adapter` related extension and merge it into [ui-component-adapter](#ui-component-adapter)
 - Migrate Java reflection-related behavior from [YukiReflection](https://github.com/HighCapable/YukiReflection) to [KavaRef](https://github.com/HighCapable/KavaRef)
@@ -136,7 +223,7 @@ Time zone of version release date: **UTC+8**
 - Added `backgroundColor` parameter to `round` in the `Bitmap` extension
 - ~~`compress`~~ in the `Bitmap` extension, please use the `shrink` method instead
 
-### 1.0.6 | 2025.03.04 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.6 | 2025.03.04 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Adjusted the default behavior of the `inflate` method and `attachToParent` parameter in the `LayoutInflater` extension
 - Corrected the `updateMargin` method in the `View` extension to `updateMargins` and added the `setMargins` method
@@ -144,7 +231,7 @@ Time zone of version release date: **UTC+8**
 - Fixed the logic related to `ViewLayoutParams`, now it can create any object based on `ViewGroup.LayoutParams`
 - Overloaded the `ViewLayoutParams` method to support directly passing in the `lpClass` parameter
 
-### 1.0.5 | 2025.01.25 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.5 | 2025.01.25 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Fixed the issue where the `updateText` method in the `TextView` extension could cause an out-of-bounds cursor index after overriding the `setText` method
 - Modified the `setDigits` method in the `TextView` extension to read the `inputType` parameter from the `TextView` itself by default
@@ -167,7 +254,7 @@ Time zone of version release date: **UTC+8**
 - The `toString` method in `ViewBindingBuilder` now returns the full object name held by `ViewBinding`
 - Added `Adapter` extension
 
-### 1.0.4 | 2024.05.05 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.4 | 2024.05.05 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Integrate the parameters of the entry and exit animation methods in the `Fragment` extension
 - Remove the default transition animation in the `Fragment` extension and delete the related resource files
@@ -177,7 +264,7 @@ Time zone of version release date: **UTC+8**
 - Adjust the `inflate` method in the `ViewBinding` extension to ignore the `attachToParent` parameter when encountering `<merge>` and `<include>` type layouts
 - Remove all deprecated methods in the old version of the `ViewBinding` extension
 
-### 1.0.3 | 2024.03.08 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.3 | 2024.03.08 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Removed `Factory` suffix from all extension method `kt` files
 - Removed deprecated files in the previous version
@@ -192,7 +279,7 @@ Time zone of version release date: **UTC+8**
 - Added `themeResId` method in `ResourcesFactory`
 - Added new `ViewBinding` solution and deprecated the old solution
 
-### 1.0.2 | 2024.01.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.2 | 2024.01.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Some package names that are not classified according to the standard have been moved, if you encounter an error, please re-import these calling methods
 - Modified related names for Java calls
@@ -223,17 +310,17 @@ Time zone of version release date: **UTC+8**
 - Added each `startActivityOrElse` method in `ActivityFactory`
 - The `round` method in `BimapFactory` now supports setting the corner radius in each direction
 
-### 1.0.1 | 2023.11.18 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.1 | 2023.11.18 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Fix the problem of incorrect return value of `getColor` and `getColorStateList` methods in ResourcesFactory
 
-### 1.0.0 | 2023.11.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.0 | 2023.11.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - The first version is submitted to Maven
 
-## system-extension
+#### system-extension
 
-### 1.0.4 | 2025.12.16 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+##### 1.0.4 | 2025.12.16 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Adapted to Kotlin 2.2+
 - Fixed null check error when creating `ClipData` in `Clipboard` extension
@@ -242,18 +329,18 @@ Time zone of version release date: **UTC+8**
 - Moved package name `tool` to `utils`
 - Added Lint functionality (experimental)
 
-### 1.0.3 | 2025.08.03 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.3 | 2025.08.03 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Migrate Java reflection-related behavior from [YukiReflection](https://github.com/HighCapable/YukiReflection) to [KavaRef](https://github.com/HighCapable/KavaRef)
 - ~~`SystemVersion`~~ renamed to `AndroidVersion` and added Android 15, 16 and 1-4.3 version constants, and functional adjustments are made at the same time
 - ~~`SystemKind`~~ rename it to `RomType` and make functional adjustments
 - Added the `options` parameter of the `sendBroadcast` method to the `options` extension
 
-### 1.0.2 | 2025.01.25 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.2 | 2025.01.25 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Added `BroadcastReceiver` method in `Broadcast` extension and modified the return value of `registerReceiver` method to itself
 
-### 1.0.1 | 2024.01.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.1 | 2024.01.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Renamed some incorrectly named methods in `SystemVersion`
 - Added `name` attribute in `SystemVersion`
@@ -266,35 +353,42 @@ Time zone of version release date: **UTC+8**
 - Methods in `ServiceFactory` were `inline` processed
 - Added `startServiceOrElse` and `startForegroundServiceOrElse` methods in `ServiceFactory`
 
-### 1.0.0 | 2023.11.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+##### 1.0.0 | 2023.11.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - The first version is submitted to Maven
 
-## permission-extension
+## Jetpack Compose
 
-Not yet released.
+### compose-extension
 
-## compose-extension
+#### 1.0.3 | 2026.05.27 &ensp;<Badge type="tip" text="latest" vertical="middle" />
 
-### 1.0.2 | 2024.01.16 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+- Deprecated ~~`None`~~ in `ComponentPadding`, please migrate to `Zero`
+- Deprecated ~~`HapticFeedback`~~ in `Foundation`, please migrate to `hapticFeedback`
+
+#### 1.0.2 | 2024.01.16 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Added `HapticFeedback` method, you can set it to any click or touch event
 - `ComponentPadding` adds a `None` method, you can use it to directly get `ComponentPadding(0.dp)`
 - Modified `onDismissRequest` in `Dialog` to make it mandatory to exist, matching the usage in the official `foundation`
 - Optimize some code styles
 
-### 1.0.1 | 2024.01.08 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+#### 1.0.1 | 2024.01.08 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Removed some useless `@Stable` annotations
 - Added `borderOrElse` method with the same name and new usage
 - Added `AdaptiveRow`, `AdaptiveColumn`
 
-### 1.0.0 | 2024.01.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
+#### 1.0.0 | 2024.01.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - The first version is submitted to Maven
 
-## compose-multiplatform
+### compose-multiplatform
 
-### 0.1.0 | 2024.01.02 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+#### 0.1.1 | 2026.05.27 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- `BackHandler` on Android now directly delegates to the official implementation provided by `androidx.activity:activity-compose`
+
+#### 0.1.0 | 2024.01.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - The first version is submitted to Maven
