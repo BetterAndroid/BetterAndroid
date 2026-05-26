@@ -110,3 +110,11 @@ android {
     }
 }
 ```
+
+## Feedback
+
+Currently, most Lint detectors are completed by AI Agent, and there may still be issues, such as complex UAST scenarios that have not been tested.
+If you find that a Lint rule is misreporting or the Quick Fix cannot correctly fix the problem during use, you can provide an Issue ID to directly feedback to us on [GitHub Issues](repo://issues).
+
+If you think some rules are not reasonable and overly restrictive on the code, or if you have some new rule suggestions,
+please also feel free to provide feedback to us, and we will evaluate and adjust them.
