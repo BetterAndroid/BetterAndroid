@@ -103,7 +103,7 @@ fun InsetsWrapper.toPaddingValues() = AbsolutePadding(left, top, right, bottom)
  * You can easy to get the [WindowInsetsWrapper] when the insets change.
  *
  * For the [consumed] parameter, set to true if you want to consume the insets for child views,
- * this will pass the [WindowInsetsCompat.CONSUMED], otherwise or default is false.
+ * this will pass the [WindowInsetsCompat.CONSUMED], otherwise or default false.
  *
  * Usage:
  *

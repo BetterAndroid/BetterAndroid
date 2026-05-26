@@ -153,7 +153,7 @@ fun RecyclerView.Adapter<*>.notifyAllItemsChanged(dataSet: Collection<*>? = null
  * @param areItemsTheSame compare whether the two items represent the same object.
  * @param areContentsTheSame compare whether the contents of the two items are the same.
  * @param getChangePayload get the changed payload between two items, default is null.
- * @param detectMoves whether to detect moved items, default is true.
+ * @param detectMoves whether to detect moved items, default true.
  */
 fun <T> RecyclerView.Adapter<*>.notifyByDiff(
     oldList: List<T>,
@@ -203,7 +203,7 @@ fun <T> RecyclerView.Adapter<*>.notifyByDiff(
  * @see DiffUtil.calculateDiff
  * @receiver [RecyclerView.Adapter]
  * @param callback the [DiffUtil.Callback] to calculate differences.
- * @param detectMoves whether to detect moved items, default is true.
+ * @param detectMoves whether to detect moved items, default true.
  */
 fun RecyclerView.Adapter<*>.notifyByDiff(
     callback: DiffUtil.Callback,

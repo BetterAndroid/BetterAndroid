@@ -49,7 +49,7 @@ fun FragmentActivity.fragmentManager() = supportFragmentManager
 /**
  * Get the [FragmentManager] from [Fragment].
  * @receiver [Fragment]
- * @param parent whether to get the parent [FragmentManager], default is false.
+ * @param parent whether to get the parent [FragmentManager], default false.
  * @return [FragmentManager]
  */
 fun Fragment.fragmentManager(parent: Boolean = false) = if (parent) parentFragmentManager else childFragmentManager
@@ -94,8 +94,8 @@ fun FragmentTransaction(body: FragmentTransaction.() -> Unit) = body
  * default is get the root view from [host].
  * @param tag the [Fragment] tag, leave null to generate random tag.
  * @param customAnimId the [Fragment] transition animation, see [FragmentTransaction.setCustomAnimations].
- * @param allowStateLoss whether to allow state loss, default is true.
- * @param generateViewId whether to generate a view id for the resolved container when it has no id, default is true.
+ * @param allowStateLoss whether to allow state loss, default true.
+ * @param generateViewId whether to generate a view id for the resolved container when it has no id, default true.
  * @param body the commit [FragmentTransaction] body.
  * @throws IllegalStateException if [host] or [container] unresolved.
  */
@@ -127,8 +127,8 @@ fun Fragment.attach(
  * @param tag the [Fragment] tag, leave null to generate random tag.
  * @param customEnterAnimId the [Fragment] transition enter animation, see [FragmentTransaction.setCustomAnimations].
  * @param customExitAnimId the [Fragment] transition exit animation, see [FragmentTransaction.setCustomAnimations].
- * @param allowStateLoss whether to allow state loss, default is true.
- * @param generateViewId whether to generate a view id for the resolved container when it has no id, default is true.
+ * @param allowStateLoss whether to allow state loss, default true.
+ * @param generateViewId whether to generate a view id for the resolved container when it has no id, default true.
  * @param body the commit [FragmentTransaction] body.
  * @throws IllegalStateException if [host] or [container] unresolved.
  */
@@ -162,7 +162,7 @@ fun Fragment.replace(
  * @param host the current host of this [Fragment], must be [FragmentActivity] or [Fragment],
  * default is current [Fragment.parentFragment] or [Fragment.requireActivity].
  * @param customAnimId the [Fragment] transition animation.
- * @param allowStateLoss whether to allow state loss, default is true.
+ * @param allowStateLoss whether to allow state loss, default true.
  * @param body the commit [FragmentTransaction] body.
  */
 @JvmOverloads
@@ -190,7 +190,7 @@ fun Fragment.show(
  * @param host the current host of this [Fragment], must be [FragmentActivity] or [Fragment],
  * default is current [Fragment.parentFragment] or [Fragment.requireActivity].
  * @param customAnimId the [Fragment] transition animation.
- * @param allowStateLoss whether to allow state loss, default is true.
+ * @param allowStateLoss whether to allow state loss, default true.
  * @param body the commit [FragmentTransaction] body.
  */
 @JvmOverloads
@@ -218,7 +218,7 @@ fun Fragment.hide(
  * @param host the current host of this [Fragment], must be [FragmentActivity] or [Fragment],
  * default is current [Fragment.parentFragment] or [Fragment.requireActivity].
  * @param customAnimId the [Fragment] transition animation.
- * @param allowStateLoss whether to allow state loss, default is true.
+ * @param allowStateLoss whether to allow state loss, default true.
  * @param body the commit [FragmentTransaction] body.
  */
 @JvmOverloads

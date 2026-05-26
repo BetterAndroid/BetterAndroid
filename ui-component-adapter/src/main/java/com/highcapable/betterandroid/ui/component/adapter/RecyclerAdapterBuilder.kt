@@ -183,7 +183,7 @@ class RecyclerAdapterBuilder<E> private constructor(private val adapterContext: 
      * @param areItemsTheSame compare whether the two items represent the same object.
      * @param areContentsTheSame compare whether the contents of the two items are the same.
      * @param getChangePayload get the changed payload between two items, default is null.
-     * @param detectMoves whether to detect moved items, default is true.
+     * @param detectMoves whether to detect moved items, default true.
      * @return [RecyclerAdapterBuilder]<[E]>
      */
     @JvmOverloads

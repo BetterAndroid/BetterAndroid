@@ -111,7 +111,7 @@ fun <VB : ViewBinding> ViewBinding(bindingClass: Class<VB>) = ViewBindingBuilder
  * ```
  * @see Fragment.viewBinding
  * @param parent the parent view, default is null.
- * @param attachToParent whether to attach the parent view, default is false.
+ * @param attachToParent whether to attach the parent view, default false.
  * @return [ViewBindingDelegate]<[VB]>
  */
 inline fun <reified VB : ViewBinding> Context.viewBinding(parent: ViewGroup? = null, attachToParent: Boolean = false) =
@@ -123,7 +123,7 @@ inline fun <reified VB : ViewBinding> Context.viewBinding(parent: ViewGroup? = n
  * @see Fragment.viewBinding
  * @param bindingClass the [ViewBinding] class.
  * @param parent the parent view, default is null.
- * @param attachToParent whether to attach the parent view, default is false.
+ * @param attachToParent whether to attach the parent view, default false.
  * @return [ViewBindingDelegate]<[VB]>
  */
 fun <VB : ViewBinding> Context.viewBinding(bindingClass: Class<VB>, parent: ViewGroup? = null, attachToParent: Boolean = false) =
@@ -159,7 +159,7 @@ fun <VB : ViewBinding> Context.viewBinding(bindingClass: Class<VB>, parent: View
  * ```
  * @see Context.viewBinding
  * @param parent the parent view, default is null.
- * @param attachToParent whether to attach the parent view, default is false.
+ * @param attachToParent whether to attach the parent view, default false.
  * @return [ViewBindingDelegate]<[VB]>
  */
 inline fun <reified VB : ViewBinding> Fragment.viewBinding(parent: ViewGroup? = null, attachToParent: Boolean = false) =
@@ -171,7 +171,7 @@ inline fun <reified VB : ViewBinding> Fragment.viewBinding(parent: ViewGroup? = 
  * @see Context.viewBinding
  * @param bindingClass the [ViewBinding] class.
  * @param parent the parent view, default is null.
- * @param attachToParent whether to attach the parent view, default is false.
+ * @param attachToParent whether to attach the parent view, default false.
  * @return [ViewBindingDelegate]<[VB]>
  */
 fun <VB : ViewBinding> Fragment.viewBinding(
@@ -273,7 +273,7 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
          * -keep class * extends android.app.Activity
          * ```
          * @param instance the instance.
-         * @param onlySuperClass whether to find the generic class only in the super class, default is false.
+         * @param onlySuperClass whether to find the generic class only in the super class, default false.
          * @return [ViewBindingBuilder]<[VB]>
          * @throws IllegalArgumentException if the generic class is not found or not a [ViewBinding].
          */
@@ -283,7 +283,7 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
          * Create a [ViewBindingBuilder] from [clazz]'s generic class.
          * @see fromGeneric
          * @param clazz the generic class's owner.
-         * @param onlySuperClass whether to find the generic class only in the super class, default is false.
+         * @param onlySuperClass whether to find the generic class only in the super class, default false.
          * @return [ViewBindingBuilder]<[VB]>
          * @throws IllegalArgumentException if the generic class is not found or not a [ViewBinding].
          */
@@ -332,7 +332,7 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
      * Inflate the [ViewBinding].
      * @param layoutInflater the layout inflater.
      * @param parent the parent view, default is null.
-     * @param attachToParent whether to attach the parent view, default is false, if the layout root node is `<merge>` or `<include>`,
+     * @param attachToParent whether to attach the parent view, default false, if the layout root node is `<merge>` or `<include>`,
      * this parameter will be ignored and always keep to true.
      * @return [VB]
      * @throws IllegalStateException if the binding failed.
