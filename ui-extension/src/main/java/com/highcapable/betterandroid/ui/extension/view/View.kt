@@ -694,6 +694,7 @@ inline fun <reified LP : ViewGroup.LayoutParams> ViewLayoutParams(
  * // Create a FrameLayout.LayoutParams with fully MATCH_PARENT.
  * val fraLayoutParams = ViewLayoutParams(FrameLayout.LayoutParams::class, matchParent = true)
  * ```
+ * @param lpClass the layout params class.
  * @param width the layout params width (px).
  * @param height the layout params height (px).
  * @param matchParent set width and height to [LayoutParamsMatchParent], default false.
@@ -723,6 +724,7 @@ fun <LP : ViewGroup.LayoutParams> ViewLayoutParams(
  * // Create a FrameLayout.LayoutParams with fully MATCH_PARENT.
  * val fraLayoutParams = ViewLayoutParams(FrameLayout.LayoutParams::class.java, matchParent = true)
  * ```
+ * @param lpClass the layout params class.
  * @param width the layout params width (px).
  * @param height the layout params height (px).
  * @param matchParent set width and height to [LayoutParamsMatchParent], default false.
