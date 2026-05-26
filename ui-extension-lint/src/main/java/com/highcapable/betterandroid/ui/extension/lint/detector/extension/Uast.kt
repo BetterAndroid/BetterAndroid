@@ -36,6 +36,7 @@ import org.jetbrains.uast.UExpression
 import org.jetbrains.uast.ULocalVariable
 import org.jetbrains.uast.UObjectLiteralExpression
 import org.jetbrains.uast.UParenthesizedExpression
+import org.jetbrains.uast.UPostfixExpression
 import org.jetbrains.uast.UQualifiedReferenceExpression
 import org.jetbrains.uast.UResolvable
 import org.jetbrains.uast.UReturnExpression
@@ -56,6 +57,18 @@ internal fun UElement?.unwrapParenthesized(): UElement? {
     while (current is UParenthesizedExpression) current = current.expression
 
     return current
+}
+
+internal fun UElement?.unwrapParenthesizedOrNotNull(): UElement? {
+    var current = this
+    while (true) {
+        current = when (current) {
+            is UParenthesizedExpression -> current.expression
+            is UPostfixExpression ->
+                if (current.operator.text == "!!") current.operand else return current
+            else -> return current
+        }
+    }
 }
 
 internal fun UElement?.asCall() = when (this) {
