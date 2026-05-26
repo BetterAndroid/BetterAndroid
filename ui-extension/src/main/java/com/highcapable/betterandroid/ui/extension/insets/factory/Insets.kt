@@ -140,6 +140,7 @@ fun InsetsWrapper.toPaddingValues() = AbsolutePadding(left, top, right, bottom)
  * @see WindowInsetsWrapper
  * @see View.setInsetsPadding
  * @see View.updateInsetsPadding
+ * @see View.syncInsetsPadding
  * @see ViewCompat.setOnApplyWindowInsetsListener
  * @see ViewCompat.setWindowInsetsAnimationCallback
  * @receiver [View] of [V].
