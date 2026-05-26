@@ -572,6 +572,21 @@ view.setInsetsPadding(systemBars)
 view.updateInsetsPadding(systemBars, vertical = true)
 ```
 
+::: warning
+
+从 `1.1.0` 开始，`setInsetsPadding` 和 `updateInsetsPadding` 在调用后会存储当前 `View` 的 `padding` 作为基线，避免在设置 Window Insets 的 `padding` 时覆盖掉你之前设置的 `padding`。
+
+如果你在运行期间手动修改了 `View` 的 `padding`，你需要同时调用 `syncInsetsPadding(...)` 来同步新的基线。
+
+> 示例如下
+
+```kotlin
+view.updatePadding(left = 20)
+view.syncInsetsPadding()
+```
+
+:::
+
 上面我们说到了，要创建一个 `WindowInsetsWrapper` 对象，你需要一个已存在的 `WindowInsetsCompat` 对象。
 
 出于对向下兼容的考虑，你可以使用 `ViewCompat.setOnApplyWindowInsetsListener` 来为 `View` 设置一个改变监听。
@@ -2003,6 +2018,10 @@ window.clearScreenBrightness()
 
 [View → setIntervalOnClickListener](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/set-interval-on-click-listener)
 
+[View → padding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/padding)
+
+[View → setPadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/set-padding)
+
 [View → updatePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-padding)
 
 [View → updateMargins](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-margins)
@@ -2026,6 +2045,22 @@ window.clearScreenBrightness()
 [View → LayoutParamsWrapContent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-layout-params-wrap-content)
 
 适用于 `View` 的扩展。
+
+[ViewPadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-view-padding)
+
+`View` 的 `padding` 包装器。
+
+[AbsolutePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-absolute-padding)
+
+绝对方向的 `padding` 值对象。
+
+[RelativePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-relative-padding)
+
+相对方向的 `padding` 值对象。
+
+[PaddingValues](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-padding-values)
+
+适用于 `padding` 的值对象接口。
 
 :::
 
@@ -2277,6 +2312,122 @@ view.updatePadding(horizontal = 10.toPx(context))
 // 更新纵向方向的 padding
 view.updatePadding(vertical = 10.toPx(context))
 ```
+
+不过这依然没有解决另一个问题。
+
+在 `androidx` 的现有扩展能力中，诸如 `paddingLeft`、`paddingRight`、`paddingStart`、`paddingEnd` 这样的属性虽然可以直接读取，但是并不能像普通属性一样直接写入，
+最终你还是需要回到 `updatePadding` 或 `setPadding` 这类形式。
+
+为此，`BetterAndroid` 提供了 Jetpack Compose 风格的 `PaddingValues`，让 `padding` 在 Kotlin 中拥有更加自然的读写体验。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你的 View 对象
+val view: View
+// 直接读取当前的 padding
+val left = view.padding.left
+val start = view.padding.start
+// 直接修改某一个方向的 padding
+view.padding.left = 10.toPx(context)
+view.padding.top = 12.toPx(context)
+view.padding.start = 16.toPx(context)
+view.padding.end = 16.toPx(context)
+```
+
+当你希望一次性设置一组 `padding` 时，你可以直接使用 `AbsolutePadding` 或 `RelativePadding`。
+
+> 示例如下
+
+```kotlin
+// 使用绝对方向设置 padding
+view.setPadding(AbsolutePadding(
+    left = 16.toPx(context),
+    top = 12.toPx(context),
+    right = 16.toPx(context),
+    bottom = 12.toPx(context)
+))
+// 使用相对方向设置 padding
+view.setPadding(RelativePadding(
+    start = 16.toPx(context),
+    top = 12.toPx(context),
+    end = 16.toPx(context),
+    bottom = 12.toPx(context)
+))
+```
+
+除了普通设置，这套能力还支持更灵活的增量写法。
+
+你可以直接对 `View.padding` 使用 `+=` 和 `-=` 来叠加或减少一组 `padding` 值，这在做动态偏移、补偿和动画前后的差值处理时会更加方便。
+
+> 示例如下
+
+```kotlin
+// 叠加一组绝对方向的 padding
+view.padding += AbsolutePadding(
+    left = 8.toPx(context),
+    right = 8.toPx(context)
+)
+// 减少一组相对方向的 padding
+view.padding -= RelativePadding(
+    start = 4.toPx(context),
+    end = 4.toPx(context)
+)
+```
+
+`AbsolutePadding` 和 `RelativePadding` 本身也支持 `+`、`-` 运算，因此你可以先组合一组结果，再统一应用到 `View`。
+
+> 示例如下
+
+```kotlin
+val base = AbsolutePadding(
+    left = 16.toPx(context),
+    top = 12.toPx(context),
+    right = 16.toPx(context),
+    bottom = 12.toPx(context)
+)
+val extra = AbsolutePadding(bottom = 24.toPx(context))
+val result = base + extra
+
+view.setPadding(result)
+```
+
+同时，由于 `AbsolutePadding` 和 `RelativePadding` 是 Kotlin 的 data class，你也可以使用 `copy` 方法来基于原有对象创建一个新的对象而不修改原有对象，然后再应用到 `View` 上。
+
+> 示例如下
+
+```kotlin
+val base = RelativePadding(
+    start = 16.toPx(context),
+    top = 12.toPx(context),
+    end = 16.toPx(context),
+    bottom = 12.toPx(context)
+)
+val result = base.copy(bottom = 24.toPx(context))
+
+view.setPadding(result)
+```
+
+如果你只把它当成一个独立的 `padding` 值对象来使用也完全没问题，`PaddingValues` 自身提供了 `applyTo`，你可以在任何时候手动应用到目标 `View`。
+
+> 示例如下
+
+```kotlin
+val values: PaddingValues = RelativePadding(
+    start = 16.toPx(context),
+    top = 12.toPx(context),
+    end = 16.toPx(context),
+    bottom = 12.toPx(context)
+)
+
+values.applyTo(view)
+```
+
+::: warning
+
+`AbsolutePadding` 和 `RelativePadding` 不允许混合使用，这会造成原生的 RTL 支持出现尺寸计算问题，请从开始就选定一种方式来使用。
+
+:::
 
 `BetterAndroid` 同样提供了一个 `View.updateMargins` 和 `View.setMargins` 方法，它的使用方式与 `View.updatePadding` 相同。
 

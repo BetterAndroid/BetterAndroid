@@ -595,6 +595,22 @@ view.setInsetsPadding(systemBars)
 view.updateInsetsPadding(systemBars, vertical = true)
 ```
 
+::: warning
+
+Since `1.1.0`, `setInsetsPadding` and `updateInsetsPadding` will store the current `View`'s `padding` as a baseline after being called,
+preventing the previously set `padding` from being overwritten when setting the window insets `padding`.
+
+If you manually modify the `View`'s `padding` at runtime, you need to call `syncInsetsPadding(...)` to synchronize the new baseline.
+
+> The following example
+
+```kotlin
+view.updatePadding(left = 20)
+view.syncInsetsPadding()
+```
+
+:::
+
 As we mentioned above, to create a `WindowInsetsWrapper`, you need an existing `WindowInsetsCompat`.
 
 For backward compatibility reasons, you can use `ViewCompat.setOnApplyWindowInsetsListener` to set a change listener for `View`.
@@ -2076,6 +2092,10 @@ window.clearScreenBrightness()
 
 [View → setIntervalOnClickListener](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/set-interval-on-click-listener)
 
+[View → padding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/padding)
+
+[View → setPadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/set-padding)
+
 [View → updatePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-padding)
 
 [View → updateMargins](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-margins)
@@ -2099,6 +2119,22 @@ window.clearScreenBrightness()
 [View → LayoutParamsWrapContent](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-layout-params-wrap-content)
 
 Extensions for  `View`.
+
+[ViewPadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-view-padding)
+
+A wrapper for `View` padding.
+
+[AbsolutePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-absolute-padding)
+
+An absolute-direction padding values object.
+
+[RelativePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-relative-padding)
+
+A relative-direction padding values object.
+
+[PaddingValues](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-padding-values)
+
+A value interface for padding.
 
 :::
 
@@ -2366,6 +2402,129 @@ view.updatePadding(horizontal = 10.toPx(context))
 // Update the padding in the vertical direction.
 view.updatePadding(vertical = 10.toPx(context))
 ```
+
+But this still does not solve another problem.
+
+With the current extension capabilities in `androidx`, properties such as `paddingLeft`, `paddingRight`, `paddingStart`, and `paddingEnd` can be read directly,
+but they still cannot be written like normal mutable properties,
+so in the end you still have to go back to forms such as `updatePadding` or `setPadding`.
+
+For this reason, `BetterAndroid` provides Jetpack Compose style `PaddingValues`, so that `padding` gets a more natural read-write experience in Kotlin.
+
+> The following example
+
+```kotlin
+// Assume this is your view.
+val view: View
+// Read the current padding directly.
+val left = view.padding.left
+val start = view.padding.start
+// Modify padding in a specific direction directly.
+view.padding.left = 10.toPx(context)
+view.padding.top = 12.toPx(context)
+view.padding.start = 16.toPx(context)
+view.padding.end = 16.toPx(context)
+```
+
+When you want to set a group of `padding` values at once, you can directly use `AbsolutePadding` or `RelativePadding`.
+
+> The following example
+
+```kotlin
+// Set padding using absolute directions.
+view.setPadding(AbsolutePadding(
+    left = 16.toPx(context),
+    top = 12.toPx(context),
+    right = 16.toPx(context),
+    bottom = 12.toPx(context)
+))
+// Set padding using relative directions.
+view.setPadding(RelativePadding(
+    start = 16.toPx(context),
+    top = 12.toPx(context),
+    end = 16.toPx(context),
+    bottom = 12.toPx(context)
+))
+```
+
+In addition to ordinary setting, this feature also supports more flexible incremental operations.
+
+You can directly use `+=` and `-=` on `View.padding` to add or subtract a group of padding values.
+This feels especially natural when handling dynamic offsets, compensation, or before/after animation deltas.
+
+> The following example
+
+```kotlin
+// Add a group of absolute-direction paddings.
+view.padding += AbsolutePadding(
+    left = 8.toPx(context),
+    right = 8.toPx(context)
+)
+// Subtract a group of relative-direction paddings.
+view.padding -= RelativePadding(
+    start = 4.toPx(context),
+    end = 4.toPx(context)
+)
+```
+
+`AbsolutePadding` and `RelativePadding` themselves also support `+` and `-`,
+so you can first compose a final result and then apply it to the `View` in one place.
+
+> The following example
+
+```kotlin
+val base = AbsolutePadding(
+    left = 16.toPx(context),
+    top = 12.toPx(context),
+    right = 16.toPx(context),
+    bottom = 12.toPx(context)
+)
+val extra = AbsolutePadding(bottom = 24.toPx(context))
+val result = base + extra
+
+view.setPadding(result)
+```
+
+Since `AbsolutePadding` and `RelativePadding` are Kotlin data classes,
+you can also use the `copy` function to create a new object based on the original one without modifying it, and then apply it to the `View`.
+
+> The following example
+
+```kotlin
+val base = RelativePadding(
+    start = 16.toPx(context),
+    top = 12.toPx(context),
+    end = 16.toPx(context),
+    bottom = 12.toPx(context)
+)
+val result = base.copy(bottom = 24.toPx(context))
+
+view.setPadding(result)
+```
+
+If you only want to treat it as an independent padding value object, that also works fine.
+
+`PaddingValues` itself provides `applyTo`, so you can manually apply it to the target `View` at any time.
+
+> The following example
+
+```kotlin
+val values: PaddingValues = RelativePadding(
+    start = 16.toPx(context),
+    top = 12.toPx(context),
+    end = 16.toPx(context),
+    bottom = 12.toPx(context)
+)
+
+values.applyTo(view)
+```
+
+::: warning
+
+`AbsolutePadding` and `RelativePadding` cannot be mixed, as this will cause issues with native RTL support and dimension calculations.
+Please choose one approach to use from the beginning.
+
+:::
 
 `BetterAndroid` also provides a `View.updateMargins` and `View.setMargins` method, which is used in the same way as `View.updatePadding`.
 
