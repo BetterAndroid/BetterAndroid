@@ -188,6 +188,8 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
 
     override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
 
+        private val visitedBinaryExpressions = hashSetOf<Any>()
+
         override fun visitCallExpression(node: UCallExpression) {
             when {
                 reportEnableEdgeToEdge(node) -> Unit
@@ -200,6 +202,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
         }
 
         override fun visitBinaryExpression(node: UBinaryExpression) {
+            node.sourcePsi?.let { if (!visitedBinaryExpressions.add(it)) return }
             reportWindowBarPropertyRemoval(node)
             reportWindowBarStyleAssignment(node)
             reportWindowInsetsControllerLightAppearance(node)

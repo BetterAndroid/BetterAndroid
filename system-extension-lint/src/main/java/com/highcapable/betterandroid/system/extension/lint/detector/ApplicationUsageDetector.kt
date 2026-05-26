@@ -158,6 +158,8 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
 
     override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
 
+        private val visitedBinaryExpressions = hashSetOf<Any>()
+
         override fun visitCallExpression(node: UCallExpression) {
             reportComponentName(node)
             reportSetComponentEnabledSetting(node)
@@ -165,6 +167,7 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
         }
 
         override fun visitBinaryExpression(node: UBinaryExpression) {
+            node.sourcePsi?.let { if (!visitedBinaryExpressions.add(it)) return }
             reportHasPackage(node)
             reportHasLaunchActivity(node)
             reportIsComponentEnabled(node)

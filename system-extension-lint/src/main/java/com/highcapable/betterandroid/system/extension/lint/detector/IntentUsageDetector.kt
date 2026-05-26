@@ -130,6 +130,8 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
 
     override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
 
+        private val visitedBinaryExpressionsWithType = hashSetOf<Any>()
+
         override fun visitCallExpression(node: UCallExpression) {
             reportIntentConstructor(node)
             reportExplicitTypedCompat(node)
@@ -137,6 +139,7 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
         }
 
         override fun visitBinaryExpressionWithType(node: UBinaryExpressionWithType) {
+            node.sourcePsi?.let { if (!visitedBinaryExpressionsWithType.add(it)) return }
             if (node.operationKind !is UastBinaryExpressionWithTypeKind.TypeCast) return
             if (node.operationKind.name != AS_CAST && node.operationKind.name != AS_SAFE_CAST) return
 

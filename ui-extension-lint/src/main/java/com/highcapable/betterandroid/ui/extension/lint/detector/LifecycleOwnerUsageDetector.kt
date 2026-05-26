@@ -120,6 +120,8 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
 
     override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
 
+        private val visitedBinaryExpressionsWithType = hashSetOf<Any>()
+
         override fun visitCallExpression(node: UCallExpression) {
             if (!node.isFindViewTreeLifecycleOwner(context) &&
                 !node.isImportedFindViewTreeLifecycleOwnerFallback(context)
@@ -143,6 +145,7 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
         }
 
         override fun visitBinaryExpressionWithType(node: UBinaryExpressionWithType) {
+            node.sourcePsi?.let { if (!visitedBinaryExpressionsWithType.add(it)) return }
             if (node.operationKind !is UastBinaryExpressionWithTypeKind.TypeCast) return
 
             val operandNode = node.operand.unwrapParenthesized() ?: return

@@ -140,7 +140,11 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
 
     override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
 
+        private val visitedBinaryExpressions = hashSetOf<Any>()
+
         override fun visitBinaryExpression(node: UBinaryExpression) {
+            node.sourcePsi?.let { if (!visitedBinaryExpressions.add(it)) return }
+
             // Detect comparison expression for `Build.VERSION.SDK_INT`.
             val leftOperand = node.leftOperand
             val rightOperand = node.rightOperand

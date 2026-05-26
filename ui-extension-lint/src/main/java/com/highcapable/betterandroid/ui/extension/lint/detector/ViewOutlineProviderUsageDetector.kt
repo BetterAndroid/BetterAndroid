@@ -98,7 +98,10 @@ class ViewOutlineProviderUsageDetector : Detector(), Detector.UastScanner {
 
     override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
 
+        private val visitedBinaryExpressions = hashSetOf<Any>()
+
         override fun visitBinaryExpression(node: UBinaryExpression) {
+            node.sourcePsi?.let { if (!visitedBinaryExpressions.add(it)) return }
             if (node.operator != UastBinaryOperator.ASSIGN) return
             if (node.sourcePsi?.containingFile?.name == VIEW_FILE_NAME) return
 

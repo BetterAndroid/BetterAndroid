@@ -120,6 +120,8 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
 
     override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
 
+        private val visitedBinaryExpressionsWithType = hashSetOf<Any>()
+
         override fun visitQualifiedReferenceExpression(node: UQualifiedReferenceExpression) {
             val selectorName = node.selector.resolveName() ?: return
             if (!node.isFragmentManagerProperty(context, selectorName)) return
@@ -171,6 +173,7 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
         }
 
         override fun visitBinaryExpressionWithType(node: UBinaryExpressionWithType) {
+            node.sourcePsi?.let { if (!visitedBinaryExpressionsWithType.add(it)) return }
             if (node.operationKind !is UastBinaryExpressionWithTypeKind.TypeCast) return
 
             val isNullableCast = node.operationKind.name == SAFE_AS_OPERATOR
