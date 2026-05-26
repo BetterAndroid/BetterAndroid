@@ -2,4 +2,8 @@
 <resources>
     <!-- The ID of the tooltip text compat tag. -->
     <id name="tag_better_android_tooltip_text_compat" type="id" />
+    <!-- The ID of the original padding baseline tag for insets. -->
+    <id name="tag_better_android_insets_padding_baseline" type="id" />
+    <!-- The ID of the current applied insets padding tag. -->
+    <id name="tag_better_android_insets_padding_applied" type="id" />
 </resources>

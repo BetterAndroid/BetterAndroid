@@ -33,9 +33,13 @@ import androidx.core.view.WindowInsetsAnimationCompat
 import androidx.core.view.WindowInsetsAnimationCompat.Callback.DISPATCH_MODE_CONTINUE_ON_SUBTREE
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.doOnLayout
-import androidx.core.view.updatePadding
+import com.highcapable.betterandroid.ui.extension.R
 import com.highcapable.betterandroid.ui.extension.insets.InsetsWrapper
 import com.highcapable.betterandroid.ui.extension.insets.WindowInsetsWrapper
+import com.highcapable.betterandroid.ui.extension.view.AbsolutePadding
+import com.highcapable.betterandroid.ui.extension.view.getTag
+import com.highcapable.betterandroid.ui.extension.view.padding
+import com.highcapable.betterandroid.ui.extension.view.setPadding
 
 /**
  * Create a [WindowInsetsWrapper] from [WindowInsetsCompat].
@@ -75,6 +79,20 @@ fun View.createRootWindowInsetsWrapper(window: Window? = null) = WindowInsetsWra
  */
 @JvmOverloads
 fun Insets.toWrapper(isVisible: Boolean = true) = InsetsWrapper.of(left, top, right, bottom, isVisible)
+
+/**
+ * Convert [Insets] to [AbsolutePadding].
+ * @receiver [Insets]
+ * @return [AbsolutePadding]
+ */
+fun Insets.toPaddingValues() = AbsolutePadding(left, top, right, bottom)
+
+/**
+ * Convert [InsetsWrapper] to [AbsolutePadding].
+ * @receiver [InsetsWrapper]
+ * @return [AbsolutePadding]
+ */
+fun InsetsWrapper.toPaddingValues() = AbsolutePadding(left, top, right, bottom)
 
 /**
  * Handle the window insets change for this view.
@@ -195,8 +213,12 @@ fun View.removeWindowInsetsListener() {
 /**
  * Set this view's padding with [insets].
  *
+ * This function automatically records the current padding as the original baseline on first use,
+ * then combines it with the current insets padding.
+ *
  * You can use [View.handleOnWindowInsetsChanged] to handle the insets change.
  * @see View.updateInsetsPadding
+ * @see View.syncInsetsPadding
  * @see View.handleOnWindowInsetsChanged
  * @receiver [View]
  * @param insets the insets.
@@ -212,18 +234,28 @@ fun View.setInsetsPadding(
     top: Boolean = true,
     right: Boolean = true,
     bottom: Boolean = true
-) = setPadding(
-    if (left) insets.left else 0,
-    if (top) insets.top else 0,
-    if (right) insets.right else 0,
-    if (bottom) insets.bottom else 0
-)
+) {
+    val state = resolveInsetsPaddingState()
+    val values = insets.toPaddingValues()
+    val insetsPadding = AbsolutePadding(
+        left = if (left) values.left else 0,
+        top = if (top) values.top else 0,
+        right = if (right) values.right else 0,
+        bottom = if (bottom) values.bottom else 0
+    )
+
+    applyInsetsPadding(state.basePadding, insetsPadding)
+}
 
 /**
  * Set this view's padding with [insets].
  *
+ * This function automatically records the current padding as the original baseline on first use,
+ * then combines it with the current insets padding.
+ *
  * You can use [View.handleOnWindowInsetsChanged] to handle the insets change.
  * @see View.updateInsetsPadding
+ * @see View.syncInsetsPadding
  * @see View.handleOnWindowInsetsChanged
  * @receiver [View]
  * @param insets the insets.
@@ -241,8 +273,12 @@ fun View.setInsetsPadding(
 /**
  * Set this view's padding with [insets].
  *
+ * This function automatically records the current padding as the original baseline on first use,
+ * then combines it with the current insets padding.
+ *
  * You can use [View.handleOnWindowInsetsChanged] to handle the insets change.
  * @see View.updateInsetsPadding
+ * @see View.syncInsetsPadding
  * @see View.handleOnWindowInsetsChanged
  * @receiver [View]
  * @param insets the insets' wrapper.
@@ -263,8 +299,12 @@ fun View.setInsetsPadding(
 /**
  * Set this view's padding with [insets].
  *
+ * This function automatically records the current padding as the original baseline on first use,
+ * then combines it with the current insets padding.
+ *
  * You can use [View.handleOnWindowInsetsChanged] to handle the insets change.
  * @see View.updateInsetsPadding
+ * @see View.syncInsetsPadding
  * @see View.handleOnWindowInsetsChanged
  * @receiver [View]
  * @param insets the insets' wrapper.
@@ -282,8 +322,12 @@ fun View.setInsetsPadding(
 /**
  * Update this view's padding with [insets].
  *
+ * This function keeps the current original padding baseline and only updates the selected
+ * insets padding directions.
+ *
  * You can use [View.handleOnWindowInsetsChanged] to handle the insets change.
  * @see View.setInsetsPadding
+ * @see View.syncInsetsPadding
  * @see View.handleOnWindowInsetsChanged
  * @receiver [View]
  * @param insets the insets.
@@ -300,17 +344,27 @@ fun View.updateInsetsPadding(
     right: Boolean = false,
     bottom: Boolean = false
 ) {
-    if (left) updatePadding(left = insets.left)
-    if (top) updatePadding(top = insets.top)
-    if (right) updatePadding(right = insets.right)
-    if (bottom) updatePadding(bottom = insets.bottom)
+    val state = resolveInsetsPaddingState()
+    val values = insets.toPaddingValues()
+    val insetsPadding = state.insetsPadding.copy(
+        left = if (left) values.left else state.insetsPadding.left,
+        top = if (top) values.top else state.insetsPadding.top,
+        right = if (right) values.right else state.insetsPadding.right,
+        bottom = if (bottom) values.bottom else state.insetsPadding.bottom
+    )
+
+    applyInsetsPadding(state.basePadding, insetsPadding)
 }
 
 /**
  * Update this view's padding with [insets].
  *
+ * This function keeps the current original padding baseline and only updates the selected
+ * insets padding directions.
+ *
  * You can use [View.handleOnWindowInsetsChanged] to handle the insets change.
  * @see View.setInsetsPadding
+ * @see View.syncInsetsPadding
  * @see View.handleOnWindowInsetsChanged
  * @receiver [View]
  * @param insets the insets' wrapper.
@@ -331,8 +385,12 @@ fun View.updateInsetsPadding(
 /**
  * Update this view's padding with [insets].
  *
+ * This function keeps the current original padding baseline and only updates the selected
+ * insets padding directions.
+ *
  * You can use [View.handleOnWindowInsetsChanged] to handle the insets change.
  * @see View.setInsetsPadding
+ * @see View.syncInsetsPadding
  * @see View.handleOnWindowInsetsChanged
  * @receiver [View]
  * @param insets the insets.
@@ -345,16 +403,17 @@ fun View.updateInsetsPadding(
     insets: Insets,
     horizontal: Boolean = false,
     vertical: Boolean = false
-) {
-    if (horizontal) updatePadding(left = insets.left, right = insets.right)
-    if (vertical) updatePadding(top = insets.top, bottom = insets.bottom)
-}
+) = updateInsetsPadding(insets, horizontal, vertical, horizontal, vertical)
 
 /**
  * Update this view's padding with [insets].
  *
+ * This function keeps the current original padding baseline and only updates the selected
+ * insets padding directions.
+ *
  * You can use [View.handleOnWindowInsetsChanged] to handle the insets change.
  * @see View.setInsetsPadding
+ * @see View.syncInsetsPadding
  * @see View.handleOnWindowInsetsChanged
  * @receiver [View]
  * @param insets the insets' wrapper.
@@ -368,3 +427,112 @@ fun View.updateInsetsPadding(
     horizontal: Boolean = false,
     vertical: Boolean = false
 ) = updateInsetsPadding(insets.toInsets(), horizontal, vertical)
+
+/**
+ * Synchronize the current padding back to the original insets padding baseline.
+ *
+ * This function does not re-apply the padding. It only updates the internally recorded baseline
+ * using the current total padding minus the current applied insets padding.
+ *
+ * You can call this after manually changing the view's total padding.
+ * @see View.setInsetsPadding
+ * @see View.updateInsetsPadding
+ * @see View.handleOnWindowInsetsChanged
+ * @receiver [View]
+ * @param left whether synchronize the left padding baseline.
+ * @param top whether synchronize the top padding baseline.
+ * @param right whether synchronize the right padding baseline.
+ * @param bottom whether synchronize the bottom padding baseline.
+ */
+@JvmOverloads
+fun View.syncInsetsPadding(
+    left: Boolean = true,
+    top: Boolean = true,
+    right: Boolean = true,
+    bottom: Boolean = true
+) {
+    val state = resolveInsetsPaddingState()
+    val currentBasePadding = padding.toAbsolute() - state.insetsPadding
+    val basePadding = state.basePadding.copy(
+        left = if (left) currentBasePadding.left else state.basePadding.left,
+        top = if (top) currentBasePadding.top else state.basePadding.top,
+        right = if (right) currentBasePadding.right else state.basePadding.right,
+        bottom = if (bottom) currentBasePadding.bottom else state.basePadding.bottom
+    )
+
+    setBaseInsetsPadding(basePadding)
+}
+
+/**
+ * Synchronize the current padding back to the original insets padding baseline.
+ *
+ * This function does not re-apply the padding. It only updates the internally recorded baseline
+ * using the current total padding minus the current applied insets padding.
+ *
+ * You can call this after manually changing the view's total padding.
+ * @see View.setInsetsPadding
+ * @see View.updateInsetsPadding
+ * @see View.handleOnWindowInsetsChanged
+ * @receiver [View]
+ * @param horizontal whether synchronize the horizontal padding baseline.
+ * @param vertical whether synchronize the vertical padding baseline.
+ */
+@JvmOverloads
+@JvmName("syncHVInsetsPadding")
+fun View.syncInsetsPadding(
+    horizontal: Boolean = true,
+    vertical: Boolean = true
+) = syncInsetsPadding(horizontal, vertical, horizontal, vertical)
+
+/**
+ * Resolve the current insets padding state for this view, which contains the original baseline padding
+ * and the currently applied insets padding.
+ * @receiver [View]
+ * @return [InsetsPaddingState]
+ */
+private fun View.resolveInsetsPaddingState(): InsetsPaddingState {
+    val basePadding = getTag<AbsolutePadding>(R.id.tag_better_android_insets_padding_baseline)
+        ?: padding.toAbsolute().also { setTag(R.id.tag_better_android_insets_padding_baseline, it) }
+    val insetsPadding = getTag<AbsolutePadding>(R.id.tag_better_android_insets_padding_applied)
+        ?: AbsolutePadding.Zero.also { setTag(R.id.tag_better_android_insets_padding_applied, it) }
+
+    return InsetsPaddingState(basePadding, insetsPadding)
+}
+
+/**
+ * Set the original baseline padding for this view, which is used to calculate the total padding with insets.
+ * @receiver [View]
+ * @param basePadding the original baseline padding.
+ */
+private fun View.setBaseInsetsPadding(basePadding: AbsolutePadding) {
+    setTag(R.id.tag_better_android_insets_padding_baseline, basePadding)
+}
+
+/**
+ * Set the currently applied insets padding for this view, which is used to calculate the total padding with insets.
+ * @receiver [View]
+ * @param insetsPadding the currently applied insets padding.
+ */
+private fun View.setAppliedInsetsPadding(insetsPadding: AbsolutePadding) {
+    setTag(R.id.tag_better_android_insets_padding_applied, insetsPadding)
+}
+
+/**
+ * Apply the insets padding to this view by combining the original baseline padding and the insets padding.
+ * @receiver [View]
+ * @param basePadding the original baseline padding.
+ * @param insetsPadding the currently applied insets padding.
+ */
+private fun View.applyInsetsPadding(basePadding: AbsolutePadding, insetsPadding: AbsolutePadding) {
+    setAppliedInsetsPadding(insetsPadding)
+    setPadding(basePadding + insetsPadding)
+}
+
+/**
+ * The internal state data class for insets padding,
+ * which contains the original baseline padding and the currently applied insets padding.
+ */
+private data class InsetsPaddingState(
+    val basePadding: AbsolutePadding,
+    val insetsPadding: AbsolutePadding
+)
