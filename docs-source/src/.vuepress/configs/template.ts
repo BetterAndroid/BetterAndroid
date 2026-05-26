@@ -23,7 +23,8 @@ const navigationLinks = {
     config: [
         '/config/basic',
         '/config/migration',
-        '/config/r8-proguard'
+        '/config/r8-proguard',
+        '/config/lint-rules'
     ],
     about: [
         '/about/changelog',
