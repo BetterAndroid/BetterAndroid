@@ -59,6 +59,7 @@ import androidx.core.view.updatePadding
 import androidx.core.view.updatePaddingRelative
 import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
 import com.highcapable.betterandroid.ui.extension.R
+import com.highcapable.betterandroid.ui.extension.component.hostActivity
 import com.highcapable.kavaref.extension.classOf
 import com.highcapable.kavaref.extension.createInstanceOrNull
 import kotlin.reflect.KClass
@@ -338,7 +339,7 @@ fun View.showIme() {
         context?.getSystemService<InputMethodManager>()?.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
     }
 
-    val windowFromActivity = (context as? Activity?)?.window
+    val windowFromActivity = context.hostActivity?.window
 
     if (AndroidVersion.isAtLeast(AndroidVersion.R) && windowFromActivity != null)
         WindowCompat.getInsetsController(windowFromActivity, this).show(WindowInsetsCompat.Type.ime())
@@ -359,7 +360,7 @@ fun View.hideIme() {
             ?.also { if (it.isActive) it.hideSoftInputFromWindow(applicationWindowToken, 0) }
     }
 
-    val windowFromActivity = (context as? Activity?)?.window
+    val windowFromActivity = context.hostActivity?.window
 
     if (AndroidVersion.isAtLeast(AndroidVersion.R) && windowFromActivity != null)
         WindowCompat.getInsetsController(windowFromActivity, this).hide(WindowInsetsCompat.Type.ime())

@@ -24,7 +24,6 @@
 
 package com.highcapable.betterandroid.ui.extension.insets.factory
 
-import android.app.Activity
 import android.view.View
 import android.view.Window
 import androidx.core.graphics.Insets
@@ -34,6 +33,7 @@ import androidx.core.view.WindowInsetsAnimationCompat.Callback.DISPATCH_MODE_CON
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.doOnLayout
 import com.highcapable.betterandroid.ui.extension.R
+import com.highcapable.betterandroid.ui.extension.component.hostActivity
 import com.highcapable.betterandroid.ui.extension.insets.InsetsWrapper
 import com.highcapable.betterandroid.ui.extension.insets.WindowInsetsWrapper
 import com.highcapable.betterandroid.ui.extension.view.AbsolutePadding
@@ -162,7 +162,7 @@ fun <V : View> V.handleOnWindowInsetsChanged(
     removeWindowInsetsListener()
 
     val self = this
-    val windowFromActivity = (context as? Activity?)?.window
+    val windowFromActivity = context.hostActivity?.window
     var isAnimating = false
 
     ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets ->

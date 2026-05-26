@@ -24,13 +24,13 @@
 
 package com.highcapable.betterandroid.ui.extension.view
 
-import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.highcapable.betterandroid.ui.extension.component.base.toHexResourceId
+import com.highcapable.betterandroid.ui.extension.component.hostActivity
 import com.highcapable.kavaref.extension.classOf
 
 /**
@@ -40,7 +40,7 @@ import com.highcapable.kavaref.extension.classOf
  * @throws IllegalStateException if the layout inflater is null.
  */
 val Context.layoutInflater
-    get() = (if (this is Activity) this.layoutInflater else LayoutInflater.from(this)) ?: error("Cannot get LayoutInflater from context.")
+    get() = hostActivity?.layoutInflater ?: LayoutInflater.from(this) ?: error("Cannot get LayoutInflater from context.")
 
 /**
  * Extension for [LayoutInflater.inflate].
