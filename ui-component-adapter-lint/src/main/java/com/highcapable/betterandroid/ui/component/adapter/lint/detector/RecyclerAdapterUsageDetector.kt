@@ -43,6 +43,8 @@ import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UExpression
 import org.jetbrains.uast.UObjectLiteralExpression
+import org.jetbrains.uast.UQualifiedReferenceExpression
+import org.jetbrains.uast.USimpleNameReferenceExpression
 import org.jetbrains.uast.getContainingUClass
 
 class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
@@ -52,6 +54,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
         private const val DIFF_CALLBACK_CLASS = "androidx.recyclerview.widget.DiffUtil.Callback"
         private const val LIST_UPDATE_CALLBACK_CLASS = "androidx.recyclerview.widget.ListUpdateCallback"
         private const val ADAPTER_CLASS_NAME = "androidx.recyclerview.widget.RecyclerView.Adapter"
+        private const val COLLECTION_CLASS = "java.util.Collection"
         private const val DIFF_UTIL_CALLBACK_FUNCTION = "DiffUtilCallback"
         private const val LIST_UPDATE_CALLBACK_FUNCTION = "ListUpdateCallback"
         private const val DIFF_UTIL_CLASS = "androidx.recyclerview.widget.DiffUtil"
@@ -245,10 +248,12 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
             val countArgument = node.valueArguments.getOrNull(1)?.unwrapParenthesized() ?: return false
             val receiver = node.adapterReceiver() ?: return false
             val replacementReceiver = node.receiverPrefix()
-            val replacement = when {
-                countArgument.asSourceString() == "$receiver.$ITEM_COUNT_PROPERTY" -> "$replacementReceiver$NOTIFY_ALL_ITEMS_INSERTED_FUNCTION()"
-                else -> "$replacementReceiver$NOTIFY_ALL_ITEMS_INSERTED_FUNCTION(${countArgument.asSourceString()})"
+            when {
+                countArgument.isAdapterItemCount(receiver) -> Unit
+                countArgument.isCollectionSizeAccess() -> Unit
+                else -> return false
             }
+            val replacement = "$replacementReceiver$NOTIFY_ALL_ITEMS_INSERTED_FUNCTION()"
 
             context.report(
                 issue = ISSUE,
@@ -275,11 +280,13 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
             val receiver = node.adapterReceiver() ?: return false
             val replacementReceiver = node.receiverPrefix()
             val payloadArgument = node.valueArguments.getOrNull(2)?.unwrapParenthesized()?.asSourceString()
-            val replacement = when {
+            when {
                 payloadArgument != null -> return false
-                countArgument.asSourceString() == "$receiver.$ITEM_COUNT_PROPERTY" -> "$replacementReceiver$NOTIFY_ALL_ITEMS_CHANGED_FUNCTION()"
-                else -> "$replacementReceiver$NOTIFY_ALL_ITEMS_CHANGED_FUNCTION(${countArgument.asSourceString()})"
+                countArgument.isAdapterItemCount(receiver) -> Unit
+                countArgument.isCollectionSizeAccess() -> Unit
+                else -> return false
             }
+            val replacement = "$replacementReceiver$NOTIFY_ALL_ITEMS_CHANGED_FUNCTION()"
 
             context.report(
                 issue = ISSUE,
@@ -346,6 +353,30 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
         private fun UCallExpression.receiverPrefix() = receiver?.asSourceString()?.let { "$it." }.orEmpty()
 
         private fun isZeroArgument(element: UElement?) = element?.unwrapParenthesized()?.asSourceString() == ZERO_ARGUMENT
+
+        private fun UElement.isAdapterItemCount(adapterReceiver: String): Boolean {
+            val source = asSourceString()
+            if (source == "$adapterReceiver.$ITEM_COUNT_PROPERTY") return true
+
+            return adapterReceiver == THIS_RECEIVER && source == ITEM_COUNT_PROPERTY
+        }
+
+        private fun UElement.isCollectionSizeAccess(): Boolean {
+            val target = unwrapParenthesized() ?: return false
+            return when (target) {
+                is UQualifiedReferenceExpression -> {
+                    val selector = target.selector as? USimpleNameReferenceExpression ?: return false
+                    selector.identifier == SIZE_PROPERTY && target.receiver.isCollectionExpression()
+                }
+                else -> false
+            }
+        }
+
+        private fun UExpression.isCollectionExpression(): Boolean {
+            val psiClass = PsiTypesUtil.getPsiClass(getExpressionType()) ?: return false
+            return psiClass.qualifiedName == COLLECTION_CLASS ||
+                context.evaluator.extendsClass(psiClass, COLLECTION_CLASS, false)
+        }
 
         private fun resolveNotifyByDiffReplacement(
             dispatchTarget: UExpression,
