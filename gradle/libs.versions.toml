@@ -4,8 +4,7 @@ kotlin = "2.3.21"
 compose = "1.10.3"
 dokka = "2.2.0"
 maven-publish = "0.36.0"
-kavaref-core = "1.0.2"
-kavaref-extension = "1.0.2"
+kavaref-bom = "1.0.3"
 # The project current support min sdk version is 21,
 # suppress the warning about using newer versions of dependencies that may require higher min sdk version.
 # noinspection GradleDependency
@@ -40,8 +39,9 @@ maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publ
 
 [libraries]
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
-kavaref-core = { group = "com.highcapable.kavaref", name = "kavaref-core", version.ref = "kavaref-core" }
-kavaref-extension = { group = "com.highcapable.kavaref", name = "kavaref-extension", version.ref = "kavaref-extension" }
+kavaref-bom = { group = "com.highcapable.kavaref", name = "kavaref-bom", version.ref = "kavaref-bom" }
+kavaref-core = { group = "com.highcapable.kavaref", name = "kavaref-core" }
+kavaref-extension = { group = "com.highcapable.kavaref", name = "kavaref-extension" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidx-fragment-ktx" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }

@@ -33,8 +33,10 @@ dependencies {
     implementation(projects.uiExtension)
     implementation(projects.systemExtension)
 
+    implementation(platform(libs.kavaref.bom))
     implementation(libs.kavaref.core)
     implementation(libs.kavaref.extension)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
 

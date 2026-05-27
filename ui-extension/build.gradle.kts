@@ -35,8 +35,10 @@ dependencies {
     api(libs.androidx.activity)
     api(libs.androidx.fragment.ktx)
 
+    implementation(platform(libs.kavaref.bom))
     implementation(libs.kavaref.core)
     implementation(libs.kavaref.extension)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.recyclerview)
