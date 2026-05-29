@@ -18,7 +18,19 @@ Time zone of version release date: **UTC+8**
 
 ## Android
 
-### 1.1.0 | 2026.05.27 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.1.1 | 2026.05.30 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Fixed some bugs in the Lint auto-fix functionality of some modules
+
+#### ui-component
+
+- Removed extra `meta-data` in `AndroidManifest.xml` to prevent configuration pollution
+
+#### system-extension
+
+- Optimized `AndroidVersion`, removed unnecessary `lazy` and inlined conditions
+
+### 1.1.0 | 2026.05.27 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Updated Target SDK to 37 (Android 17)
 - Removed all APIs that have been deprecated for more than about half a year in all modules

@@ -10,7 +10,19 @@
 
 ## Android
 
-### 1.1.0 | 2026.05.27 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.1.1 | 2026.05.30 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 修复部分模块 Lint 自动修复功能的 BUG
+
+#### ui-component
+
+- 移除 `AndroidManifest.xml` 中的额外 `meta-data` 以防止配置污染
+
+#### system-extension
+
+- 优化 `AndroidVersion`，移除无用的 `lazy` 并对条件进行 `inline` 处理
+
+### 1.1.0 | 2026.05.27 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 更新 Target SDK 至 37 (Android 17)
 - 移除所有模块中弃用已经超过半年左右的 API
