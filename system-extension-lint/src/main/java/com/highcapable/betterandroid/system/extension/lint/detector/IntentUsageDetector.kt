@@ -33,6 +33,7 @@ import com.highcapable.betterandroid.system.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.asCall
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.buildReplaceFix
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.displayShortName
+import com.highcapable.betterandroid.system.extension.lint.detector.extension.extendsClass
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.unwrapParenthesized
 import com.intellij.psi.PsiLocalVariable
@@ -53,6 +54,8 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
 
         private const val INTENT_CLASS = "android.content.Intent"
         private const val BUNDLE_CLASS = "android.os.Bundle"
+        private const val PARCELABLE_CLASS = "android.os.Parcelable"
+        private const val SERIALIZABLE_CLASS = "java.io.Serializable"
 
         private const val GET_PARCELABLE_EXTRA_METHOD = "getParcelableExtra"
         private const val GET_PARCELABLE_METHOD = "getParcelable"
@@ -149,6 +152,7 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
 
             // This is the `getParcelableExtra(...) as/as? Type` pattern.
             val key = call.valueArguments[0].asSourceString()
+            if (!node.typeReference?.type.extendsClass(context, compat.requiredClass)) return
             val castType = node.resolveCastType() ?: return
             val isNullableCast = node.operationKind.name == AS_SAFE_CAST || castType.isNullable
 
@@ -230,13 +234,13 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
             // Validation is Intent or Bundle class.
             return when {
                 context.evaluator.isMemberInClass(method, INTENT_CLASS) && node.methodName == GET_PARCELABLE_EXTRA_METHOD ->
-                    CompatTarget(GET_PARCELABLE_EXTRA_COMPAT)
+                    CompatTarget(GET_PARCELABLE_EXTRA_COMPAT, PARCELABLE_CLASS)
                 context.evaluator.isMemberInClass(method, BUNDLE_CLASS) && node.methodName == GET_PARCELABLE_METHOD ->
-                    CompatTarget(GET_PARCELABLE_COMPAT)
+                    CompatTarget(GET_PARCELABLE_COMPAT, PARCELABLE_CLASS)
                 context.evaluator.isMemberInClass(method, INTENT_CLASS) && node.methodName == GET_SERIALIZABLE_EXTRA_METHOD ->
-                    CompatTarget(GET_SERIALIZABLE_EXTRA_COMPAT)
+                    CompatTarget(GET_SERIALIZABLE_EXTRA_COMPAT, SERIALIZABLE_CLASS)
                 context.evaluator.isMemberInClass(method, BUNDLE_CLASS) && node.methodName == GET_SERIALIZABLE_METHOD ->
-                    CompatTarget(GET_SERIALIZABLE_COMPAT)
+                    CompatTarget(GET_SERIALIZABLE_COMPAT, SERIALIZABLE_CLASS)
                 else -> null
             }
         }
@@ -293,7 +297,10 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
         )
     }
 
-    private data class CompatTarget(val functionName: String) {
+    private data class CompatTarget(
+        val functionName: String,
+        val requiredClass: String
+    ) {
         val importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.$functionName"
     }
 
