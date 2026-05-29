@@ -43,14 +43,17 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
     companion object {
 
         private const val BUILD_VERSION_NAME = "Build.VERSION"
+        private const val BUILD_VERSION_CLASS = "android.os.$BUILD_VERSION_NAME"
         private const val BUILD_VERSION_CODES_NAME = "Build.VERSION_CODES"
         private const val BUILD_VERSION_CODES_CLASS = "android.os.$BUILD_VERSION_CODES_NAME"
         private const val SDK_INT_FIELD = "SDK_INT"
+        private const val RELEASE_FIELD = "RELEASE"
 
         private const val ANDROID_VERSION_PACKAGE = "${DeclaredSymbol.BASE_PACKAGE}.utils"
         private const val ANDROID_VERSION_NAME = "AndroidVersion"
         private const val ANDROID_VERSION_CLASS = "$ANDROID_VERSION_PACKAGE.$ANDROID_VERSION_NAME"
         private const val ANDROID_VERSION_CODE_FIELD = "code"
+        private const val ANDROID_VERSION_NAME_FIELD = "name"
 
         private const val GREATER_OR_EQUALS_FUNCTION_NAME = "isAtLeast"
         private const val GREATER_FUNCTION_NAME = "isGreaterThan"
@@ -99,16 +102,17 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithAndroidVersion",
-            briefDescription = "Use system-extension's `AndroidVersion` instead of `Build.VERSION.SDK_INT`.",
+            briefDescription = "Use system-extension's `AndroidVersion` instead of direct `Build.VERSION` access.",
             explanation = """
-                Using `Build.VERSION.SDK_INT` comparisons can be simplified by using `AndroidVersion` \
-                from BetterAndroid system-extension library.
+                Using direct `Build.VERSION` access or `Build.VERSION.SDK_INT` comparisons can be \
+                simplified by using `AndroidVersion` from BetterAndroid system-extension library.
 
                 See the documentation for more details:
                 - English: https://betterandroid.github.io/BetterAndroid/en/library/system-extension#system-information
                 - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/system-extension#system-information
 
                 The `AndroidVersion` provides:
+                - Direct version name and version code access
                 - Type-safe version constants (AndroidVersion.T, AndroidVersion.U, etc.)
                 - Convenient comparison functions (isAtLeast, isGreaterThan, isAtMost, isLessThan)
                 - Better readability and maintainability
@@ -116,11 +120,15 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
                 Examples:
                 ```kotlin
                 // Before
+                val versionCode = Build.VERSION.SDK_INT
+                val versionName = Build.VERSION.RELEASE
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     // Do something for Android T and above.
                 }
 
                 // After
+                val versionCode = AndroidVersion.code
+                val versionName = AndroidVersion.name
                 if (AndroidVersion.isAtLeast(AndroidVersion.T)) {
                     // Do something for Android T and above.
                 }
@@ -183,6 +191,27 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
             val selector = node.selector
             val resolved = (selector as? UReferenceExpression)?.resolve()
             val containingClass = (resolved as? PsiField)?.containingClass
+
+            if (containingClass?.qualifiedName == BUILD_VERSION_CLASS) when (selector.resolvedName) {
+                SDK_INT_FIELD -> {
+                    reportAndFix(
+                        context = context,
+                        node = node,
+                        replacement = "$ANDROID_VERSION_NAME.$ANDROID_VERSION_CODE_FIELD",
+                        fixName = "$ANDROID_VERSION_NAME.$ANDROID_VERSION_CODE_FIELD"
+                    )
+                    return
+                }
+                RELEASE_FIELD -> {
+                    reportAndFix(
+                        context = context,
+                        node = node,
+                        replacement = "$ANDROID_VERSION_NAME.$ANDROID_VERSION_NAME_FIELD",
+                        fixName = "$ANDROID_VERSION_NAME.$ANDROID_VERSION_NAME_FIELD"
+                    )
+                    return
+                }
+            }
 
             if (containingClass?.qualifiedName == BUILD_VERSION_CODES_CLASS) {
                 val fieldName = selector.resolvedName ?: return
