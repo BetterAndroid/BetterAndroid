@@ -545,6 +545,27 @@ val displayCutout = insetsWrapper.displayCutout
 
 目前已知兼容问题为 `androidx` 提供的兼容处理方法无法对 Android 11 以下设备的 `statusBars`、`navigationBars`、`systemBars` 的 `isVisible` 和其内容给出正确的值，`BetterAndroid` 为此进行了修复。
 
+对于早期低于 Android 9 的设备，部分厂商需要在 `AndroidManifest.xml` 中添加 `meta-data` 来启用兼容处理，为了防止配置污染，从 `1.1.1` 开始，`BetterAndroid` 移除了这些默认配置选项，如有需要，你可以参考以下配置方案手动进行添加。
+
+> 示例如下
+
+```xml
+<application>
+    <!-- 声明将布局扩展到最大宽度 (全屏) -->
+    <meta-data
+        android:name="android.max_aspect"
+        android:value="2.4" />
+    <!-- 声明与华为设备 (EMUI) 刘海屏兼容 -->
+    <meta-data
+        android:name="android.notch_support"
+        android:value="true" />
+    <!-- 声明与小米设备 (MIUI) 刘海屏兼容 -->
+    <meta-data
+        android:name="notch.config"
+        android:value="portrait|landscape" />
+</application>
+```
+
 :::
 
 你从 `WindowInsetsWrapper` 获取到的任何 Insets 对象即 `InsetsWrapper`，它封装了 `Insets` 对象并实现了可控的 `isVisible` 状态。

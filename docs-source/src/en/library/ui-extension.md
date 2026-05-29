@@ -565,6 +565,29 @@ If your app needs to run on Android 10 or below devices, we recommend always pas
 Currently known compatibility issues are that the compatibility processing method provided by `androidx` cannot give correct values ​​to the `isVisible` and their contents of
 `statusBars`, `navigationBars`, `systemBars` of devices below Android 11, for this reason, `BetterAndroid` repairs were made.
 
+For early devices below Android 9, some manufacturers need to add `meta-data` in `AndroidManifest.xml` to enable compatibility processing.
+To prevent configuration pollution, starting from version `1.1.1`, `BetterAndroid` has removed these default configuration options.
+If needed, you can refer to the following configuration scheme to manually add them.
+
+> The following example
+
+```xml
+<application>
+    <!-- Declared to expand the layout to the maximum width (full screen). -->
+    <meta-data
+        android:name="android.max_aspect"
+        android:value="2.4" />
+    <!-- Declared to be compatible with Huawei devices (EMUI) notch screen. -->
+    <meta-data
+        android:name="android.notch_support"
+        android:value="true" />
+    <!-- Declared to be compatible with Xiaomi devices (MIUI) notch screen. -->
+    <meta-data
+        android:name="notch.config"
+        android:value="portrait|landscape" />
+</application>
+```
+
 :::
 
 Any insets you get from `WindowInsetsWrapper` is `InsetsWrapper`, which wrapped `Insets` and implements controllable `isVisible` state.
