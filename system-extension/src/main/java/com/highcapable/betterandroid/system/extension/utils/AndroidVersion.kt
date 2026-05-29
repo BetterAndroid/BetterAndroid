@@ -19,14 +19,13 @@
  *
  * This file is created by fankes on 2025/6/26.
  */
-@file:Suppress("unused")
+@file:Suppress("unused", "NOTHING_TO_INLINE")
 
 package com.highcapable.betterandroid.system.extension.utils
 
 import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.annotation.IntDef
-import com.highcapable.betterandroid.system.extension.utils.AndroidVersion.requireOrNull
 
 /**
  * Android SDK version tool.
@@ -164,7 +163,7 @@ object AndroidVersion {
      * @return [String]
      */
     @JvmStatic
-    val name by lazy { Build.VERSION.RELEASE ?: "" }
+    val name = Build.VERSION.RELEASE ?: ""
 
     /**
      * Get the current Android version code.
@@ -174,7 +173,7 @@ object AndroidVersion {
      * @return [Int]
      */
     @JvmStatic
-    val code by lazy { Build.VERSION.SDK_INT }
+    val code = Build.VERSION.SDK_INT
 
     /**
      * Less than target sdk. `code < target`
@@ -183,7 +182,7 @@ object AndroidVersion {
      */
     @JvmStatic
     @ChecksSdkIntAtLeast(parameter = 0)
-    fun isLessThan(@SdkInt target: Int) = code < target
+    inline fun isLessThan(@SdkInt target: Int) = code < target
 
     /**
      * At most target sdk. `code <= target`
@@ -192,7 +191,7 @@ object AndroidVersion {
      */
     @JvmStatic
     @ChecksSdkIntAtLeast(parameter = 0)
-    fun isAtMost(@SdkInt target: Int) = code <= target
+    inline fun isAtMost(@SdkInt target: Int) = code <= target
 
     /**
      * Greater than target sdk. `code > target`
@@ -201,7 +200,7 @@ object AndroidVersion {
      */
     @JvmStatic
     @ChecksSdkIntAtLeast(parameter = 0)
-    fun isGreaterThan(@SdkInt target: Int) = code > target
+    inline fun isGreaterThan(@SdkInt target: Int) = code > target
 
     /**
      * At least target sdk. `code >= target`
@@ -210,7 +209,7 @@ object AndroidVersion {
      */
     @JvmStatic
     @ChecksSdkIntAtLeast(parameter = 0)
-    fun isAtLeast(@SdkInt target: Int) = code >= target
+    inline fun isAtLeast(@SdkInt target: Int) = code >= target
 
     /**
      * The target sdk is required to be [target] or higher than [target] to call [callback].
