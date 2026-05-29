@@ -18,27 +18,4 @@
   limitations under the License.
 
   This file is created by fankes on 2023/10/21. -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- In order to obtain a better user experience,
-         the configuration below will be automatically packaged into the main module.
-         If you don't need a certain configuration,
-         you can copy this configuration to the main module and add tools:node="remove". -->
-
-    <application>
-
-        <!-- Declared to expand the layout to the maximum width (full screen). -->
-        <meta-data
-            android:name="android.max_aspect"
-            android:value="2.4" />
-
-        <!-- Declared to be compatible with Huawei devices (EMUI) notch screen. -->
-        <meta-data
-            android:name="android.notch_support"
-            android:value="true" />
-
-        <!-- Declared to be compatible with Xiaomi devices (MIUI, HyperOS) notch screen. -->
-        <meta-data
-            android:name="notch.config"
-            android:value="portrait|landscape" />
-    </application>
-</manifest>
+<manifest />
