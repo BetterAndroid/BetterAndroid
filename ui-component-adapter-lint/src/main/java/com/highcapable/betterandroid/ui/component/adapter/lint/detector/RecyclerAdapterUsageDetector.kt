@@ -36,6 +36,7 @@ import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extensio
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.findContainingBlock
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.findMethodExpressionSource
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.isObjectLiteralOf
+import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.unwrapParenthesized
 import com.intellij.psi.PsiClass
 import com.intellij.psi.util.PsiTypesUtil
@@ -349,8 +350,6 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
 
         private fun UCallExpression.adapterReceiver() = receiver?.asSourceString()
             ?: THIS_RECEIVER.takeIf { getContainingUClass()?.javaPsi.isRecyclerViewAdapterClass() }
-
-        private fun UCallExpression.receiverPrefix() = receiver?.asSourceString()?.let { "$it." }.orEmpty()
 
         private fun isZeroArgument(element: UElement?) = element?.unwrapParenthesized()?.asSourceString() == ZERO_ARGUMENT
 

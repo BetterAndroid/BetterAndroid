@@ -32,6 +32,7 @@ import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.isQualifiedSelector
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.resolveName
 import com.intellij.psi.PsiMethod
 import org.jetbrains.uast.UQualifiedReferenceExpression
@@ -103,11 +104,9 @@ class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
             if (!node.isViewWalkProperty(selectorName)) return
 
             // This is the `view.ancestors/descendants` property access pattern.
-            val receiverText = node.receiver.asSourceString()
-
             val replacement = when (selectorName) {
-                ANCESTORS_PROPERTY -> "$receiverText.$WALK_TO_ROOT_FUNCTION()"
-                DESCENDANTS_PROPERTY -> "$receiverText.$WALK_THROUGH_CHILDREN_FUNCTION()"
+                ANCESTORS_PROPERTY -> "${node.receiverPrefix()}$WALK_TO_ROOT_FUNCTION()"
+                DESCENDANTS_PROPERTY -> "${node.receiverPrefix()}$WALK_THROUGH_CHILDREN_FUNCTION()"
                 else -> return
             }
             val importTarget = when (selectorName) {

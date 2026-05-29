@@ -30,6 +30,7 @@ import com.android.tools.lint.detector.api.JavaContext
 import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.asPropertyAccess
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.extendsClass
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.unwrapParenthesized
@@ -128,7 +129,7 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
             ) return
 
             // This is the `view.findViewTreeLifecycleOwner()` pattern.
-            val replacement = node.receiver?.asSourceString()?.let { "$it.$LIFECYCLE_OWNER_PROPERTY" }
+            val replacement = node.receiver?.asPropertyAccess(LIFECYCLE_OWNER_PROPERTY)
                 ?: resolveImplicitViewLifecycleOwnerReplacement(node)
                 ?: return
 

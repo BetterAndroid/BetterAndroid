@@ -80,13 +80,26 @@ internal fun UElement?.asCall() = when (this) {
 internal fun USimpleNameReferenceExpression.isQualifiedSelector() =
     (uastParent as? UQualifiedReferenceExpression)?.selector == this
 
+private fun resolveQualifiedAccessPrefix(receiverText: String, source: String) = when {
+    source.startsWith("$receiverText?.") -> "$receiverText?."
+    source.startsWith("$receiverText.") -> "$receiverText."
+    else -> ""
+}
+
 internal fun UCallExpression.receiverPrefix(): String {
     val receiverText = receiver?.asSourceString() ?: return ""
     val source = (uastParent as? UQualifiedReferenceExpression)?.sourcePsi?.text?.trimStart()
         ?: sourcePsi?.text?.trimStart()
         ?: asSourceString().trimStart()
 
-    return if (source.startsWith("$receiverText.")) "$receiverText." else ""
+    return resolveQualifiedAccessPrefix(receiverText, source)
+}
+
+internal fun UQualifiedReferenceExpression.receiverPrefix(): String {
+    val receiverText = receiver.asSourceString()
+    val source = sourcePsi?.text?.trimStart() ?: asSourceString().trimStart()
+
+    return resolveQualifiedAccessPrefix(receiverText, source)
 }
 
 internal fun UDeclaration.findMethod(name: String) =
@@ -129,8 +142,16 @@ internal fun List<UExpression>.joinSourceArguments(startIndex: Int = 0) =
     drop(startIndex).joinToString(", ") { it.asSourceString() }
 
 internal fun UExpression.asPropertyAccess(name: String): String {
+    val target = unwrapParenthesized()
     val source = asSourceString()
-    return if (unwrapParenthesized() is UThisExpression) name else "$source.$name"
+    return when (target) {
+        is UThisExpression -> name
+        is UQualifiedReferenceExpression -> {
+            val operator = if (target.receiverPrefix().endsWith("?.")) "?." else "."
+            "$source$operator$name"
+        }
+        else -> "$source.$name"
+    }
 }
 
 internal tailrec fun UElement?.resolveStaticClassLiteralType(): String? = when (val target = unwrapParenthesized()) {

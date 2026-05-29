@@ -31,6 +31,7 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.unwrapParenthesized
 import com.intellij.psi.PsiField
 import com.intellij.psi.PsiMethod
@@ -48,7 +49,6 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
         private const val RECYCLER_VIEW_CLASS = "androidx.recyclerview.widget.RecyclerView"
         private const val LAYOUT_MANAGER_GET_FUNCTION = "getLayoutManager"
         private const val LAYOUT_MANAGER_FUNCTION = "layoutManager"
-        private const val THIS_RECEIVER = "this"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithRecyclerViewExtension",
@@ -100,13 +100,11 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
             if (!operandNode.isRecyclerViewLayoutManagerAccess(context)) return
 
             // This is the `recyclerView.layoutManager as/as? LayoutManager` pattern.
-            val operand = operandNode.asSourceString()
             val targetType = node.typeReference?.asSourceString() ?: return
-            val replacement = when {
-                operand == LAYOUT_MANAGER_FUNCTION -> "$LAYOUT_MANAGER_FUNCTION<$targetType>()"
-                operand == "$THIS_RECEIVER.$LAYOUT_MANAGER_FUNCTION" -> "$THIS_RECEIVER.$LAYOUT_MANAGER_FUNCTION<$targetType>()"
-                operand.endsWith(".$LAYOUT_MANAGER_FUNCTION") ->
-                    "${operand.removeSuffix(".$LAYOUT_MANAGER_FUNCTION")}.$LAYOUT_MANAGER_FUNCTION<$targetType>()"
+            val replacement = when (operandNode) {
+                is USimpleNameReferenceExpression if operandNode.identifier == LAYOUT_MANAGER_FUNCTION ->
+                    "$LAYOUT_MANAGER_FUNCTION<$targetType>()"
+                is UQualifiedReferenceExpression -> "${operandNode.receiverPrefix()}$LAYOUT_MANAGER_FUNCTION<$targetType>()"
                 else -> return
             }
 

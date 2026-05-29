@@ -159,7 +159,7 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
             val (memberName, receiverPrefix) = when (target) {
                 is UQualifiedReferenceExpression -> {
                     val resolvedName = target.selector.resolveName() ?: return
-                    resolvedName to "${target.receiver.asSourceString()}."
+                    resolvedName to target.receiverPrefix()
                 }
                 is UCallExpression -> {
                     val resolvedName = target.resolveName() ?: return

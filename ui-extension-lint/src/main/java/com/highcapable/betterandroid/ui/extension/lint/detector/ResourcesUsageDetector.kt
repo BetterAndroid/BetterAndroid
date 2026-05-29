@@ -169,22 +169,22 @@ class ResourcesUsageDetector : Detector(), Detector.UastScanner {
             return when (methodName) {
                 GET_DRAWABLE_METHOD -> {
                     if (arguments.size < 3) null else
-                        "${arguments[0].asSourceString()}.$GET_DRAWABLE_COMPAT(${arguments[1].asSourceString()}, ${arguments[2].asSourceString()})" to
+                        arguments[0].buildExtensionCall(GET_DRAWABLE_COMPAT, arguments[1], arguments[2]) to
                             listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_DRAWABLE_COMPAT")
                 }
                 GET_COLOR_METHOD -> {
                     if (arguments.size < 3) null else
-                        "${arguments[0].asSourceString()}.$GET_COLOR_COMPAT(${arguments[1].asSourceString()}, ${arguments[2].asSourceString()})" to
+                        arguments[0].buildExtensionCall(GET_COLOR_COMPAT, arguments[1], arguments[2]) to
                             listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_COLOR_COMPAT")
                 }
                 GET_COLOR_STATE_LIST_METHOD -> {
                     if (arguments.size < 3) null else
-                        "${arguments[0].asSourceString()}.$GET_COLOR_STATE_LIST_COMPAT(${arguments[1].asSourceString()}, ${arguments[2].asSourceString()})" to
+                        arguments[0].buildExtensionCall(GET_COLOR_STATE_LIST_COMPAT, arguments[1], arguments[2]) to
                             listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_COLOR_STATE_LIST_COMPAT")
                 }
                 GET_FLOAT_METHOD -> {
                     if (arguments.size < 2) null else
-                        "${arguments[0].asSourceString()}.$GET_FLOAT_COMPAT(${arguments[1].asSourceString()})" to
+                        arguments[0].buildExtensionCall(GET_FLOAT_COMPAT, arguments[1]) to
                             listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_FLOAT_COMPAT")
                 }
                 GET_FONT_METHOD -> {

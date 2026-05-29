@@ -33,6 +33,7 @@ import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.asCall
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.isQualifiedSelector
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.resolveName
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.unwrapParenthesized
 import com.intellij.psi.PsiMethod
@@ -127,11 +128,10 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
             if (!node.isFragmentManagerProperty(context, selectorName)) return
 
             // This is the `supportFragmentManager` or Fragment manager property access pattern.
-            val receiver = node.receiver.asSourceString()
             val replacement = when (selectorName) {
-                SUPPORT_FRAGMENT_MANAGER -> "$receiver.$FRAGMENT_MANAGER_FUNCTION()"
-                PARENT_FRAGMENT_MANAGER -> "$receiver.$FRAGMENT_MANAGER_FUNCTION(parent = true)"
-                CHILD_FRAGMENT_MANAGER -> "$receiver.$FRAGMENT_MANAGER_FUNCTION()"
+                SUPPORT_FRAGMENT_MANAGER -> "${node.receiverPrefix()}$FRAGMENT_MANAGER_FUNCTION()"
+                PARENT_FRAGMENT_MANAGER -> "${node.receiverPrefix()}$FRAGMENT_MANAGER_FUNCTION(parent = true)"
+                CHILD_FRAGMENT_MANAGER -> "${node.receiverPrefix()}$FRAGMENT_MANAGER_FUNCTION()"
                 else -> return
             }
 
@@ -184,12 +184,12 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
             val methodName = call.methodName ?: return
             if (methodName != FIND_FRAGMENT_BY_ID_METHOD && methodName != FIND_FRAGMENT_BY_TAG_METHOD) return
 
-            val receiver = call.receiver?.asSourceString() ?: return
             val arg = call.valueArguments.firstOrNull()?.asSourceString() ?: return
             val targetType = node.typeReference?.asSourceString() ?: return
 
             // This is the `findFragmentById/Tag(...) as/as? T` pattern.
-            val replacement = "$receiver.$FIND_FRAGMENT_FUNCTION<$targetType>($arg)${if (isNullableCast) "" else NOT_NULL_ASSERTION}"
+            val replacement =
+                "${call.receiverPrefix()}$FIND_FRAGMENT_FUNCTION<$targetType>($arg)${if (isNullableCast) "" else NOT_NULL_ASSERTION}"
 
             context.report(
                 issue = ISSUE,

@@ -33,6 +33,7 @@ import com.highcapable.betterandroid.system.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.asCall
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.buildReplaceFix
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.displayShortName
+import com.highcapable.betterandroid.system.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.resolveName
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.unwrapParenthesized
 import org.jetbrains.uast.UBinaryExpression
@@ -212,9 +213,8 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             val directCall = node.leftOperand.unwrapParenthesized().asCall()
             if (directCall != null && isPackageManagerCall(directCall, GET_PACKAGE_INFO_METHOD)) {
                 // This is the `packageManager.getPackageInfo(...) != null` pattern.
-                val receiver = directCall.receiver?.asSourceString() ?: return
                 val packageName = directCall.valueArguments.firstOrNull()?.asSourceString() ?: return
-                val replacement = "$receiver.$HAS_PACKAGE($packageName)"
+                val replacement = "${directCall.receiverPrefix()}$HAS_PACKAGE($packageName)"
                 reportAndFix(
                     context = context,
                     node = node,
@@ -230,9 +230,8 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
 
             // This is the `runCatching { packageManager.getPackageInfo(...) }.getOrNull() != null` pattern.
             val packageInfoCall = resolveRunCatchingPackageInfoCall(getOrNullCall) ?: return
-            val receiver = packageInfoCall.receiver?.asSourceString() ?: return
             val packageName = packageInfoCall.valueArguments.firstOrNull()?.asSourceString() ?: return
-            val replacement = "$receiver.$HAS_PACKAGE($packageName)"
+            val replacement = "${packageInfoCall.receiverPrefix()}$HAS_PACKAGE($packageName)"
 
             reportAndFix(
                 context = context,
@@ -249,9 +248,8 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
 
                 // This is the `packageManager.getLaunchIntentForPackage(...) != null` pattern.
                 if (!isPackageManagerCall(call, GET_LAUNCH_INTENT_FOR_PACKAGE_METHOD)) return
-                val receiver = call.receiver?.asSourceString() ?: return
                 val packageName = call.valueArguments.firstOrNull()?.asSourceString() ?: return
-                val replacement = "$receiver.$HAS_LAUNCH_ACTIVITY($packageName)"
+                val replacement = "${call.receiverPrefix()}$HAS_LAUNCH_ACTIVITY($packageName)"
 
                 reportAndFix(
                     context = context,
@@ -270,8 +268,9 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             if (queryAccess.selector.resolveName() != SIZE_PROPERTY) return
 
             // This is the `queryIntentActivities(...).size > 0` pattern.
-            val (receiver, packageName) = resolveQueryLaunchActivitiesInfo(queryAccess.receiver.asCall()) ?: return
-            val replacement = "$receiver.$HAS_LAUNCH_ACTIVITY($packageName)"
+            val queryCall = queryAccess.receiver.asCall() ?: return
+            val (_, packageName) = resolveQueryLaunchActivitiesInfo(queryCall) ?: return
+            val replacement = "${queryCall.receiverPrefix()}$HAS_LAUNCH_ACTIVITY($packageName)"
 
             reportAndFix(
                 context = context,
@@ -286,8 +285,9 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             if (node.selector.resolveName() != IS_NOT_EMPTY_METHOD) return
 
             // This is the `queryIntentActivities(...).isNotEmpty()` pattern.
-            val (receiver, packageName) = resolveQueryLaunchActivitiesInfo(node.receiver.asCall()) ?: return
-            val replacement = "$receiver.$HAS_LAUNCH_ACTIVITY($packageName)"
+            val queryCall = node.receiver.asCall() ?: return
+            val (_, packageName) = resolveQueryLaunchActivitiesInfo(queryCall) ?: return
+            val replacement = "${queryCall.receiverPrefix()}$HAS_LAUNCH_ACTIVITY($packageName)"
 
             reportAndFix(
                 context = context,
@@ -305,7 +305,6 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             if (!isPackageManagerCall(call, GET_COMPONENT_ENABLED_SETTING_METHOD)) return
 
             // This is the `getComponentEnabledSetting(...) ==/!= PackageManager.COMPONENT_ENABLED_STATE_*` pattern.
-            val receiver = call.receiver?.asSourceString() ?: return
             val componentName = call.valueArguments.firstOrNull()?.asSourceString() ?: return
             val rightName = node.rightOperand.unwrapParenthesized().resolveName() ?: return
 
@@ -317,7 +316,7 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             }
             if (!isMatch) return
 
-            val replacement = "$receiver.$IS_COMPONENT_ENABLED($componentName)"
+            val replacement = "${call.receiverPrefix()}$IS_COMPONENT_ENABLED($componentName)"
             reportAndFix(
                 context = context,
                 node = node,
@@ -336,7 +335,6 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
             if (node.valueArguments.size < 3) return
 
             // This is the `setComponentEnabledSetting(..., PackageManager.COMPONENT_ENABLED_STATE_*, ...)` pattern.
-            val receiver = node.receiver?.asSourceString() ?: return
             val componentName = node.valueArguments[0].asSourceString()
             val state = node.valueArguments[1].unwrapParenthesized().resolveName() ?: return
             val flags = node.valueArguments[2].asSourceString()
@@ -348,7 +346,7 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
                 else -> return
             }
 
-            val replacement = "$receiver.$functionName($componentName, $flags)"
+            val replacement = "${node.receiverPrefix()}$functionName($componentName, $flags)"
             reportAndFix(
                 context = context,
                 node = node,

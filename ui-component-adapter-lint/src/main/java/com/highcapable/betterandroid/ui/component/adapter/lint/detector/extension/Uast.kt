@@ -48,6 +48,28 @@ internal fun UElement?.asCall() = when (this) {
     else -> null
 }
 
+private fun resolveQualifiedAccessPrefix(receiverText: String, source: String) = when {
+    source.startsWith("$receiverText?.") -> "$receiverText?."
+    source.startsWith("$receiverText.") -> "$receiverText."
+    else -> ""
+}
+
+internal fun UCallExpression.receiverPrefix(): String {
+    val receiverText = receiver?.asSourceString() ?: return ""
+    val source = (uastParent as? UQualifiedReferenceExpression)?.sourcePsi?.text?.trimStart()
+        ?: sourcePsi?.text?.trimStart()
+        ?: asSourceString().trimStart()
+
+    return resolveQualifiedAccessPrefix(receiverText, source)
+}
+
+internal fun UQualifiedReferenceExpression.receiverPrefix(): String {
+    val receiverText = receiver.asSourceString()
+    val source = sourcePsi?.text?.trimStart() ?: asSourceString().trimStart()
+
+    return resolveQualifiedAccessPrefix(receiverText, source)
+}
+
 internal fun UCallExpression.findContainingBlock(): UBlockExpression? {
     var parent = uastParent
     while (parent != null) {

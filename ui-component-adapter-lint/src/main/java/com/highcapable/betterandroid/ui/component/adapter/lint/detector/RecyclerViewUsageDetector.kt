@@ -31,6 +31,7 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.component.adapter.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.resolveLocalVariableInitializer
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.unwrapParenthesized
 import com.intellij.psi.PsiClass
@@ -260,8 +261,6 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
 
     private fun UCallExpression.recyclerViewReceiver(context: JavaContext) = receiver?.asSourceString()
         ?: THIS_RECEIVER.takeIf { getContainingUClass()?.javaPsi.isRecyclerViewClass(context) }
-
-    private fun UCallExpression.receiverPrefix() = receiver?.asSourceString()?.let { "$it." }.orEmpty()
 
     private fun UElement?.resolveLocalVariableInitializerFromBlock(): UElement? {
         val reference = this.unwrapParenthesized() as? USimpleNameReferenceExpression ?: return null

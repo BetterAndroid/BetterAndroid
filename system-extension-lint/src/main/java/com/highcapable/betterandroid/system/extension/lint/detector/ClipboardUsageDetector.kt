@@ -34,6 +34,7 @@ import com.highcapable.betterandroid.system.extension.lint.detector.extension.as
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.buildReplaceFix
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.extendsClass
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.findContainingUClass
+import com.highcapable.betterandroid.system.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.resolveJavaClassTypeArgument
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.resolveName
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.unwrapParenthesized
@@ -150,7 +151,6 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
             val method = node.resolve() ?: return
             if (!context.evaluator.isMemberInClass(method, CLIPBOARD_MANAGER_CLASS)) return
 
-            val receiver = node.receiver?.asSourceString() ?: return
             val clipCall = resolveClipDataCall(node.valueArguments.firstOrNull()) ?: return
             val clipMethod = clipCall.methodName ?: return
             val clipDataMethod = clipCall.resolve() ?: return
@@ -165,15 +165,15 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
             val replacement = when (clipMethod) {
                 NEW_PLAIN_TEXT_METHOD -> {
                     if (arguments.size < 2) return
-                    "$receiver.$COPY($text, $label)"
+                    "${node.receiverPrefix()}$COPY($text, $label)"
                 }
                 NEW_HTML_TEXT_METHOD -> {
                     if (arguments.size < 3) return
-                    "$receiver.$COPY($text, $html, $label)"
+                    "${node.receiverPrefix()}$COPY($text, $html, $label)"
                 }
                 NEW_INTENT_METHOD -> {
                     if (arguments.size < 2) return
-                    "$receiver.$COPY(${arguments[1].asSourceString()}, $label)"
+                    "${node.receiverPrefix()}$COPY(${arguments[1].asSourceString()}, $label)"
                 }
                 else -> return
             }
@@ -191,15 +191,12 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
 
             // This is the `Context.getSystemService(ClipboardManager::class.java)` pattern.
             val replacement = when {
-                isClipboardManagerLookup(node) -> {
-                    node.receiver?.asSourceString()?.let { "$it.$CLIPBOARD_MANAGER" } ?: CLIPBOARD_MANAGER
-                }
+                isClipboardManagerLookup(node) -> node.extensionPropertyReplacement(CLIPBOARD_MANAGER)
                 isContextCompatClipboardManagerLookup(node) -> {
                     val receiver = node.valueArguments.firstOrNull()?.asSourceString()?.trim() ?: return
                     if (receiver == THIS_EXPRESSION) CLIPBOARD_MANAGER else "$receiver.$CLIPBOARD_MANAGER"
                 }
-                isClipboardManagerTypeArgument(node) ->
-                    node.receiver?.asSourceString()?.let { "$it.$CLIPBOARD_MANAGER" } ?: CLIPBOARD_MANAGER
+                isClipboardManagerTypeArgument(node) -> node.extensionPropertyReplacement(CLIPBOARD_MANAGER)
                 else -> return
             }
 
@@ -228,17 +225,15 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
                 ?: return
             if (!context.evaluator.isMemberInClass(primaryClipResolved as? PsiMember, CLIPBOARD_MANAGER_CLASS)) return
 
-            val receiver = primaryClipAccess.receiver.asSourceString().trim()
-            if (receiver.isEmpty()) return
-
             val index = itemCall.valueArguments.firstOrNull()?.asSourceString()?.trim() ?: return
             val source = node.asSourceString()
+            val receiverPrefix = primaryClipAccess.receiverPrefix()
 
             when {
                 // This is the `clipboardManager.primaryClip?.getItemAt(index)` pattern.
                 source.contains(".${PRIMARY_CLIP_PROPERTY}?.") -> {
                     val target = PrimaryClipItemTarget.of(index, nullable = true)
-                    val replacement = target.buildReplacement(receiver, index)
+                    val replacement = target.buildReplacement(receiverPrefix, index)
 
                     reportAndFix(
                         node = node,
@@ -250,7 +245,7 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
                 // This is the `clipboardManager.primaryClip!!.getItemAt(index)` pattern.
                 source.contains(".${PRIMARY_CLIP_PROPERTY}!!.") -> {
                     val target = PrimaryClipItemTarget.of(index, nullable = false)
-                    val replacement = target.buildReplacement(receiver, index)
+                    val replacement = target.buildReplacement(receiverPrefix, index)
 
                     reportAndFix(
                         node = node,
@@ -341,6 +336,9 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
             return source.takeIf { it != NULL_LITERAL }
         }
 
+        private fun UCallExpression.extensionPropertyReplacement(name: String) =
+            receiverPrefix().takeIf { it.isNotEmpty() }?.plus(name) ?: name
+
         private fun reportAndFix(
             node: UElement,
             replacement: String,
@@ -372,7 +370,7 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
 
         val importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.$functionName"
 
-        fun buildReplacement(receiver: String, index: String) =
-            if (usesIndexArgument) "$receiver.$functionName($index)" else "$receiver.$functionName"
+        fun buildReplacement(receiverPrefix: String, index: String) =
+            if (usesIndexArgument) "$receiverPrefix$functionName($index)" else "$receiverPrefix$functionName"
     }
 }

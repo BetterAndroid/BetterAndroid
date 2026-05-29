@@ -31,6 +31,7 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.resolveName
 import com.intellij.psi.PsiMethod
 import org.jetbrains.uast.UCallExpression
@@ -122,7 +123,6 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
         private fun reportLifecycleScopeCall(node: UCallExpression) {
             val receiver = node.receiver ?: return
             val source = node.asSourceString()
-            val receiverSource = receiver.asSourceString()
             val methodName = node.methodName ?: return
 
             // This is the `owner.lifecycleScope.launch/async(...)` pattern.
@@ -131,7 +131,7 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
                     val selectorName = receiver.selector.resolveName() ?: return
                     if (selectorName != LIFECYCLE_SCOPE_PROPERTY) return
                     if (!receiver.isLifecycleScopeAccess(context)) return
-                    "${receiver.receiver.asSourceString()}.$methodName"
+                    "${receiver.receiverPrefix()}$methodName"
                 }
                 is USimpleNameReferenceExpression -> {
                     if (receiver.identifier != LIFECYCLE_SCOPE_PROPERTY) return
@@ -146,7 +146,8 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
                 }
             }
 
-            val replacement = source.replaceFirst("$receiverSource.$methodName", replacementPrefix)
+            val receiverAccess = "${node.receiverPrefix()}$methodName"
+            val replacement = source.replaceFirst(receiverAccess, replacementPrefix)
             val importTarget = if (methodName == LAUNCH_METHOD) {
                 "${DeclaredSymbol.COMPONENT_PACKAGE}.$LAUNCH_EXTENSION"
             } else "${DeclaredSymbol.COMPONENT_PACKAGE}.$ASYNC_EXTENSION"
