@@ -7,7 +7,7 @@
 
 <img src="https://github.com/BetterAndroid/.github/blob/main/img-src/logo.png?raw=true" width = "100" height = "100" alt="LOGO"/>
 
-为 Android 创建更多有用的工具扩展。
+为 Android 创造更多有用的工具扩展。
 
 [English](README.md) | 简体中文
 
