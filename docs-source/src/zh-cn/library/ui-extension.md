@@ -2725,6 +2725,10 @@ val textView: TextView
 val textColor = textView.textColor
 // 设置 TextView 的文本颜色
 textView.textColor = Color.RED
+// 获取 TextView 的文本颜色状态列表
+val textColorStateList = textView.textColorStateList
+// 设置 TextView 的文本颜色状态列表
+textView.textColorStateList = colors
 ```
 
 获取 `TextView` 的文本并将其转换为 `String`。

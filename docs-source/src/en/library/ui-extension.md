@@ -2823,6 +2823,10 @@ val textView: TextView
 val textColor = textView.textColor
 // Set the text color of TextView.
 textView.textColor = Color.RED
+// Get the text color state list of TextView.
+val textColorStateList = textView.textColorStateList
+// Set the text color state list of TextView.
+textView.textColorStateList = colors
 ```
 
 Get the text of `TextView` and convert it to `String`.
