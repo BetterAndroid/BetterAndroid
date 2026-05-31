@@ -47,6 +47,7 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
     companion object {
 
         private const val TEXT_VIEW_CLASS = "android.widget.TextView"
+        private const val COLOR_STATE_LIST_CLASS = "android.content.res.ColorStateList"
         private const val SET_TEXT_COLOR_METHOD = "setTextColor"
         private const val TO_STRING_METHOD = "toString"
 
@@ -57,6 +58,7 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
         private const val GET_PREFIX = "get"
 
         private const val TEXT_COLOR_PROPERTY = "textColor"
+        private const val TEXT_COLOR_STATE_LIST_PROPERTY = "textColorStateList"
         private const val TEXT_TO_STRING_FUNCTION = "textToString"
         private const val HINT_TO_STRING_FUNCTION = "hintToString"
 
@@ -73,6 +75,7 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
 
                 The `TextView.kt` provides:
                 - A direct `textColor` property
+                - A direct `textColorStateList` property
                 - `textToString()` and `hintToString()` string helpers
                 - Less repeated `toString()` conversion code
                 - Better readability and maintainability
@@ -81,6 +84,7 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
                 ```kotlin
                 // Before
                 textView.setTextColor(color)
+                textView.setTextColor(colors)
                 textView.text.toString()
                 textView.text?.toString()
                 textView.hint.toString()
@@ -88,6 +92,7 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
 
                 // After
                 textView.textColor = color
+                textView.textColorStateList = colors
                 textView.textToString()
                 textView.hintToString()
                 ```
@@ -130,16 +135,17 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
 
             // This is the `textView.setTextColor(color)` pattern.
             val valueArg = node.valueArguments.firstOrNull() ?: return
-            val replacement = "${node.receiverPrefix()}$TEXT_COLOR_PROPERTY = ${valueArg.asSourceString()}"
+            val propertyName = method.textColorPropertyName()
+            val replacement = "${node.receiverPrefix()}$propertyName = ${valueArg.asSourceString()}"
 
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`.",
                 quickfixData = buildReplaceFix(
-                    name = "Replace with '$TEXT_COLOR_PROPERTY'",
+                    name = "Replace with '$propertyName'",
                     replacement = replacement,
-                    imports = arrayOf("${DeclaredSymbol.VIEW_PACKAGE}.$TEXT_COLOR_PROPERTY")
+                    imports = arrayOf("${DeclaredSymbol.VIEW_PACKAGE}.$propertyName")
                 )
             )
         }
@@ -218,5 +224,11 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
             containingClass?.let {
                 it.qualifiedName == TEXT_VIEW_CLASS || context.evaluator.extendsClass(it, TEXT_VIEW_CLASS, false)
             } == true
+
+        private fun PsiMethod.textColorPropertyName() =
+            when (parameterList.parameters.firstOrNull()?.type?.canonicalText) {
+                COLOR_STATE_LIST_CLASS -> TEXT_COLOR_STATE_LIST_PROPERTY
+                else -> TEXT_COLOR_PROPERTY
+            }
     }
 }

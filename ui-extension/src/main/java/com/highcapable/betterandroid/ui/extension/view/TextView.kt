@@ -24,6 +24,7 @@
 
 package com.highcapable.betterandroid.ui.extension.view
 
+import android.content.res.ColorStateList
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
@@ -71,6 +72,17 @@ var TextView.isStrikeThrough
 var TextView.textColor
     @ColorInt get() = currentTextColor
     set(@ColorInt value) {
+        setTextColor(value)
+    }
+
+/**
+ * Get or set the text view's text colors.
+ * @receiver [TextView]
+ * @return [ColorStateList]
+ */
+var TextView.textColorStateList: ColorStateList
+    get() = textColors
+    set(value) {
         setTextColor(value)
     }
 
