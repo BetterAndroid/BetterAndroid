@@ -49,6 +49,7 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
         private const val TEXT_VIEW_CLASS = "android.widget.TextView"
         private const val SET_TEXT_COLOR_METHOD = "setTextColor"
         private const val TO_STRING_METHOD = "toString"
+        private const val INT_TYPE = "int"
 
         private const val GET_TEXT_PROPERTY = "text"
         private const val GET_HINT_PROPERTY = "hint"
@@ -128,7 +129,8 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
             val method = node.resolve() ?: return
             if (!context.evaluator.isMemberInClass(method, TEXT_VIEW_CLASS)) return
 
-            // This is the `textView.setTextColor(color)` pattern.
+            // This is the `textView.setTextColor(@ColorInt int color)` pattern.
+            if (method.parameterList.parameters.firstOrNull()?.type?.canonicalText != INT_TYPE) return
             val valueArg = node.valueArguments.firstOrNull() ?: return
             val replacement = "${node.receiverPrefix()}$TEXT_COLOR_PROPERTY = ${valueArg.asSourceString()}"
 
