@@ -28,7 +28,7 @@ import com.highcapable.betterandroid.system.extension.utils.RomType.current
 import com.highcapable.betterandroid.system.extension.utils.RomType.matches
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.extension.hasClass
-import com.highcapable.kavaref.extension.lazyClass
+import com.highcapable.kavaref.extension.lazyClassOrNull
 
 /**
  * Android ROMs type tool.
@@ -268,7 +268,7 @@ object RomType {
         private val propNubiaRomCode by lazy { SystemProperties.get("ro.build.nubia.rom.code") }
         private val propZuxOsName by lazy { SystemProperties.get("ro.config.lgsi.os.name") }
 
-        private val HuaweiBuildExClass by lazyClass("com.huawei.system.BuildEx")
+        private val HuaweiBuildExClass by lazyClassOrNull("com.huawei.system.BuildEx")
 
         private val isLegacyRedmagicByNubiaUi by lazy {
             AndroidVersion.isAtLeast(AndroidVersion.O_MR1) &&
@@ -277,7 +277,7 @@ object RomType {
         }
 
         private val buildExSaysHarmonyOS by lazy {
-            HuaweiBuildExClass.resolve().optional(silent = true).firstMethodOrNull {
+            HuaweiBuildExClass?.resolve()?.optional(silent = true)?.firstMethodOrNull {
                 name = "getOsBrand"
             }?.invokeQuietly<String?>().orEmpty().containsIgnoreCase("harmony")
         }
