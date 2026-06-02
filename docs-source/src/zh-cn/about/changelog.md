@@ -10,7 +10,15 @@
 
 ## Android
 
-### 1.1.1 | 2026.05.30 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.1.2 | 2026.06.03 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 修复部分模块 Lint 自动修复功能的 BUG
+
+#### system-extension
+
+- 修复 `AndroidVersion` 中可能对华为设备产生 `Class` 抛出异常的严重问题
+
+### 1.1.1 | 2026.05.30 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 修复部分模块 Lint 自动修复功能的 BUG
 

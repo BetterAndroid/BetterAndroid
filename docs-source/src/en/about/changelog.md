@@ -18,7 +18,15 @@ Time zone of version release date: **UTC+8**
 
 ## Android
 
-### 1.1.1 | 2026.05.30 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.1.2 | 2026.06.03 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Fixed some bugs in the Lint auto-fix functionality of some modules
+
+#### system-extension
+
+- Fixed a critical issue in `AndroidVersion` that could throw `Class` exceptions on Huawei devices
+
+### 1.1.1 | 2026.05.30 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Fixed some bugs in the Lint auto-fix functionality of some modules
 
