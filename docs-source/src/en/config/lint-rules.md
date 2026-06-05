@@ -4,7 +4,7 @@
 
 ## Rule List
 
-The following are all Lint rules currently in effect.
+The following are all Lint rules currently in effect (Only effective for Kotlin language).
 
 ### ui-component
 
