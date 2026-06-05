@@ -26,6 +26,7 @@ package com.highcapable.betterandroid.system.extension.utils
 import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.annotation.IntDef
+import com.highcapable.betterandroid.system.extension.utils.AndroidVersion.requireOrNull
 
 /**
  * Android SDK version tool.
@@ -163,7 +164,7 @@ object AndroidVersion {
      * @return [String]
      */
     @JvmStatic
-    val name = Build.VERSION.RELEASE ?: ""
+    inline val name get() = Build.VERSION.RELEASE ?: ""
 
     /**
      * Get the current Android version code.
@@ -173,7 +174,7 @@ object AndroidVersion {
      * @return [Int]
      */
     @JvmStatic
-    val code = Build.VERSION.SDK_INT
+    inline val code get() = Build.VERSION.SDK_INT
 
     /**
      * Less than target sdk. `code < target`
@@ -216,6 +217,7 @@ object AndroidVersion {
      * @param target the target sdk.
      * @param callback callback when the above conditions are met.
      */
+    @JvmStatic
     @ChecksSdkIntAtLeast(parameter = 0)
     inline fun require(@SdkInt target: Int, callback: () -> Unit) {
         if (isAtLeast(target)) callback()
@@ -229,6 +231,7 @@ object AndroidVersion {
      * @param callback callback when the above conditions are met.
      * @return [T]
      */
+    @JvmStatic
     @ChecksSdkIntAtLeast(parameter = 0)
     inline fun <T : Any> require(@SdkInt target: Int, defaultValue: T, callback: () -> T): T =
         if (isAtLeast(target)) callback() else defaultValue
@@ -240,6 +243,7 @@ object AndroidVersion {
      * @param callback callback when the above conditions are met.
      * @return [T] or null.
      */
+    @JvmStatic
     @ChecksSdkIntAtLeast(parameter = 0)
     inline fun <T> requireOrNull(@SdkInt target: Int, defaultValue: T?, callback: () -> T?): T? =
         if (isAtLeast(target)) (callback() ?: defaultValue) else defaultValue

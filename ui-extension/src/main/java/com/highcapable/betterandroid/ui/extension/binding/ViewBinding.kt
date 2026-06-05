@@ -277,7 +277,10 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
          * @return [ViewBindingBuilder]<[VB]>
          * @throws IllegalArgumentException if the generic class is not found or not a [ViewBinding].
          */
-        fun <VB : ViewBinding> fromGeneric(instance: Any, onlySuperClass: Boolean = false) = fromGeneric<VB>(instance.javaClass, onlySuperClass)
+        @JvmStatic
+        @JvmOverloads
+        fun <VB : ViewBinding> fromGeneric(instance: Any, onlySuperClass: Boolean = false) =
+            fromGeneric<VB>(instance.javaClass, onlySuperClass)
 
         /**
          * Create a [ViewBindingBuilder] from [clazz]'s generic class.
@@ -287,6 +290,8 @@ class ViewBindingBuilder<VB : ViewBinding> internal constructor(private val bind
          * @return [ViewBindingBuilder]<[VB]>
          * @throws IllegalArgumentException if the generic class is not found or not a [ViewBinding].
          */
+        @JvmStatic
+        @JvmOverloads
         fun <VB : ViewBinding> fromGeneric(clazz: Class<*>, onlySuperClass: Boolean = false): ViewBindingBuilder<VB> {
             val currentClass = if (onlySuperClass) clazz.superclass else clazz
             val bindingClass = currentClass?.let { genericBindingClasses.getOrPut(it to onlySuperClass) { it.findSuperGenericClass() } }

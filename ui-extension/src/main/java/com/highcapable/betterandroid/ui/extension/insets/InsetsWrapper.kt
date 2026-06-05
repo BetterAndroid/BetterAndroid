@@ -61,6 +61,7 @@ class InsetsWrapper private constructor(
          * @return [InsetsWrapper]
          */
         @JvmStatic
+        @JvmOverloads
         fun of(
             @Px left: Int = 0,
             @Px top: Int = 0,
@@ -77,6 +78,7 @@ class InsetsWrapper private constructor(
          * @return [InsetsWrapper]
          */
         @JvmStatic
+        @JvmOverloads
         fun of(insets: Insets, isVisible: Boolean = true) = InsetsWrapper(insets.left, insets.top, insets.right, insets.bottom, isVisible)
     }
 

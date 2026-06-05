@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2025/6/26.
  */
-@file:Suppress("unused", "MemberVisibilityCanBePrivate", "SpellCheckingInspection")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate", "SpellCheckingInspection", "NOTHING_TO_INLINE")
 
 package com.highcapable.betterandroid.system.extension.utils
 
@@ -242,7 +242,7 @@ object RomType {
      * @return [Boolean]
      */
     @JvmStatic
-    fun matches(@Value type: Int) = current == type
+    inline fun matches(@Value type: Int) = current == type
 
     /**
      * A collection of type matchers for identifying the current ROM.
