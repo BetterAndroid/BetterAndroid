@@ -35,6 +35,7 @@ dependencies {
 
     implementation(platform(libs.kavaref.bom))
     implementation(libs.kavaref.core)
+    implementation(libs.kavaref.android)
     implementation(libs.kavaref.extension)
 
     implementation(libs.androidx.core.ktx)
