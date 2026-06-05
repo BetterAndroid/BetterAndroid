@@ -31,6 +31,7 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.createKotlinOnlyUastHandler
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.findMethod
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.isObjectLiteralOf
 import org.jetbrains.uast.UBinaryExpression
@@ -96,7 +97,7 @@ class ViewOutlineProviderUsageDetector : Detector(), Detector.UastScanner {
 
     override fun getApplicableUastTypes() = listOf(UBinaryExpression::class.java as Class<out UElement>)
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         private val visitedBinaryExpressions = hashSetOf<Any>()
 
@@ -153,7 +154,7 @@ class ViewOutlineProviderUsageDetector : Detector(), Detector.UastScanner {
                 }
             )
         }
-    }
+    })
 
     private data class ReplacementSpec(
         val source: String,

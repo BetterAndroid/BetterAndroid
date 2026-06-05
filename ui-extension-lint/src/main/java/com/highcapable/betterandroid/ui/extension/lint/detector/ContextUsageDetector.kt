@@ -31,6 +31,7 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.createKotlinOnlyUastHandler
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.extendsClass
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.getContainingPsiClass
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.unwrapParenthesized
@@ -106,7 +107,7 @@ class ContextUsageDetector : Detector(), Detector.UastScanner {
 
     override fun getApplicableUastTypes() = listOf(UBinaryExpressionWithType::class.java as Class<out UElement>)
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         override fun visitBinaryExpressionWithType(node: UBinaryExpressionWithType) {
             if (node.operationKind !is UastBinaryExpressionWithTypeKind.TypeCast) return
@@ -181,5 +182,5 @@ class ContextUsageDetector : Detector(), Detector.UastScanner {
                 canonicalText == CONTEXT_WRAPPER_CLASS ||
                 canonicalText == CONTEXT_THEME_WRAPPER_CLASS
         }
-    }
+    })
 }

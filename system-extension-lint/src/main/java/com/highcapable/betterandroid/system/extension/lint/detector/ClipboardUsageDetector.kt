@@ -32,6 +32,7 @@ import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.system.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.asCall
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.system.extension.lint.detector.extension.createKotlinOnlyUastHandler
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.extendsClass
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.findContainingUClass
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.receiverPrefix
@@ -133,7 +134,7 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
         UQualifiedReferenceExpression::class.java as Class<out UElement>
     )
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         override fun visitCallExpression(node: UCallExpression) {
             reportCopy(node)
@@ -354,7 +355,7 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
                 imports = arrayOf(importTarget)
             )
         )
-    }
+    })
 
     private data class PrimaryClipItemTarget(val functionName: String, private val usesIndexArgument: Boolean) {
 

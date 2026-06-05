@@ -29,6 +29,7 @@ import com.android.tools.lint.detector.api.Issue
 import com.android.tools.lint.detector.api.JavaContext
 import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.createKotlinOnlyUastHandler
 import org.jetbrains.uast.UCallExpression
 
 class WindowInsetsListenerUsageDetector : Detector(), Detector.UastScanner {
@@ -84,7 +85,7 @@ class WindowInsetsListenerUsageDetector : Detector(), Detector.UastScanner {
 
     override fun getApplicableUastTypes() = listOf(UCallExpression::class.java)
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         override fun visitCallExpression(node: UCallExpression) {
             if (node.methodName != SET_ON_APPLY_WINDOW_INSETS_LISTENER) return
@@ -102,5 +103,5 @@ class WindowInsetsListenerUsageDetector : Detector(), Detector.UastScanner {
                 message = "Can be replaced with `$HANDLE_ON_WINDOW_INSETS_CHANGED(...)`."
             )
         }
-    }
+    })
 }

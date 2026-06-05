@@ -31,6 +31,7 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.createKotlinOnlyUastHandler
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.isQualifiedSelector
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.resolveName
@@ -97,7 +98,7 @@ class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
         USimpleNameReferenceExpression::class.java
     )
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         override fun visitQualifiedReferenceExpression(node: UQualifiedReferenceExpression) {
             val selectorName = node.selector.resolveName() ?: return
@@ -181,5 +182,5 @@ class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
                 else -> false
             }
         }
-    }
+    })
 }

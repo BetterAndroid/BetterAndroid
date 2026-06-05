@@ -34,6 +34,7 @@ import com.highcapable.betterandroid.ui.component.lint.detector.extension.asCall
 import com.highcapable.betterandroid.ui.component.lint.detector.extension.buildDeleteFix
 import com.highcapable.betterandroid.ui.component.lint.detector.extension.buildReplaceFix
 import com.highcapable.betterandroid.ui.component.lint.detector.extension.containingUClasses
+import com.highcapable.betterandroid.ui.component.lint.detector.extension.createKotlinOnlyUastHandler
 import com.highcapable.betterandroid.ui.component.lint.detector.extension.getterPropertyName
 import com.highcapable.betterandroid.ui.component.lint.detector.extension.resolveName
 import com.highcapable.betterandroid.ui.component.lint.detector.extension.unwrapParenthesized
@@ -186,7 +187,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
         UQualifiedReferenceExpression::class.java as Class<out UElement>
     )
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         private val visitedBinaryExpressions = hashSetOf<Any>()
 
@@ -661,7 +662,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
                 return SYSTEM_BARS_METHOD
             return null
         }
-    }
+    })
 
     private fun UCallExpression.fullCallSourcePsi() = when (val parent = uastParent) {
         is UQualifiedReferenceExpression -> if (parent.selector == this) parent.sourcePsi else sourcePsi

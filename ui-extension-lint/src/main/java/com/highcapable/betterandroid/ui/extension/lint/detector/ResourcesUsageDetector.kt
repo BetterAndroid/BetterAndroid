@@ -32,6 +32,7 @@ import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.asPropertyAccess
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.createKotlinOnlyUastHandler
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UExpression
 
@@ -105,7 +106,7 @@ class ResourcesUsageDetector : Detector(), Detector.UastScanner {
 
     override fun getApplicableUastTypes() = listOf(UCallExpression::class.java)
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         override fun visitCallExpression(node: UCallExpression) {
             val methodName = node.methodName ?: return
@@ -198,5 +199,5 @@ class ResourcesUsageDetector : Detector(), Detector.UastScanner {
 
         private fun UExpression.buildExtensionCall(functionName: String, vararg arguments: UExpression) =
             "${asPropertyAccess(functionName)}(${arguments.joinToString(", ") { it.asSourceString() }})"
-    }
+    })
 }

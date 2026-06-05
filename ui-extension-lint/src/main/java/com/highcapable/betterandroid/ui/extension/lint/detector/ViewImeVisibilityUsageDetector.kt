@@ -32,6 +32,7 @@ import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.asCall
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.createKotlinOnlyUastHandler
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.resolveName
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.unwrapParenthesized
 import com.intellij.psi.PsiLocalVariable
@@ -116,7 +117,7 @@ class ViewImeVisibilityUsageDetector : Detector(), Detector.UastScanner {
 
     override fun getApplicableUastTypes() = listOf(UCallExpression::class.java)
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         override fun visitCallExpression(node: UCallExpression) {
             val methodName = node.methodName ?: return
@@ -240,5 +241,5 @@ class ViewImeVisibilityUsageDetector : Detector(), Detector.UastScanner {
             return context.evaluator.isMemberInClass(method, WINDOW_INSETS_TYPE_CLASS) ||
                 context.evaluator.isMemberInClass(method, WINDOW_INSETS_COMPAT_TYPE_CLASS)
         }
-    }
+    })
 }

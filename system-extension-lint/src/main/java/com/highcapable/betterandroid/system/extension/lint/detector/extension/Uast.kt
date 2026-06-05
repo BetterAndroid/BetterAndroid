@@ -21,6 +21,8 @@
  */
 package com.highcapable.betterandroid.system.extension.lint.detector.extension
 
+import com.android.tools.lint.client.api.UElementHandler
+import com.android.tools.lint.detector.api.JavaContext
 import com.intellij.psi.PsiLocalVariable
 import com.intellij.psi.PsiNamedElement
 import org.jetbrains.uast.UCallExpression
@@ -36,6 +38,9 @@ import org.jetbrains.uast.UResolvable
 import org.jetbrains.uast.UReturnExpression
 import org.jetbrains.uast.USimpleNameReferenceExpression
 import org.jetbrains.uast.toUElementOfType
+
+internal fun JavaContext.createKotlinOnlyUastHandler(handler: UElementHandler) =
+    handler.takeIf { file.name.endsWith(".kt") }
 
 internal fun UElement?.resolveName() = when (this) {
     is USimpleNameReferenceExpression -> identifier

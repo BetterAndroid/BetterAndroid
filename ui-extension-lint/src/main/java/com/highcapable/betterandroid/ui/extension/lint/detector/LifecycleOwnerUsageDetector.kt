@@ -32,6 +32,7 @@ import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.asPropertyAccess
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.createKotlinOnlyUastHandler
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.extendsClass
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.unwrapParenthesized
 import com.intellij.psi.PsiClassType
@@ -119,7 +120,7 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
         UBinaryExpressionWithType::class.java as Class<out UElement>
     )
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         private val visitedBinaryExpressionsWithType = hashSetOf<Any>()
 
@@ -287,5 +288,5 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
             ?.substringAfterLast('.')
             ?.takeIf { it.isNotBlank() }
             ?: methodName
-    }
+    })
 }

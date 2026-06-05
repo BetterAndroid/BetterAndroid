@@ -32,6 +32,7 @@ import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.asPropertyAccess
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.createKotlinOnlyUastHandler
 import org.jetbrains.uast.UCallExpression
 
 class LayoutInflaterUsageDetector : Detector(), Detector.UastScanner {
@@ -79,7 +80,7 @@ class LayoutInflaterUsageDetector : Detector(), Detector.UastScanner {
 
     override fun getApplicableUastTypes() = listOf(UCallExpression::class.java)
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         override fun visitCallExpression(node: UCallExpression) {
             if (node.methodName != FROM_METHOD) return
@@ -103,5 +104,5 @@ class LayoutInflaterUsageDetector : Detector(), Detector.UastScanner {
                 )
             )
         }
-    }
+    })
 }

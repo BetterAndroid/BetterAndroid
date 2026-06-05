@@ -21,6 +21,8 @@
  */
 package com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension
 
+import com.android.tools.lint.client.api.UElementHandler
+import com.android.tools.lint.detector.api.JavaContext
 import com.intellij.psi.PsiLocalVariable
 import com.intellij.psi.util.PsiTypesUtil
 import org.jetbrains.uast.UBlockExpression
@@ -34,6 +36,9 @@ import org.jetbrains.uast.UParenthesizedExpression
 import org.jetbrains.uast.UQualifiedReferenceExpression
 import org.jetbrains.uast.USimpleNameReferenceExpression
 import org.jetbrains.uast.toUElementOfType
+
+internal fun JavaContext.createKotlinOnlyUastHandler(handler: UElementHandler) =
+    handler.takeIf { file.name.endsWith(".kt") }
 
 internal fun UElement?.unwrapParenthesized(): UElement? {
     var current = this

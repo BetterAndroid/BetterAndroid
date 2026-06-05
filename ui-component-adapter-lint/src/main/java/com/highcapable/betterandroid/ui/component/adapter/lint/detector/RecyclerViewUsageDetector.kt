@@ -31,6 +31,7 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.component.adapter.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.createKotlinOnlyUastHandler
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.resolveLocalVariableInitializer
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.unwrapParenthesized
@@ -108,7 +109,7 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
 
     override fun getApplicableUastTypes() = listOf(UCallExpression::class.java as Class<out UElement>)
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         override fun visitCallExpression(node: UCallExpression) {
             val replacement = when (node.methodName) {
@@ -142,7 +143,7 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
                 )
             )
         }
-    }
+    })
 
     private fun resolveRecyclerViewScrollReplacement(
         context: JavaContext,

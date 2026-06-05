@@ -32,6 +32,7 @@ import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.system.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.asCall
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.system.extension.lint.detector.extension.createKotlinOnlyUastHandler
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.displayShortName
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.resolveStaticClassLiteralType
@@ -99,7 +100,7 @@ class ServiceUsageDetector : Detector(), Detector.UastScanner {
 
     override fun getApplicableUastTypes() = listOf(UCallExpression::class.java)
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         override fun visitCallExpression(node: UCallExpression) {
             val methodName = node.methodName ?: return
@@ -213,7 +214,7 @@ class ServiceUsageDetector : Detector(), Detector.UastScanner {
 
         private fun String.removeIntentLambdaPrefix(parameterName: String?) =
             parameterName?.takeIf { startsWith("$it.") }?.let { removePrefix("$it.") } ?: this
-    }
+    })
 
     private data class IntentSpec(
         val targetClass: String,

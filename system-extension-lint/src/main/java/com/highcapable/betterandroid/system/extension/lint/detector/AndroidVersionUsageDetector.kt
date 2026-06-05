@@ -31,6 +31,7 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.system.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.system.extension.lint.detector.extension.createKotlinOnlyUastHandler
 import com.intellij.psi.PsiField
 import org.jetbrains.uast.UBinaryExpression
 import org.jetbrains.uast.UExpression
@@ -146,7 +147,7 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
 
     override fun getApplicableUastTypes() = listOf(UBinaryExpression::class.java, UQualifiedReferenceExpression::class.java)
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         private val visitedBinaryExpressions = hashSetOf<Any>()
 
@@ -281,5 +282,5 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
 
             return "$start${parts.second}$end"
         }
-    }
+    })
 }

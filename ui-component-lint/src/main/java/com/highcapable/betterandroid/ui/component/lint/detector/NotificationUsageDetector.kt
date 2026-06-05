@@ -31,6 +31,7 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.component.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.component.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.component.lint.detector.extension.createKotlinOnlyUastHandler
 import com.highcapable.betterandroid.ui.component.lint.detector.extension.extendsClass
 import org.jetbrains.uast.UCallExpression
 
@@ -133,7 +134,7 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
 
     override fun getApplicableUastTypes() = listOf(UCallExpression::class.java)
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         override fun visitCallExpression(node: UCallExpression) {
             when {
@@ -255,7 +256,7 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
                 message = message
             )
         }
-    }
+    })
 
     private fun createNotificationManagerLintFix(receiverText: String) = run {
         // Determine whether to use `notificationManager` or `context.notificationManager`.

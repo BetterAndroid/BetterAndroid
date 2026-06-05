@@ -33,6 +33,7 @@ import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.component.adapter.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.asCall
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.createKotlinOnlyUastHandler
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.findContainingBlock
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.findMethodExpressionSource
 import com.highcapable.betterandroid.ui.component.adapter.lint.detector.extension.isObjectLiteralOf
@@ -148,7 +149,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
         UObjectLiteralExpression::class.java as Class<out UElement>
     )
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         override fun visitObjectLiteralExpression(node: UObjectLiteralExpression) {
             reportDiffUtilCallback(node)
@@ -429,7 +430,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
                 append(")")
             }
         }
-    }
+    })
 
     private fun UExpression.isRecyclerViewAdapter(): Boolean {
         val psiClass = PsiTypesUtil.getPsiClass(getExpressionType()) ?: return false

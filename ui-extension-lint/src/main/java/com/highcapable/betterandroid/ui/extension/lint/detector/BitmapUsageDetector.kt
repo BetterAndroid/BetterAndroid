@@ -33,6 +33,7 @@ import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildAlternativesFix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.createKotlinOnlyUastHandler
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.joinSourceArguments
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UQualifiedReferenceExpression
@@ -101,7 +102,7 @@ class BitmapUsageDetector : Detector(), Detector.UastScanner {
 
     override fun getApplicableUastTypes() = listOf(UCallExpression::class.java)
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         override fun visitCallExpression(node: UCallExpression) {
             val methodName = node.methodName ?: return
@@ -261,7 +262,7 @@ class BitmapUsageDetector : Detector(), Detector.UastScanner {
             if (arguments.isBlank()) "$receiverPrefix$functionName()" else "$receiverPrefix$functionName($arguments)"
 
         private fun String.extensionReceiverPrefix() = if (this == THIS_RECEIVER) "" else "$this."
-    }
+    })
 
     private data class BitmapDecodeFix(
         val fix: LintFix,

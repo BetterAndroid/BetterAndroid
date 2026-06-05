@@ -31,6 +31,7 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.createKotlinOnlyUastHandler
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.resolveName
 import com.intellij.psi.PsiMethod
@@ -111,7 +112,7 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
 
     override fun getApplicableUastTypes() = listOf(UCallExpression::class.java)
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         override fun visitCallExpression(node: UCallExpression) {
             when (node.methodName) {
@@ -188,5 +189,5 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
             return resolved.name == GET_LIFECYCLE_SCOPE_METHOD &&
                 context.evaluator.isMemberInClass(resolved, LIFECYCLE_OWNER_KT_CLASS)
         }
-    }
+    })
 }

@@ -30,6 +30,7 @@ import com.android.tools.lint.detector.api.JavaContext
 import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.component.lint.detector.extension.buildDeleteFix
+import com.highcapable.betterandroid.ui.component.lint.detector.extension.createKotlinOnlyUastHandler
 import com.intellij.psi.PsiElement
 import org.jetbrains.uast.UClass
 import org.jetbrains.uast.UElement
@@ -84,7 +85,7 @@ class MultipleSystemBarsControllerPropertiesDetector : Detector(), Detector.Uast
 
     override fun getApplicableUastTypes() = listOf(UClass::class.java as Class<out UElement>)
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         override fun visitClass(node: UClass) {
             val members = node.findSystemBarsControllerProperties()
@@ -129,7 +130,7 @@ class MultipleSystemBarsControllerPropertiesDetector : Detector(), Detector.Uast
                 ))
             }
         }.distinctBy { it.propertyName }
-    }
+    })
 
     private fun createLintFix(context: JavaContext, propertyName: String, deleteTarget: PsiElement) =
         buildDeleteFix(

@@ -31,6 +31,7 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.createKotlinOnlyUastHandler
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UQualifiedReferenceExpression
 
@@ -92,7 +93,7 @@ class ToastUsageDetector : Detector(), Detector.UastScanner {
 
     override fun getApplicableUastTypes() = listOf(UCallExpression::class.java)
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         override fun visitCallExpression(node: UCallExpression) {
             if (node.methodName != TOAST_SHOW_METHOD) return
@@ -138,7 +139,7 @@ class ToastUsageDetector : Detector(), Detector.UastScanner {
                 quickfixData = fix.second
             )
         }
-    }
+    })
 
     private fun createLintFix(contextText: String, messageText: String, durationText: String?) = run {
         // Determine whether to use `context.toast(...)` or direct `toast(...)`.

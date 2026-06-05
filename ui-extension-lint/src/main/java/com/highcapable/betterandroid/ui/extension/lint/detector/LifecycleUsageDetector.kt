@@ -32,6 +32,7 @@ import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.asCall
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.createKotlinOnlyUastHandler
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.extendsClass
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.findMethod
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.isObjectLiteralOf
@@ -129,7 +130,7 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
         UObjectLiteralExpression::class.java as Class<out UElement>
     )
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         override fun visitCallExpression(node: UCallExpression) {
             if (node.methodName != ADD_OBSERVER_METHOD) return
@@ -367,7 +368,7 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
             result += substring(start).trim()
             return result.filter { it.isNotBlank() }
         }
-    }
+    })
 
     private data class ReplacementSpec(val source: String, val display: String)
 }

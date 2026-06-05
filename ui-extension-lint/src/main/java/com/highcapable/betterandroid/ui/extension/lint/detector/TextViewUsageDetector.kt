@@ -31,6 +31,7 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.createKotlinOnlyUastHandler
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.resolveName
 import com.intellij.psi.PsiField
@@ -108,7 +109,7 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
         UQualifiedReferenceExpression::class.java as Class<out UElement>
     )
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         override fun visitCallExpression(node: UCallExpression) {
             when (node.methodName) {
@@ -220,5 +221,5 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
             containingClass?.let {
                 it.qualifiedName == TEXT_VIEW_CLASS || context.evaluator.extendsClass(it, TEXT_VIEW_CLASS, false)
             } == true
-    }
+    })
 }

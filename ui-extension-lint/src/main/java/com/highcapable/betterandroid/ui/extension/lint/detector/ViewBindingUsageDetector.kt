@@ -29,6 +29,7 @@ import com.android.tools.lint.detector.api.Issue
 import com.android.tools.lint.detector.api.JavaContext
 import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.createKotlinOnlyUastHandler
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.displayShortName
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.extendsClass
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.findEnclosingCall
@@ -110,7 +111,7 @@ class ViewBindingUsageDetector : Detector(), Detector.UastScanner {
         UQualifiedReferenceExpression::class.java as Class<out UElement>
     )
 
-    override fun createUastHandler(context: JavaContext) = object : UElementHandler() {
+    override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         override fun visitCallExpression(node: UCallExpression) {
             if (!node.isViewBindingMethodLookup(context) && !node.isViewBindingMethodsIteration(context)) return
@@ -234,5 +235,5 @@ class ViewBindingUsageDetector : Detector(), Detector.UastScanner {
         }
 
         private fun String.containsMethodName(name: String) = contains("\"$name\"")
-    }
+    })
 }
