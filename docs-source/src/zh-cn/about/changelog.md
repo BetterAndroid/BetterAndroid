@@ -10,7 +10,14 @@
 
 ## Android
 
-### 1.1.2 | 2026.06.03 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.1.3 | 2026.06.06 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 更新 [KavaRef](https://github.com/HighCapable/KavaRef) 依赖支持以实现完整适配 Min SDK 21
+- 优化部分模块的 `@JvmOverloads` 注解使用
+- 将部分模块的函数进行内联优化，减少调用开销和可能的冗余包装
+- 限定 Lint 功能作用范围为 Kotlin，Java 代码将被排除
+
+### 1.1.2 | 2026.06.03 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 修复部分模块 Lint 自动修复功能的 BUG
 
