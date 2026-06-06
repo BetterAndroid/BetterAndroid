@@ -25,6 +25,12 @@ gropify {
     global {
         android {
             includeKeys("^project\\..*$".toRegex())
+            className = rootProject.name
+            isRestrictedAccessEnabled = true
+        }
+        jvm {
+            includeKeys("^project\\..*$".toRegex())
+            className = rootProject.name
             isRestrictedAccessEnabled = true
         }
     }
@@ -53,32 +59,11 @@ gropify {
     }
 
     projects(
-        ":ui-component",
-        ":ui-component-adapter",
-        ":ui-extension",
-        ":system-extension"
-    ) {
-        android {
-            className = rootProject.name
-        }
-    }
-    projects(
         ":compose-extension",
         ":compose-multiplatform"
     ) {
         kmp {
             isEnabled = false
-        }
-    }
-
-    projects(
-        ":ui-component-lint",
-        ":ui-component-adapter-lint",
-        ":ui-extension-lint",
-        ":system-extension-lint"
-    ) {
-        jvm {
-            className = rootProject.name
         }
     }
 }
