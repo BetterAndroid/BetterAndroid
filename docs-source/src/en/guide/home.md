@@ -4,21 +4,20 @@
 
 ## Background
 
-As Android system features become more and more abundant, there are more and more features to learn for native Android development, and there are
-countless tool dependencies for the Android platform, but various problems also arise endlessly.
+As the Android system continues to evolve, native development demands a growing learning curve. While there are countless utilities available, new
+fragmentation issues and edge cases emerge endlessly.
 
-The reason for initially creating this project was some problems I encountered during the Android development process, and the system's API calling
-method was too cumbersome, so this project is based on the theory of "not reinventing the wheel".
+I originally created this project to address the friction I encountered in daily Android development—mostly dealing with cumbersome and outdated
+system APIs. Guided by the principle of "not reinventing the wheel", BetterAndroid focuses on enhancing what is already there.
 
-From the UI to the system level, it allows developers to expand functionality based on the system's original API, and solves some "black box problems"
-encountered in the Android development process and for third parties.
+From UI rendering to system-level interactions, it seamlessly extends native APIs. It is explicitly designed to tackle "black box" scenarios, bridging
+the gap between official behaviors and the quirks of third-party OEM ROMs.
 
-The optimization of ROM and the "Android system" customized by third-party manufacturers, as well as the optimization of the Kotlin development
-language, enable this set of tools to be non-intrusive and provide developers with a more friendly and convenient development experience under the
-original ecological environment.
+Leveraging the power of Kotlin, everything provided here remains strictly non-intrusive. It ensures you can enjoy a smoother, more elegant developer
+experience without compromising the native ecosystem.
 
-The emergence of this project also benefited from some of my early Android projects, a large number of functions were decoupled from
-the [PureReader](https://github.com/PureReader) project.
+This library is a culmination of solutions refined across multiple real-world apps, with a significant portion of its core battle-tested and decoupled
+from my earlier project, [PureReader](https://github.com/PureReader).
 
 ## Usage
 

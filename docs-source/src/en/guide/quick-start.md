@@ -54,7 +54,7 @@ tasks.withType<KotlinJvmCompile>().configureEach {
 }
 ```
 
-## Functional Overview
+## Features Overview
 
 The entire project is divided into multiple modules, these modules can exist independently of each other or depend on each other,
 you can choose the modules you want to introduce as dependencies and apply them to your project.
