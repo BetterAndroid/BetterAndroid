@@ -14,39 +14,122 @@ English | [简体中文](README-zh-CN.md)
 | <img src="https://github.com/BetterAndroid/.github/blob/main/img-src/logo.png?raw=true" width = "30" height = "30" alt="LOGO"/> | [BetterAndroid](https://github.com/BetterAndroid) |
 |---------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------|
 
-This project belongs to the above-mentioned organization, **click the link above to follow this organization** and discover more good projects.
+This project belongs to the organization above. **Click the link to follow us** and discover more awesome projects.
 
 ## Project Reason
 
-As Android system features becomes more and more abundant, there is more and more features to learn for native Android development, and there are
-countless tool dependencies for the Android platform, but various problems also arise in endlessly.
+As the Android system continues to evolve, native development demands a growing learning curve. While there are countless utilities available, new
+fragmentation issues and edge cases emerge endlessly.
 
-The reason for initially creating this project was some problems I encountered during the Android development process, and the system's API calling
-method was too cumbersome, so this project is based on the theory of "not reinventing the wheel".
+I originally created this project to address the friction I encountered in daily Android development—mostly dealing with cumbersome and outdated
+system APIs. Guided by the principle of "not reinventing the wheel", BetterAndroid focuses on enhancing what is already there.
 
-From the UI to the system level, it allows developers to expand functions based on the system's original API, and solves some "black box problems"
-encountered in the Android development process and for third parties.
+From UI rendering to system-level interactions, it seamlessly extends native APIs. It is explicitly designed to tackle "black box" scenarios, bridging
+the gap between official behaviors and the quirks of third-party OEM ROMs.
 
-The optimization of ROM and the "Android system" customized by third-party manufacturers, as well as the optimization of the Kotlin development
-language, enable this set of tools to be non-intrusive and provide developers with a more friendly and convenient development experience under the
-original ecological environment.
+Leveraging the power of Kotlin, everything provided here remains strictly non-intrusive. It ensures you can enjoy a smoother, more elegant developer
+experience without compromising the native ecosystem.
 
-The emergence of this project also benefited from some of my early Android projects, a large number of functions were decoupled from
-the [PureReader](https://github.com/PureReader) project.
+This library is a culmination of solutions refined across multiple real-world apps, with a significant portion of its core battle-tested and decoupled
+from my earlier project, [PureReader](https://github.com/PureReader).
+
+## Features Overview
+
+`BetterAndroid` splits common but verbose Android work into several modules that can be introduced independently, including system version checks, ROM
+detection, UI components, system bars, adapters, and notifications. You can pick only what your project needs, or use the BOM to manage multiple
+Android module versions together.
+
+If your code is filled with `Build.VERSION.SDK_INT`, `Build.VERSION_CODES`, or hard-coded API levels, `system-extension` makes version checks easier
+to read. It also provides detection for common third-party ROMs, which is useful when handling compatibility logic for OEM-customized Android systems.
+
+```kotlin
+AndroidVersion.require(AndroidVersion.T) {
+    // Execute relevant code.
+}
+
+if (RomType.matches(RomType.HyperOS)) {
+    // Execute relevant code.
+}
+```
+
+For traditional View-based projects, `ui-component` provides preset `Activity` and `Fragment` components with `ViewBinding`, base views, and Compose
+entry support. This reduces repeated `setContentView`, `inflate`, and binding boilerplate during page initialization.
+
+```kotlin
+class MainActivity : AppBindingActivity<ActivityMainBinding>() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding.mainText.text = "Hello World!"
+    }
+}
+```
+
+System bars and Window Insets are easy places to hit edge-to-edge, cutout, and immersive-mode compatibility issues. `SystemBarsController` takes over
+system bar styles, visibility, and basic Edge-to-Edge behavior, while the Insets extensions in `ui-extension` help reduce repeated compatibility
+handling.
+
+```kotlin
+systemBars.init(rootView)
+systemBars.behavior = SystemBarBehavior.SHOW_TRANSIENT_BARS_BY_SWIPE
+systemBars.hide(SystemBars.STATUS_BARS)
+```
+
+For list screens, `ui-component-adapter` integrates `RecyclerView.Adapter`, `ViewBinding`, item click events, and diff updates into a compact DSL. You
+can bind data quickly, or use `RecyclerAsyncDiffer` for a more modern list submission workflow.
+
+```kotlin
+val adapter = recyclerView.bindAdapter<MyEntity> {
+    onBindData { listData }
+    onBindItemView<AdapterMyLayoutBinding> { binding, entity, position ->
+        binding.textView.text = entity.name
+    }
+    onItemViewClick { itemView, entity, position ->
+        // Your code here.
+    }
+}
+```
+
+System notifications are also wrapped as a more readable DSL. Notification channels are created automatically on the first post and compatibility for
+lower Android versions is handled for you, while the remaining parameters stay aligned with `NotificationCompat.Builder`.
+
+```kotlin
+val notification = context.createNotification(
+    channel = NotificationChannel("my_channel_id") {
+        name = "My Channel"
+        description = "My channel description."
+    }
+) {
+    smallIconResId = R.drawable.ic_my_notification
+    contentTitle = "My Notification"
+    contentText = "Hello World!"
+}
+
+notification.post()
+```
 
 ## Get Started
 
-[Click here](https://betterandroid.github.io/BetterAndroid/en) go to the documentation page for more detailed tutorials and content.
+| <img src="https://github.com/BetterAndroid/.github/blob/main/img-src/logo.png?raw=true" width = "30" height = "30" alt="LOGO"/> | [BetterAndroid Documentation](https://betterandroid.github.io/BetterAndroid/en) |
+|---------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------|
 
-## Promotion
+You can go to the documentation page for more detailed tutorials and content.
+
+### What's next?
+
+1. **Add dependencies**: Find the module you need and add it to your project.
+2. **Sync the project**: After a Gradle sync, you can start using `BetterAndroid`.
+
+In the opened page, select the **Quick Start** section in the sidebar to continue reading.
+
+## More Projects
 
 <!--suppress HtmlDeprecatedAttribute -->
 <div align="center">
-     <h2>Hey, please stay! 👋</h2>
-     <h3>Here are related projects such as Android development tools, UI design, Gradle plugins, Xposed Modules and practical software. </h3>
-     <h3>If the project below can help you, please give me a star! </h3>
-     <h3>All projects are free, open source, and follow the corresponding open source license agreement. </h3>
-     <h1><a href="https://github.com/fankes/fankes/blob/main/project-promote/README.md">→ To see more about my projects, please click here ←</a></h1>
+    <h2>Hey, wait a second! 👋</h2>
+    <h3>If this project was helpful, why not stick around and check out more of my work below?</h3>
+    <h3>Feel free to leave a follow or a star ⭐️ if they bring you value!</h3>
+    <h1><a href="https://github.com/fankes/fankes/blob/main/project-promote/README.md">→ Click here to discover more of my projects ←</a></h1>
 </div>
 
 ## Star History
