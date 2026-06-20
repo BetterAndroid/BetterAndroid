@@ -34,10 +34,14 @@ import com.highcapable.betterandroid.ui.extension.lint.detector.extension.asProp
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.createKotlinOnlyUastHandler
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.extendsClass
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.unwrapParenthesized
 import com.intellij.psi.PsiClassType
 import com.intellij.psi.PsiVariable
 import org.jetbrains.kotlin.psi.KtFile
+import org.jetbrains.kotlin.psi.KtNamedFunction
+import org.jetbrains.kotlin.psi.KtNullableType
+import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
 import org.jetbrains.uast.UBinaryExpressionWithType
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UClass
@@ -130,7 +134,7 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
             ) return
 
             // This is the `view.findViewTreeLifecycleOwner()` pattern.
-            val replacement = node.receiver?.asPropertyAccess(LIFECYCLE_OWNER_PROPERTY)
+            val replacement = node.createLifecycleOwnerReplacement()
                 ?: resolveImplicitViewLifecycleOwnerReplacement(node)
                 ?: return
 
@@ -204,10 +208,55 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
         }
 
         private fun resolveImplicitViewLifecycleOwnerReplacement(node: UCallExpression): String? {
-            val psiClass = node.findContainingUClass()?.javaPsi ?: return null
-            if (!context.evaluator.extendsClass(psiClass, VIEW_CLASS, false)) return null
+            val psiClass = node.findContainingUClass()?.javaPsi
+            if (psiClass != null && context.evaluator.extendsClass(psiClass, VIEW_CLASS, false))
+                return node.implicitLifecycleOwnerReplacement()
+            if (node.findContainingViewExtensionFunction() == null) return null
 
-            return LIFECYCLE_OWNER_PROPERTY
+            return node.implicitLifecycleOwnerReplacement()
+        }
+
+        private fun UCallExpression.createLifecycleOwnerReplacement(): String? {
+            val receiver = receiver ?: return null
+            val prefix = receiverPrefix()
+
+            return if (prefix.isNotEmpty()) "$prefix$LIFECYCLE_OWNER_PROPERTY"
+            else receiver.asPropertyAccess(LIFECYCLE_OWNER_PROPERTY)
+        }
+
+        private fun UCallExpression.findContainingViewExtensionFunction(): KtNamedFunction? {
+            var function = sourcePsi?.getParentOfType<KtNamedFunction>(strict = false)
+            while (function != null) {
+                if (function.hasViewExtensionReceiver()) return function
+                function = function.getParentOfType(strict = true)
+            }
+
+            return null
+        }
+
+        private fun KtNamedFunction.hasViewExtensionReceiver(): Boolean {
+            val receiverText = receiverTypeReference?.typeElement?.let { typeElement ->
+                (typeElement as? KtNullableType)?.innerType ?: typeElement
+            }?.text ?: return false
+
+            if (receiverText == VIEW_CLASS.substringAfterLast('.')) return true
+
+            return typeParameters
+                .firstOrNull { it.name == receiverText }
+                ?.extendsBound?.text == VIEW_CLASS.substringAfterLast('.')
+        }
+
+        private fun UCallExpression.implicitLifecycleOwnerReplacement() =
+            if (hasVisibleLifecycleOwnerName()) "$THIS_RECEIVER.$LIFECYCLE_OWNER_PROPERTY" else LIFECYCLE_OWNER_PROPERTY
+
+        private fun UCallExpression.hasVisibleLifecycleOwnerName(): Boolean {
+            var function = sourcePsi?.getParentOfType<KtNamedFunction>(strict = false)
+            while (function != null) {
+                if (function.valueParameters.any { it.name == LIFECYCLE_OWNER_PROPERTY }) return true
+                function = function.getParentOfType(strict = true)
+            }
+
+            return false
         }
 
         private fun createContextReplacement(
@@ -248,6 +297,7 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
 
             val receiverType = receiver?.getExpressionType()
             if (receiverType != null) return receiverType.extendsClass(context, VIEW_CLASS)
+            if (findContainingViewExtensionFunction() != null) return true
 
             val uClass = findContainingUClass() ?: return false
             if (!context.evaluator.extendsClass(uClass.javaPsi, VIEW_CLASS, false)) return false
