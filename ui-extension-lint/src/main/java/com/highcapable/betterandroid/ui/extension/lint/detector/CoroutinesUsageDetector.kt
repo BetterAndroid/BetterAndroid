@@ -40,6 +40,7 @@ import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UQualifiedReferenceExpression
 import org.jetbrains.uast.UResolvable
 import org.jetbrains.uast.USimpleNameReferenceExpression
+import org.jetbrains.uast.UThisExpression
 
 class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
 
@@ -123,7 +124,6 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
 
         private fun reportLifecycleScopeCall(node: UCallExpression) {
             val receiver = node.receiver ?: return
-            val source = node.asSourceString()
             val methodName = node.methodName ?: return
 
             // This is the `owner.lifecycleScope.launch/async(...)` pattern.
@@ -132,7 +132,7 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
                     val selectorName = receiver.selector.resolveName() ?: return
                     if (selectorName != LIFECYCLE_SCOPE_PROPERTY) return
                     if (!receiver.isLifecycleScopeAccess(context)) return
-                    "${receiver.receiverPrefix()}$methodName"
+                    "${receiver.lifecycleOwnerReceiverPrefix()}$methodName"
                 }
                 is USimpleNameReferenceExpression -> {
                     if (receiver.identifier != LIFECYCLE_SCOPE_PROPERTY) return
@@ -143,11 +143,12 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
                     val selectorName = receiver.resolveName() ?: return
                     if (selectorName != LIFECYCLE_SCOPE_PROPERTY) return
                     if (!receiver.isLifecycleScopeAccess(context)) return
-                    methodName
+                    "${receiver.lifecycleOwnerReceiverPrefix()}$methodName"
                 }
             }
 
             val receiverAccess = "${node.receiverPrefix()}$methodName"
+            val source = node.qualifiedCallSource()
             val replacement = source.replaceFirst(receiverAccess, replacementPrefix)
             val importTarget = if (methodName == LAUNCH_METHOD) {
                 "${DeclaredSymbol.COMPONENT_PACKAGE}.$LAUNCH_EXTENSION"
@@ -163,6 +164,28 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
                     imports = arrayOf(importTarget)
                 )
             )
+        }
+
+        private fun UCallExpression.qualifiedCallSource() =
+            ((uastParent as? UQualifiedReferenceExpression)?.takeIf { it.selector == this }?.sourcePsi?.text
+                ?: (uastParent as? UQualifiedReferenceExpression)?.takeIf { it.selector == this }?.asSourceString()
+                ?: asSourceString()).trimStart()
+
+        private fun UElement.lifecycleOwnerReceiverPrefix() = when (this) {
+            is UCallExpression -> valueArguments.firstOrNull()?.asSourceString()?.trim()?.let { "$it." }.orEmpty()
+            else -> ""
+        }
+
+        private fun UQualifiedReferenceExpression.lifecycleOwnerReceiverPrefix(): String {
+            val receiverText = receiver.asSourceString().trim()
+            val source = sourcePsi?.text?.trimStart() ?: asSourceString().trimStart()
+
+            return when {
+                source.startsWith("$receiverText?.$LIFECYCLE_SCOPE_PROPERTY") -> "$receiverText?."
+                source.startsWith("$receiverText.$LIFECYCLE_SCOPE_PROPERTY") -> "$receiverText."
+                receiver is UThisExpression -> "$receiverText."
+                else -> "$receiverText."
+            }
         }
 
         private fun reportPostDelayed(node: UCallExpression) {
