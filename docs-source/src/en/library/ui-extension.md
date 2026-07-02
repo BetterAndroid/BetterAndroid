@@ -2154,6 +2154,8 @@ window.clearScreenBrightness()
 
 [View → updatePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-padding)
 
+[View → updatePaddingRelative](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-padding-relative)
+
 [View → updateMargins](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-margins)
 
 [View → updateMarginsRelative](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-margins-relative)
@@ -2187,6 +2189,10 @@ An absolute-direction padding values object.
 [RelativePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-relative-padding)
 
 A relative-direction padding values object.
+
+[AxisPadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-axis-padding)
+
+A horizontal and vertical padding values object.
 
 [PaddingValues](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-padding-values)
 
@@ -2455,6 +2461,8 @@ if you only need to update the `padding` in these two directions, you don't need
 val view: View
 // Update the padding in the horizontal direction.
 view.updatePadding(horizontal = 10.toPx(context))
+// Or, if you need to support RTL layouts.
+view.updatePaddingRelative(horizontal = 10.toPx(context))
 // Update the padding in the vertical direction.
 view.updatePadding(vertical = 10.toPx(context))
 ```
@@ -2480,6 +2488,9 @@ view.padding.left = 10.toPx(context)
 view.padding.top = 12.toPx(context)
 view.padding.start = 16.toPx(context)
 view.padding.end = 16.toPx(context)
+// Quickly modify padding in horizontal and vertical directions.
+view.padding.horizontal.set(10.toPx(context))
+view.padding.vertical.set(12.toPx(context))
 ```
 
 When you want to set a group of `padding` values at once, you can directly use `AbsolutePadding` or `RelativePadding`.
@@ -2503,6 +2514,18 @@ view.setPadding(RelativePadding(
 ))
 ```
 
+Or, if you want to directly set the padding in the horizontal and vertical directions, you can use `AxisPadding`.
+
+> The following example
+
+```kotlin
+// Set padding using horizontal and vertical directions.
+view.setPadding(AxisPadding(
+    horizontal = 16.toPx(context),
+    vertical = 12.toPx(context)
+))
+```
+
 In addition to ordinary setting, this feature also supports more flexible incremental operations.
 
 You can directly use `+=` and `-=` on `View.padding` to add or subtract a group of padding values.
@@ -2521,9 +2544,19 @@ view.padding -= RelativePadding(
     start = 4.toPx(context),
     end = 4.toPx(context)
 )
+// Add a group of horizontal and vertical paddings.
+view.padding += AxisPadding(
+    horizontal = 10.toPx(context),
+    vertical = 5.toPx(context)
+)
+// Subtract a group of horizontal and vertical paddings.
+view.padding -= AxisPadding(
+    horizontal = 6.toPx(context),
+    vertical = 3.toPx(context)
+)
 ```
 
-`AbsolutePadding` and `RelativePadding` themselves also support `+` and `-`,
+`AbsolutePadding` and `RelativePadding` etc. themselves also support `+` and `-`,
 so you can first compose a final result and then apply it to the `View` in one place.
 
 > The following example
@@ -2541,7 +2574,7 @@ val result = base + extra
 view.setPadding(result)
 ```
 
-Since `AbsolutePadding` and `RelativePadding` are Kotlin data classes,
+Since `AbsolutePadding` and `RelativePadding` etc. are Kotlin data classes,
 you can also use the `copy` function to create a new object based on the original one without modifying it, and then apply it to the `View`.
 
 > The following example

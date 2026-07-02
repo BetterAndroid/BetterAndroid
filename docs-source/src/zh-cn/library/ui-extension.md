@@ -2078,6 +2078,8 @@ window.clearScreenBrightness()
 
 [View → updatePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-padding)
 
+[View → updatePaddingRelative](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-padding-relative)
+
 [View → updateMargins](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-margins)
 
 [View → updateMarginsRelative](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/update-margins-relative)
@@ -2111,6 +2113,10 @@ window.clearScreenBrightness()
 [RelativePadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-relative-padding)
 
 相对方向的 `padding` 值对象。
+
+[AxisPadding](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-axis-padding)
+
+适用于横向、纵向 `padding` 值对象。
 
 [PaddingValues](kdoc://ui-extension/ui-extension/com.highcapable.betterandroid.ui.extension.view/-padding-values)
 
@@ -2363,6 +2369,8 @@ view.setIntervalOnClickListener(1000) {
 val view: View
 // 更新横向方向的 padding
 view.updatePadding(horizontal = 10.toPx(context))
+// 或者，你需要适配 RTL 布局
+view.updatePaddingRelative(horizontal = 10.toPx(context))
 // 更新纵向方向的 padding
 view.updatePadding(vertical = 10.toPx(context))
 ```
@@ -2387,6 +2395,9 @@ view.padding.left = 10.toPx(context)
 view.padding.top = 12.toPx(context)
 view.padding.start = 16.toPx(context)
 view.padding.end = 16.toPx(context)
+// 快捷修改横向、纵向方向的 padding
+view.padding.horizontal.set(10.toPx(context))
+view.padding.vertical.set(12.toPx(context))
 ```
 
 当你希望一次性设置一组 `padding` 时，你可以直接使用 `AbsolutePadding` 或 `RelativePadding`。
@@ -2410,6 +2421,18 @@ view.setPadding(RelativePadding(
 ))
 ```
 
+或者，你希望直接设置横向、纵向方向的 `padding`，你可以使用 `AxisPadding`。
+
+> 示例如下
+
+```kotlin
+// 使用横向、纵向方向设置 padding
+view.setPadding(AxisPadding(
+    horizontal = 16.toPx(context),
+    vertical = 12.toPx(context)
+))
+```
+
 除了普通设置，这套能力还支持更灵活的增量写法。
 
 你可以直接对 `View.padding` 使用 `+=` 和 `-=` 来叠加或减少一组 `padding` 值，这在做动态偏移、补偿和动画前后的差值处理时会更加方便。
@@ -2427,9 +2450,19 @@ view.padding -= RelativePadding(
     start = 4.toPx(context),
     end = 4.toPx(context)
 )
+// 叠加一组横向、纵向方向的 padding
+view.padding += AxisPadding(
+    horizontal = 10.toPx(context),
+    vertical = 5.toPx(context)
+)
+// 减少一组横向、纵向方向的 padding
+view.padding -= AxisPadding(
+    horizontal = 6.toPx(context),
+    vertical = 3.toPx(context)
+)
 ```
 
-`AbsolutePadding` 和 `RelativePadding` 本身也支持 `+`、`-` 运算，因此你可以先组合一组结果，再统一应用到 `View`。
+`AbsolutePadding` 和 `RelativePadding` 等本身也支持 `+`、`-` 运算，因此你可以先组合一组结果，再统一应用到 `View`。
 
 > 示例如下
 
@@ -2446,7 +2479,7 @@ val result = base + extra
 view.setPadding(result)
 ```
 
-同时，由于 `AbsolutePadding` 和 `RelativePadding` 是 Kotlin 的 data class，你也可以使用 `copy` 方法来基于原有对象创建一个新的对象而不修改原有对象，然后再应用到 `View` 上。
+同时，由于 `AbsolutePadding` 和 `RelativePadding` 等是 Kotlin 的 data class，你也可以使用 `copy` 方法来基于原有对象创建一个新的对象而不修改原有对象，然后再应用到 `View` 上。
 
 > 示例如下
 
