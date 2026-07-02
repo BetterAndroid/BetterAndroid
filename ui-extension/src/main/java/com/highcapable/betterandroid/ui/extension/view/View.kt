@@ -465,6 +465,7 @@ fun View.setIntervalOnClickListener(timeMillis: Long = 300L, listener: View.OnCl
  * @see ViewPadding
  * @see AbsolutePadding
  * @see RelativePadding
+ * @see AxisPadding
  * @see PaddingValues
  * @receiver [View]
  * @return [ViewPadding]
@@ -478,6 +479,7 @@ val View.padding get() = ViewPadding(this)
  * @see ViewPadding
  * @see AbsolutePadding
  * @see RelativePadding
+ * @see AxisPadding
  * @see PaddingValues
  * @receiver [View]
  * @param values the padding values.
@@ -495,6 +497,19 @@ fun View.setPadding(values: PaddingValues) = values.applyTo(this)
 fun View.updatePadding(@Px horizontal: Int = -1, @Px vertical: Int = -1) {
     if (horizontal >= 0) updatePadding(left = horizontal, right = horizontal)
     if (vertical >= 0) updatePadding(top = vertical, bottom = vertical)
+}
+
+/**
+ * Updates this view's horizontal or vertical padding.
+ * @see View.updatePaddingRelative
+ * @receiver [View]
+ * @param horizontal the horizontal padding (px).
+ * @param vertical the vertical padding (px).
+ */
+@JvmOverloads
+fun View.updatePaddingRelative(@Px horizontal: Int = -1, @Px vertical: Int = -1) {
+    if (horizontal >= 0) updatePaddingRelative(start = horizontal, end = horizontal)
+    if (vertical >= 0) updatePaddingRelative(top = vertical, bottom = vertical)
 }
 
 /**
@@ -770,6 +785,7 @@ const val LayoutParamsWrapContent = ViewGroup.LayoutParams.WRAP_CONTENT
  * The view's padding.
  * @see AbsolutePadding
  * @see RelativePadding
+ * @see AxisPadding
  * @see PaddingValues
  */
 @JvmInline
@@ -807,15 +823,40 @@ value class ViewPadding internal constructor(private val view: View) {
         @Px get() = view.paddingEnd
         set(@Px value) = view.updatePaddingRelative(end = value)
 
-    /** Get the view's top padding (px). */
+    /** Get or set the view's top padding (px). */
     var top: Int
         @Px get() = view.paddingTop
         set(@Px value) = view.updatePadding(top = value)
 
-    /** Get the view's bottom padding (px). */
+    /** Get or set the view's bottom padding (px). */
     var bottom: Int
         @Px get() = view.paddingBottom
         set(@Px value) = view.updatePadding(bottom = value)
+
+    /**
+     * Get the view's horizontal padding axis.
+     * @return [Axis]
+     */
+    val horizontal get() = Axis(view, AxisType.Horizontal)
+
+    /**
+     * Get the view's relative horizontal padding axis.
+     * @return [Axis]
+     */
+    val relativeHorizontal get() = Axis(view, AxisType.RelativeHorizontal)
+
+    /**
+     * Get the view's vertical padding axis.
+     * @return [Axis]
+     */
+    val vertical get() = Axis(view, AxisType.Vertical)
+
+    /**
+     * Get whether the view's padding is relative.
+     * @see View.isPaddingRelative
+     * @return [Boolean]
+     */
+    val isRelative get() = view.isPaddingRelative
 
     /**
      * Convert to [AbsolutePadding] with current padding values.
@@ -868,11 +909,113 @@ value class ViewPadding internal constructor(private val view: View) {
             bottom = view.paddingBottom - other.bottom
         )
     }
+
+    /**
+     * Add the [AxisPadding] to the view's current padding.
+     * @param other the padding values to add.
+     */
+    operator fun plusAssign(other: AxisPadding) {
+        if (other == AxisPadding.Zero) return
+        if (isRelative) view.updatePaddingRelative(
+            start = view.paddingStart + other.horizontal,
+            top = view.paddingTop + other.vertical,
+            end = view.paddingEnd + other.horizontal,
+            bottom = view.paddingBottom + other.vertical
+        ) else view.updatePadding(
+            left = view.paddingLeft + other.horizontal,
+            top = view.paddingTop + other.vertical,
+            right = view.paddingRight + other.horizontal,
+            bottom = view.paddingBottom + other.vertical
+        )
+    }
+
+    /**
+     * Subtract the [AxisPadding] from the view's current padding.
+     * @param other the padding values to subtract.
+     */
+    operator fun minusAssign(other: AxisPadding) {
+        if (other == AxisPadding.Zero) return
+        if (isRelative) view.updatePaddingRelative(
+            start = view.paddingStart - other.horizontal,
+            top = view.paddingTop - other.vertical,
+            end = view.paddingEnd - other.horizontal,
+            bottom = view.paddingBottom - other.vertical
+        ) else view.updatePadding(
+            left = view.paddingLeft - other.horizontal,
+            top = view.paddingTop - other.vertical,
+            right = view.paddingRight - other.horizontal,
+            bottom = view.paddingBottom - other.vertical
+        )
+    }
+
+    /**
+     * The view's padding axis.
+     */
+    class Axis internal constructor(private val view: View, private val type: AxisType) {
+
+        /**
+         * Set the view's padding axis (px).
+         * @param value the padding value.
+         */
+        fun set(@Px value: Int) = when (type) {
+            AxisType.Horizontal -> view.updatePadding(horizontal = value)
+            AxisType.RelativeHorizontal -> view.updatePaddingRelative(horizontal = value)
+            AxisType.Vertical -> view.updatePadding(vertical = value)
+        }
+
+        /**
+         * Add the value to the view's current padding axis.
+         * @param value the padding value.
+         */
+        operator fun plusAssign(@Px value: Int) = when (type) {
+            AxisType.Horizontal -> view.updatePadding(
+                left = view.paddingLeft + value,
+                right = view.paddingRight + value
+            )
+            AxisType.RelativeHorizontal -> view.updatePaddingRelative(
+                start = view.paddingStart + value,
+                end = view.paddingEnd + value
+            )
+            AxisType.Vertical -> view.updatePadding(
+                top = view.paddingTop + value,
+                bottom = view.paddingBottom + value
+            )
+        }
+
+        /**
+         * Subtract the value from the view's current padding axis.
+         * @param value the padding value.
+         */
+        operator fun minusAssign(@Px value: Int) = when (type) {
+            AxisType.Horizontal -> view.updatePadding(
+                left = view.paddingLeft - value,
+                right = view.paddingRight - value
+            )
+            AxisType.RelativeHorizontal -> view.updatePaddingRelative(
+                start = view.paddingStart - value,
+                end = view.paddingEnd - value
+            )
+            AxisType.Vertical -> view.updatePadding(
+                top = view.paddingTop - value,
+                bottom = view.paddingBottom - value
+            )
+        }
+    }
+
+    /**
+     * The view's padding axis type.
+     */
+    internal enum class AxisType {
+        Horizontal,
+        RelativeHorizontal,
+        Vertical
+    }
 }
 
 /**
  * The absolute padding values.
  * @see RelativePadding
+ * @see AxisPadding
  * @see PaddingValues
  */
 data class AbsolutePadding(
@@ -908,6 +1051,7 @@ data class AbsolutePadding(
 /**
  * The relative padding values.
  * @see AbsolutePadding
+ * @see AxisPadding
  * @see PaddingValues
  */
 data class RelativePadding(
@@ -937,6 +1081,48 @@ data class RelativePadding(
         top = top - other.top,
         end = end - other.end,
         bottom = bottom - other.bottom
+    )
+}
+
+/**
+ * The axis padding values.
+ * @see AbsolutePadding
+ * @see RelativePadding
+ * @see PaddingValues
+ */
+data class AxisPadding(
+    @field:Px val horizontal: Int = 0,
+    @field:Px val vertical: Int = 0
+) : PaddingValues {
+
+    companion object {
+
+        /** The zero padding values. */
+        val Zero = AxisPadding()
+    }
+
+    override fun applyTo(view: View) = if (view.isPaddingRelative)
+        view.updatePaddingRelative(horizontal = horizontal, vertical = vertical)
+    else view.updatePadding(horizontal = horizontal, vertical = vertical)
+
+    /**
+     * Add another [AxisPadding].
+     * @param other the padding values to add.
+     * @return [AxisPadding]
+     */
+    operator fun plus(other: AxisPadding) = AxisPadding(
+        horizontal = horizontal + other.horizontal,
+        vertical = vertical + other.vertical
+    )
+
+    /**
+     * Subtract another [AxisPadding].
+     * @param other the padding values to subtract.
+     * @return [AxisPadding]
+     */
+    operator fun minus(other: AxisPadding) = AxisPadding(
+        horizontal = horizontal - other.horizontal,
+        vertical = vertical - other.vertical
     )
 }
 
