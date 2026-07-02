@@ -18,7 +18,16 @@ Time zone of version release date: **UTC+8**
 
 ## Android
 
-### 1.1.3 | 2026.06.06 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.1.4 | 2026.07.02 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+- Fixed some bugs in the Lint auto-fix functionality of some modules
+
+#### ui-extension
+
+- Added `AxisPadding` support, now it can support horizontal and vertical padding scenarios
+- Added `horizontal`, `relativeHorizontal`, and `vertical` properties to `ViewPadding`, supporting horizontal and vertical padding scenarios
+
+### 1.1.3 | 2026.06.06 &ensp;<Badge type="tip" text="stale" vertical="middle" />
 
 - Updated the [KavaRef](https://github.com/HighCapable/KavaRef) dependency to achieve full compatibility with Min SDK 21
 - Optimized the usage of `@JvmOverloads` annotation in some modules

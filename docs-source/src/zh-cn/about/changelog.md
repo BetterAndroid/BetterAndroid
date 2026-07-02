@@ -10,7 +10,16 @@
 
 ## Android
 
-### 1.1.3 | 2026.06.06 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.1.4 | 2026.07.02 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+- 修复部分模块 Lint 自动修复功能的 BUG
+
+#### ui-extension
+
+- 添加 `AxisPadding` 支持，现在其可以支持横向、纵向内边距场景
+- 添加 `ViewPadding` 的 `horizontal`、`relativeHorizontal`、`vertical` 属性，支持横向、纵向内边距场景
+
+### 1.1.3 | 2026.06.06 &ensp;<Badge type="tip" text="过旧" vertical="middle" />
 
 - 更新 [KavaRef](https://github.com/HighCapable/KavaRef) 依赖支持以实现完整适配 Min SDK 21
 - 优化部分模块的 `@JvmOverloads` 注解使用
