@@ -3,7 +3,7 @@ agp = "9.2.1"
 kotlin = "2.4.0"
 compose = "1.10.3"
 dokka = "2.2.0"
-maven-publish = "0.36.0"
+maven-publish = "0.37.0"
 kavaref-bom = "1.1.0"
 # The project current support min sdk version is 21,
 # suppress the warning about using newer versions of dependencies that may require higher min sdk version.
