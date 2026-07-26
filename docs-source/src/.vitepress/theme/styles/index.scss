@@ -42,6 +42,11 @@ body:not(.VPNolebaseEnhancedReadabilitiesLayoutSwitchFullWidth):not(.VPNolebaseE
     -webkit-text-fill-color: transparent;
 }
 
+// VitePress only defines heading margins through h4, so adjacent h5/h6 anchors collapse after its reset.
+.vp-doc :is(h1, h2, h3, h4, h5, h6) + :is(h5, h6) {
+    margin-top: 16px;
+}
+
 .vp-doc .vp-nolebase-git-changelog-history-container {
     position: relative;
     margin-top: 73px;
