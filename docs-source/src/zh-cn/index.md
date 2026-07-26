@@ -3,7 +3,7 @@ layout: home
 title: 首页
 hero:
   name: Better Android
-  tagline: 为 Android 创建更多有用的工具扩展
+  tagline: 为 Android 创造更多有用的工具扩展
   image:
     src: /images/logo.png
     alt: Better Android

@@ -99,7 +99,7 @@ export const configs = {
             },
             'zh-cn': {
                 lang: 'zh-CN',
-                description: '为 Android 创建更多有用的工具扩展'
+                description: '为 Android 创造更多有用的工具扩展'
             }
         }
     },
