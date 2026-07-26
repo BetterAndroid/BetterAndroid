@@ -10,8 +10,6 @@ We will only maintain the latest dependencies. If you are using outdated depende
 
 ::: warning
 
-To avoid translation time consumption, Changelog will use **Google Translation** from **Chinese** to **English**, please refer to the original text for actual reference.
-
 Time zone of version release date: **UTC+8**
 
 :::

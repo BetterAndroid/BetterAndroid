@@ -1,6 +1,6 @@
 # About This Document
 
-> This document is powered by [VuePress](https://v2.vuepress.vuejs.org/en).
+> This document is powered by [VitePress](https://vitepress.dev/).
 
 ## License
 

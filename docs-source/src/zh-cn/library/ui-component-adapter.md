@@ -122,7 +122,7 @@ implementation("com.highcapable.betterandroid:ui-component-adapter:<version>")
 
 Android 中的适配器从 `ListView` 开始到 `RecyclerView` 的出现，一直是开发者最头疼的问题之一。
 
-针对这个问题，`BetterAndroid` 对以下组件的适配器进行了封装：
+针对这个问题，BetterAndroid 对以下组件的适配器进行了封装：
 
 `ListView`、`AutoCompleteTextView`、`ListPopupWindow`、`RecyclerView`、`ViewPager`、`ViewPager2`
 
@@ -409,7 +409,7 @@ differ.submitList(newList) {
 
 同时，`RecyclerAsyncDiffer` 也已经一并处理了异步提交流程与后台差分计算策略，它的使用方式更加完整和稳定。
 
-如果你已经在这里使用了 `BetterAndroid` 提供的适配器体系，我们不再建议你继续额外接入官方的 `AsyncListDiffer`，而是统一使用 `RecyclerAsyncDiffer` 或 `onBindDiffer`。
+如果你已经在这里使用了 BetterAndroid 提供的适配器体系，我们不再建议你继续额外接入官方的 `AsyncListDiffer`，而是统一使用 `RecyclerAsyncDiffer` 或 `onBindDiffer`。
 
 :::
 
@@ -567,7 +567,7 @@ onBindItemView(MyViewHolderDelegate(R.layout.adapter_my_layout)) { delegate, ent
 
 当你设置了头部或末位 `View` 时，在使用 `RecyclerView.Adapter` 的 `notifyItemInserted`、`notifyItemRemoved`、`notifyItemChanged`、`notifyItemMoved` 等方法时，下标的位置将会出现问题，因为默认情况下 `onBindItemView` 计算出的 `position` 将不包含头部与末位布局，以及 `RecyclerView.scrollToPosition`、`RecyclerView.smoothScrollToPosition` 等方法也会受到影响。
 
-由于这些方法在 `RecyclerView.Adapter` 中均为 `final`，无法重写它们，在这种情况下，`BetterAndroid` 为你提供了一个解决方案，在使用 `RecyclerView.Adapter` 时，你可以调用 `wrapper` 方法来获取包装实例，它将会为你自动处理这些问题。
+由于这些方法在 `RecyclerView.Adapter` 中均为 `final`，无法重写它们，在这种情况下，BetterAndroid 为你提供了一个解决方案，在使用 `RecyclerView.Adapter` 时，你可以调用 `wrapper` 方法来获取包装实例，它将会为你自动处理这些问题。
 
 `wrapper` 只负责处理由头部、末位布局引起的下标偏移问题，不会帮你管理数据集本身，也不会替代 `DiffUtil`、`notifyByDiff` 或自定义列表状态同步逻辑。
 
@@ -595,9 +595,9 @@ val hasFooterView = wrapper?.hasFooterView == true
 
 这些封装后的增强型布局管理器将会通过默认的 `RecyclerCosmetic` 自动集成 (参考下方的 [Recycler 装饰器](#recycler-装饰器))，你无需任何手动操作，当你需要手动创建 `RecyclerView.LayoutManager` 时，我们均建议你继承于这个包名下提供的实例来完成。
 
-当你使用了 `BetterAndroid` 提供的 `RecyclerView.LayoutManager` 时，由于头部或末位布局会自动处理 `position`，因此在使用 `RecyclerView.scrollToPosition`、`RecyclerView.smoothScrollToPosition` 滚动到顶部、底部时，你需要像这样 `scrollToPosition(-1)` (顶部) 或 `scrollToPosition(lastIndex + 1)` (底部)。
+当你使用了 BetterAndroid 提供的 `RecyclerView.LayoutManager` 时，由于头部或末位布局会自动处理 `position`，因此在使用 `RecyclerView.scrollToPosition`、`RecyclerView.smoothScrollToPosition` 滚动到顶部、底部时，你需要像这样 `scrollToPosition(-1)` (顶部) 或 `scrollToPosition(lastIndex + 1)` (底部)。
 
-所以我们始终建议你在有滚动到顶部、底部需求的情况下，使用 `scrollToFirstPosition`、`scrollToLastPosition`、`smoothScrollToFirstPosition`、`smoothScrollToLastPosition` 方法取代，它们会自动处理这类问题 (无论你是否使用了 `BetterAndroid` 提供的 `RecyclerView.LayoutManager`)。
+所以我们始终建议你在有滚动到顶部、底部需求的情况下，使用 `scrollToFirstPosition`、`scrollToLastPosition`、`smoothScrollToFirstPosition`、`smoothScrollToLastPosition` 方法取代，它们会自动处理这类问题 (无论你是否使用了 BetterAndroid 提供的 `RecyclerView.LayoutManager`)。
 
 :::
 
@@ -722,7 +722,7 @@ viewPager2.addItemDecoration(cosmetic.itemDecoration)
 viewPager2.adapter = adapter
 ```
 
-`BetterAndroid` 为开发者针对 `RecyclerView` 预置了几种常用的适配器布局类型以供你使用。
+BetterAndroid 为开发者针对 `RecyclerView` 预置了几种常用的适配器布局类型以供你使用。
 
 你可以在方法参数中指定一个 `RecyclerCosmetic`，默认为线性纵向列表装饰器。
 
@@ -816,7 +816,7 @@ dataSet.addAll(...)
 adapter.notifyItemRangeInserted(0, dataSet.size)
 ```
 
-当数据确定从 0 开始添加的时候，`BetterAndroid` 为你提供了一个更加简单的方式来完成，现在你可以使用以下方式通知适配器数据发生了变化。
+当数据确定从 0 开始添加的时候，BetterAndroid 为你提供了一个更加简单的方式来完成，现在你可以使用以下方式通知适配器数据发生了变化。
 
 > 示例如下
 
@@ -997,7 +997,7 @@ dataSet.clear()
 adapter.notifyItemRangeRemoved(0, count)
 ```
 
-这一过程依然繁琐，`BetterAndroid` 为此提供了一个更加简单的方式，现在你可以使用以下方式清空数据集并通知适配器数据发生了变化，此方法将自动计算数据集的大小。
+这一过程依然繁琐，BetterAndroid 为此提供了一个更加简单的方式，现在你可以使用以下方式清空数据集并通知适配器数据发生了变化，此方法将自动计算数据集的大小。
 
 > 示例如下
 

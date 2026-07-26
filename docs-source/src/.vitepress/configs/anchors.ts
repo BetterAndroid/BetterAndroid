@@ -1,9 +1,8 @@
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import MarkdownIt from 'markdown-it';
-import type StateCore from 'markdown-it/lib/rules_core/state_core';
-import type Token from 'markdown-it/lib/token';
 import { slugify } from '@mdit-vue/shared';
+import type { VitePressMarkdownIt } from './types';
 
 interface HeadingAnchor {
     alignedId: string;
@@ -21,10 +20,19 @@ interface CachedHeadingLookup {
     mtimeMs: number;
 }
 
+interface MarkdownToken {
+    children: MarkdownToken[] | null;
+    content: string;
+    tag: string;
+    type: string;
+    attrGet: (name: string) => string | null;
+    attrSet: (name: string, value: string) => void;
+}
+
 interface HeadingToken {
-    inlineToken: Token;
+    inlineToken: MarkdownToken;
     pathKey: string;
-    token: Token;
+    token: MarkdownToken;
 }
 
 interface LinkResolveContext {
@@ -52,9 +60,9 @@ const createHeadingPathTracker = (): ((level: number) => string) => {
     };
 };
 
-const getHeadingLevel = (token: Token): number => Number.parseInt(token.tag.slice(1), 10);
+const getHeadingLevel = (token: MarkdownToken): number => Number.parseInt(token.tag.slice(1), 10);
 
-const getHeadingText = (inlineToken: Token): string =>
+const getHeadingText = (inlineToken: MarkdownToken): string =>
     (inlineToken.children ?? [])
         .filter((child) => child.type === 'text' || child.type === 'code_inline')
         .map((child) => child.content)
@@ -72,7 +80,7 @@ const createUniqueSlug = (candidate: string, usedSlugs: Set<string>): string => 
     return resolvedSlug;
 };
 
-const collectHeadings = (tokens: Token[]): HeadingAnchor[] => {
+const collectHeadings = (tokens: MarkdownToken[]): HeadingAnchor[] => {
     const nextPathKey = createHeadingPathTracker();
     const usedSlugs = new Set<string>();
     const headings: HeadingAnchor[] = [];
@@ -165,7 +173,7 @@ const resolveHeadingLookup = (filePathRelative: string | null | undefined): Head
     return lookup;
 };
 
-const collectHeadingTokens = (tokens: Token[]): HeadingToken[] => {
+const collectHeadingTokens = (tokens: MarkdownToken[]): HeadingToken[] => {
     const nextPathKey = createHeadingPathTracker();
     const headings: HeadingToken[] = [];
     for (let index = 0; index < tokens.length; index += 1) {
@@ -186,7 +194,7 @@ const collectHeadingTokens = (tokens: Token[]): HeadingToken[] => {
     return headings;
 };
 
-const syncPermalinkHref = (inlineToken: Token, id: string): void => {
+const syncPermalinkHref = (inlineToken: MarkdownToken, id: string): void => {
     for (const child of inlineToken.children ?? []) {
         if (child.type !== 'link_open') {
             continue;
@@ -218,22 +226,6 @@ const hasUriScheme = (value: string): boolean => /^[a-z][a-z\d+.-]*:/i.test(valu
 const normalizeFilePathRelative = (filePathRelative: string): string =>
     filePathRelative.replace(/\\/g, '/');
 
-const normalizeBase = (base = '/'): string => {
-    const trimmed = base.trim();
-    if (trimmed === '' || trimmed === '/') {
-        return '/';
-    }
-    return `/${trimmed.replace(/^\/+|\/+$/g, '')}/`;
-};
-
-const toSiteRoutePath = (filePathRelative: string, base = '/'): string => {
-    const normalizedFilePath = normalizeFilePathRelative(filePathRelative);
-    const routePath = normalizedFilePath.endsWith('/index.md')
-        ? normalizedFilePath.slice(0, -'index.md'.length)
-        : normalizedFilePath.replace(/\.md$/, '.html');
-    return `${normalizeBase(base)}${routePath}`.replace(/\/{2,}/g, '/');
-};
-
 const resolveTargetFilePathRelative = (currentFilePathRelative: string, rawPath: string, base = '/'): string | null => {
     const normalizedCurrentPath = normalizeFilePathRelative(currentFilePathRelative);
     if (rawPath.length === 0) {
@@ -264,9 +256,10 @@ const resolveTargetFilePathRelative = (currentFilePathRelative: string, rawPath:
     return `${path.posix.join(path.posix.dirname(normalizedCurrentPath), rawPath)}.md`;
 };
 
-export const alignI18nAnchors = (md: MarkdownIt): void => {
-    md.core.ruler.after('anchor', 'align-i18n-anchors', (state: StateCore) => {
-        const lookup = resolveHeadingLookup(state.env.filePathRelative);
+/** Aligns localized heading IDs with the matching English document structure. */
+export const alignI18nAnchors = (md: VitePressMarkdownIt): void => {
+    md.core.ruler.after('anchor', 'align-i18n-anchors', (state) => {
+        const lookup = resolveHeadingLookup(state.env.relativePath);
         if (!lookup) {
             return;
         }
@@ -285,6 +278,7 @@ export const alignI18nAnchors = (md: MarkdownIt): void => {
     });
 };
 
+/** Rewrites localized heading fragments while preserving VitePress source-relative paths. */
 export const resolveI18nLink = (context: LinkResolveContext, rawHref: string): string => {
     if (!context.filePathRelative || !rawHref.includes('#')) {
         return rawHref;
@@ -308,5 +302,5 @@ export const resolveI18nLink = (context: LinkResolveContext, rawHref: string): s
     if (normalizeFilePathRelative(targetFilePathRelative) === currentFilePathRelative) {
         return `#${resolvedHash}`;
     }
-    return `${toSiteRoutePath(targetFilePathRelative, context.base)}#${resolvedHash}`;
+    return `${rawPath}#${resolvedHash}`;
 };

@@ -68,7 +68,7 @@ Android 的 `SystemProperties` 工具。
 
 也许你已经厌烦了代码中漂流各地的 `Build.VERSION.SDK_INT`、`Build.VERSION_CODES`，那么从现在开始，你不再需要使用它们了。
 
-`BetterAndroid` 为你准备了更加简便的写法来取代它们。
+BetterAndroid 为你准备了更加简便的写法来取代它们。
 
 在之前，我们需要判断当前系统的 API Level (Android API 等级)，基本上都会通过以下方式进行。
 
@@ -122,7 +122,7 @@ if (AndroidVersion.isAtLeast(AndroidVersion.Q)) {
 }
 ```
 
-以下是各个 API 的常量映射对照表，在 Android 版本更新后，`BetterAndroid` 会同步更新这些常量。
+以下是各个 API 的常量映射对照表，在 Android 版本更新后，BetterAndroid 会同步更新这些常量。
 
 | API 等级 | `AndroidVersion` 名称 | `Build.VERSION_CODES` 名称 | 对应系统版本      |
 | -------- | --------------------- | -------------------------- | ----------------- |
@@ -188,7 +188,7 @@ val targetSdk = AndroidVersion.code
 
 通常情况下大家的解决方案都是去判断设备的型号从而确定是哪种定制系统，但是如果当前设备运行的不是你所判断的那种定制系统，例如用户自行刷机的案例，那么这种方案就会失效。
 
-`BetterAndroid` 通过收集各种各样常见定制系统的对应特征，为你提供了一个简单、快速、高效的解决方案。
+BetterAndroid 通过收集各种各样常见定制系统的对应特征，为你提供了一个简单、快速、高效的解决方案。
 
 下面是判断当前 ROM 类型的一个简单示例。
 
@@ -259,7 +259,7 @@ when (type) {
 
 `SystemProperties` 是 Android 提供的一个能够在运行期间读取 `build.prop` 内容的工具，但是这个功能是不面向开发者开放的。
 
-于是为了能够避免每次都使用反射的方式来访问 `SystemProperties`，`BetterAndroid` 镜像了 `SystemProperties` 的所有方法。
+于是为了能够避免每次都使用反射的方式来访问 `SystemProperties`，BetterAndroid 镜像了 `SystemProperties` 的所有方法。
 
 现在，你可以直接使用非反射的方式来访问 `SystemProperties`。
 
@@ -274,7 +274,7 @@ val buildTags = SystemProperties.get("ro.system.build.tags")
 val abis = SystemProperties.get("ro.system.product.cpu.abilist")
 ```
 
-`BetterAndroid` 还为其提供了一个扩展用法。
+BetterAndroid 还为其提供了一个扩展用法。
 
 > 示例如下
 
@@ -334,7 +334,7 @@ val isExists = SystemProperties.contains("ro.miui.ui.version.name")
 
 :::
 
-`BetterAndroid` 为 `PackageManager`、`PackageInfo`、`ApplicationInfo` 等功能提供了扩展功能，你能够更加方便地使用这些功能。
+BetterAndroid 为 `PackageManager`、`PackageInfo`、`ApplicationInfo` 等功能提供了扩展功能，你能够更加方便地使用这些功能。
 
 它们被统一归类为 Application 扩展，意为应用程序的相关功能。
 
@@ -383,7 +383,7 @@ val hasLaunchActivity = context.packageManager.hasLaunchActivity("com.mydemo.tes
 
 获取应用程序包信息。
 
-`BetterAndroid` 为 `getPackageInfo` 提供了一个完全同名的重载方法，你无需考虑兼容性问题，使用 `PackageInfoFlagsWrapper` 作为 `flags` 的参数即可。
+BetterAndroid 为 `getPackageInfo` 提供了一个完全同名的重载方法，你无需考虑兼容性问题，使用 `PackageInfoFlagsWrapper` 作为 `flags` 的参数即可。
 
 重载这个方法的原因是出自 Android 13 中，官方将 `Int` 类型 `flags` 的方法作废并启用了一套新方案，但是并没有提供任何兼容处理工具，后期却又在 Android 14 中取消作废，这会给开发者带来极大的困扰。
 
@@ -408,7 +408,7 @@ val packageInfo = context.packageManager
 
 获取已安装的应用程序包信息列表。
 
-`BetterAndroid` 同样为 `getInstalledPackages` 提供了一个完全同名的重载方法，你无需考虑兼容性问题，使用 `PackageInfoFlagsWrapper` 作为 `flags` 的参数即可。
+BetterAndroid 同样为 `getInstalledPackages` 提供了一个完全同名的重载方法，你无需考虑兼容性问题，使用 `PackageInfoFlagsWrapper` 作为 `flags` 的参数即可。
 
 > 示例如下
 
@@ -448,7 +448,7 @@ val launchActivities = context.packageManager.queryLaunchActivitiesForPackage("c
 
 判断应用程序声明的组件是否启用或处于默认状态。
 
-`BetterAndroid` 封装了 `getComponentEnabledSetting` 方法，你可以使用以下方法来更快地对组件状态做出判断。
+BetterAndroid 封装了 `getComponentEnabledSetting` 方法，你可以使用以下方法来更快地对组件状态做出判断。
 
 默认状态为应用程序自身在 `AndroidManifest.xml` 中声明的状态，如果没有声明则为启用状态。
 
@@ -465,7 +465,7 @@ val isEnabled = context.packageManager.isComponentEnabled(mainComponent)
 
 启用、禁用或重置应用程序声明的组件。
 
-`BetterAndroid` 封装了 `setComponentEnabledSetting` 方法，你可以使用以下方法来更快地完成这个操作。
+BetterAndroid 封装了 `setComponentEnabledSetting` 方法，你可以使用以下方法来更快地完成这个操作。
 
 重置操作将会重置为默认状态，即应用程序自身在 `AndroidManifest.xml` 中声明的状态，如果没有声明则为启用状态。
 
@@ -496,7 +496,7 @@ context.packageManager.resetComponent(mainComponent)
 
 由于 `versionCode` 已被标记为作废状态，且开发者使用 `androidx` 提供的 `PackageInfoCompat.getLongVersionCode` 显得过于繁琐，这个方法也基本上不好找到，两个版本号的使用方法同时存在也会给开发者带来困扰。
 
-出于此目的，`BetterAndroid` 封装了关于版本号的兼容实现，你现在无需考虑 `versionCode` 和 `longVersionCode`，你可以直接使用 `versionCodeCompat` 来获取应用程序的版本号，它的类型将始终保持为 `Long`。
+出于此目的，BetterAndroid 封装了关于版本号的兼容实现，你现在无需考虑 `versionCode` 和 `longVersionCode`，你可以直接使用 `versionCodeCompat` 来获取应用程序的版本号，它的类型将始终保持为 `Long`。
 
 > 示例如下
 
@@ -509,7 +509,7 @@ val versionCode = context.packageManager.getPackageInfo("com.android.chrome").ve
 
 获取应用程序的 CPU ABI 名称。
 
-这是一个隐藏的 API，所以 `BetterAndroid` 通过反射的方式进行获取，你可能会在某些特定的场景中需要使用它。
+这是一个隐藏的 API，所以 BetterAndroid 通过反射的方式进行获取，你可能会在某些特定的场景中需要使用它。
 
 > 示例如下
 
@@ -526,7 +526,7 @@ val secondaryCpuAbi = packageInfo.applicationInfo.secondaryCpuAbi
 
 判断 `ApplicationInfo` 是否包含指定的 `flags`。
 
-`BetterAndroid` 封装了通过位运算的方式判断 `flags` 的方法，你可以使用以下方法来更快地完成这个操作。
+BetterAndroid 封装了通过位运算的方式判断 `flags` 的方法，你可以使用以下方法来更快地完成这个操作。
 
 > 示例如下
 
@@ -566,7 +566,7 @@ val isSystemApp = applicationInfo.hasFlags(ApplicationInfoFlagsWrapper.SYSTEM)
 
 广播 (Broadcast) 是 Android 系统中非常重要的一个功能，它能够让应用程序之间进行通信。
 
-`BetterAndroid` 为广播 (Broadcast) 提供了一个在运行时动态注册的解决方案，你能更简单地发送广播和创建 `BoardcastReceiver`。
+BetterAndroid 为广播 (Broadcast) 提供了一个在运行时动态注册的解决方案，你能更简单地发送广播和创建 `BoardcastReceiver`。
 
 你可以使用以下方式发送、接收无序广播而无需在 `AndroidManifest.xml` 中声明。
 
@@ -677,7 +677,7 @@ context.unregisterReceiver(receiver)
 
 有时候我们只需要设置或读取一个字符串，但是这些操作却需要写很多代码，这对于开发者来说是非常不友好的。
 
-为此 `BetterAndroid` 为剪贴板 (Clipboard) 提供了一个更简单的解决方案，你可以直接使用以下方法来设置或读取剪贴板内容。
+为此 BetterAndroid 为剪贴板 (Clipboard) 提供了一个更简单的解决方案，你可以直接使用以下方法来设置或读取剪贴板内容。
 
 读取剪贴板中的内容。
 
@@ -888,7 +888,7 @@ fun ClipDataBuilder.addBitmap(
 
 通常情况下，我们需要为指定组件创建一个 `Intent` 时，往往需要手动写出 `Intent(this, MyActivity::class.java)` 这样的形式。
 
-现在，你可以直接使用 `BetterAndroid` 提供的泛型方法完成这个操作。
+现在，你可以直接使用 BetterAndroid 提供的泛型方法完成这个操作。
 
 > 示例如下
 
@@ -903,7 +903,7 @@ val intent = Intent<MyActivity>(Intent.ACTION_VIEW, "some://uri".toUri(), contex
 
 目前，`Intent` 中的其余扩展方法主要用于处理 `Serializable` 和 `Parcelable` 类型的获取方法在 Android 13 中被标记为作废且官方未提供任何有效的兼容处理方式问题。
 
-你可以使用 `BetterAndroid` 提供的兼容性处理方法来获取 `Serializable` 和 `Parcelable` 类型的数据。
+你可以使用 BetterAndroid 提供的兼容性处理方法来获取 `Serializable` 和 `Parcelable` 类型的数据。
 
 > 示例如下
 
@@ -945,7 +945,7 @@ val myData = intent.extras?.getParcelableCompat<MyData>("my_key_name")
 
 与启动 `Activity` 的方式类似，我们需要启动一个 `Service` 时，需要使用 `Intent` 创建一个 `Intent(this, MyService::class.java)`，然后调用 `startService(intent)` 来启动。
 
-这样写起来大概不太友好，于是 `BetterAndroid` 为 `Service` 提供了扩展，现在你可以直接使用以下方式来启动一个 `Service`。
+这样写起来大概不太友好，于是 BetterAndroid 为 `Service` 提供了扩展，现在你可以直接使用以下方式来启动一个 `Service`。
 
 > 示例如下
 

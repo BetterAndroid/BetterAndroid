@@ -131,7 +131,7 @@ Extensions for `Color`.
 
 `Color` in Jetpack Compose encapsulates color-related implementations, which solves the problem of using the `Integer` type to pass colors in native Android.
 
-`BetterAndroid` also provides extensions for `Color` similar to those in [ui-extension → Color Extension](ui-extension.md#color-extension), making it easier use.
+BetterAndroid also provides extensions for `Color` similar to those in [ui-extension → Color Extension](ui-extension.md#color-extension), making it easier use.
 
 Since `Color` provides the `alpha` property, the `toAlphaColor` extension provided natively is no longer needed in `Color`.
 
@@ -248,7 +248,7 @@ You can add a border to a component through the `Modifier.border(...)` method, b
 The origin of this question comes from [here](https://stackoverflow.com/questions/72514987/unexpected-border-in-composables-border-shows-even-if-border-width-is-zero),
 the solution mentioned in setting the border to a transparent color is not friendly because it still performs a drawing operation.
 
-So `BetterAndroid` provides the `borderOrElse` extension, which will no longer add borders to components when the border size is `0.dp`.
+So BetterAndroid provides the `borderOrElse` extension, which will no longer add borders to components when the border size is `0.dp`.
 
 > The following example
 
@@ -267,7 +267,7 @@ Gets the color in `brush` (`SolidColor`) from an existing `BorderStroke` object.
 
 `SolidColor` is a type of `Brush`, which can be used to fill color, a border created by `BorderStroke(10.dp, Color.White)` will not be able to easily obtain the color from `brush`.
 
-`BetterAndroid` provides an extension for this, now you can get the color in `brush` using the following method.
+BetterAndroid provides an extension for this, now you can get the color in `brush` using the following method.
 
 > The following example
 
@@ -297,7 +297,7 @@ Componentized `padding`, inherited from `PaddingValues`.
 
 However, `PaddingValues` does not provide functions such as `copy`, once set, it cannot be modified, which is very inconvenient.
 
-So `BetterAndroid` inherited from `PaddingValues` and rewrote `ComponentPadding` to make it easier to use.
+So BetterAndroid inherited from `PaddingValues` and rewrote `ComponentPadding` to make it easier to use.
 
 In terms of usage, `ComponentPadding` is exactly the same as `PaddingValues`, and you can also set it directly into `Modifier.padding(...)`.
 
@@ -330,7 +330,7 @@ Box(
 }
 ```
 
-`BetterAndroid` also encapsulates `calculateLeftPadding` and `calculateRightPadding` into Composeable methods,
+BetterAndroid also encapsulates `calculateLeftPadding` and `calculateRightPadding` into Composeable methods,
 you no longer need to use `LayoutDirection` to calculate `padding` in the LTR and RTL directions.
 
 > The following example
@@ -380,7 +380,7 @@ Extensions related to foundation.
 
 :::
 
-There is a lack of a "disabled" state in Jetpack Compose components, `BetterAndroid` provides the following ways to achieve this effect by adjusting the transparency of the component.
+There is a lack of a "disabled" state in Jetpack Compose components, BetterAndroid provides the following ways to achieve this effect by adjusting the transparency of the component.
 
 Its actual function is actually a visual enabling or disabling transparency effect, and does not set any state on the component.
 
@@ -403,7 +403,7 @@ In the original `clickable`, `combinedClickable`, `toggleable`, and `selectable`
 
 If you only use these functions in a simple scenario, it will be more cumbersome.
 
-`BetterAndroid` provides extensions of the same name for the above functions,
+BetterAndroid provides extensions of the same name for the above functions,
 now you can use these functions more conveniently without having to think about using `remember` and other methods to set their state.
 
 > The following example
@@ -431,7 +431,7 @@ In native Android, to implement haptic feedback, you need to use the `View.perfo
 
 In Jetpack Compose, you need to reference `LocalHapticFeedback` every time and then use the `performHapticFeedback` method, which seems unfriendly.
 
-`BetterAndroid` provides the `hapticFeedback` method for this purpose, you can now use the following methods to implement haptic feedback more simply.
+BetterAndroid provides the `hapticFeedback` method for this purpose, you can now use the following methods to implement haptic feedback more simply.
 
 > The following example
 
@@ -461,7 +461,7 @@ Extensions for `ImageVector`.
 
 Jetpack Compose natively provides an `ImageVector` that can create vector images, but you need to use `ImageVector.Builder` to create it.
 
-This method does not seem very friendly, so `BetterAndroid` provides a method of the same name of `ImageVector` for this purpose.
+This method does not seem very friendly, so BetterAndroid provides a method of the same name of `ImageVector` for this purpose.
 
 > The following example
 
@@ -504,7 +504,7 @@ Extensions for `Unit`.
 
 In all units that can use `isSpecified` for judgment, Jetpack Compose provides the `takeOrElse` method, but it is not concise and easy to understand.
 
-So `BetterAndroid` provides the `orNull` method for this, you can use it to get an object that can be `null` in this state.
+So BetterAndroid provides the `orNull` method for this, you can use it to get an object that can be `null` in this state.
 
 Below is a comparison of using `takeOrElse` versus `orNull`.
 
@@ -614,11 +614,11 @@ The extensions described in this section are available for use in Kotlin Multipl
 
 When creating `Dialog` and `Popup`, `commonMain` does not handle the special functions in the Android platform well.
 
-`BetterAndroid` provides functions related to the Android platform for this purpose, you can use them directly in `commonMain` without having to adapt them separately for Android.
+BetterAndroid provides functions related to the Android platform for this purpose, you can use them directly in `commonMain` without having to adapt them separately for Android.
 
 `DialogPropertiesWrapper` mirrors all properties from `DialogProperties` and encapsulates Android platform-specific properties into `DialogPropertiesWrapper.AndroidProperties`.
 
-In the `Dialog` method provided by `BetterAndroid`, you can directly pass in the `DialogPropertiesWrapper` object.
+In the `Dialog` method provided by BetterAndroid, you can directly pass in the `DialogPropertiesWrapper` object.
 
 > The following example
 
@@ -653,7 +653,7 @@ Currently, only `alpha` in `scrimColor` in `DialogPropertiesWrapper` can take ef
 
 For `Popup`, the `onPreviewKeyEvent` and `onKeyEvent` parameters do not exist on the Android platform, which will causes `commonMain` to fail to compile when distributed to Android.
 
-To fix this problem, `BetterAndroid` simulates `onPreviewKeyEvent` and `onKeyEvent` for the Android platform, now you don't need to worry about compatibility issues.
+To fix this problem, BetterAndroid simulates `onPreviewKeyEvent` and `onKeyEvent` for the Android platform, now you don't need to worry about compatibility issues.
 
 > The following example
 

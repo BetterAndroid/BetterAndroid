@@ -68,7 +68,7 @@ Android's `SystemProperties` tool.
 
 Maybe you are tired of `Build.VERSION.SDK_INT` and `Build.VERSION_CODES` floating around in your code, so from now on, you no longer need to use them.
 
-`BetterAndroid` has prepared simpler writing methods for you to replace them.
+BetterAndroid has prepared simpler writing methods for you to replace them.
 
 Previously, we needed to determine the Android API level of the current system, which was basically done in the following ways.
 
@@ -122,7 +122,7 @@ if (AndroidVersion.isAtLeast(AndroidVersion.Q)) {
 }
 ```
 
-The following is the constant mapping comparison table for each API, after Android version update, `BetterAndroid` will update these constants synchronously.
+The following is the constant mapping comparison table for each API, after Android version update, BetterAndroid will update these constants synchronously.
 
 | API Level | `AndroidVersion` Name | `Build.VERSION_CODES` Name | Corresponding System Version |
 | --------- | --------------------- | -------------------------- | ---------------------------- |
@@ -190,7 +190,7 @@ it is very necessary for us to target the different functions of each customized
 Usually, everyone’s solution is to determine the model of the device to determine what kind of customized system it is,
 however, if the current device is not running the customized system you judged, such as the case where the user flashes the phone by himself, then this solution is will fail.
 
-`BetterAndroid` provides you with a simple, fast and efficient solution by collecting corresponding features of various common custom systems.
+BetterAndroid provides you with a simple, fast and efficient solution by collecting corresponding features of various common custom systems.
 
 The following is a simple example to determine the type of current ROM.
 
@@ -263,7 +263,7 @@ Special thanks to that project for the adaptation ideas and references.
 
 `SystemProperties` is a tool provided by Android that can read the contents of `build.prop` during runtime, but this function is not open to developers.
 
-So in order to avoid using reflection to access `SystemProperties` every time, `BetterAndroid` mirrors all methods of `SystemProperties`.
+So in order to avoid using reflection to access `SystemProperties` every time, BetterAndroid mirrors all methods of `SystemProperties`.
 
 Now, you can directly access `SystemProperties` using non-reflective means.
 
@@ -278,7 +278,7 @@ val buildTags = SystemProperties.get("ro.system.build.tags")
 val abis = SystemProperties.get("ro.system.product.cpu.abilist")
 ```
 
-`BetterAndroid` also provides an extension usage for it.
+BetterAndroid also provides an extension usage for it.
 
 > The following example
 
@@ -338,7 +338,7 @@ Extensions for `Application`.
 
 :::
 
-`BetterAndroid` provides extended functions for `PackageManager`, `PackageInfo`, `ApplicationInfo` and other functions, so that you can use these functions more conveniently.
+BetterAndroid provides extended functions for `PackageManager`, `PackageInfo`, `ApplicationInfo` and other functions, so that you can use these functions more conveniently.
 
 They are collectively classified as application extensions, meaning application-related functions.
 
@@ -388,7 +388,7 @@ its icon may still be displayed on the launcher, and clicking it will open the a
 
 Get app's package information.
 
-`BetterAndroid` provides an overloaded method with the same name for `getPackageInfo`, you don’t need to consider compatibility issues, just use `PackageInfoFlagsWrapper` as the parameter of `flags`.
+BetterAndroid provides an overloaded method with the same name for `getPackageInfo`, you don’t need to consider compatibility issues, just use `PackageInfoFlagsWrapper` as the parameter of `flags`.
 
 The reason for overloading this method is that in Android 13, the official method of `Int` type `flags` was invalidated and a new solution was enabled,
 however, no compatibility processing tools were provided, but it was later canceled in Android 14, which will cause great trouble to developers.
@@ -416,7 +416,7 @@ so that if the acquisition fails, `null` will be returned instead of throwing an
 
 Get a list of installed apps' package information.
 
-`BetterAndroid` also provides an overloaded method with the same name for `getInstalledPackages`. You don't need to consider compatibility issues, just use `PackageInfoFlagsWrapper` as the parameter of `flags`.
+BetterAndroid also provides an overloaded method with the same name for `getInstalledPackages`. You don't need to consider compatibility issues, just use `PackageInfoFlagsWrapper` as the parameter of `flags`.
 
 > The following example
 
@@ -457,7 +457,7 @@ Similarly, when you are not sure whether `ResolveInfo` can be obtained successfu
 
 Determine whether the component declared by the app is enabled or in the default state.
 
-`BetterAndroid` encapsulates the `getComponentEnabledSetting` method, you can use the following methods to determine the component status faster.
+BetterAndroid encapsulates the `getComponentEnabledSetting` method, you can use the following methods to determine the component status faster.
 
 The default state is the state declared by the app itself in `AndroidManifest.xml`, or the enabled state if not declared.
 
@@ -474,7 +474,7 @@ val isEnabled = context.packageManager.isComponentEnabled(mainComponent)
 
 Enable, disable, or reset components declared by the app.
 
-`BetterAndroid` encapsulates the `setComponentEnabledSetting` method, you can use the following methods to complete this operation faster.
+BetterAndroid encapsulates the `setComponentEnabledSetting` method, you can use the following methods to complete this operation faster.
 
 The reset operation will reset to the default state, which is the state declared by the app itself in `AndroidManifest.xml`, or the enabled state if not declared.
 
@@ -508,7 +508,7 @@ this method is basically difficult to find.
 
 The use of two version numbers at the same time will also cause problems, developers cause trouble.
 
-For this purpose, `BetterAndroid` encapsulates the compatible implementation of version number, you don't need to think about `versionCode` and `longVersionCode` now.
+For this purpose, BetterAndroid encapsulates the compatible implementation of version number, you don't need to think about `versionCode` and `longVersionCode` now.
 
 You can directly use `versionCodeCompat` to get the version number of the apps, and its type will always remain is `Long`.
 
@@ -523,7 +523,7 @@ val versionCode = context.packageManager.getPackageInfo("com.android.chrome").ve
 
 Gets the CPU ABI name of the apps.
 
-This is a hidden API, so `BetterAndroid` is obtained through reflection, and you may need to use it in some specific scenarios.
+This is a hidden API, so BetterAndroid is obtained through reflection, and you may need to use it in some specific scenarios.
 
 > The following example
 
@@ -540,7 +540,7 @@ val secondaryCpuAbi = packageInfo.applicationInfo.secondaryCpuAbi
 
 Determines whether `ApplicationInfo` contains the specified `flags`.
 
-`BetterAndroid` encapsulates the method of judging `flags` through bit operations, you can use the following method to complete this operation faster.
+BetterAndroid encapsulates the method of judging `flags` through bit operations, you can use the following method to complete this operation faster.
 
 > The following example
 
@@ -582,7 +582,7 @@ Extensions for Broadcast.
 
 Broadcast is a very important feature in Android, which allows apps to communicate with each other.
 
-`BetterAndroid` provides a dynamic registration solution at runtime for broadcast, you can send broadcasts and create `BoardcastReceiver` more easily.
+BetterAndroid provides a dynamic registration solution at runtime for broadcast, you can send broadcasts and create `BoardcastReceiver` more easily.
 
 You can use the following methods to send and receive normal broadcasts without declaring them in `AndroidManifest.xml`.
 
@@ -698,7 +698,7 @@ Of course, you can also use `getPrimaryClip` to read the clipboard content.
 
 Sometimes we only need to set or read a string, but these operations require writing a lot of code, which is very unfriendly to developers.
 
-For this reason, `BetterAndroid` provides a simpler solution for the clipboard, you can directly use the following methods to set or read the clipboard content.
+For this reason, BetterAndroid provides a simpler solution for the clipboard, you can directly use the following methods to set or read the clipboard content.
 
 Read the contents of the clipboard.
 
@@ -912,7 +912,7 @@ Extensions for `Intent`.
 
 In normal cases, when we need to create an `Intent` for a specific component, we usually have to write something like `Intent(this, MyActivity::class.java)` manually.
 
-Now, you can complete this directly with generics methods provided by `BetterAndroid`.
+Now, you can complete this directly with generics methods provided by BetterAndroid.
 
 > The following example
 
@@ -929,7 +929,7 @@ The remaining extension methods in `Intent` are mainly used to handle the acquis
 
 They are marked as deprecated in Android 13 and the official does not provide any effective compatible handling method.
 
-You can use the compatibility handling methods provided by `BetterAndroid` to obtain data of `Serializable` and `Parcelable` types.
+You can use the compatibility handling methods provided by BetterAndroid to obtain data of `Serializable` and `Parcelable` types.
 
 > The following example
 
@@ -971,7 +971,7 @@ Extensions for `Service`.
 
 Similar to how to start `Activity`, when we need to start a `Service`, we need to use `Intent` to create an `Intent(this, MyService::class.java)`, and then call `startService(intent)` to start it.
 
-This may not be very friendly to write, so `BetterAndroid` provides an extension for `Service`, now you can directly use the following method to start a `Service`.
+This may not be very friendly to write, so BetterAndroid provides an extension for `Service`, now you can directly use the following method to start a `Service`.
 
 > The following example
 

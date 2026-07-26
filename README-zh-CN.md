@@ -27,7 +27,7 @@ ROM 和第三方厂商定制的 “Android 系统” 以及 Kotlin 开发语言�
 
 ## 功能一览
 
-`BetterAndroid` 将 Android 开发中常见但繁琐的系统版本、ROM 判断、UI 组件、系统栏、列表适配器以及通知等能力拆分为多个可独立引入的模块。你可以只选择当前项目需要的部分，也可以通过
+BetterAndroid 将 Android 开发中常见但繁琐的系统版本、ROM 判断、UI 组件、系统栏、列表适配器以及通知等能力拆分为多个可独立引入的模块。你可以只选择当前项目需要的部分，也可以通过
 BOM 统一管理多个 Android 子模块版本。
 
 如果你的代码里到处都是 `Build.VERSION.SDK_INT`、`Build.VERSION_CODES` 或硬编码 API 等级，`system-extension` 可以让系统版本判断更直观，同时也提供了对常见第三方
@@ -107,7 +107,7 @@ notification.post()
 ### 下一步做什么？
 
 1. **引入依赖**: 找到你需要的模块并将其添加到你的项目中。
-2. **同步项目**: 在 Gradle 同步后，你就可以开始使用 `BetterAndroid` 了。
+2. **同步项目**: 在 Gradle 同步后，你就可以开始使用 BetterAndroid 了。
 
 在打开的页面中，选择侧边栏的 **快速开始** 章节以继续阅读。
 

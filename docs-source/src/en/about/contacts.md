@@ -10,6 +10,6 @@ Find me on **Twitter** [@fankesyooni](https://twitter.com/fankesyooni).
 
 ## Help with Maintenance
 
-Thank you for choosing and using `BetterAndroid`.
+Thank you for choosing and using BetterAndroid.
 
 If you have code-related suggestions and requests, you can submit a Pull Request on GitHub.

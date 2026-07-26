@@ -213,7 +213,7 @@ class MainActivity : AppComponentActivity() {
 
 For related extensions of Jetpack Compose, you can refer to [compose-extension](compose-extension.md), [compose-multiplatform](compose-multiplatform.md).
 
-`BetterAndroid` also provides related extensions for `Activity`, you can refer to [ui-extension → Activity Extension](ui-extension.md#activity-extension).
+BetterAndroid also provides related extensions for `Activity`, you can refer to [ui-extension → Activity Extension](ui-extension.md#activity-extension).
 
 :::
 
@@ -243,7 +243,7 @@ When using `ViewBinding`, you can use `AppBindingFragment` to quickly create a `
 
 In `AppBindingFragment`, you can directly use the `binding` property to obtain the view binding object without manually overriding the `onCreateView` method.
 
-The `binding` property is only available between `onCreateView` and `onDestroyView`, and `BetterAndroid` will release it automatically in `onDestroyView`.
+The `binding` property is only available between `onCreateView` and `onDestroyView`, and BetterAndroid will release it automatically in `onDestroyView`.
 
 > The following example
 
@@ -296,7 +296,7 @@ class MainFragment : AppViewsFragment(R.layout.fragment_main) {
 
 ::: tip
 
-`BetterAndroid` also provides related extensions for `Fragment`, you can refer to [ui-extension → Fragment Extension](ui-extension.md#fragment-extension).
+BetterAndroid also provides related extensions for `Fragment`, you can refer to [ui-extension → Fragment Extension](ui-extension.md#fragment-extension).
 
 :::
 
@@ -336,9 +336,9 @@ The biggest problem is that the creation of system notifications is complicated,
 
 Especially when developers see the two classes `NotificationCompat` and `NotificationChannelCompat`, they will feel at a loss to start.
 
-So `BetterAndroid` comprehensively encapsulates the system notification-related APIs, basically covering all functions and calls that can be used in system notifications.
+So BetterAndroid comprehensively encapsulates the system notification-related APIs, basically covering all functions and calls that can be used in system notifications.
 
-So you no longer need to consider compatibility issues with Android 8 and below systems like notification channels, `BetterAndroid` has already taken care of these issues for you.
+So you no longer need to consider compatibility issues with Android 8 and below systems like notification channels, BetterAndroid has already taken care of these issues for you.
 
 In Kotlin you can create a system notification more easily.
 
@@ -389,7 +389,7 @@ In Android 13 and above, you need to define and add runtime permission for notif
 When this permission is not defined correctly, calling `post` may trigger the system permission flow or fail directly, so you should request the permission before posting.
 
 Notification channels and channel groups are created automatically on the first `post`.
-If the system already has a channel or group with the same ID, `BetterAndroid` will reuse it instead of trying to create it again.
+If the system already has a channel or group with the same ID, BetterAndroid will reuse it instead of trying to create it again.
 
 Please refer to [Notification runtime permission](https://developer.android.com/develop/ui/views/notifications/notification-permission).
 
@@ -562,7 +562,7 @@ the color and background of the status bars and navigation bars, etc.
 
 These are all issues that developers need to consider during the development process.
 
-So `BetterAndroid` docks and encapsulates the system bars adaptation solution provided by `androidx` and integrates it into `SystemBarsController`.
+So BetterAndroid docks and encapsulates the system bars adaptation solution provided by `androidx` and integrates it into `SystemBarsController`.
 
 Now, you can call it very conveniently to easily implement a series of solutions for the operating system bars.
 
@@ -673,7 +673,7 @@ you should use `edgeToEdgeInsets` to control the window insets `padding` of the 
 In Jetpack Compose, you can use `AppComponentActivity` to get a `SystemBarsController` initialized with `edgeToEdgeInsets = null`,
 then use Jetpack Compose to set window insets.
 
-`BetterAndroid` also provides extension support for it, for more functions, you can refer to [compose-multiplatform](./compose-multiplatform).
+BetterAndroid also provides extension support for it, for more functions, you can refer to [compose-multiplatform](./compose-multiplatform).
 
 :::
 

@@ -72,7 +72,7 @@ Extensions for `Activity`.
 
 When we need to start another `Activity`, we need to use `Intent` to create an `Intent(this, AnotherActivity::class.java)`, and then call `startActivity(intent)` to start it.
 
-This may not be very friendly to write, so `BetterAndroid` provides an extension for `Activity`, now you can directly use the following method to start another `Activity`.
+This may not be very friendly to write, so BetterAndroid provides an extension for `Activity`, now you can directly use the following method to start another `Activity`.
 
 > The following example
 
@@ -150,7 +150,7 @@ If the startup fails, this method will not throw an exception but return `false`
 
 :::
 
-For the new multi-window mode in Android 7.0 and later versions, `BetterAndroid` provides a compatible extension for it.
+For the new multi-window mode in Android 7.0 and later versions, BetterAndroid provides a compatible extension for it.
 
 For `isInMultiWindowMode`, you do not need to consider version compatibility issues, you only need to add a `Compat` at the end.
 
@@ -179,7 +179,7 @@ In some cases, you may only have a `Context`, but still need to turn it back int
 
 If you keep writing `as? Activity` manually, cases such as `ContextThemeWrapper` or multiple layers of `ContextWrapper` can quickly become awkward.
 
-`BetterAndroid` provides a simpler way for this. It will keep unwrapping the current `ContextWrapper` chain for you until it finds the final `Activity`.
+BetterAndroid provides a simpler way for this. It will keep unwrapping the current `ContextWrapper` chain for you until it finds the final `Activity`.
 
 > The following example
 
@@ -224,9 +224,9 @@ Extensions for `Fragment`.
 
 `Fragment` is an officially provided efficient fragment for `Activity`, but its usage is not very user-friendly.
 
-In order to simplify `Fragment` related operations, `BetterAndroid` provides some practical extension functions for `Fragment`.
+In order to simplify `Fragment` related operations, BetterAndroid provides some practical extension functions for `Fragment`.
 
-`BetterAndroid` will automatically help you introduce the `androidx.fragment:fragment-ktx` dependency, you can [refer here](https://developer.android.com/kotlin/ktx#fragment) to get started.
+BetterAndroid will automatically help you introduce the `androidx.fragment:fragment-ktx` dependency, you can [refer here](https://developer.android.com/kotlin/ktx#fragment) to get started.
 
 ::: warning
 
@@ -240,7 +240,7 @@ Starting from version `1.0.5`, we have merged the `...ToActivity` and `...ToFrag
 
 Get the existing `FragmentManager`.
 
-`BetterAndroid` provides a more friendly way for `FragmentActivity` and `Fragment` to obtain the existing `FragmentManager`.
+BetterAndroid provides a more friendly way for `FragmentActivity` and `Fragment` to obtain the existing `FragmentManager`.
 
 > The following example
 
@@ -259,7 +259,7 @@ val parentFragmentManager = fragment.fragmentManager(parent = true)
 
 Using generics to get the parent `Fragment`.
 
-`BetterAndroid` provides a more friendly way to get the parent `Fragment`.
+BetterAndroid provides a more friendly way to get the parent `Fragment`.
 
 It can automatically help you convert the found `Fragment` to the current type without using the `as` form for coercion.
 
@@ -333,7 +333,7 @@ This `View` must already be added to the currently displayed layout, and it is r
 
 A `View` without an ID will use `View.generateViewId` to generate an ID.
 
-This is the default behavior of `attach` and `replace`. If you do not want `BetterAndroid` to generate an ID for a container view automatically,
+This is the default behavior of `attach` and `replace`. If you do not want BetterAndroid to generate an ID for a container view automatically,
 set `generateViewId = false` and make sure the container already has a valid ID.
 
 :::
@@ -423,7 +423,7 @@ You can find `customAnimId`, `customEnterAnimId`, and `customExitAnimId` paramet
 
 In all transaction events, these methods retain the `body` parameter, allowing you to continue executing your custom transactions.
 
-`BetterAndroid` also provides `FragmentTransaction`, which you can use to create a template and apply it in your `body`.
+BetterAndroid also provides `FragmentTransaction`, which you can use to create a template and apply it in your `body`.
 
 > The following example
 
@@ -450,7 +450,7 @@ fragment.attach(activity, body = myTransaction)
 
 ::: warning
 
-Starting from version `1.0.4`, `BetterAndroid` has removed the default transition animation and related resource files.
+Starting from version `1.0.4`, BetterAndroid has removed the default transition animation and related resource files.
 
 We believe that transition animation should be something that each developer decides for themselves, not for tool libraries.
 
@@ -484,7 +484,7 @@ Extension methods for `Insets`, `WindowInsets`.
 
 ::: warning
 
-Among the library [ui-component](./ui-component) of `1.0.3` and previous versions, `BetterAndroid` encapsulates insest, window insets and [System Bars (Status Bars, Navigation Bars, etc)](./ui-component#system-bars-status-bars-navigation-bars-etc), this was once incorrect, and now insets and window insets have been decoupled into separate functions, as you can see now.
+Among the library [ui-component](./ui-component) of `1.0.3` and previous versions, BetterAndroid encapsulates insest, window insets and [System Bars (Status Bars, Navigation Bars, etc)](./ui-component#system-bars-status-bars-navigation-bars-etc), this was once incorrect, and now insets and window insets have been decoupled into separate functions, as you can see now.
 
 :::
 
@@ -497,7 +497,7 @@ Insets is a special space, which represents the placeholder area "attached" arou
 insets held by the system such as the part blocked by the cutout displays (notch screens), status bars, navigation bars,
 and input method are called window insets.
 
-What `BetterAndroid` mainly does is wrapped this set of APIs to make them easier to use.
+What BetterAndroid mainly does is wrapped this set of APIs to make them easier to use.
 
 Next, you can create a `WindowInsetsWrapper` from an existing `WindowInsets` object.
 
@@ -536,7 +536,7 @@ val systemBars = insetsWrapper.systemBars(ignoreVisibility = true)
 val insetsIsVisible = systemBars.isVisible
 ```
 
-`BetterAndroid` has made a compatibility process for the respective private solutions of manufacturers of
+BetterAndroid has made a compatibility process for the respective private solutions of manufacturers of
 mainstream brands of cutout display devices below Android 9.
 
 If you need to be compatible with older devices, you can pass in an optional `Window` object in the method parameter.
@@ -560,13 +560,13 @@ val displayCutout = insetsWrapper.displayCutout
 
 ::: warning
 
-If your app needs to run on Android 10 or below devices, we recommend always passing in a `Window` object to ensure that `BetterAndroid` can correctly handle compatibility issues for you.
+If your app needs to run on Android 10 or below devices, we recommend always passing in a `Window` object to ensure that BetterAndroid can correctly handle compatibility issues for you.
 
 Currently known compatibility issues are that the compatibility processing method provided by `androidx` cannot give correct values ​​to the `isVisible` and their contents of
-`statusBars`, `navigationBars`, `systemBars` of devices below Android 11, for this reason, `BetterAndroid` repairs were made.
+`statusBars`, `navigationBars`, `systemBars` of devices below Android 11, for this reason, BetterAndroid repairs were made.
 
 For early devices below Android 9, some manufacturers need to add `meta-data` in `AndroidManifest.xml` to enable compatibility processing.
-To prevent configuration pollution, starting from version `1.1.1`, `BetterAndroid` has removed these default configuration options.
+To prevent configuration pollution, starting from version `1.1.1`, BetterAndroid has removed these default configuration options.
 If needed, you can refer to the following configuration scheme to manually add them.
 
 > The following example
@@ -691,7 +691,7 @@ ViewCompat.setOnApplyWindowInsetsListener(view) { view, insets ->
 }
 ```
 
-This approach seems cumbersome, so `BetterAndroid` also provides you with a simpler method.
+This approach seems cumbersome, so BetterAndroid also provides you with a simpler method.
 
 For example, we need to know the space occupied by the input method and set the `padding` from window insets for the input method layout.
 
@@ -922,7 +922,7 @@ Extensions for `Lifecycle`.
 In the `androidx` usage, if you want to observe a lifecycle object,
 you usually need to manually create an anonymous observer object and then register it to `Lifecycle`.
 
-`BetterAndroid` provides a more direct way for this. Now you can use Kotlin lambda to quickly create `DefaultLifecycleObserver` and `LifecycleEventObserver`,
+BetterAndroid provides a more direct way for this. Now you can use Kotlin lambda to quickly create `DefaultLifecycleObserver` and `LifecycleEventObserver`,
 and you can also add them directly to `Lifecycle`.
 
 > The following example
@@ -993,7 +993,7 @@ Extensions for `LifecycleOwner`.
 
 `LifecycleOwner` is an important component in Android Jetpack, providing lifecycle management for `Activity`, `Fragment`, etc.
 
-`BetterAndroid` provides extensions for `LifecycleOwner` to obtain context, which you can use in commonly inherited instances of `LifecycleOwner`.
+BetterAndroid provides extensions for `LifecycleOwner` to obtain context, which you can use in commonly inherited instances of `LifecycleOwner`.
 
 > The following example
 
@@ -1016,7 +1016,7 @@ val yourActivity = lcOwner.requireActivity<YourActivity>()
 
 `androidx` provides `View.findViewTreeLifecycleOwner` to get the `LifecycleOwner` from a `View`, but its usage is not very friendly.
 
-`BetterAndroid` provides a more friendly way for `View` to get the `LifecycleOwner` it is in,
+BetterAndroid provides a more friendly way for `View` to get the `LifecycleOwner` it is in,
 which integrates `View.findViewTreeLifecycleOwner` and adds a fallback mechanism that can handle cases where it may fail during preloading,
 continuing to use `View.getContext` to get the context and obtain the `LifecycleOwner` from it.
 
@@ -1031,7 +1031,7 @@ val lcOwner = view.lifecycleOwner
 val lcOwner = view.requireLifecycleOwner()
 ```
 
-As mentioned above, `BetterAndroid` also provides an extension method for `Context` to obtain the `LifecycleOwner`.
+As mentioned above, BetterAndroid also provides an extension method for `Context` to obtain the `LifecycleOwner`.
 
 > The following example
 
@@ -1061,10 +1061,10 @@ Extensions for system back pressed events.
 `androidx` already provides `OnBackPressedDispatcher` for handling system back pressed events,
 but in actual use, you still need to frequently deal with the callback object itself and the process of continuing the current back dispatch.
 
-`BetterAndroid` provides a more direct set of extensions for this,
+BetterAndroid provides a more direct set of extensions for this,
 allowing you to continue using the official capability with a more concise Kotlin call style.
 
-`BetterAndroid` will automatically help you introduce the `androidx.activity:activity` dependency, you can [refer here](https://developer.android.com/reference/androidx/activity/OnBackPressedDispatcher) to get started.
+BetterAndroid will automatically help you introduce the `androidx.activity:activity` dependency, you can [refer here](https://developer.android.com/reference/androidx/activity/OnBackPressedDispatcher) to get started.
 
 > The following example
 
@@ -1156,7 +1156,7 @@ Extensions for coroutines.
 Coroutines are an important feature in Kotlin, providing a more elegant solution for asynchronous programming.
 
 Since coroutines themselves are a standard library in Kotlin and do not directly bind to the Android lifecycle,
-`BetterAndroid` provides some practical extension functions to bridge important UI interactions.
+BetterAndroid provides some practical extension functions to bridge important UI interactions.
 
 ::: warning
 
@@ -1183,7 +1183,7 @@ val deferred = lcOwner.async {
 }
 ```
 
-Additionally, `BetterAndroid` provides more extensions for coroutines to switch between the main thread and non-main threads in Android.
+Additionally, BetterAndroid provides more extensions for coroutines to switch between the main thread and non-main threads in Android.
 
 > The following example
 
@@ -1222,7 +1222,7 @@ But in the code you need to use `TypedValue.applyDimension` to convert, such cod
 
 As a result, everyone began to encapsulate a method in the form of `dp2px`, but this approach was still not very elegant and had problems.
 
-`BetterAndroid` provides a more elegant solution for this.
+BetterAndroid provides a more elegant solution for this.
 
 Normally, you only need to pass in an existing `Context` or `Resources` to complete the conversion.
 
@@ -1364,11 +1364,11 @@ Extensions for `Resources`.
 
 Resources are a very important part of Android, they contain layouts, images, strings, etc, needed in the apps.
 
-In order to use `Resources` more conveniently, `BetterAndroid` provides some practical extension functions for it.
+In order to use `Resources` more conveniently, BetterAndroid provides some practical extension functions for it.
 
 Get the theme resource ID in `ContextThemeWrapper`.
 
-Normally, the theme resource ID set using `setTheme` cannot be obtained directly. For this reason, `BetterAndroid` provides you with a way to obtain it through reflection.
+Normally, the theme resource ID set using `setTheme` cannot be obtained directly. For this reason, BetterAndroid provides you with a way to obtain it through reflection.
 
 ::: warning
 
@@ -1405,7 +1405,7 @@ val windowBackgroundId = typedValue.resourceId
 val windowBackground = context.getDrawable(windowBackgroundId)
 ```
 
-The whole process can be said to be very cumbersome, so `BetterAndroid` provides a simpler way for this.
+The whole process can be said to be very cumbersome, so BetterAndroid provides a simpler way for this.
 
 Now, you just need to use the following method to get the value of itself.
 
@@ -1464,9 +1464,9 @@ Currently `Context.getThemeAttrs*` and `Context.areThemeAttrsIdsValueEquals` sup
 
 There is no way to directly obtain the `Menu` resource ID and parse it into a `Menu` object in Android.
 
-For this reason, `BetterAndroid` provides a possible way to obtain it.
+For this reason, BetterAndroid provides a possible way to obtain it.
 
-`BetterAndroid` encapsulates the method of using `PopupMenu` and converting the obtained content into a `List<MenuItem>` object through `MenuInflater`.
+BetterAndroid encapsulates the method of using `PopupMenu` and converting the obtained content into a `List<MenuItem>` object through `MenuInflater`.
 
 Now, you can easily use the following method to get the value of the `Menu` resource ID.
 
@@ -1481,7 +1481,7 @@ val menuItems = context.getMenuFromResource(R.menu.my_menu)
 ```
 
 For compatibility processing of historical version systems,
-`BetterAndroid` encapsulates the methods provided by `ResourcesCompat`, now, you do not need to consider the issue of some methods being deprecated.
+BetterAndroid encapsulates the methods provided by `ResourcesCompat`, now, you do not need to consider the issue of some methods being deprecated.
 
 You only need to add `Compat` after each method to automatically make it compatible and call it like the original method, with exactly the same function.
 
@@ -1518,7 +1518,7 @@ The following is a comparison table of the original method and the compatibility
 
 ::: tip
 
-`BetterAndroid` also provides `getStringArray`, `getIntArray` and `getColorOrNull` utility methods for `TypedArray`, which you can find them in **Contents of This Section** above.
+BetterAndroid also provides `getStringArray`, `getIntArray` and `getColorOrNull` utility methods for `TypedArray`, which you can find them in **Contents of This Section** above.
 
 The `TypedArray.get...OrNull` method differs from the original method in that it first checks if the attribute resource exists before returning the relevant result.
 
@@ -1532,7 +1532,7 @@ The specific implementation is `val myType = if (value.hasValue(index)) value.ge
 
 In practice, we need to encapsulate such an approach ourselves to call the corresponding attribute resource, which is cumbersome.
 
-Therefore, `BetterAndroid` provides this encapsulation, allowing you to operate directly using the following method.
+Therefore, BetterAndroid provides this encapsulation, allowing you to operate directly using the following method.
 
 > The following example
 
@@ -1576,7 +1576,7 @@ The system's night mode is determined using `Configuration.UI_MODE_NIGHT_MASK`, 
 
 Because usually we don't need to care about which hosting state the current system's night mode is in, we only need to know whether the current system appearance is dark.
 
-So `BetterAndroid` provides an extension in `Configuration` that directly uses the `Boolean` type for judgment.
+So BetterAndroid provides an extension in `Configuration` that directly uses the `Boolean` type for judgment.
 
 > The following example
 
@@ -1618,7 +1618,7 @@ Color exists in the form of `Integer` in Android.
 Although there is a class named `Color` to encapsulate it, many methods are added in higher versions of the system and `androidx` is no specific compatible implementation for it,
 objects passed in code context are also usually passed directly using `Integer`.
 
-`BetterAndroid` has no reason and no need to redesign a wrapper class to manage colors, so `BetterAndroid` only provides relevant extensions for the `Integer` type.
+BetterAndroid has no reason and no need to redesign a wrapper class to manage colors, so BetterAndroid only provides relevant extensions for the `Integer` type.
 
 All color objects passed in the method will be marked with the `@ColorInt` annotation. please also comply with the specifications provided by `androidx`.
 
@@ -1677,7 +1677,7 @@ val mixColor = mixColorOf(color1, color2)
 val mixColor = mixColorOf(color1, color2, 0.2f)
 ```
 
-`BetterAndroid` also provides some extended functions for `ColorStateList`.
+BetterAndroid also provides some extended functions for `ColorStateList`.
 
 You can quickly convert existing colors to a `ColorStateList` with default color using the following method.
 
@@ -1738,7 +1738,7 @@ Extension suitable for bitmap blurring.
 
 In Android, bitmaps can be used in various places, and they are an important object used to display images.
 
-`BetterAndroid` provides a series of extended functions for bitmaps, from loading to transforming, scaling, compressing and blurring them.
+BetterAndroid provides a series of extended functions for bitmaps, from loading to transforming, scaling, compressing and blurring them.
 
 When loading bitmaps, you no longer need to use `BitmapFactory`, now there are the following methods to help you complete this operation more conveniently.
 
@@ -1802,7 +1802,7 @@ so that if the loading fails, it will return `null` instead of throwing an excep
 
 After a bitmap is loaded into memory or a bitmap object exists in memory, you can resave it to a file.
 
-Kotlin's stdlib has already provided a `File.writeText` method for the `File` object, so `BetterAndroid` follows its example and provides a `File.writeBitmap` method.
+Kotlin's stdlib has already provided a `File.writeText` method for the `File` object, so BetterAndroid follows its example and provides a `File.writeBitmap` method.
 
 > The following example
 
@@ -1907,7 +1907,7 @@ For the bitmap blur effect in Android, you can refer to and use other possible t
 
 Currently, there is no universal and complete solution, this is a historical problem in Android.
 
-There is no reason and no need for `BetterAndroid` to be special, encapsulates related functions for bitmap blur.
+There is no reason and no need for BetterAndroid to be special, encapsulates related functions for bitmap blur.
 
 If your app targets Android 12 and above, we recommend using the officially provided `RenderEffect` for blur operations, ~~and using the `RenderScript` replacement [renderscript-intrinsics-replacement-toolkit](https://github.com/android/renderscript-intrinsics-replacement-toolkit)~~ (Archived).
 
@@ -1933,7 +1933,7 @@ Extensions for `Drawable`.
 
 In some cases, we may need to use scenarios that directly manipulate `Drawable` objects.
 
-`BetterAndroid` provides some extended functions that may be used for this purpose.
+BetterAndroid provides some extended functions that may be used for this purpose.
 
 Sets `padding` for supported `Drawable`.
 
@@ -1992,7 +1992,7 @@ Discussions about this issue can be found in [Toast extensions on Context](https
 
 It is necessary to simplify the use of `Toast` in Kotlin, because sometimes the fastest way to display information is to show a `Toast`.
 
-So `BetterAndroid` provides a `toast` extension method for this purpose, you can use it in the following instances or instances inherited from them:
+So BetterAndroid provides a `toast` extension method for this purpose, you can use it in the following instances or instances inherited from them:
 
 `Context`, `Window`, `Fragment`, `View`, `Dialog`
 
@@ -2010,7 +2010,7 @@ context.toast("Hello World!")
 context.toast("Hello World!", Toast.LENGTH_SHORT)
 ```
 
-The above are all the ways to use it, `BetterAndroid` did not continue to customize it because the custom functions were also restricted by Android in the later period.
+The above are all the ways to use it, BetterAndroid did not continue to customize it because the custom functions were also restricted by Android in the later period.
 
 Please refer to [Custom toasts from the background are blocked](https://developer.android.com/about/versions/11/behavior-changes-11#custom-toasts-bg-blocked).
 
@@ -2032,7 +2032,7 @@ thread {
 
 In this way, you can show a `Toast` in any thread, it should be noted that this parameter is `false` by default and you need to set it manually.
 
-When this parameter is enabled, `BetterAndroid` posts the actual `Toast` operation back to the main thread and does not create a background `Looper`.
+When this parameter is enabled, BetterAndroid posts the actual `Toast` operation back to the main thread and does not create a background `Looper`.
 
 You should still try to avoid requesting `Toast` from non-main threads unless necessary, because it may make message timing harder to predict.
 
@@ -2062,7 +2062,7 @@ Extensions for `Window`.
 
 :::
 
-`BetterAndroid` provides some possible extension functions for `Window`.
+BetterAndroid provides some possible extension functions for `Window`.
 
 You can modify `Window.attributes` in the same way as `View.updateLayoutParams` in `androidx`.
 
@@ -2078,7 +2078,7 @@ window.updateLayoutParams {
 }
 ```
 
-`BetterAndroid` also encapsulates the method of setting the screen brightness separately for `Window`.
+BetterAndroid also encapsulates the method of setting the screen brightness separately for `Window`.
 
 You can modify `Window.attributes.screenBrightness` more conveniently using the following methods.
 
@@ -2202,7 +2202,7 @@ A value interface for padding.
 
 `View` is an important part of the user interface, when using Kotlin, `androidx` provides us with extended functions for `View`, but it is still not perfect enough.
 
-`BetterAndroid` has been improved and enriched based on the related extension functions of `androidx`, here are some extension functions you can use.
+BetterAndroid has been improved and enriched based on the related extension functions of `androidx`, here are some extension functions you can use.
 
 Get the location of `View` on the screen.
 
@@ -2225,7 +2225,7 @@ Get the tag of the current `View`.
 
 In traditional writing, we need to use `View.getTag` to get the tag object, and then use `as` to convert it to the type we need.
 
-This way of writing seems very cumbersome, so `BetterAndroid` provides a simpler way for this.
+This way of writing seems very cumbersome, so BetterAndroid provides a simpler way for this.
 
 > The following example
 
@@ -2248,7 +2248,7 @@ Get the parent layout of the current `View`.
 
 In traditional writing, we need to use `View.parent` to get the `ViewParent` object, and then use `as` to convert to `ViewGroup` to get the parent layout object.
 
-This way of writing seems very cumbersome, so `BetterAndroid` provides a simpler way for this.
+This way of writing seems very cumbersome, so BetterAndroid provides a simpler way for this.
 
 > The following example
 
@@ -2267,7 +2267,7 @@ Get the child layout of the current `ViewGroup`.
 
 In traditional writing, we need to use `ViewGroup.getChildAt` to get the `View` object, and then use `as` to convert to `View` to get the child layout object.
 
-This way of writing also seems very troublesome, so `BetterAndroid` also provides a simpler way.
+This way of writing also seems very troublesome, so BetterAndroid also provides a simpler way.
 
 > The following example
 
@@ -2314,7 +2314,7 @@ Although `androidx` provides `ViewCompat.setTooltipText` to support usage below 
 it will be ineffective below version 26, and `TooltipTextCompat` only provides a compatible simulation scheme without providing a method to get the tooltip text.
 
 To make the usage of this feature consistent across all versions,
-`BetterAndroid` provides a `View.tooltipTextCompat` method, which uses `Toast` to simulate tooltip text on lower versions of the system and allows you to retrieve the text you set.
+BetterAndroid provides a `View.tooltipTextCompat` method, which uses `Toast` to simulate tooltip text on lower versions of the system and allows you to retrieve the text you set.
 
 > The following example
 
@@ -2329,7 +2329,7 @@ val tooltipText = view.tooltipTextCompat
 
 Create animations.
 
-`BetterAndroid` provides a lambda implementation of the `animate` method for `View`, which will automatically call the `start` method.
+BetterAndroid provides a lambda implementation of the `animate` method for `View`, which will automatically call the `start` method.
 
 You can use it to create some simple animation effects.
 
@@ -2368,7 +2368,7 @@ When `View` is not in `Activity` or the current Android version is lower than An
 
 ::: tip
 
-If you need to use drag and drop to control the showing or hiding of input methods (window insets animation), currently `BetterAndroid` does not provide related extension functions.
+If you need to use drag and drop to control the showing or hiding of input methods (window insets animation), currently BetterAndroid does not provide related extension functions.
 
 You can refer to [WindowInsetsAnimationController](https://developer.android.com/reference/android/view/WindowInsetsAnimationController) to implement it yourself.
 
@@ -2387,7 +2387,7 @@ and the interval between show and hide events should not be too short.
 
 Simulate touch events.
 
-The `performClick` method provided by `View` can only simulate click events, if you need to simulate touch events, you can use the `View.performTouch` method provided by `BetterAndroid`.
+The `performClick` method provided by `View` can only simulate click events, if you need to simulate touch events, you can use the `View.performTouch` method provided by BetterAndroid.
 
 The parameters accepted by this method are shown in the table below.
 
@@ -2429,7 +2429,7 @@ Set interval click event.
 
 The `setOnClickListener` method provided by `View` may cause misoperations if the click event is triggered multiple times in a short period.
 
-To address this, `BetterAndroid` provides the `setIntervalOnClickListener` method.
+To address this, BetterAndroid provides the `setIntervalOnClickListener` method.
 
 Within the specified interval, repeated click events will be ignored.
 
@@ -2451,7 +2451,7 @@ view.setIntervalOnClickListener(1000) {
 
 Update `View`’s `padding` and `margin`.
 
-`androidx` provides a `View.updatePadding` method, and `BetterAndroid` provides a method that can update the horizontal and vertical directions,
+`androidx` provides a `View.updatePadding` method, and BetterAndroid provides a method that can update the horizontal and vertical directions,
 if you only need to update the `padding` in these two directions, you don't need to write two repeat the value.
 
 > The following example
@@ -2473,7 +2473,7 @@ With the current extension capabilities in `androidx`, properties such as `paddi
 but they still cannot be written like normal mutable properties,
 so in the end you still have to go back to forms such as `updatePadding` or `setPadding`.
 
-For this reason, `BetterAndroid` provides Jetpack Compose style `PaddingValues`, so that `padding` gets a more natural read-write experience in Kotlin.
+For this reason, BetterAndroid provides Jetpack Compose style `PaddingValues`, so that `padding` gets a more natural read-write experience in Kotlin.
 
 > The following example
 
@@ -2615,7 +2615,7 @@ Please choose one approach to use from the beginning.
 
 :::
 
-`BetterAndroid` also provides a `View.updateMargins` and `View.setMargins` method, which is used in the same way as `View.updatePadding`.
+BetterAndroid also provides a `View.updateMargins` and `View.setMargins` method, which is used in the same way as `View.updatePadding`.
 
 This method will only take effect when `LayoutParams` of `View` is `MarginLayoutParams`, and will have no effect in other cases.
 
@@ -2642,7 +2642,7 @@ Normally, we need to use the `View.parent` method to recursively traverse the pa
 
 Although the official API already provides `View.ancestors` and `ViewGroup.descendants` for similar traversal scenarios, those names are not always the most intuitive choice in everyday app code.
 
-`BetterAndroid` provides two more friendly names for this: `walkToRoot` and `walkThroughChildren`, and their design is inspired by Kotlin's `File.walk` extension.
+BetterAndroid provides two more friendly names for this: `walkToRoot` and `walkThroughChildren`, and their design is inspired by Kotlin's `File.walk` extension.
 
 > The following example
 
@@ -2669,7 +2669,7 @@ Gets the index of `View` in the parent layout.
 
 In traditional writing, we need to use `ViewGroup.indexOfChild` to get the index of `View` in the parent layout.
 
-This way of writing doesn't seem very friendly, so `BetterAndroid` provides a simpler way for this.
+This way of writing doesn't seem very friendly, so BetterAndroid provides a simpler way for this.
 
 > The following example
 
@@ -2687,7 +2687,7 @@ Sets the `View`'s `outlineProvider`.
 
 In Kotlin, we need to use `view.outlineProvider = object : ViewOutlineProvider()` to set it, which does not seem friendly.
 
-So `BetterAndroid` provides a simpler way for this.
+So BetterAndroid provides a simpler way for this.
 
 > The following example
 
@@ -2709,7 +2709,7 @@ Manually create a `LayoutParams` object.
 
 `LayoutParams` is the layout parameter of `View`, and its type depends on the parent layout of `View`, for example, the `LayoutParams` of `LinearLayout` is `LinearLayout.LayoutParams`.
 
-Sometimes, you may need to manually create this object and set it into `View`, in this case, `BetterAndroid` provides the `ViewLayoutParams` method,
+Sometimes, you may need to manually create this object and set it into `View`, in this case, BetterAndroid provides the `ViewLayoutParams` method,
 now, you can save yourself the step of creating an object using the super long `ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)`.
 
 > The following example
@@ -2745,7 +2745,7 @@ Extensions for `LayoutInflater`.
 
 Normally we can use `getLayoutInflater` or `LayoutInflater.from(context)` in `Activity` to create a `LayoutInflater` object, and then use the `inflate` method to inflate the layout.
 
-`BetterAndroid` simplifies this step for you, now, you can use `layoutInflater` in `Context` to get the `LayoutInflater` object, and then use the `inflate` method to load the layout.
+BetterAndroid simplifies this step for you, now, you can use `layoutInflater` in `Context` to get the `LayoutInflater` object, and then use the `inflate` method to load the layout.
 
 > The following example
 
@@ -2796,7 +2796,7 @@ Extensions for `TextView`.
 
 :::
 
-`TextView` is one of the most commonly used components in Android, `BetterAndroid` provides `TextView` with some extended functions that are more convenient to use in Kotlin.
+`TextView` is one of the most commonly used components in Android, BetterAndroid provides `TextView` with some extended functions that are more convenient to use in Kotlin.
 
 Determine whether there is an ellipsis in `TextView`.
 
@@ -2847,7 +2847,7 @@ Get and set the text color of `TextView`.
 Although you can use the `TextView.setTextColor` method to set the text color, it is not well recognized as the Getter and Setter methods in Kotlin
 because the corresponding `TextView.getTextColors` is a `ColorStateList` object.
 
-So `BetterAndroid` has added an extension for this function, now, you can use the following methods to get and set the text color of `TextView`.
+So BetterAndroid has added an extension for this function, now, you can use the following methods to get and set the text color of `TextView`.
 
 ```kotlin
 // Assume this is your TextView.
@@ -2864,7 +2864,7 @@ Normally, the text obtained directly using `TextView.getText` is a `CharSequence
 
 If you need to convert it to `String`, you need `getText().toString()`, which seems cumbersome.
 
-`BetterAndroid` provides a simpler way for this. Now, you can use the following method to get the text of `TextView` and convert it to `String`.
+BetterAndroid provides a simpler way for this. Now, you can use the following method to get the text of `TextView` and convert it to `String`.
 
 > The following example
 
@@ -2890,7 +2890,7 @@ Update the text of `EditText`.
 
 `EditText` inherits from `TextView`, directly using `setText(...)` to update the text will cause the cursor position to still be at the first position.
 
-`BetterAndroid` provides a more convenient way for this, it will automatically set `setSelection` for you according to the length of the text to keep the cursor position at the end of the text.
+BetterAndroid provides a more convenient way for this, it will automatically set `setSelection` for you according to the length of the text to keep the cursor position at the end of the text.
 
 > The following example
 
@@ -2903,7 +2903,7 @@ editText.updateText("Hello World!")
 
 Clear the text of `TextView`.
 
-Using `setText("")` or `text = ""` does not seem very friendly, so `BetterAndroid` provides a simpler way for this.
+Using `setText("")` or `text = ""` does not seem very friendly, so BetterAndroid provides a simpler way for this.
 
 > The following example
 
@@ -2918,7 +2918,7 @@ Update `TextView`'s `Typeface`.
 
 `Typeface` is a font in Android, sometimes we only need to care about the thickness and italics of the font without setting a specific font.
 
-`BetterAndroid` provides a simpler way for this, now, you can update the `Typeface` of `TextView` using the following method.
+BetterAndroid provides a simpler way for this, now, you can update the `Typeface` of `TextView` using the following method.
 
 > The following example
 
@@ -2935,7 +2935,7 @@ Updated `CompoundDrawables` of `TextView`.
 
 Using the traditional `setCompoundDrawables` method requires passing in four parameters and filling in `null` for unnecessary parameters, which seems very troublesome.
 
-`BetterAndroid` provides a simpler way for this, now, you can directly update the `CompoundDrawables` of `TextView` using the following method.
+BetterAndroid provides a simpler way for this, now, you can directly update the `CompoundDrawables` of `TextView` using the following method.
 
 > The following example
 
@@ -2964,7 +2964,7 @@ Set the input limits (digits) of the `TextView`.
 
 This attribute can only be conveniently set in XML using `digits`, but if you need to modify it dynamically, you will need the `TextView.setKeyListener` method.
 
-For this purpose, `BetterAndroid` provides a `setDigits` method for `TextView`, you can use the following method to set the input limit of `TextView`.
+For this purpose, BetterAndroid provides a `setDigits` method for `TextView`, you can use the following method to set the input limit of `TextView`.
 
 Since the input function is completed by `EditText`, and `EditText` inherits from `TextView`, this method is generally only used in `EditText`.
 
@@ -2998,11 +2998,11 @@ Extensions for `RecyclerView`.
 
 `RecyclerView` is one of the most commonly used list components in Android.
 
-`BetterAndroid` provides some extensions to make it more convenient to use in Kotlin.
+BetterAndroid provides some extensions to make it more convenient to use in Kotlin.
 
 Get the `LayoutManager` of `RecyclerView`.
 
-`BetterAndroid` provides a convenient way to get the `LayoutManager`.
+BetterAndroid provides a convenient way to get the `LayoutManager`.
 
 Now, you no longer need to get the `layoutManager` of `RecyclerView` and then use `as` to convert it to the corresponding type.
 
@@ -3038,7 +3038,7 @@ Extensions for `ViewBinding`.
 But obviously the official method of using it is not open, you can get the interface `ViewBinding` of the generated class,
 and there is no implementation of `inflate` and other methods, you can only use a method like `ActivityMainBinding.inflate(layoutInflater)` to inflate the layout.
 
-So `BetterAndroid` performed reflection processing on it to obtain the `inflate` method and extract the object type through generics.
+So BetterAndroid performed reflection processing on it to obtain the `inflate` method and extract the object type through generics.
 
 These designs are partly inspired by the [ViewBindingKTX](https://github.com/DylanCaiCoding/ViewBindingKTX) project, many thanks to the author of this project.
 

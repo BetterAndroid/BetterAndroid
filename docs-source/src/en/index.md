@@ -1,20 +1,27 @@
 ---
-home: true
+layout: home
 title: Home
-heroImage: /images/logo.png
-actions:
-  - text: Get Started
-    link: /en/guide/home
-    type: primary
-  - text: Changelog
-    link: /en/about/changelog
-    type: secondary
+hero:
+  name: Better Android
+  tagline: Create more useful tool extensions for Android
+  image:
+    src: /images/logo.png
+    alt: Better Android
+  actions:
+    - text: Get Started
+      link: /en/guide/home
+      theme: brand
+    - text: Changelog
+      link: /en/about/changelog
+      theme: alt
 features:
-  - title: Minimalism First
+  - icon: ⚡
+    title: Minimalism First
     details: Ditch cumbersome parameters and Intent configurations. Intuitive Kotlin extensions that shrink system interaction boilerplate into a single line.
-  - title: Modernized UI
+  - icon: 🎨
+    title: Modernized UI
     details: Handle WindowInsets and ViewBinding effortlessly. Native and Compose empowered to give you pixel-perfect control over multiplatform layouts.
-  - title: Targeted Solutions
+  - icon: 🎯
+    title: Targeted Solutions
     details: Focused on Android's fragmentation. Safely resolve third-party ROM quirks with a non-intrusive design, free from bloated dependencies.
-footer: Apache-2.0 License | Copyright (C) 2019 HighCapable
 ---

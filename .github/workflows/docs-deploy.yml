@@ -28,7 +28,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
       - name: Prepare Java 21
         uses: actions/setup-java@v4
         with:
@@ -46,7 +46,7 @@ jobs:
           key: gradle-deps-core-${{ hashFiles('**/build.gradle.kts') }}
           restore-keys: |
             gradle-deps
-      - name: Build VuePress site
+      - name: Build VitePress site
         run: |
           cd docs-source
           yarn -i

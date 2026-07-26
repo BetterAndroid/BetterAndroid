@@ -1,20 +1,27 @@
 ---
-home: true
+layout: home
 title: 首页
-heroImage: /images/logo.png
-actions:
-  - text: 快速上手
-    link: /zh-cn/guide/home
-    type: primary
-  - text: 更新日志
-    link: /zh-cn/about/changelog
-    type: secondary
+hero:
+  name: Better Android
+  tagline: 为 Android 创建更多有用的工具扩展
+  image:
+    src: /images/logo.png
+    alt: Better Android
+  actions:
+    - text: 立即开始
+      link: /zh-cn/guide/home
+      theme: brand
+    - text: 更新日志
+      link: /zh-cn/about/changelog
+      theme: alt
 features:
-  - title: 极简至上
+  - icon: ⚡
+    title: 极简至上
     details: 抛弃繁琐的参数与 Intent 构建。提供符合直觉的 Kotlin 扩展操作，将复杂的系统交互化简为单行代码。
-  - title: 现代化 UI
+  - icon: 🎨
+    title: 现代化 UI
     details: 轻松适配沉浸式状态栏与 ViewBinding。原生与 Compose 双端赋能，实现跨平台视图的精准控制。
-  - title: 直击痛点
+  - icon: 🎯
+    title: 直击痛点
     details: 专注解决 Android 碎片化难题。以非侵入式设计处理第三方系统边界场景，彻底告别臃肿的框架依赖。
-footer: Apache-2.0 License | Copyright (C) 2019 HighCapable
 ---

@@ -107,7 +107,7 @@ kotlin {
 
 你可以 [点击这里](kdoc://compose-multiplatform) 查看 KDoc。
 
-为了能让适应了原生 Android 开发的开发者们能够更快地对各种平台进行适配，借助于 Kotlin Multiplatform 与 Jetpack Compose 的跨平台特性，`BetterAndroid` 无缝地提供了多平台支持。
+为了能让适应了原生 Android 开发的开发者们能够更快地对各种平台进行适配，借助于 Kotlin Multiplatform 与 Jetpack Compose 的跨平台特性，BetterAndroid 无缝地提供了多平台支持。
 
 以下是目前正在开发、开发完成的功能。
 
@@ -295,7 +295,7 @@ fun main() = application {
 
 虽然 `androidx.activity:activity-compose` 提供了 `BackHandler`，但是它只能在 Android 中使用。
 
-`BetterAndroid` 提供了 `BackHandler` 的多平台分发支持，你可以直接在 `commonMain` 中使用它，但是它仅会在 Android 平台中生效。
+BetterAndroid 提供了 `BackHandler` 的多平台分发支持，你可以直接在 `commonMain` 中使用它，但是它仅会在 Android 平台中生效。
 
 如果你正在寻找 Android 侧的返回事件处理方式，可以参考 [ui-extension → BackPressed 扩展](ui-extension.md#backpressed-扩展)。
 
@@ -366,7 +366,7 @@ Android、iOS 对应的原生系统栏控制器。
 
 在 Android、iOS 中，你都需要对系统提供的状态栏、导航栏 (Home Indicator) 进行控制和调整以便给用户带来更好的体验。
 
-为此 `BetterAndroid` 为你提供了 `PlatformSystemBarsController`，它能够通过通用 API 来轻松实现对每个平台系统栏的控制。
+为此 BetterAndroid 为你提供了 `PlatformSystemBarsController`，它能够通过通用 API 来轻松实现对每个平台系统栏的控制。
 
 `PlatformSystemBarsController` 的工作原理是通过 `NativeSystemBarsController` 根据平台的不同而分发到对应的原生控制器。
 
@@ -509,7 +509,7 @@ val nativeController = systemBars.nativeController
 
 ::: tip
 
-`BetterAndroid` 同样为 iOS 提供了一个原生的 `SystemBarsController`，
+BetterAndroid 同样为 iOS 提供了一个原生的 `SystemBarsController`，
 它的用法与 [ui-component → 系统栏 (状态栏、导航栏等)](ui-component.md#系统栏-状态栏、导航栏等) 除了初始化功能外基本保持一致，通常情况下你应该不需要直接使用它，这里也不再进行详细的介绍。
 
 :::

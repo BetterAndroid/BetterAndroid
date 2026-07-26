@@ -15,7 +15,7 @@ type with integrated Kotlin environment dependencies.
 
 ### Configure Repositories
 
-The dependencies of `BetterAndroid` are published in **Maven Central** and our public repository.
+The dependencies of BetterAndroid are published in **Maven Central** and our public repository.
 You can use the following method to configure repositories.
 
 We recommend using Kotlin DSL as the Gradle build script language.

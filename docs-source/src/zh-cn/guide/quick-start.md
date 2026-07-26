@@ -14,7 +14,7 @@
 
 ### 配置存储库
 
-`BetterAndroid` 的依赖发布在 **Maven Central** 和我们的公共存储库中，你可以使用如下方式配置存储库。
+BetterAndroid 的依赖发布在 **Maven Central** 和我们的公共存储库中，你可以使用如下方式配置存储库。
 
 我们推荐使用 Kotlin DSL 作为 Gradle 构建脚本语言。
 

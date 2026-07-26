@@ -8,7 +8,7 @@
 
 ### Project Template Visualization Creation Tool
 
-Because the template creation projects provided by Android Studio are too redundant, we may launch a project template creation tool that integrates `BetterAndroid` related dependencies in the future. 
+Because the template creation projects provided by Android Studio are too redundant, we may launch a project template creation tool that integrates BetterAndroid related dependencies in the future. 
 
 It may exist as a plugin for IntelliJ IDEA.
 

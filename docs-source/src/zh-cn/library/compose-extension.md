@@ -131,7 +131,7 @@ kotlin {
 
 Jetpack Compose 中的 `Color` 封装了颜色相关的实现，它解决了原生 Android 中使用 `Integer` 类型传递颜色的问题。
 
-`BetterAndroid` 同样为 `Color` 提供了与在 [ui-extension → 颜色 (Color) 扩展](ui-extension.md#颜色-color-扩展) 中类似的扩展，使其更加易用。
+BetterAndroid 同样为 `Color` 提供了与在 [ui-extension → 颜色 (Color) 扩展](ui-extension.md#颜色-color-扩展) 中类似的扩展，使其更加易用。
 
 由于 `Color` 提供了 `alpha` 属性，所以原生中提供的 `toAlphaColor` 扩展在 `Color` 中已不再需要。
 
@@ -246,7 +246,7 @@ val composeColor = uiColor.toComposeColor()
 这个问题的起因出自 [这里](https://stackoverflow.com/questions/72514987/unexpected-border-in-composables-border-shows-even-if-border-width-is-zero)，
 其中提到的将边框设置为透明颜色的方案并不友好，因为它依然进行了一次绘制操作。
 
-于是 `BetterAndroid` 提供了 `borderOrElse` 扩展，它会在边框大小为 `0.dp` 时不再为组件添加边框。
+于是 BetterAndroid 提供了 `borderOrElse` 扩展，它会在边框大小为 `0.dp` 时不再为组件添加边框。
 
 > 示例如下
 
@@ -265,7 +265,7 @@ Box(
 
 `SolidColor` 是 `Brush` 的一种，它可以用于填充颜色，一个通过 `BorderStroke(10.dp, Color.White)` 创建的边框将无法方便地从 `brush` 中获取颜色。
 
-`BetterAndroid` 为此提供了扩展，现在你可以使用以下方式获取 `brush` 中的颜色。
+BetterAndroid 为此提供了扩展，现在你可以使用以下方式获取 `brush` 中的颜色。
 
 > 示例如下
 
@@ -295,7 +295,7 @@ val color = border.solidColor(Color.Black)
 
 但是 `PaddingValues` 并没有提供 `copy` 等功能，一旦设置就不可修改，非常的不方便。
 
-于是 `BetterAndroid` 继承于 `PaddingValues` 重新写了一个 `ComponentPadding`，使其更加好用。
+于是 BetterAndroid 继承于 `PaddingValues` 重新写了一个 `ComponentPadding`，使其更加好用。
 
 在用法上，`ComponentPadding` 与 `PaddingValues` 完全相同，你还能够将其直接将其设置到 `Modifier.padding(...)` 中。
 
@@ -328,7 +328,7 @@ Box(
 }
 ```
 
-`BetterAndroid` 同时将 `calculateLeftPadding`、`calculateRightPadding` 封装为了 Composeable 方法，你无需再使用 `LayoutDirection` 来计算 LTR、RTL 方向的 `padding`。
+BetterAndroid 同时将 `calculateLeftPadding`、`calculateRightPadding` 封装为了 Composeable 方法，你无需再使用 `LayoutDirection` 来计算 LTR、RTL 方向的 `padding`。
 
 > 示例如下
 
@@ -377,7 +377,7 @@ val paddingValues = padding.toPaddingValues()
 
 :::
 
-在 Jetpack Compose 的组件中缺少一种 “禁用” 的状态，`BetterAndroid` 提供了以下方式来通过调整组件的透明度以实现这个效果。
+在 Jetpack Compose 的组件中缺少一种 “禁用” 的状态，BetterAndroid 提供了以下方式来通过调整组件的透明度以实现这个效果。
 
 它的实际作用其实就是一个视觉上的启用或禁用的透明度效果，并不会对组件设置任何状态。
 
@@ -397,7 +397,7 @@ Box(
 
 在原始的 `clickable`、`combinedClickable`、`toggleable`、`selectable` 中，你需要手动去为其设置默认值，如果仅在一个简单的场景去使用这些功能，那么会显得更加繁琐。
 
-`BetterAndroid` 为此提供了以上方法的同名扩展，现在你能更方便地使用这些方法而不必考虑使用 `remember` 等方法为其设置状态。
+BetterAndroid 为此提供了以上方法的同名扩展，现在你能更方便地使用这些方法而不必考虑使用 `remember` 等方法为其设置状态。
 
 > 示例如下
 
@@ -424,7 +424,7 @@ Box(
 
 在 Jetpack Compose 中，你需要每次都引用 `LocalHapticFeedback`，然后使用 `performHapticFeedback` 方法，这看起来并不友好。
 
-`BetterAndroid` 为此提供了 `hapticFeedback` 方法，你现在可以更加简单地使用以下方式来实现触感反馈。
+BetterAndroid 为此提供了 `hapticFeedback` 方法，你现在可以更加简单地使用以下方式来实现触感反馈。
 
 > 示例如下
 
@@ -454,7 +454,7 @@ Box(
 
 Jetpack Compose 原生提供了一个能够创建矢量图的 `ImageVector`，但是你要使用 `ImageVector.Builder` 来创建它。
 
-这样的方式看起来不是很友好，于是 `BetterAndroid` 为此提供了一个 `ImageVector` 的同名方法。
+这样的方式看起来不是很友好，于是 BetterAndroid 为此提供了一个 `ImageVector` 的同名方法。
 
 > 示例如下
 
@@ -497,7 +497,7 @@ val myVector = ImageVector(
 
 在所有能够使用 `isSpecified` 进行判断的单位中，Jetpack Compose 都提供了 `takeOrElse` 方法，但是它并不简洁且不容易理解。
 
-于是 `BetterAndroid` 为此提供了 `orNull` 方法，你可以使用它来得到一个可在此状态下为 `null` 的对象。
+于是 BetterAndroid 为此提供了 `orNull` 方法，你可以使用它来得到一个可在此状态下为 `null` 的对象。
 
 下面是使用 `takeOrElse` 与 `orNull` 的对比。
 
@@ -607,11 +607,11 @@ Android 平台中 `SecureFlagPolicy` 的包装类。
 
 在创建 `Dialog`、`Popup` 时，`commonMain` 中并没有很好地处理 Android 平台中的特殊功能。
 
-`BetterAndroid` 为此提供了与 Android 平台相关的功能，你可以在 `commonMain` 中开箱即用，不需要单独为 Android 进行适配。
+BetterAndroid 为此提供了与 Android 平台相关的功能，你可以在 `commonMain` 中开箱即用，不需要单独为 Android 进行适配。
 
 `DialogPropertiesWrapper` 镜像了全部来自 `DialogProperties` 的属性，并将 Android 平台特殊的属性封装为了 `DialogPropertiesWrapper.AndroidProperties`。
 
-在 `BetterAndroid` 为你提供的 `Dialog` 方法中，你可以直接传入 `DialogPropertiesWrapper` 对象。
+在 BetterAndroid 为你提供的 `Dialog` 方法中，你可以直接传入 `DialogPropertiesWrapper` 对象。
 
 > 示例如下
 
@@ -646,7 +646,7 @@ Dialog(
 
 对于 `Popup`，Android 平台不存在 `onPreviewKeyEvent`、`onKeyEvent` 参数，这会导致 `commonMain` 分发到 Android 时编译失败。
 
-为了修复这个问题，`BetterAndroid` 为 Android 平台模拟了 `onPreviewKeyEvent`、`onKeyEvent`，现在你无需考虑兼容性问题。
+为了修复这个问题，BetterAndroid 为 Android 平台模拟了 `onPreviewKeyEvent`、`onKeyEvent`，现在你无需考虑兼容性问题。
 
 > 示例如下
 

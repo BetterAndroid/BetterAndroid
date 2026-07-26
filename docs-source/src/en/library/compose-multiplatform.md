@@ -110,7 +110,7 @@ Please change `<version>` to the version displayed at the top of this document.
 You can view the KDoc [click here](kdoc://compose-multiplatform).
 
 In order to allow developers who are adapted to native Android development to adapt to various platforms faster,
-`BetterAndroid` seamlessly provides multi-platform support with the help of the cross-platform features of Kotlin Multiplatform and Jetpack Compose.
+BetterAndroid seamlessly provides multi-platform support with the help of the cross-platform features of Kotlin Multiplatform and Jetpack Compose.
 
 The following are the functions currently being developed and completed.
 
@@ -299,7 +299,7 @@ Extensions for system back pressed event.
 
 Although `androidx.activity:activity-compose` provides `BackHandler`, it can only be used in Android.
 
-`BetterAndroid` provides multi-platform distribution support for `BackHandler`, you can use it directly in `commonMain`, but it will only take effect on the Android platform.
+BetterAndroid provides multi-platform distribution support for `BackHandler`, you can use it directly in `commonMain`, but it will only take effect on the Android platform.
 
 If you are looking for the Android-side back pressed handling approach, you can refer to [ui-extension → BackPressed Extension](ui-extension.md#backpressed-extension).
 
@@ -370,7 +370,7 @@ System bars behavior.
 
 In both Android and iOS, you need to control and adjust the status bars and navigation bars (home indicator) provided by the system to give users a better experience.
 
-For this purpose, `BetterAndroid` provides you with `PlatformSystemBarsController`, which can easily control the system bars of each platform through a common API.
+For this purpose, BetterAndroid provides you with `PlatformSystemBarsController`, which can easily control the system bars of each platform through a common API.
 
 The working principle of `PlatformSystemBarsController` is to distribute it to the corresponding native controller according to different platforms through `NativeSystemBarsController`.
 
@@ -519,7 +519,7 @@ val nativeController = systemBars.nativeController
 
 ::: tip
 
-`BetterAndroid` also provides a native `SystemBarsController` for iOS,
+BetterAndroid also provides a native `SystemBarsController` for iOS,
 its usage is basically the same as [ui-component → System Bars (Status Bars, Navigation Bars, etc)](./ui-component.md#system-bars-status-bars-navigation-bars-etc)
 except for the initialization function, normally you should not need to use it directly, and it will not be introduced in detail here.
 

@@ -34,7 +34,7 @@ from my earlier project, [PureReader](https://github.com/PureReader).
 
 ## Features Overview
 
-`BetterAndroid` splits common but verbose Android work into several modules that can be introduced independently, including system version checks, ROM
+BetterAndroid splits common but verbose Android work into several modules that can be introduced independently, including system version checks, ROM
 detection, UI components, system bars, adapters, and notifications. You can pick only what your project needs, or use the BOM to manage multiple
 Android module versions together.
 
@@ -117,7 +117,7 @@ You can go to the documentation page for more detailed tutorials and content.
 ### What's next?
 
 1. **Add dependencies**: Find the module you need and add it to your project.
-2. **Sync the project**: After a Gradle sync, you can start using `BetterAndroid`.
+2. **Sync the project**: After a Gradle sync, you can start using BetterAndroid.
 
 In the opened page, select the **Quick Start** section in the sidebar to continue reading.
 

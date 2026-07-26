@@ -72,7 +72,7 @@ implementation("com.highcapable.betterandroid:ui-extension:<version>")
 
 我们需要启动另一个 `Activity` 时，需要使用 `Intent` 创建一个 `Intent(this, AnotherActivity::class.java)`，然后调用 `startActivity(intent)` 来启动。
 
-这样写起来大概不太友好，于是 `BetterAndroid` 为 `Activity` 提供了扩展，现在你可以直接使用以下方式来启动另一个 `Activity`。
+这样写起来大概不太友好，于是 BetterAndroid 为 `Activity` 提供了扩展，现在你可以直接使用以下方式来启动另一个 `Activity`。
 
 > 示例如下
 
@@ -147,7 +147,7 @@ context.startActivity("com.example.app")
 
 :::
 
-针对 Android 7.0 及之后的版本新增的分屏模式，`BetterAndroid` 为其提供了一个兼容扩展。
+针对 Android 7.0 及之后的版本新增的分屏模式，BetterAndroid 为其提供了一个兼容扩展。
 
 对于 `isInMultiWindowMode`，你无需考虑版本兼容问题，你只需要在后方加入一个 `Compat` 即可。
 
@@ -176,7 +176,7 @@ val isInMultiWindowMode = activity.isInMultiWindowModeCompat
 
 这时候如果继续手动写 `as? Activity`，遇到 `ContextThemeWrapper`、多层 `ContextWrapper` 这类场景就会显得有些麻烦。
 
-`BetterAndroid` 为此提供了一个更加简单的方式，它会自动帮你沿着 `ContextWrapper` 继续向下查找，直到拿到最终的 `Activity`。
+BetterAndroid 为此提供了一个更加简单的方式，它会自动帮你沿着 `ContextWrapper` 继续向下查找，直到拿到最终的 `Activity`。
 
 > 示例如下
 
@@ -221,9 +221,9 @@ val componentActivity = context.requireHostActivity<ComponentActivity>()
 
 `Fragment` 是官方提供的针对 `Activity` 的一个高效片段，但是它的使用方式并不是很友好。
 
-为了对 `Fragment` 相关操作进行简化，`BetterAndroid` 为 `Fragment` 提供了一些实用的扩展功能。
+为了对 `Fragment` 相关操作进行简化，BetterAndroid 为 `Fragment` 提供了一些实用的扩展功能。
 
-`BetterAndroid` 会自动帮你引入 `androidx.fragment:fragment-ktx` 依赖，你可以 [参考这里](https://developer.android.com/kotlin/ktx#fragment) 以开始使用。
+BetterAndroid 会自动帮你引入 `androidx.fragment:fragment-ktx` 依赖，你可以 [参考这里](https://developer.android.com/kotlin/ktx#fragment) 以开始使用。
 
 ::: warning
 
@@ -235,7 +235,7 @@ val componentActivity = context.requireHostActivity<ComponentActivity>()
 
 获取存在的 `FragmentManager`。
 
-`BetterAndroid` 为 `FragmentActivity` 和 `Fragment` 提供了一个更加友好的方式来获取存在的 `FragmentManager`。
+BetterAndroid 为 `FragmentActivity` 和 `Fragment` 提供了一个更加友好的方式来获取存在的 `FragmentManager`。
 
 > 示例如下
 
@@ -254,7 +254,7 @@ val parentFragmentManager = fragment.fragmentManager(parent = true)
 
 使用泛型的方式来获取父级 `Fragment`。
 
-`BetterAndroid` 为 `Fragment` 提供了一个更加友好的方式来获取父级 `Fragment`。
+BetterAndroid 为 `Fragment` 提供了一个更加友好的方式来获取父级 `Fragment`。
 
 它可以自动帮你把找到的 `Fragment` 转换为当前类型而不需要再使用 `as` 的形式进行强制转换。
 
@@ -323,7 +323,7 @@ fragment.attach(activity, R.id.container)
 
 这个 `View` 对象必须已经添加到正在显示的布局中，并建议为其设置一个 ID，未设置 ID 的 `View` 将会使用 `View.generateViewId` 生成一个 ID。
 
-这是 `attach` 与 `replace` 的默认行为，如果你不希望 `BetterAndroid` 自动为容器生成 ID，可以设置 `generateViewId = false`，并确保容器已经拥有有效 ID。
+这是 `attach` 与 `replace` 的默认行为，如果你不希望 BetterAndroid 自动为容器生成 ID，可以设置 `generateViewId = false`，并确保容器已经拥有有效 ID。
 
 :::
 
@@ -412,7 +412,7 @@ fragment.hide()
 
 在所有事务事件中，这些方法都保留了 `body` 参数，你可以继续在其中执行自己的自定义事务。
 
-`BetterAndroid` 还为你提供了 `FragmentTransaction`，你可以使用此方法创建一个模版，并应用在自己的 `body` 中。
+BetterAndroid 还为你提供了 `FragmentTransaction`，你可以使用此方法创建一个模版，并应用在自己的 `body` 中。
 
 > 示例如下
 
@@ -439,7 +439,7 @@ fragment.attach(activity, body = myTransaction)
 
 ::: warning
 
-从 `1.0.4` 版本开始，`BetterAndroid` 移除了默认的过渡动画并移除了相关资源文件，我们认为过渡动画应该是每个开发者自行决定的事情，并非工具库所为之。
+从 `1.0.4` 版本开始，BetterAndroid 移除了默认的过渡动画并移除了相关资源文件，我们认为过渡动画应该是每个开发者自行决定的事情，并非工具库所为之。
 
 :::
 
@@ -475,7 +475,7 @@ fragment.attach(activity, body = myTransaction)
 
 ::: warning
 
-在 [ui-component](./ui-component) `1.0.3` 及之前版本的依赖中，`BetterAndroid` 将 Insest、Window Insets 与 [系统栏 (状态栏、导航栏等)](./ui-component#系统栏-状态栏、导航栏等) 封装在了一起，
+在 [ui-component](./ui-component) `1.0.3` 及之前版本的依赖中，BetterAndroid 将 Insest、Window Insets 与 [系统栏 (状态栏、导航栏等)](./ui-component#系统栏-状态栏、导航栏等) 封装在了一起，
 这是曾经不正确的做法，目前对于 Insets、Window Insets 已被解耦合为独立的功能，正如你现在所看到的。
 
 :::
@@ -484,7 +484,7 @@ Insets 和 Window Insets 在 Android 中是一个非常重要的概念，虽然�
 
 Insets 是一个特殊的空间，它代表 “附着” 在视图四周的占位区域，而诸如异形屏 (刘海屏) 遮挡的部分、状态栏、导航栏以及输入法等系统持有的 Insets 则称为 Window Insets。
 
-`BetterAndroid` 所做的主要就是对这套 API 进行了封装，使其更加易用。
+BetterAndroid 所做的主要就是对这套 API 进行了封装，使其更加易用。
 
 下面，你可以通过一个存在的 `WindowInsets` 对象来创建一个 `WindowInsetsWrapper` 对象。
 
@@ -520,7 +520,7 @@ val systemBars = insetsWrapper.systemBars(ignoreVisibility = true)
 val insetsIsVisible = systemBars.isVisible
 ```
 
-`BetterAndroid` 针对 Android 9 以下异形屏设备的主流品牌的厂商各自的私有方案做了一个兼容处理，如果你需要兼容更旧的设备，你可以在方法参数中传入一个可选的 `Window` 对象。
+BetterAndroid 针对 Android 9 以下异形屏设备的主流品牌的厂商各自的私有方案做了一个兼容处理，如果你需要兼容更旧的设备，你可以在方法参数中传入一个可选的 `Window` 对象。
 
 如果你的应用程序只需要适配 Android 9 及以上的设备，你可以忽略此参数。
 
@@ -541,11 +541,11 @@ val displayCutout = insetsWrapper.displayCutout
 
 ::: warning
 
-如果你的应用程序需要在 Android 10 或以下设备上运行，我们建议始终传入一个 `Window` 对象以保证 `BetterAndroid` 能正确为你处理兼容问题。
+如果你的应用程序需要在 Android 10 或以下设备上运行，我们建议始终传入一个 `Window` 对象以保证 BetterAndroid 能正确为你处理兼容问题。
 
-目前已知兼容问题为 `androidx` 提供的兼容处理方法无法对 Android 11 以下设备的 `statusBars`、`navigationBars`、`systemBars` 的 `isVisible` 和其内容给出正确的值，`BetterAndroid` 为此进行了修复。
+目前已知兼容问题为 `androidx` 提供的兼容处理方法无法对 Android 11 以下设备的 `statusBars`、`navigationBars`、`systemBars` 的 `isVisible` 和其内容给出正确的值，BetterAndroid 为此进行了修复。
 
-对于早期低于 Android 9 的设备，部分厂商需要在 `AndroidManifest.xml` 中添加 `meta-data` 来启用兼容处理，为了防止配置污染，从 `1.1.1` 开始，`BetterAndroid` 移除了这些默认配置选项，如有需要，你可以参考以下配置方案手动进行添加。
+对于早期低于 Android 9 的设备，部分厂商需要在 `AndroidManifest.xml` 中添加 `meta-data` 来启用兼容处理，为了防止配置污染，从 `1.1.1` 开始，BetterAndroid 移除了这些默认配置选项，如有需要，你可以参考以下配置方案手动进行添加。
 
 > 示例如下
 
@@ -663,7 +663,7 @@ ViewCompat.setOnApplyWindowInsetsListener(view) { view, insets ->
 }
 ```
 
-这样的做法看起来会很麻烦，所以 `BetterAndroid` 同样为你提供了一个更加简单的方法。
+这样的做法看起来会很麻烦，所以 BetterAndroid 同样为你提供了一个更加简单的方法。
 
 例如，我们需要得知输入法所占的空间并为输入法布局设置来自 Window Insets 的 `padding`。
 
@@ -885,7 +885,7 @@ val systemBars = absoluteWrapper.systemBars
 
 在 `androidx` 中，如果你想监听一个生命周期对象，通常都需要手动创建一个匿名观察者对象，再将它注册到 `Lifecycle`。
 
-`BetterAndroid` 为此提供了一个更加直接的方式，现在你可以使用 Kotlin lambda 来快速创建 `DefaultLifecycleObserver` 和 `LifecycleEventObserver`，也可以直接将它们添加到 `Lifecycle`。
+BetterAndroid 为此提供了一个更加直接的方式，现在你可以使用 Kotlin lambda 来快速创建 `DefaultLifecycleObserver` 和 `LifecycleEventObserver`，也可以直接将它们添加到 `Lifecycle`。
 
 > 示例如下
 
@@ -955,7 +955,7 @@ val observer = lifecycle.addObserver { _, event ->
 
 `LifecycleOwner` 是 Android Jetpack 中的一个重要组件，它为 `Activity`、`Fragment` 等提供了生命周期的管理。
 
-`BetterAndroid` 为 `LifecycleOwner` 提供了通过其获取上下文的职能，你可以在常用继承于 `LifecycleOwner` 的实例中使用。
+BetterAndroid 为 `LifecycleOwner` 提供了通过其获取上下文的职能，你可以在常用继承于 `LifecycleOwner` 的实例中使用。
 
 > 示例如下
 
@@ -978,7 +978,7 @@ val yourActivity = lcOwner.requireActivity<YourActivity>()
 
 `androidx` 提供了 `View.findViewTreeLifecycleOwner` 来从一个 `View` 中获取其所在的 `LifecycleOwner`，但是它的使用方式并不是很友好。
 
-`BetterAndroid` 为 `View` 提供了一个更加友好的方式来获取所在的 `LifecycleOwner`，它集成了 `View.findViewTreeLifecycleOwner` 并加入了兜底机制，它能够处理在预加载时可能失败的情况，继续使用 `View.getContext` 来获取上下文并从中获取 `LifecycleOwner`。
+BetterAndroid 为 `View` 提供了一个更加友好的方式来获取所在的 `LifecycleOwner`，它集成了 `View.findViewTreeLifecycleOwner` 并加入了兜底机制，它能够处理在预加载时可能失败的情况，继续使用 `View.getContext` 来获取上下文并从中获取 `LifecycleOwner`。
 
 > 示例如下
 
@@ -991,7 +991,7 @@ val lcOwner = view.lifecycleOwner
 val lcOwner = view.requireLifecycleOwner()
 ```
 
-正如上面所说，`BetterAndroid` 同时为 `Context` 提供了一个获取 `LifecycleOwner` 的扩展方法。
+正如上面所说，BetterAndroid 同时为 `Context` 提供了一个获取 `LifecycleOwner` 的扩展方法。
 
 > 示例如下
 
@@ -1020,9 +1020,9 @@ val lcOwner = context.requireLifecycleOwner()
 
 `androidx` 已经提供了 `OnBackPressedDispatcher` 用于处理系统返回事件，但是在实际使用时，仍然需要频繁处理回调对象本身以及继续分发当前返回事件的过程。
 
-`BetterAndroid` 为此提供了一组更加直接的扩展写法，让你可以继续基于官方能力使用更简洁的 Kotlin 调用方式。
+BetterAndroid 为此提供了一组更加直接的扩展写法，让你可以继续基于官方能力使用更简洁的 Kotlin 调用方式。
 
-`BetterAndroid` 会自动帮你引入 `androidx.activity:activity` 依赖，你可以 [参考这里](https://developer.android.com/reference/androidx/activity/OnBackPressedDispatcher) 以开始使用。
+BetterAndroid 会自动帮你引入 `androidx.activity:activity` 依赖，你可以 [参考这里](https://developer.android.com/reference/androidx/activity/OnBackPressedDispatcher) 以开始使用。
 
 > 示例如下
 
@@ -1112,7 +1112,7 @@ activity.onBackPressedDispatcher.addCallback(activity) {
 
 协程 (Coroutines) 是 Kotlin 中的一个重要特性，它为异步编程提供了一种更加优雅的解决方案。
 
-协程本身作为 Kotlin 的一个标准库，它并不会直接与 Android 的生命周期进行绑定，为此 `BetterAndroid` 为其提供了一些实用的扩展功能并将其作用于 UI 重要的交互桥梁。
+协程本身作为 Kotlin 的一个标准库，它并不会直接与 Android 的生命周期进行绑定，为此 BetterAndroid 为其提供了一些实用的扩展功能并将其作用于 UI 重要的交互桥梁。
 
 ::: warning
 
@@ -1139,7 +1139,7 @@ val deferred = lcOwner.async {
 }
 ```
 
-除此之外，`BetterAndroid` 还为协程提供了更多适用于 Android 主线程与非主线程互相切换的扩展功能。
+除此之外，BetterAndroid 还为协程提供了更多适用于 Android 主线程与非主线程互相切换的扩展功能。
 
 > 示例如下
 
@@ -1177,7 +1177,7 @@ lcOwner.repeatWithDelay(10) { index ->
 
 于是，大家都开始去封装一个形如 `dp2px` 的方法，但是这样的做法依然不是很优雅且存在问题。
 
-`BetterAndroid` 为此提供了一个更加优雅的解决方案。
+BetterAndroid 为此提供了一个更加优雅的解决方案。
 
 一般情况下，你只需要传入一个存在的 `Context` 或 `Resources` 即可完成转换。
 
@@ -1319,11 +1319,11 @@ class YourActivity : AppCompatActivity(), DisplayDensity {
 
 资源 (Resources) 是 Android 中非常重要的一个部分，它包含了应用程序中需要的布局、图片、字符串等等。
 
-为了能更加方便地使用 `Resources`，`BetterAndroid` 为其提供了一些实用的扩展功能。
+为了能更加方便地使用 `Resources`，BetterAndroid 为其提供了一些实用的扩展功能。
 
 获取 `ContextThemeWrapper` 中的主题资源 ID。
 
-通常情况下使用 `setTheme` 设置的主题资源 ID 是无法直接获取到的，为此 `BetterAndroid` 通过反射的方式为你提供了一个获取方式。
+通常情况下使用 `setTheme` 设置的主题资源 ID 是无法直接获取到的，为此 BetterAndroid 通过反射的方式为你提供了一个获取方式。
 
 ::: warning
 
@@ -1359,7 +1359,7 @@ val windowBackgroundId = typedValue.resourceId
 val windowBackground = context.getDrawable(windowBackgroundId)
 ```
 
-整个过程下来可谓是非常繁琐，于是 `BetterAndroid` 为此提供了一个更加简单的方式。
+整个过程下来可谓是非常繁琐，于是 BetterAndroid 为此提供了一个更加简单的方式。
 
 现在，你只需要使用以下方式即可获取其本身的值内容。
 
@@ -1415,9 +1415,9 @@ val isEquals = context.areThemeAttrsIdsValueEquals(R.attr.first_attr, R.attr.sec
 
 :::
 
-在 Android 中没有提供直接获取 `Menu` 资源 ID 并解析为 `Menu` 对象的方式，为此 `BetterAndroid` 提供了一个可能的获取方式。
+在 Android 中没有提供直接获取 `Menu` 资源 ID 并解析为 `Menu` 对象的方式，为此 BetterAndroid 提供了一个可能的获取方式。
 
-`BetterAndroid` 封装了使用 `PopupMenu` 并通过 `MenuInflater` 的形式将获取到的内容转换为一个 `List<MenuItem>` 对象的方法。
+BetterAndroid 封装了使用 `PopupMenu` 并通过 `MenuInflater` 的形式将获取到的内容转换为一个 `List<MenuItem>` 对象的方法。
 
 现在，你可以非常方便地使用以下方式来获取 `Menu` 资源 ID 的值内容。
 
@@ -1431,7 +1431,7 @@ val context: Context
 val menuItems = context.getMenuFromResource(R.menu.my_menu)
 ```
 
-针对历史版本系统的兼容性处理，`BetterAndroid` 封装了由 `ResourcesCompat` 提供的方法，现在，你不需要考虑一些方法被作废的问题，
+针对历史版本系统的兼容性处理，BetterAndroid 封装了由 `ResourcesCompat` 提供的方法，现在，你不需要考虑一些方法被作废的问题，
 你只需要在每个方法后加上 `Compat` 即可自动为其兼容化处理，并能够像原方法一样进行调用，功能完全一致。
 
 下面是一个针对 `Drawable` 的兼容性处理示例。
@@ -1467,14 +1467,14 @@ val drawable = context.getDrawableCompat<ColorDrawable>(R.drawable.my_background
 
 ::: tip
 
-`BetterAndroid` 还为 `TypedArray` 提供了 `getStringArray`、`getIntArray` 以及 `getColorOrNull` 等实用方法，你可以在上方的 **本节内容** 中找到它们。
+BetterAndroid 还为 `TypedArray` 提供了 `getStringArray`、`getIntArray` 以及 `getColorOrNull` 等实用方法，你可以在上方的 **本节内容** 中找到它们。
 
 `TypedArray.get...OrNull` 的作用不同于原始方法的功能，它会首先判断是否存在此属性资源，然后才会返回相关结果，如果不存在则返回默认的 `defValue`，默认为 `null`。
 
 例如 Color 这种属性资源，有的时候我们需要明确确定用户是否设置了此属性，原始的方法只能设置一个非 `null` 的默认值，但是颜色在任何数值上都有作用，此时 **首先判断是否存在此属性资源** 的作用就应运而生。
 
 具体实现方案就是 `val myType = if (value.hasValue(index)) value.get...(..., ...) else ...`，在实际应用中，我们需要自己封装一个这样的做法去实现对应的属性资源调用，显得很繁琐，
-所以现在 `BetterAndroid` 为你提供了这种封装，你可以直接使用如下方式进行操作。
+所以现在 BetterAndroid 为你提供了这种封装，你可以直接使用如下方式进行操作。
 
 > 示例如下
 
@@ -1515,7 +1515,7 @@ context.withStyledAttributes(attrs, R.styleable.MyView) {
 系统的夜间模式是使用 `Configuration.UI_MODE_NIGHT_MASK` 进行判断的，为了能让这个功能更加通俗易懂，你无需使用位运算的方式进行判断，
 因为通常情况下我们不需要关心当前系统的夜间模式到底处于哪种托管状态，我们只需要知道当前系统外观是否为深色即可。
 
-所以 `BetterAndroid` 在 `Configuration` 中提供了一个直接使用 `Boolean` 类型进行判断的扩展。
+所以 BetterAndroid 在 `Configuration` 中提供了一个直接使用 `Boolean` 类型进行判断的扩展。
 
 > 示例如下
 
@@ -1555,7 +1555,7 @@ val isDarkMode = context.resources.configuration.isUiInNightMode
 颜色在 Android 中是以 `Integer` (整型) 的形式存在的，虽然存在一个名为 `Color` 的类对其进行封装，但是很多方法都是在高版本的系统中添加的且 `androidx` 也没有针对其特定的兼容实现，
 在代码上下文中传递的对象通常也是直接使用 `Integer`。
 
-`BetterAndroid` 没有理由且无任何必要重新设计一个封装类来管理颜色，于是 `BetterAndroid` 仅针对 `Integer` 类型提供了相关扩展。
+BetterAndroid 没有理由且无任何必要重新设计一个封装类来管理颜色，于是 BetterAndroid 仅针对 `Integer` 类型提供了相关扩展。
 
 所有在方法中传递的颜色对象都会被标注 `@ColorInt` 注解，请你也遵守 `androidx` 提供的规范。
 
@@ -1614,7 +1614,7 @@ val mixColor = mixColorOf(color1, color2)
 val mixColor = mixColorOf(color1, color2, 0.2f)
 ```
 
-`BetterAndroid` 也同样为 `ColorStateList` 提供了一些扩展功能。
+BetterAndroid 也同样为 `ColorStateList` 提供了一些扩展功能。
 
 你可以使用以下方式快速地将现有颜色转换为一个拥有默认颜色的 `ColorStateList`。
 
@@ -1675,7 +1675,7 @@ val colorStateList = ColorStateList(
 
 在 Android 中，位图能够用到各种地方，它是用来显示图片的重要对象。
 
-`BetterAndroid` 为位图提供了从装载到对其进行转换、缩放、压缩以及模糊等一系列扩展功能。
+BetterAndroid 为位图提供了从装载到对其进行转换、缩放、压缩以及模糊等一系列扩展功能。
 
 在装载位图时，你可以不再需要使用 `BitmapFactory`，现在有以下方式可以帮助你更加方便地完成这个操作。
 
@@ -1736,7 +1736,7 @@ val bitmap = resources.createBitmap(R.drawable.my_image)
 
 位图装载到内存后或是内存中存在的位图对象，你可以将其重新保存到文件。
 
-针对 `File` 对象 Kotlin 的 stdlib 已经给出了一个 `File.writeText` 的方法，所以 `BetterAndroid` 仿照其提供了一个 `File.writeBitmap` 方法。
+针对 `File` 对象 Kotlin 的 stdlib 已经给出了一个 `File.writeText` 的方法，所以 BetterAndroid 仿照其提供了一个 `File.writeBitmap` 方法。
 
 > 示例如下
 
@@ -1835,7 +1835,7 @@ val blurBitmap = bitmap.blur(25)
 
 这里提供的模糊只是一个通用算法，它能够快速实现模糊效果，但在速度和性能上可能会存在问题，且无法用于动态模糊效果。
 
-在 Android 中的位图模糊效果你可以参考并使用其它可能的第三方库，目前并没有一个通用且完善的解决方案，这是 Android 中的历史遗留问题，`BetterAndroid` 没有理由且无任何必要特意封装针对位图模糊的相关功能。
+在 Android 中的位图模糊效果你可以参考并使用其它可能的第三方库，目前并没有一个通用且完善的解决方案，这是 Android 中的历史遗留问题，BetterAndroid 没有理由且无任何必要特意封装针对位图模糊的相关功能。
 
 如果你的应用程序目标为 Android 12 及以上版本，我们建议使用官方提供的 `RenderEffect` 来进行模糊操作，~~在以下版本中使用 `RenderScript` 的替代品 [renderscript-intrinsics-replacement-toolkit](https://github.com/android/renderscript-intrinsics-replacement-toolkit)~~ (已归档)。
 
@@ -1859,7 +1859,7 @@ val blurBitmap = bitmap.blur(25)
 
 :::
 
-在一些情况下，我们可能需要用到直接操作 `Drawable` 对象的场景，`BetterAndroid` 为此提供了一些可能用到的扩展功能。
+在一些情况下，我们可能需要用到直接操作 `Drawable` 对象的场景，BetterAndroid 为此提供了一些可能用到的扩展功能。
 
 为支持的 `Drawable` 设置 `padding`。
 
@@ -1917,7 +1917,7 @@ Android 中的 `Toast` 使用场景非常广泛，但是其存在各种各样的
 
 在 Kotlin 中简化一个 `Toast` 的使用方式应该是非常有必要的，因为有时候显示信息最快的方式还是弹出一个 `Toast`。
 
-所以 `BetterAndroid` 重新为此提供了一个 `toast` 的扩展方法，你可以在以下实例或是被其继承的实例中使用它：
+所以 BetterAndroid 重新为此提供了一个 `toast` 的扩展方法，你可以在以下实例或是被其继承的实例中使用它：
 
 `Context`、`Window`、`Fragment`、`View`、`Dialog`
 
@@ -1935,7 +1935,7 @@ context.toast("Hello World!")
 context.toast("Hello World!", Toast.LENGTH_SHORT)
 ```
 
-以上就是它的全部使用方式，`BetterAndroid` 没有继续对其做出自定义操作，因为自定义功能在后期也被 Android 进行了限制，
+以上就是它的全部使用方式，BetterAndroid 没有继续对其做出自定义操作，因为自定义功能在后期也被 Android 进行了限制，
 请参考 [Custom toasts from the background are blocked](https://developer.android.com/about/versions/11/behavior-changes-11#custom-toasts-bg-blocked)。
 
 `Toast` 仅能在主线程中使用，如果要在任何线程中弹出一个 `Toast`，你只需要像下面这样简单地对其进行配置。
@@ -1956,7 +1956,7 @@ thread {
 
 这样，你就能在任何线程的情况下弹出一个 `Toast`，需要注意的是，这个参数在默认情况下是 `false`，你需要手动设置它。
 
-启用这个参数后，`BetterAndroid` 会把实际的 `Toast` 操作投递回主线程，不会创建后台 `Looper`。
+启用这个参数后，BetterAndroid 会把实际的 `Toast` 操作投递回主线程，不会创建后台 `Looper`。
 
 除非必要，你仍然应该尽量避免在非主线程中请求弹出 `Toast`，因为这样会让消息显示时机更难预测。
 
@@ -1986,7 +1986,7 @@ thread {
 
 :::
 
-`BetterAndroid` 为 `Window` 提供了一些可能用到的扩展功能。
+BetterAndroid 为 `Window` 提供了一些可能用到的扩展功能。
 
 你可以像使用 `androidx` 中的 `View.updateLayoutParams` 一样使用以下方式修改 `Window.attributes`。
 
@@ -2002,7 +2002,7 @@ window.updateLayoutParams {
 }
 ```
 
-`BetterAndroid` 还封装了为 `Window` 单独设置屏幕亮度的方法。
+BetterAndroid 还封装了为 `Window` 单独设置屏幕亮度的方法。
 
 你可以使用以下方式更方便地修改 `Window.attributes.screenBrightness`。
 
@@ -2126,7 +2126,7 @@ window.clearScreenBrightness()
 
 `View` 是用户界面中的重要组成部分，在使用 Kotlin 时，`androidx` 为我们提供了关于 `View` 的扩展功能，但是依然不够完善。
 
-`BetterAndroid` 在 `androidx` 的相关扩展功能基础上进行了完善和丰富，下面是你能够用到的一些扩展功能。
+BetterAndroid 在 `androidx` 的相关扩展功能基础上进行了完善和丰富，下面是你能够用到的一些扩展功能。
 
 获取 `View` 在屏幕中的坐标。
 
@@ -2149,7 +2149,7 @@ val y = location.y
 
 在传统写法中，我们需要使用 `View.getTag` 获取到标签对象，然后使用 `as` 转换为我们需要的类型。
 
-这种写法看起来非常麻烦，于是 `BetterAndroid` 为此提供了一个更加简单的方式。
+这种写法看起来非常麻烦，于是 BetterAndroid 为此提供了一个更加简单的方式。
 
 > 示例如下
 
@@ -2171,7 +2171,7 @@ val tag = view.getTag<String>(R.id.my_tag, "Hello World!")
 
 在传统写法中，我们需要使用 `View.parent` 获取到 `ViewParent` 对象，然后使用 `as` 转换为 `ViewGroup` 以获取到父布局对象。
 
-这种写法看起来非常麻烦，于是 `BetterAndroid` 为此提供了一个更加简单的方式。
+这种写法看起来非常麻烦，于是 BetterAndroid 为此提供了一个更加简单的方式。
 
 > 示例如下
 
@@ -2190,7 +2190,7 @@ val parent = view.parentOrNull()
 
 在传统写法中，我们需要使用 `ViewGroup.getChildAt` 获取到 `View` 对象，然后使用 `as` 转换为 `View` 以获取到子布局对象。
 
-这种写法看起来同样非常麻烦，于是 `BetterAndroid` 也此提供了一个更加简单的方式。
+这种写法看起来同样非常麻烦，于是 BetterAndroid 也此提供了一个更加简单的方式。
 
 > 示例如下
 
@@ -2232,7 +2232,7 @@ view.removeSelfInLayout()
 
 在 Android 8.0 (26) 及以上版本中，你可以使用 `View.tooltipText` 来设置工具提示文本，`androidx` 所提供的 `ViewCompat.setTooltipText` 虽然支持在低于 26 的版本中使用，但是低于 26 版本将无效，同时 `TooltipTextCompat` 也只是提供了兼容模拟方案，并没有提供获取工具提示文本的方法。
 
-为了让这个功能在各个版本的使用方式均无差异，`BetterAndroid` 提供了一个 `View.tooltipTextCompat` 方法，它会在低版本系统中使用 `Toast` 来模拟工具提示文本并且可以重新获取你设置的文本。
+为了让这个功能在各个版本的使用方式均无差异，BetterAndroid 提供了一个 `View.tooltipTextCompat` 方法，它会在低版本系统中使用 `Toast` 来模拟工具提示文本并且可以重新获取你设置的文本。
 
 > 示例如下
 
@@ -2247,7 +2247,7 @@ val tooltipText = view.tooltipTextCompat
 
 创建动画。
 
-`BetterAndroid` 为 `View` 提供了 `animate` 方法的 lambda 实现，它将自动调用 `start` 方法，你可以使用它来创建一些简单的动画效果。
+BetterAndroid 为 `View` 提供了 `animate` 方法的 lambda 实现，它将自动调用 `start` 方法，你可以使用它来创建一些简单的动画效果。
 
 > 示例如下
 
@@ -2282,7 +2282,7 @@ view.hideIme()
 
 ::: tip
 
-如果你需要使用拖拽来控制输入法的显示或隐藏 (Window Insets 动画效果)，目前 `BetterAndroid` 暂时没有提供相关的扩展功能，
+如果你需要使用拖拽来控制输入法的显示或隐藏 (Window Insets 动画效果)，目前 BetterAndroid 暂时没有提供相关的扩展功能，
 你可以参考 [WindowInsetsAnimationController](https://developer.android.com/reference/android/view/WindowInsetsAnimationController) 自己实现。
 
 :::
@@ -2299,7 +2299,7 @@ view.hideIme()
 
 模拟触摸事件 (Touch)。
 
-`View` 提供的 `performClick` 方法仅能模拟点击事件，如果你需要模拟触摸事件，你可以使用 `BetterAndroid` 提供的 `View.performTouch` 方法。
+`View` 提供的 `performClick` 方法仅能模拟点击事件，如果你需要模拟触摸事件，你可以使用 BetterAndroid 提供的 `View.performTouch` 方法。
 
 这个方法所接受的参数如下表所示。
 
@@ -2338,7 +2338,7 @@ view.performKeyPressed(KeyEvent.KEYCODE_DEL, duration = 500)
 
 设置间隔点击事件。
 
-`View` 提供的 `setOnClickListener` 方法设置的点击事件可能在短时间内被多次触发造成误操作，针对这种情况，`BetterAndroid` 为你提供了 `setIntervalOnClickListener` 方法。
+`View` 提供的 `setOnClickListener` 方法设置的点击事件可能在短时间内被多次触发造成误操作，针对这种情况，BetterAndroid 为你提供了 `setIntervalOnClickListener` 方法。
 
 在指定的间隔时间内，点击事件重复触发将被忽略。
 
@@ -2360,7 +2360,7 @@ view.setIntervalOnClickListener(1000) {
 
 更新 `View` 的 `padding` 和 `margin`。
 
-`androidx` 提供了一个 `View.updatePadding` 方法，`BetterAndroid` 在此基础上提供了可更新横向和纵向方向的方法，如果你只需要更新这两个方向的 `padding`，你可以无需写两遍重复数值。
+`androidx` 提供了一个 `View.updatePadding` 方法，BetterAndroid 在此基础上提供了可更新横向和纵向方向的方法，如果你只需要更新这两个方向的 `padding`，你可以无需写两遍重复数值。
 
 > 示例如下
 
@@ -2380,7 +2380,7 @@ view.updatePadding(vertical = 10.toPx(context))
 在 `androidx` 的现有扩展能力中，诸如 `paddingLeft`、`paddingRight`、`paddingStart`、`paddingEnd` 这样的属性虽然可以直接读取，但是并不能像普通属性一样直接写入，
 最终你还是需要回到 `updatePadding` 或 `setPadding` 这类形式。
 
-为此，`BetterAndroid` 提供了 Jetpack Compose 风格的 `PaddingValues`，让 `padding` 在 Kotlin 中拥有更加自然的读写体验。
+为此，BetterAndroid 提供了 Jetpack Compose 风格的 `PaddingValues`，让 `padding` 在 Kotlin 中拥有更加自然的读写体验。
 
 > 示例如下
 
@@ -2516,7 +2516,7 @@ values.applyTo(view)
 
 :::
 
-`BetterAndroid` 同样提供了一个 `View.updateMargins` 和 `View.setMargins` 方法，它的使用方式与 `View.updatePadding` 相同。
+BetterAndroid 同样提供了一个 `View.updateMargins` 和 `View.setMargins` 方法，它的使用方式与 `View.updatePadding` 相同。
 
 这个方法仅会在 `View` 的 `LayoutParams` 为 `MarginLayoutParams` 时生效，其它情况下均不会有任何作用。
 
@@ -2543,7 +2543,7 @@ view.setMargins(10.toPx(context))
 
 虽然官方已经提供了 `View.ancestors` 与 `ViewGroup.descendants` 这样的扩展能力，不过对于大多数开发者来说，这样的命名在日常业务代码中并不算直观。
 
-`BetterAndroid` 为此提供了 `walkToRoot` 与 `walkThroughChildren` 两个更加友好的命名方式，它的设计灵感来源于 Kotlin 提供的 `File` 中的 `walk` 扩展方法。
+BetterAndroid 为此提供了 `walkToRoot` 与 `walkThroughChildren` 两个更加友好的命名方式，它的设计灵感来源于 Kotlin 提供的 `File` 中的 `walk` 扩展方法。
 
 > 示例如下
 
@@ -2570,7 +2570,7 @@ val children = viewGroup.walkThroughChildren()
 
 在传统写法中，我们需要使用 `ViewGroup.indexOfChild` 获取到 `View` 在父布局中的索引。
 
-这种写法看起来不是很友好，于是 `BetterAndroid` 为此提供了一个更加简单的方式。
+这种写法看起来不是很友好，于是 BetterAndroid 为此提供了一个更加简单的方式。
 
 > 示例如下
 
@@ -2588,7 +2588,7 @@ val index = view.indexOfInParent()
 
 在 Kotlin 中，我们需要使用 `view.outlineProvider = object : ViewOutlineProvider()` 的方式进行设置，这看起来并不友好。
 
-于是 `BetterAndroid` 为此提供了一个更加简单的方式。
+于是 BetterAndroid 为此提供了一个更加简单的方式。
 
 > 示例如下
 
@@ -2610,7 +2610,7 @@ view.clipToOutline = true
 
 `LayoutParams` 是 `View` 的布局参数，它的类型取决于 `View` 的父布局，例如 `LinearLayout` 的 `LayoutParams` 为 `LinearLayout.LayoutParams`。
 
-有时候，你可能需要有手动创建这个对象并设置到 `View` 中的需求，此时 `BetterAndroid` 提供了 `ViewLayoutParams` 方法，
+有时候，你可能需要有手动创建这个对象并设置到 `View` 中的需求，此时 BetterAndroid 提供了 `ViewLayoutParams` 方法，
 现在，你可以省去使用超级长的 `ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)` 创建对象的步骤。
 
 > 示例如下
@@ -2646,7 +2646,7 @@ view.layoutParams = layoutParams
 
 通常情况下我们可以在 `Activity` 中使用 `getLayoutInflater` 或使用 `LayoutInflater.from(context)` 来创建一个 `LayoutInflater` 对象，然后使用 `inflate` 方法来装载布局。
 
-`BetterAndroid` 为你简化了这一步骤，现在，你能够在 `Context` 中使用 `layoutInflater` 获取到 `LayoutInflater` 对象，然后使用 `inflate` 方法来装载布局。
+BetterAndroid 为你简化了这一步骤，现在，你能够在 `Context` 中使用 `layoutInflater` 获取到 `LayoutInflater` 对象，然后使用 `inflate` 方法来装载布局。
 
 > 示例如下
 
@@ -2698,7 +2698,7 @@ val myView = context.layoutInflater.inflateOrNull<LinearLayout>(R.layout.my_layo
 
 :::
 
-`TextView` 是 Android 中最常用的组件之一，`BetterAndroid` 为 `TextView` 提供了一些能在 Kotlin 中使用更加方便的扩展功能。
+`TextView` 是 Android 中最常用的组件之一，BetterAndroid 为 `TextView` 提供了一些能在 Kotlin 中使用更加方便的扩展功能。
 
 判断 `TextView` 是否存在省略号。
 
@@ -2747,7 +2747,7 @@ textView.isStrikeThrough = true
 
 虽然说，你能够使用 `TextView.setTextColor` 方法来设置文本颜色，但是它不能很好地被识别为 Kotlin 中的 Getter、Setter 方法，因为对应的 `TextView.getTextColors` 是一个 `ColorStateList` 对象。
 
-所以 `BetterAndroid` 添加了针对这个功能的扩展，现在，你可以使用以下方式获取、设置 `TextView` 的文本颜色。
+所以 BetterAndroid 添加了针对这个功能的扩展，现在，你可以使用以下方式获取、设置 `TextView` 的文本颜色。
 
 > 示例如下
 
@@ -2764,7 +2764,7 @@ textView.textColor = Color.RED
 
 通常情况下，直接使用 `TextView.getText` 获取到的文本是一个 `CharSequence` 对象，如果你需要将其转换为 `String`，需要 `getText().toString()`，这看起来比较繁琐。
 
-`BetterAndroid` 为此提供了一个更加简单的方式，现在，你可以使用以下方式获取 `TextView` 的文本并将其转换为 `String`。
+BetterAndroid 为此提供了一个更加简单的方式，现在，你可以使用以下方式获取 `TextView` 的文本并将其转换为 `String`。
 
 > 示例如下
 
@@ -2790,7 +2790,7 @@ val hint = textView.hintToString()
 
 `EditText` 继承自 `TextView`，直接使用 `setText(...)` 更新的文本会导致光标位置依然处于第一位。
 
-`BetterAndroid` 为此提供了一个更加方便的方式，它会根据文本长度自动帮你设置 `setSelection` 以保持光标位置始终在文本的最后。
+BetterAndroid 为此提供了一个更加方便的方式，它会根据文本长度自动帮你设置 `setSelection` 以保持光标位置始终在文本的最后。
 
 > 示例如下
 
@@ -2803,7 +2803,7 @@ editText.updateText("Hello World!")
 
 清空 `TextView` 的文本。
 
-使用 `setText("")` 或 `text = ""` 看起来不是很友好，于是 `BetterAndroid` 为此提供了一个更加简单的方式。
+使用 `setText("")` 或 `text = ""` 看起来不是很友好，于是 BetterAndroid 为此提供了一个更加简单的方式。
 
 > 示例如下
 
@@ -2818,7 +2818,7 @@ textView.clear()
 
 `Typeface` 是 Android 中的字体，有时候我们只需要关心字体的粗细和斜体，而不需要设置具体的字体。
 
-`BetterAndroid` 为此提供了一个更加简单的方式，现在，你可以使用以下方式更新 `TextView` 的 `Typeface`。
+BetterAndroid 为此提供了一个更加简单的方式，现在，你可以使用以下方式更新 `TextView` 的 `Typeface`。
 
 > 示例如下
 
@@ -2835,7 +2835,7 @@ textView.updateTypeface(Typeface.BOLD)
 
 使用传统的 `setCompoundDrawables` 方法需要传入四个参数且不需要的参数还需要填写 `null`，这看起来非常麻烦。
 
-`BetterAndroid` 为此提供了一个更加简单的方式，现在，你可以使用以下方式直接更新 `TextView` 的 `CompoundDrawables`。
+BetterAndroid 为此提供了一个更加简单的方式，现在，你可以使用以下方式直接更新 `TextView` 的 `CompoundDrawables`。
 
 > 示例如下
 
@@ -2863,7 +2863,7 @@ textView.updateCompoundDrawablesWithIntrinsicBounds(
 
 这个属性仅能在 XML 中方便地使用 `digits` 来设置，但是如果你需要动态修改它，就需要 `TextView.setKeyListener` 方法。
 
-为此，`BetterAndroid` 为 `TextView` 提供了一个 `setDigits` 方法，你可以使用以下方式设置 `TextView` 的输入限制。
+为此，BetterAndroid 为 `TextView` 提供了一个 `setDigits` 方法，你可以使用以下方式设置 `TextView` 的输入限制。
 
 由于输入功能是由 `EditText` 完成的，而 `EditText` 继承自 `TextView`，所以一般情况下此方法仅在 `EditText` 中使用。
 
@@ -2894,11 +2894,11 @@ editText.setDigits("0123456789", locale = Locale.CHINA)
 
 :::
 
-`RecyclerView` 是 Android 中最常用的列表组件之一，`BetterAndroid` 为 `RecyclerView` 提供了一些能在 Kotlin 中使用更加方便的扩展功能。
+`RecyclerView` 是 Android 中最常用的列表组件之一，BetterAndroid 为 `RecyclerView` 提供了一些能在 Kotlin 中使用更加方便的扩展功能。
 
 获取 `RecyclerView` 的 `LayoutManager`。
 
-`BetterAndroid` 为你提供了一个方便获取 `LayoutManager` 的方式，现在你不再需要获取到 `RecyclerView` 的 `layoutManager` 后再使用 `as` 转换为对应类型，你可以直接使用以下方式获取 `LayoutManager`。
+BetterAndroid 为你提供了一个方便获取 `LayoutManager` 的方式，现在你不再需要获取到 `RecyclerView` 的 `layoutManager` 后再使用 `as` 转换为对应类型，你可以直接使用以下方式获取 `LayoutManager`。
 
 > 示例如下
 
@@ -2929,7 +2929,7 @@ val layoutManager = recyclerView.layoutManager<LinearLayoutManager>()
 
 但是显然官方没有开放对它的使用方法，能够获取到生成类的接口 `ViewBinding` 也不存在 `inflate` 等方法的实现，你仅能使用类似 `ActivityMainBinding.inflate(layoutInflater)` 的方式来装载布局。
 
-于是 `BetterAndroid` 对其进行了反射处理来获得其中的 `inflate` 方法并通过泛型来提取对象的类型。
+于是 BetterAndroid 对其进行了反射处理来获得其中的 `inflate` 方法并通过泛型来提取对象的类型。
 
 这些设计的灵感部分来源于 [ViewBindingKTX](https://github.com/DylanCaiCoding/ViewBindingKTX) 项目，非常感谢这个项目的作者。
 

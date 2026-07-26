@@ -122,7 +122,7 @@ Adapter position entity.
 
 From the beginning of `ListView` to the emergence of `RecyclerView`, adapters in Android have always been one of the most troublesome problems for developers.
 
-To address this problem, `BetterAndroid` encapsulates the adapters of the following components:
+To address this problem, BetterAndroid encapsulates the adapters of the following components:
 
 `ListView`, `AutoCompleteTextView`, `ListPopupWindow`, `RecyclerView`, `ViewPager`, `ViewPager2`
 
@@ -572,7 +572,7 @@ onBindItemView(MyViewHolderDelegate(R.layout.adapter_my_layout)) { delegate, ent
 
 When you set header or footer `View`, when using `RecyclerView.Adapter`'s `notifyItemInserted`, `notifyItemRemoved`, `notifyItemChanged`, `notifyItemMoved` and other methods, there will be issues with index positions, because by default the `position` calculated by `onBindItemView` will not include header and footer layouts, and methods like `RecyclerView.scrollToPosition`, `RecyclerView.smoothScrollToPosition` will also be affected.
 
-Since these methods are all `final` in `RecyclerView.Adapter` and cannot be overridden, in this case, `BetterAndroid` provides you with a solution. When using `RecyclerView.Adapter`, you can call the `wrapper` method to get a wrapper instance, which will automatically handle these issues for you.
+Since these methods are all `final` in `RecyclerView.Adapter` and cannot be overridden, in this case, BetterAndroid provides you with a solution. When using `RecyclerView.Adapter`, you can call the `wrapper` method to get a wrapper instance, which will automatically handle these issues for you.
 
 `wrapper` only handles index offset problems introduced by header and footer layouts. It does not manage your dataset itself and does not replace `DiffUtil`, `notifyByDiff`, or your own list state synchronization logic.
 
@@ -602,9 +602,9 @@ Going back to the issue we mentioned earlier, methods like `RecyclerView.scrollT
 
 These encapsulated enhanced layout managers will be automatically integrated through the default `RecyclerCosmetic` (refer to [Recycler Cosmetic](#recycler-cosmetic) below). You don't need any manual operations. When you need to manually create `RecyclerView.LayoutManager`, we recommend that you inherit from the instances provided in this package.
 
-When you use the `RecyclerView.LayoutManager` provided by `BetterAndroid`, since header or footer layouts will automatically handle `position`, when using `RecyclerView.scrollToPosition`, `RecyclerView.smoothScrollToPosition` to scroll to the top and bottom, you need to use `scrollToPosition(-1)` (top) or `scrollToPosition(lastIndex + 1)` (bottom).
+When you use the `RecyclerView.LayoutManager` provided by BetterAndroid, since header or footer layouts will automatically handle `position`, when using `RecyclerView.scrollToPosition`, `RecyclerView.smoothScrollToPosition` to scroll to the top and bottom, you need to use `scrollToPosition(-1)` (top) or `scrollToPosition(lastIndex + 1)` (bottom).
 
-Therefore, we always recommend that when you have the need to scroll to the top and bottom, use the `scrollToFirstPosition`, `scrollToLastPosition`, `smoothScrollToFirstPosition`, `smoothScrollToLastPosition` methods instead. They will automatically handle such issues (regardless of whether you use the `RecyclerView.LayoutManager` provided by `BetterAndroid`).
+Therefore, we always recommend that when you have the need to scroll to the top and bottom, use the `scrollToFirstPosition`, `scrollToLastPosition`, `smoothScrollToFirstPosition`, `smoothScrollToLastPosition` methods instead. They will automatically handle such issues (regardless of whether you use the `RecyclerView.LayoutManager` provided by BetterAndroid).
 
 :::
 
@@ -729,7 +729,7 @@ viewPager2.addItemDecoration(cosmetic.itemDecoration)
 viewPager2.adapter = adapter
 ```
 
-`BetterAndroid` provides developers with several common adapter layout types for `RecyclerView` for your use.
+BetterAndroid provides developers with several common adapter layout types for `RecyclerView` for your use.
 
 You can specify a `RecyclerCosmetic` in the method parameters, which defaults to a linear vertical list cosmetic.
 
@@ -823,7 +823,7 @@ dataSet.addAll(...)
 adapter.notifyItemRangeInserted(0, dataSet.size)
 ```
 
-When the data is confirmed to be added from 0, `BetterAndroid` provides you with a simpler way to complete this.
+When the data is confirmed to be added from 0, BetterAndroid provides you with a simpler way to complete this.
 Now you can use the following method to notify the adapter that the data has changed.
 
 > The following example
@@ -1008,7 +1008,7 @@ dataSet.clear()
 adapter.notifyItemRangeRemoved(0, count)
 ```
 
-This process is still cumbersome, `BetterAndroid` provides a simpler way for this. Now you can use the following method to clear the dataset and notify the adapter that the data has changed.
+This process is still cumbersome, BetterAndroid provides a simpler way for this. Now you can use the following method to clear the dataset and notify the adapter that the data has changed.
 This method will automatically calculate the size of the dataset.
 
 > The following example

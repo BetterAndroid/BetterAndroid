@@ -212,7 +212,7 @@ class MainActivity : AppComponentActivity() {
 
 有关 Jetpack Compose 的相关扩展你可以参考 [compose-extension](compose-extension.md)、[compose-multiplatform](compose-multiplatform.md)。
 
-`BetterAndroid` 同样为 `Activity` 提供了相关扩展，你可以参考 [ui-extension → Activity 扩展](ui-extension.md#activity-扩展)。
+BetterAndroid 同样为 `Activity` 提供了相关扩展，你可以参考 [ui-extension → Activity 扩展](ui-extension.md#activity-扩展)。
 
 :::
 
@@ -242,7 +242,7 @@ class MainActivity : AppComponentActivity() {
 
 在 `AppBindingFragment` 中，你可以直接使用 `binding` 属性获取视图绑定对象而无需手动重写 `onCreateView` 方法。
 
-`binding` 仅在 `onCreateView` 到 `onDestroyView` 之间可用，`BetterAndroid` 会在 `onDestroyView` 时自动释放它。
+`binding` 仅在 `onCreateView` 到 `onDestroyView` 之间可用，BetterAndroid 会在 `onDestroyView` 时自动释放它。
 
 > 示例如下
 
@@ -295,7 +295,7 @@ class MainFragment : AppViewsFragment(R.layout.fragment_main) {
 
 ::: tip
 
-`BetterAndroid` 同样为 `Fragment` 提供了相关扩展，你可以参考 [ui-extension → Fragment 扩展](ui-extension.md#fragment-扩展)。
+BetterAndroid 同样为 `Fragment` 提供了相关扩展，你可以参考 [ui-extension → Fragment 扩展](ui-extension.md#fragment-扩展)。
 
 :::
 
@@ -333,9 +333,9 @@ class MainFragment : AppViewsFragment(R.layout.fragment_main) {
 
 尤其是当开发者看到了 `NotificationCompat` 以及 `NotificationChannelCompat` 这两个类时，更是会感到无从下手。
 
-于是 `BetterAndroid` 对系统通知相关 API 进行了整体性的封装，基本上覆盖了系统通知中能够用到的所有功能和调用。
+于是 BetterAndroid 对系统通知相关 API 进行了整体性的封装，基本上覆盖了系统通知中能够用到的所有功能和调用。
 
-所以你不需要再考虑类似通知渠道这样 Android 8 及以下系统的兼容性问题，`BetterAndroid` 已经为你处理了这些问题。
+所以你不需要再考虑类似通知渠道这样 Android 8 及以下系统的兼容性问题，BetterAndroid 已经为你处理了这些问题。
 
 在 Kotlin 中你能够更加方便地创建一条系统通知。
 
@@ -383,7 +383,7 @@ val isCanceled = notification.isCanceled
 
 当未正确定义此权限时，调用 `post` 方法会触发系统权限要求或直接失败，因此你应该在调用前自行完成权限申请。
 
-通知渠道和通知渠道组会在首次 `post` 时自动创建，如果系统中已经存在同 ID 的渠道或渠道组，`BetterAndroid` 将直接复用它们而不会重复创建。
+通知渠道和通知渠道组会在首次 `post` 时自动创建，如果系统中已经存在同 ID 的渠道或渠道组，BetterAndroid 将直接复用它们而不会重复创建。
 
 请参考 [Notification runtime permission](https://developer.android.com/develop/ui/views/notifications/notification-permission)。
 
@@ -544,7 +544,7 @@ Android 开发的严重适配问题就在于终端设备没有统一开发规范
 
 为了给用户带来更好的体验，状态栏、导航栏何时应该显示、隐藏，状态栏、导航栏的颜色、背景等等，这些都是开发者在开发过程中需要考虑的问题。
 
-所以 `BetterAndroid` 对接并封装了 `androidx` 所提供的系统栏适配方案，并将其集成到了 `SystemBarsController` 中，现在，你可以非常方便地来调用它去轻松实现操作系统栏的一系列解决方案。
+所以 BetterAndroid 对接并封装了 `androidx` 所提供的系统栏适配方案，并将其集成到了 `SystemBarsController` 中，现在，你可以非常方便地来调用它去轻松实现操作系统栏的一系列解决方案。
 
 `SystemBarsController` 最低支持到 Android 5.0，并解决了部分厂商定制系统中的兼容性问题。
 
@@ -644,7 +644,7 @@ systemBars.init(rootView, edgeToEdgeInsets = null)
 ::: tip
 
 在 Jetpack Compose 中，你可以使用 `AppComponentActivity` 来获得一个设置了 `edgeToEdgeInsets = null` 初始化的 `SystemBarsController`，
-然后使用 Jetpack Compose 的方式去设置 Window Insets，`BetterAndroid` 同样为其提供了扩展支持，更多功能你可以参考 [compose-multiplatform](./compose-multiplatform)。
+然后使用 Jetpack Compose 的方式去设置 Window Insets，BetterAndroid 同样为其提供了扩展支持，更多功能你可以参考 [compose-multiplatform](./compose-multiplatform)。
 
 :::
 
