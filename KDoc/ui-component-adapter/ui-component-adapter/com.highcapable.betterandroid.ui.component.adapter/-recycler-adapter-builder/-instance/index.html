@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Instance</title>
+    <link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg">
+        <script>var pathToRoot = "../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../../ui-kit/ui-kit.min.js" defer="defer"></script>
+</head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+            <a class="library-name--link" href="../../../../index.html" tabindex="1">
+                    ui-component-adapter
+            </a>
+        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle"
+                type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+1.1.4        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector jvm-like" data-active="" aria-pressed="true"
+                        data-filter=":ui-component-adapter/release">release</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox"
+                        data-role="dropdown-toggle"
+                        aria-controls="platform-tags-listbox"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-label="Toggle source sets"
+                ></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":ui-component-adapter/release"
+                                       data-filter=":ui-component-adapter/release"/>
+                                <span class="checkbox--icon"></span>
+                                release
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button"
+                    type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config='{"defaultSize": 280, "minSize": 200, "maxSize": 400}'>
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list"
+                    data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    ui-component-adapter
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="ui-component-adapter::com.highcapable.betterandroid.ui.component.adapter/RecyclerAdapterBuilder.Instance///PointingToDeclaration//-1072638286">
+  <div class="breadcrumbs"><a href="../../../../index.html">ui-component-adapter</a><span class="delimiter">/</span><a href="../../index.html">com.highcapable.betterandroid.ui.component.adapter</a><span class="delimiter">/</span><a href="../index.html">RecyclerAdapterBuilder</a><span class="delimiter">/</span><span class="current">Instance</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Instance</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">inner </span><span class="token keyword">class </span><a href="index.html">Instance</a> : <a href="https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.Adapter.html">RecyclerView.Adapter</a><span class="token operator">&lt;</span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.viewholder.impl/-recycler-view-holder-impl/index.html">RecyclerViewHolderImpl</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><p class="paragraph">The <a href="../index.html">RecyclerAdapterBuilder</a> instance.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="PROPERTY">
+        <h2 class="tableheader">Properties</h2>
+        <div class="table"><a data-name="-1061182743%2FProperties%2F-1072638286" anchor-label="differ" id="-1061182743%2FProperties%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="differ.html"><span><span>differ</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1061182743%2FProperties%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="differ.html">differ</a><span class="token operator">: </span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.diff/-recycler-async-differ/index.html">RecyclerAsyncDiffer</a><span class="token operator">&lt;</span><a href="../index.html">E</a><span class="token operator">&gt;</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">The differ.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1368992355%2FProperties%2F-1072638286" anchor-label="itemCount" id="1368992355%2FProperties%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="item-count.html"><span>item</span><wbr></wbr><span><span>Count</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1368992355%2FProperties%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="item-count.html">itemCount</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1002843558%2FProperties%2F-1072638286" anchor-label="stateRestorationPolicy" id="-1002843558%2FProperties%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1002843558%2FProperties%2F-1072638286"><span>state</span><wbr></wbr><span>Restoration</span><wbr></wbr><span><span>Policy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1002843558%2FProperties%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/NonNull.html"><span class="token annotation builtin">NonNull</span></a></div></div><span class="token keyword">override </span><span class="token keyword">var </span><a href="index.html#-1002843558%2FProperties%2F-1072638286">stateRestorationPolicy</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.Adapter.StateRestorationPolicy.html">RecyclerView.Adapter.StateRestorationPolicy</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1810407444%2FProperties%2F-1072638286" anchor-label="wrapper" id="-1810407444%2FProperties%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="wrapper.html"><span><span>wrapper</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1810407444%2FProperties%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="wrapper.html">wrapper</a><span class="token operator">: </span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.wrapper/-recycler-adapter-wrapper/index.html">RecyclerAdapterWrapper</a></div><div class="brief "><p class="paragraph">Get the wrapper of <a href="https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.Adapter.html">RecyclerView.Adapter</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="251950739%2FProperties%2F-1072638286" anchor-label="wrapper" id="251950739%2FProperties%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/wrapper.html"><span><span>wrapper</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="251950739%2FProperties%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.Adapter.html">RecyclerView.Adapter</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/wrapper.html">wrapper</a><span class="token operator">: </span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.wrapper/-recycler-adapter-wrapper/index.html">RecyclerAdapterWrapper</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Get the <a href="https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.Adapter.html">RecyclerView.Adapter</a> wrapper from <a href="../index.html">RecyclerAdapterBuilder</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="tableheader">Functions</h2>
+        <div class="table"><a data-name="189347580%2FFunctions%2F-1072638286" anchor-label="bindViewHolder" id="189347580%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#189347580%2FFunctions%2F-1072638286"><span>bind</span><wbr></wbr><span>View</span><wbr></wbr><span><span>Holder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="189347580%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html#189347580%2FFunctions%2F-1072638286"><span class="token function">bindViewHolder</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/NonNull.html"><span class="token annotation builtin">NonNull</span></a> </span>holder<span class="token operator">: </span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.viewholder.impl/-recycler-view-holder-impl/index.html">RecyclerViewHolderImpl</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">position<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="991856713%2FFunctions%2F-1072638286" anchor-label="clearAndNotify" id="991856713%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/clear-and-notify.html"><span>clear</span><wbr></wbr><span>And</span><wbr></wbr><span><span>Notify</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="991856713%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.Adapter.html">RecyclerView.Adapter</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/clear-and-notify.html"><span class="token function">clearAndNotify</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">dataSet<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-mutable-collection/index.html">MutableCollection</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Clear the <a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/clear-and-notify.html">dataSet</a> and notify that all items in the adapter have been removed.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1423244545%2FFunctions%2F-1072638286" anchor-label="createViewHolder" id="1423244545%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1423244545%2FFunctions%2F-1072638286"><span>create</span><wbr></wbr><span>View</span><wbr></wbr><span><span>Holder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1423244545%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/NonNull.html"><span class="token annotation builtin">NonNull</span></a></div></div><span class="token keyword">fun </span><a href="index.html#1423244545%2FFunctions%2F-1072638286"><span class="token function">createViewHolder</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/NonNull.html"><span class="token annotation builtin">NonNull</span></a> </span>parent<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/view/ViewGroup.html">ViewGroup</a><span class="token punctuation">, </span></span><span class="parameter ">viewType<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.viewholder.impl/-recycler-view-holder-impl/index.html">RecyclerViewHolderImpl</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1238180073%2FFunctions%2F-1072638286" anchor-label="findRelativeAdapterPositionIn" id="-1238180073%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1238180073%2FFunctions%2F-1072638286"><span>find</span><wbr></wbr><span>Relative</span><wbr></wbr><span>Adapter</span><wbr></wbr><span>Position</span><wbr></wbr><span><span>In</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1238180073%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#-1238180073%2FFunctions%2F-1072638286"><span class="token function">findRelativeAdapterPositionIn</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/NonNull.html"><span class="token annotation builtin">NonNull</span></a> </span>adapter<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.Adapter.html">RecyclerView.Adapter</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.ViewHolder.html">RecyclerView.ViewHolder</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/NonNull.html"><span class="token annotation builtin">NonNull</span></a> </span>viewHolder<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.ViewHolder.html">RecyclerView.ViewHolder</a><span class="token punctuation">, </span></span><span class="parameter ">localPosition<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="994882389%2FFunctions%2F-1072638286" anchor-label="getItemCount" id="994882389%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-item-count.html"><span>get</span><wbr></wbr><span>Item</span><wbr></wbr><span><span>Count</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="994882389%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="get-item-count.html"><span class="token function">getItemCount</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="535100025%2FFunctions%2F-1072638286" anchor-label="getItemId" id="535100025%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-item-id.html"><span>get</span><wbr></wbr><span>Item</span><wbr></wbr><span><span>Id</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="535100025%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="get-item-id.html"><span class="token function">getItemId</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">position<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="98730709%2FFunctions%2F-1072638286" anchor-label="getItemViewType" id="98730709%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-item-view-type.html"><span>get</span><wbr></wbr><span>Item</span><wbr></wbr><span>View</span><wbr></wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="98730709%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="get-item-view-type.html"><span class="token function">getItemViewType</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">position<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1092162006%2FFunctions%2F-1072638286" anchor-label="hasObservers" id="1092162006%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1092162006%2FFunctions%2F-1072638286"><span>has</span><wbr></wbr><span><span>Observers</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1092162006%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html#1092162006%2FFunctions%2F-1072638286"><span class="token function">hasObservers</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="16685238%2FFunctions%2F-1072638286" anchor-label="hasStableIds" id="16685238%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#16685238%2FFunctions%2F-1072638286"><span>has</span><wbr></wbr><span>Stable</span><wbr></wbr><span><span>Ids</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="16685238%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html#16685238%2FFunctions%2F-1072638286"><span class="token function">hasStableIds</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1889606157%2FFunctions%2F-1072638286" anchor-label="notifyAllItemsChanged" id="-1889606157%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-all-items-changed.html"><span>notify</span><wbr></wbr><span>All</span><wbr></wbr><span>Items</span><wbr></wbr><span><span>Changed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1889606157%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.Adapter.html">RecyclerView.Adapter</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-all-items-changed.html"><span class="token function">notifyAllItemsChanged</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">dataSet<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Notify that all items in the adapter have been updated.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2103518703%2FFunctions%2F-1072638286" anchor-label="notifyAllItemsInserted" id="-2103518703%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-all-items-inserted.html"><span>notify</span><wbr></wbr><span>All</span><wbr></wbr><span>Items</span><wbr></wbr><span><span>Inserted</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2103518703%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.Adapter.html">RecyclerView.Adapter</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-all-items-inserted.html"><span class="token function">notifyAllItemsInserted</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">dataSet<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Notify that all items in the adapter have been inserted.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1152659068%2FFunctions%2F-1072638286" anchor-label="notifyByDiff" id="1152659068%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-by-diff.html"><span>notify</span><wbr></wbr><span>By</span><wbr></wbr><span><span>Diff</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1152659068%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.Adapter.html">RecyclerView.Adapter</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-by-diff.html"><span class="token function">notifyByDiff</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">callback<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/DiffUtil.Callback.html">DiffUtil.Callback</a><span class="token punctuation">, </span></span><span class="parameter ">detectMoves<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Notify that the adapter has been updated by <a href="https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/DiffUtil.Callback.html">DiffUtil.Callback</a>.</p></div><div class="symbol monospace"><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-by-diff.html">T</a><span class="token operator">&gt; </span><a href="https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.Adapter.html">RecyclerView.Adapter</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-by-diff.html"><span class="token function">notifyByDiff</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">oldList<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-by-diff.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">newList<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-by-diff.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">areItemsTheSame<span class="token operator">: </span><span class="token punctuation">(</span>oldItem<span class="token operator">: </span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-by-diff.html">T</a><span class="token punctuation">, </span>newItem<span class="token operator">: </span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-by-diff.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">areContentsTheSame<span class="token operator">: </span><span class="token punctuation">(</span>oldItem<span class="token operator">: </span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-by-diff.html">T</a><span class="token punctuation">, </span>newItem<span class="token operator">: </span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-by-diff.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">getChangePayload<span class="token operator">: </span><span class="token punctuation">(</span>oldItem<span class="token operator">: </span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-by-diff.html">T</a><span class="token punctuation">, </span>newItem<span class="token operator">: </span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-by-diff.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator"> = </span>{ _, _ -&gt; null }<span class="token punctuation">, </span></span><span class="parameter ">detectMoves<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Notify that the adapter has been updated by diff.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1095556076%2FFunctions%2F-1072638286" anchor-label="notifyDataSetChanged" id="-1095556076%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1095556076%2FFunctions%2F-1072638286"><span>notify</span><wbr></wbr><span>Data</span><wbr></wbr><span>Set</span><wbr></wbr><span><span>Changed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1095556076%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html#-1095556076%2FFunctions%2F-1072638286"><span class="token function">notifyDataSetChanged</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-809521243%2FFunctions%2F-1072638286" anchor-label="notifyDataSetChangedIgnore" id="-809521243%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-data-set-changed-ignore.html"><span>notify</span><wbr></wbr><span>Data</span><wbr></wbr><span>Set</span><wbr></wbr><span>Changed</span><wbr></wbr><span><span>Ignore</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-809521243%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.Adapter.html">RecyclerView.Adapter</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.recycler.factory/notify-data-set-changed-ignore.html"><span class="token function">notifyDataSetChangedIgnore</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Notify any registered observers that the data set has changed (ignore lint warning).</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="504258021%2FFunctions%2F-1072638286" anchor-label="notifyItemChanged" id="504258021%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1721030169%2FFunctions%2F-1072638286"><span>notify</span><wbr></wbr><span>Item</span><wbr></wbr><span><span>Changed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="504258021%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html#-1721030169%2FFunctions%2F-1072638286"><span class="token function">notifyItemChanged</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">position<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html#748267402%2FFunctions%2F-1072638286"><span class="token function">notifyItemChanged</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">position<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/Nullable.html"><span class="token annotation builtin">Nullable</span></a> </span>payload<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2137269507%2FFunctions%2F-1072638286" anchor-label="notifyItemInserted" id="2137269507%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#2137269507%2FFunctions%2F-1072638286"><span>notify</span><wbr></wbr><span>Item</span><wbr></wbr><span><span>Inserted</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2137269507%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html#2137269507%2FFunctions%2F-1072638286"><span class="token function">notifyItemInserted</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">position<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1694317867%2FFunctions%2F-1072638286" anchor-label="notifyItemMoved" id="-1694317867%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1694317867%2FFunctions%2F-1072638286"><span>notify</span><wbr></wbr><span>Item</span><wbr></wbr><span><span>Moved</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1694317867%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html#-1694317867%2FFunctions%2F-1072638286"><span class="token function">notifyItemMoved</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">fromPosition<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">toPosition<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="628495561%2FFunctions%2F-1072638286" anchor-label="notifyItemRangeChanged" id="628495561%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1769183193%2FFunctions%2F-1072638286"><span>notify</span><wbr></wbr><span>Item</span><wbr></wbr><span>Range</span><wbr></wbr><span><span>Changed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="628495561%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html#1769183193%2FFunctions%2F-1072638286"><span class="token function">notifyItemRangeChanged</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">positionStart<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">itemCount<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html#1916975740%2FFunctions%2F-1072638286"><span class="token function">notifyItemRangeChanged</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">positionStart<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">itemCount<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/Nullable.html"><span class="token annotation builtin">Nullable</span></a> </span>payload<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2104748521%2FFunctions%2F-1072638286" anchor-label="notifyItemRangeInserted" id="-2104748521%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-2104748521%2FFunctions%2F-1072638286"><span>notify</span><wbr></wbr><span>Item</span><wbr></wbr><span>Range</span><wbr></wbr><span><span>Inserted</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2104748521%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html#-2104748521%2FFunctions%2F-1072638286"><span class="token function">notifyItemRangeInserted</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">positionStart<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">itemCount<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="999899269%2FFunctions%2F-1072638286" anchor-label="notifyItemRangeRemoved" id="999899269%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#999899269%2FFunctions%2F-1072638286"><span>notify</span><wbr></wbr><span>Item</span><wbr></wbr><span>Range</span><wbr></wbr><span><span>Removed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="999899269%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html#999899269%2FFunctions%2F-1072638286"><span class="token function">notifyItemRangeRemoved</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">positionStart<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">itemCount<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-189254469%2FFunctions%2F-1072638286" anchor-label="notifyItemRemoved" id="-189254469%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-189254469%2FFunctions%2F-1072638286"><span>notify</span><wbr></wbr><span>Item</span><wbr></wbr><span><span>Removed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-189254469%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html#-189254469%2FFunctions%2F-1072638286"><span class="token function">notifyItemRemoved</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">position<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1243461790%2FFunctions%2F-1072638286" anchor-label="onAttachedToRecyclerView" id="-1243461790%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1243461790%2FFunctions%2F-1072638286"><span>on</span><wbr></wbr><span>Attached</span><wbr></wbr><span>To</span><wbr></wbr><span>Recycler</span><wbr></wbr><span><span>View</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1243461790%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#-1243461790%2FFunctions%2F-1072638286"><span class="token function">onAttachedToRecyclerView</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/NonNull.html"><span class="token annotation builtin">NonNull</span></a> </span>recyclerView<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.html">RecyclerView</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-833935602%2FFunctions%2F-1072638286" anchor-label="onBindViewHolder" id="-833935602%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#385954083%2FFunctions%2F-1072638286"><span>on</span><wbr></wbr><span>Bind</span><wbr></wbr><span>View</span><wbr></wbr><span><span>Holder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-833935602%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#385954083%2FFunctions%2F-1072638286"><span class="token function">onBindViewHolder</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/NonNull.html"><span class="token annotation builtin">NonNull</span></a> </span>holder<span class="token operator">: </span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.viewholder.impl/-recycler-view-holder-impl/index.html">RecyclerViewHolderImpl</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">position<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/NonNull.html"><span class="token annotation builtin">NonNull</span></a> </span>payloads<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="on-bind-view-holder.html"><span class="token function">onBindViewHolder</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">holder<span class="token operator">: </span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.viewholder.impl/-recycler-view-holder-impl/index.html">RecyclerViewHolderImpl</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">position<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="812509374%2FFunctions%2F-1072638286" anchor-label="onCreateViewHolder" id="812509374%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-create-view-holder.html"><span>on</span><wbr></wbr><span>Create</span><wbr></wbr><span>View</span><wbr></wbr><span><span>Holder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="812509374%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="on-create-view-holder.html"><span class="token function">onCreateViewHolder</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parent<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/view/ViewGroup.html">ViewGroup</a><span class="token punctuation">, </span></span><span class="parameter ">viewType<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.viewholder.impl/-recycler-view-holder-impl/index.html">RecyclerViewHolderImpl</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1201433889%2FFunctions%2F-1072638286" anchor-label="onDetachedFromRecyclerView" id="-1201433889%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1201433889%2FFunctions%2F-1072638286"><span>on</span><wbr></wbr><span>Detached</span><wbr></wbr><span>From</span><wbr></wbr><span>Recycler</span><wbr></wbr><span><span>View</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1201433889%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#-1201433889%2FFunctions%2F-1072638286"><span class="token function">onDetachedFromRecyclerView</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/NonNull.html"><span class="token annotation builtin">NonNull</span></a> </span>recyclerView<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.html">RecyclerView</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="838086006%2FFunctions%2F-1072638286" anchor-label="onFailedToRecycleView" id="838086006%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#838086006%2FFunctions%2F-1072638286"><span>on</span><wbr></wbr><span>Failed</span><wbr></wbr><span>To</span><wbr></wbr><span>Recycle</span><wbr></wbr><span><span>View</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="838086006%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#838086006%2FFunctions%2F-1072638286"><span class="token function">onFailedToRecycleView</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/NonNull.html"><span class="token annotation builtin">NonNull</span></a> </span>holder<span class="token operator">: </span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.viewholder.impl/-recycler-view-holder-impl/index.html">RecyclerViewHolderImpl</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1420647460%2FFunctions%2F-1072638286" anchor-label="onViewAttachedToWindow" id="-1420647460%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1420647460%2FFunctions%2F-1072638286"><span>on</span><wbr></wbr><span>View</span><wbr></wbr><span>Attached</span><wbr></wbr><span>To</span><wbr></wbr><span><span>Window</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1420647460%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#-1420647460%2FFunctions%2F-1072638286"><span class="token function">onViewAttachedToWindow</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/NonNull.html"><span class="token annotation builtin">NonNull</span></a> </span>holder<span class="token operator">: </span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.viewholder.impl/-recycler-view-holder-impl/index.html">RecyclerViewHolderImpl</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="470836287%2FFunctions%2F-1072638286" anchor-label="onViewDetachedFromWindow" id="470836287%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#470836287%2FFunctions%2F-1072638286"><span>on</span><wbr></wbr><span>View</span><wbr></wbr><span>Detached</span><wbr></wbr><span>From</span><wbr></wbr><span><span>Window</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="470836287%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#470836287%2FFunctions%2F-1072638286"><span class="token function">onViewDetachedFromWindow</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/NonNull.html"><span class="token annotation builtin">NonNull</span></a> </span>holder<span class="token operator">: </span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.viewholder.impl/-recycler-view-holder-impl/index.html">RecyclerViewHolderImpl</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1020625914%2FFunctions%2F-1072638286" anchor-label="onViewRecycled" id="1020625914%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1020625914%2FFunctions%2F-1072638286"><span>on</span><wbr></wbr><span>View</span><wbr></wbr><span><span>Recycled</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1020625914%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#1020625914%2FFunctions%2F-1072638286"><span class="token function">onViewRecycled</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/NonNull.html"><span class="token annotation builtin">NonNull</span></a> </span>holder<span class="token operator">: </span><a href="../../../com.highcapable.betterandroid.ui.component.adapter.viewholder.impl/-recycler-view-holder-impl/index.html">RecyclerViewHolderImpl</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-149943229%2FFunctions%2F-1072638286" anchor-label="registerAdapterDataObserver" id="-149943229%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-149943229%2FFunctions%2F-1072638286"><span>register</span><wbr></wbr><span>Adapter</span><wbr></wbr><span>Data</span><wbr></wbr><span><span>Observer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-149943229%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#-149943229%2FFunctions%2F-1072638286"><span class="token function">registerAdapterDataObserver</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/NonNull.html"><span class="token annotation builtin">NonNull</span></a> </span>observer<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.AdapterDataObserver.html">RecyclerView.AdapterDataObserver</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1991189249%2FFunctions%2F-1072638286" anchor-label="setHasStableIds" id="1991189249%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1991189249%2FFunctions%2F-1072638286"><span>set</span><wbr></wbr><span>Has</span><wbr></wbr><span>Stable</span><wbr></wbr><span><span>Ids</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1991189249%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#1991189249%2FFunctions%2F-1072638286"><span class="token function">setHasStableIds</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">hasStableIds<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-323484189%2FFunctions%2F-1072638286" anchor-label="submitList" id="-323484189%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="submit-list.html"><span>submit</span><wbr></wbr><span><span>List</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-323484189%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-overloads/index.html"><span class="token annotation builtin">JvmOverloads</span></a></div></div><span class="token keyword">fun </span><a href="submit-list.html"><span class="token function">submitList</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">list<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../index.html">E</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">commitCallback<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/lang/Runnable.html">Runnable</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Submit the current list.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="607934410%2FFunctions%2F-1072638286" anchor-label="unregisterAdapterDataObserver" id="607934410%2FFunctions%2F-1072638286" data-filterable-set=":ui-component-adapter/release"></a>
+          <div class="table-row table-row_content" data-filterable-current=":ui-component-adapter/release" data-filterable-set=":ui-component-adapter/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#607934410%2FFunctions%2F-1072638286"><span>unregister</span><wbr></wbr><span>Adapter</span><wbr></wbr><span>Data</span><wbr></wbr><span><span>Observer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="607934410%2FFunctions%2F-1072638286"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ui-component-adapter/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#607934410%2FFunctions%2F-1072638286"><span class="token function">unregisterAdapterDataObserver</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/NonNull.html"><span class="token annotation builtin">NonNull</span></a> </span>observer<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.AdapterDataObserver.html">RecyclerView.AdapterDataObserver</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>BetterAndroid | Apache-2.0 License | Copyright (C) 2019 HighCapable</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
