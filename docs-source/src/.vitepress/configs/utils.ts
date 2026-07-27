@@ -15,11 +15,6 @@ const containerTitles = {
     }
 };
 
-/** Exposes the active documentation build mode to configuration helpers. */
-export const env = {
-    dev: process.env.NODE_ENV === 'development'
-};
-
 /** Provides Markdown renderer hooks shared by development and production builds. */
 export const markdown = {
     /** Localizes default custom-container titles while preserving titles declared in Markdown. */
