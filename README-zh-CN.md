@@ -123,7 +123,7 @@ notification.post()
 
 ## Star History
 
-![Star History Chart](https://api.star-history.com/svg?repos=BetterAndroid/BetterAndroid&type=Date)
+[![Star History Chart](https://api.star-history.com/chart?repos=BetterAndroid/BetterAndroid&type=date&legend=top-left&sealed_token=nSxroKYB6KyjogsvHLP7w1mck_ednFM-_Ok2ifpOJifJYMahOn4cYcxGjbAbaRH5pwYxSCEbRPuNNED9JwopuFAyDQUAehX260cibtsVsgNRa0GOjctR5g)](https://www.star-history.com/?repos=BetterAndroid%2FBetterAndroid&type=date&legend=top-left)
 
 ## 许可证
 
