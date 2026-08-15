@@ -136,19 +136,22 @@ class ViewOutlineProviderUsageDetector : Detector(), Detector.UastScanner {
 
         private fun buildReplacement(receiver: String, objectLiteral: UObjectLiteralExpression): ReplacementSpec? {
             val method = objectLiteral.declaration.findMethod(GET_OUTLINE_METHOD) ?: return null
+            val parameterNames = method.uastParameters.map { it.name }
+            if (parameterNames.size != 2) return null
+            val (viewParameter, outlineParameter) = parameterNames
             val bodyExpressions = (method.uastBody as? UBlockExpression)?.expressions.orEmpty()
             val body = bodyExpressions.joinToString("\n") { it.asSourceString().trimEnd() }
 
             return ReplacementSpec(
                 source = buildString {
                     if (receiver.isNotEmpty()) append(receiver).append('.')
-                    append("$OUTLINE_PROVIDER_FUNCTION { view, outline ->")
+                    append("$OUTLINE_PROVIDER_FUNCTION { $viewParameter, $outlineParameter ->")
                     if (body.isNotBlank()) append('\n').append(body).append('\n')
                     append('}')
                 },
                 display = buildString {
                     if (receiver.isNotEmpty()) append(receiver).append('.')
-                    append("$OUTLINE_PROVIDER_FUNCTION { view, outline ->")
+                    append("$OUTLINE_PROVIDER_FUNCTION { $viewParameter, $outlineParameter ->")
                     if (body.isNotBlank()) append('\n').append(body).append('\n')
                     append('}')
                 }
