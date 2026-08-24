@@ -31,7 +31,7 @@ kotlin {
         iosTarget.compilations.getByName("main") {
             cinterops {
                 //  Workaround to override uikit classes
-                val uikit by cinterops.creating
+                create("uikit")
             }
         }
     }
@@ -46,7 +46,7 @@ kotlin {
             }
         }
 
-        val commonMain by getting {
+        val commonMain = getByName("commonMain") {
             dependencies {
                 implementation(libs.compose.runtime)
                 implementation(libs.compose.foundation)
@@ -54,7 +54,7 @@ kotlin {
                 implementation(projects.composeExtension)
             }
         }
-        val androidMain by getting {
+        getByName("androidMain") {
             dependencies {
                 implementation(libs.androidx.core.ktx)
                 implementation(libs.androidx.activity)
@@ -64,17 +64,16 @@ kotlin {
                 implementation(projects.uiExtension)
             }
         }
-        val desktopMain by getting
-        val iosX64Main by getting
-        val iosArm64Main by getting
-        val iosSimulatorArm64Main by getting
+        val iosX64Main = getByName("iosX64Main")
+        val iosArm64Main = getByName("iosArm64Main")
+        val iosSimulatorArm64Main = getByName("iosSimulatorArm64Main")
         listOf(iosX64Main, iosArm64Main, iosSimulatorArm64Main).forEach {
             it.languageSettings {
                 optIn("kotlinx.cinterop.ExperimentalForeignApi")
                 optIn("kotlinx.cinterop.BetaInteropApi")
             }
         }
-        val iosMain by creating {
+        create("iosMain") {
             dependsOn(commonMain)
             languageSettings {
                 optIn("kotlinx.cinterop.ExperimentalForeignApi")

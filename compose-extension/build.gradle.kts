@@ -40,24 +40,22 @@ kotlin {
             }
         }
 
-        val commonMain by getting {
+        val commonMain = getByName("commonMain") {
             dependencies {
                 implementation(libs.compose.runtime)
                 implementation(libs.compose.foundation)
             }
         }
-        val androidMain by getting
-        val desktopMain by getting
-        val iosX64Main by getting
-        val iosArm64Main by getting
-        val iosSimulatorArm64Main by getting
+        val iosX64Main = getByName("iosX64Main")
+        val iosArm64Main = getByName("iosArm64Main")
+        val iosSimulatorArm64Main = getByName("iosSimulatorArm64Main")
         listOf(iosX64Main, iosArm64Main, iosSimulatorArm64Main).forEach {
             it.languageSettings {
                 optIn("kotlinx.cinterop.ExperimentalForeignApi")
                 optIn("kotlinx.cinterop.BetaInteropApi")
             }
         }
-        val iosMain by creating {
+        create("iosMain") {
             dependsOn(commonMain)
             languageSettings {
                 optIn("kotlinx.cinterop.ExperimentalForeignApi")
