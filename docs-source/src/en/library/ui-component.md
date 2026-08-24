@@ -328,6 +328,10 @@ System notification poster.
 
 Extension methods for the notification builds.
 
+[ForegroundService](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.notification.factory)
+
+Extension methods for foreground service notifications.
+
 :::
 
 It is not easy to create and send a notification in Android.

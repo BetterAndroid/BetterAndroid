@@ -327,6 +327,10 @@ BetterAndroid 同样为 `Fragment` 提供了相关扩展，你可以参考 [ui-e
 
 适用于通知构建的扩展方法。
 
+[ForegroundService](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.notification.factory)
+
+适用于前台服务通知相关的扩展方法。
+
 :::
 
 想要在 Android 中创建并发送一条通知并不容易，其中最大的问题就在于系统通知的创建复杂、管理混乱且 API 难以简单地兼容旧版本。
