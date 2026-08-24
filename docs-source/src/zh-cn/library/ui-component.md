@@ -514,6 +514,47 @@ val isCanceled = poster.isCanceled
 
 :::
 
+在 `Service` 中推送前台服务通知时，你可以直接将 `NotificationWrapper` 传递给 BetterAndroid 支持的 `startForeground` 扩展，它会优先创建通知渠道，再将通知交给系统。
+
+> 示例如下
+
+```kotlin
+class MyService : Service() {
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val notification = Notification(
+            context = this,
+            channel = NotificationChannel("my_service_channel_id", importance = NotificationImportance.LOW) {
+                name = "My Service Channel"
+            }
+        ) {
+            smallIconResId = R.drawable.ic_my_notification
+            contentTitle = "My Service"
+            contentText = "Running"
+            ongoing(true)
+        }
+
+        // 使用 AndroidManifest 中声明的 `foregroundServiceType`
+        startForeground(1, notification)
+        // 或者显式指定 `foregroundServiceType`
+        startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+        return START_NOT_STICKY
+    }
+
+    override fun onBind(intent: Intent?): IBinder? = null
+}
+```
+
+使用显式 `foregroundServiceType` 时对应类型必须已经在 AndroidManifest 中声明，同时需要声明系统要求的前台服务及类型权限。
+
+::: danger
+
+你不能使用 `NotificationWrapper.instance` 取出的实例传递给系统的 `startForeground`，这会导致在 Android 8+ 的系统上，通知渠道没有被连带创建造成 `Bad notification for startForeground` 或 `CannotPostForegroundServiceNotificationException` 异常异步终止应用进程。
+
+如果你一定要调用系统的 `startForeground`，你需要将 `NotificationChannelWrapper` 创建为临时变量并同时传递给 BetterAndroid `Notification` 的 `channel` 参数，这样才能确保在调用系统 `startForeground` 前创建通知渠道，但是我们并不推荐这样做。
+
+:::
+
 ### 系统栏 (状态栏、导航栏等)
 
 ::: tip 本节内容

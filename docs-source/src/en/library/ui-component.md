@@ -529,6 +529,51 @@ You can also get the `NotificationManagerCompat` object through `Context.notific
 
 :::
 
+When pushing a foreground service notification in a `Service`, you can directly pass the `NotificationWrapper` to the BetterAndroid supported `startForeground` extension,
+which will create the notification channel first and then hand over the notification to the system.
+
+> The following example
+
+```kotlin
+class MyService : Service() {
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val notification = Notification(
+            context = this,
+            channel = NotificationChannel("my_service_channel_id", importance = NotificationImportance.LOW) {
+                name = "My Service Channel"
+            }
+        ) {
+            smallIconResId = R.drawable.ic_my_notification
+            contentTitle = "My Service"
+            contentText = "Running"
+            ongoing(true)
+        }
+
+        // Use the `foregroundServiceType` declared in the AndroidManifest.
+        startForeground(1, notification)
+        // Or specify the `foregroundServiceType` explicitly.
+        startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+        return START_NOT_STICKY
+    }
+
+    override fun onBind(intent: Intent?): IBinder? = null
+}
+```
+
+When using an explicit `foregroundServiceType`, the corresponding type must already be declared in the AndroidManifest, and you must also declare the foreground service permission and type-specific permissions required by the system.
+
+::: danger
+
+You cannot pass an instance obtained from `NotificationWrapper.instance` to the system `startForeground`.
+On Android 8 and above, this prevents the notification channel from being created along with it,
+which can cause `Bad notification for startForeground` or `CannotPostForegroundServiceNotificationException` and asynchronously terminate the app process.
+
+If you must call the system `startForeground`, create `NotificationChannelWrapper` as a temporary variable and also pass it to the BetterAndroid `Notification` through the `channel` parameter.
+This ensures that the notification channel is created before calling the system `startForeground`, but this approach is not recommended.
+
+:::
+
 ### System Bars (Status Bars, Navigation Bars, etc)
 
 ::: tip Contents of This Section
