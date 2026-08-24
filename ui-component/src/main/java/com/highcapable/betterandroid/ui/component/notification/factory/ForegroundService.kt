@@ -24,44 +24,25 @@
 
 package com.highcapable.betterandroid.ui.component.notification.factory
 
-import android.Manifest
 import android.app.Service
 import androidx.annotation.RequiresPermission
 import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
 import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationWrapper
 
 /**
- * Make this [Service] run in the foreground using [notification].
- *
- * The notification channel and channel group will be created before the notification is posted.
+ * Make this [Service] run in the foreground using [notification] and the optional [foregroundServiceType].
  * @see Service.startForeground
  * @receiver the current service.
  * @param id the notification ID, which must not be 0.
  * @param notification the foreground service notification.
+ * @param foregroundServiceType the optional foreground service type declared by this service.
  */
-@RequiresPermission(Manifest.permission.FOREGROUND_SERVICE)
-fun Service.startForeground(id: Int, notification: NotificationWrapper) {
-    require(id != 0) { "The foreground service notification ID must not be 0." }
-    notification.ensureNotificationChannel(this)
-    startForeground(id, notification.instance)
-}
-
-/**
- * Make this [Service] run in the foreground using [notification] and [foregroundServiceType].
- *
- * The notification channel and channel group will be created before the notification is posted.
- * @see Service.startForeground
- * @receiver the current service.
- * @param id the notification ID, which must not be 0.
- * @param notification the foreground service notification.
- * @param foregroundServiceType the foreground service type declared by this service.
- */
-@RequiresPermission(Manifest.permission.FOREGROUND_SERVICE)
-fun Service.startForeground(id: Int, notification: NotificationWrapper, foregroundServiceType: Int) {
+@JvmOverloads
+fun Service.startForeground(id: Int, notification: NotificationWrapper, @RequiresPermission foregroundServiceType: Int? = null) {
     require(id != 0) { "The foreground service notification ID must not be 0." }
     notification.ensureNotificationChannel(this)
 
-    if (AndroidVersion.isAtLeast(AndroidVersion.Q))
+    if (foregroundServiceType != null && AndroidVersion.isAtLeast(AndroidVersion.Q))
         startForeground(id, notification.instance, foregroundServiceType)
     else startForeground(id, notification.instance)
 }
