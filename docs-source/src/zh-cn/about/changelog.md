@@ -10,7 +10,17 @@
 
 ## Android
 
-### 1.1.4 | 2026.07.02 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.1.5 | 2026.08.24 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+#### ui-component
+
+- `Service` 扩展中新增 `startForeground` 方法，支持直接使用 `NotificationWrapper` 与前台服务类型，并会在调用系统 API 前自动创建通知渠道
+
+#### ui-extension
+
+- 修复 `ViewOutlineProvider` Lint 自动修复未沿用 `getOutline` 参数名称的问题
+
+### 1.1.4 | 2026.07.02 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 - 修复部分模块 Lint 自动修复功能的 BUG
 

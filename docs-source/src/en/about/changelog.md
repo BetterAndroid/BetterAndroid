@@ -16,7 +16,17 @@ Time zone of version release date: **UTC+8**
 
 ## Android
 
-### 1.1.4 | 2026.07.02 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.1.5 | 2026.08.24 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+#### ui-component
+
+- Added the `startForeground` method to the `Service` extension, supporting direct use of `NotificationWrapper` and a foreground service type while automatically creating the notification channel before invoking the system API
+
+#### ui-extension
+
+- Fixed the `ViewOutlineProvider` Lint auto-fix not preserving the `getOutline` parameter names
+
+### 1.1.4 | 2026.07.02 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 - Fixed some bugs in the Lint auto-fix functionality of some modules
 
