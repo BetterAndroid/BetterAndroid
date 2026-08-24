@@ -29,9 +29,9 @@ import android.os.Looper
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationManagerCompat
 import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
+import com.highcapable.betterandroid.ui.component.notification.factory.ensureNotificationChannel
 import com.highcapable.betterandroid.ui.component.notification.factory.notificationManager
 import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationWrapper
-import java.util.Collections
 
 /**
  * Notification poster.
@@ -42,9 +42,7 @@ import java.util.Collections
 class NotificationPoster internal constructor(private val notification: NotificationWrapper) {
 
     private companion object {
-        private val mainHandler by lazy { Handler(Looper.getMainLooper()) }
-        private val createdChannelIds = Collections.synchronizedSet(mutableSetOf<String>())
-        private val createdChannelGroupIds = Collections.synchronizedSet(mutableSetOf<String>())
+        val mainHandler by lazy { Handler(Looper.getMainLooper()) }
     }
 
     /** The current shown notification ID. */
@@ -62,8 +60,6 @@ class NotificationPoster internal constructor(private val notification: Notifica
      */
     private val manager by lazy { notification.builder.context.notificationManager }
 
-    private val contextKey get() = notification.builder.context.packageName
-
     /**
      * Determine whether the current notification has been canceled.
      * @return [Boolean]
@@ -80,17 +76,7 @@ class NotificationPoster internal constructor(private val notification: Notifica
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     @JvmOverloads
     fun post(id: Int = 0, tag: String = "") = apply {
-        val channel = notification.builder.channel
-        val channelBuilder = channel.builder
-        val channelId = channelBuilder.channelId
-        val channelGroup = channelBuilder.group
-        val channelGroupId = channelGroup?.builder?.groupId
-
-        if (channelGroupId != null && createdChannelGroupIds.add(buildCacheKey(channelGroupId)))
-            channelGroup.instance.also { manager.createNotificationChannelGroup(it) }
-
-        if (createdChannelIds.add(buildCacheKey(channelId)))
-            manager.createNotificationChannel(channel.instance)
+        notification.ensureNotificationChannel(notification.builder.context)
 
         notification.instance.also {
             if (tag.isNotBlank())
@@ -122,6 +108,4 @@ class NotificationPoster internal constructor(private val notification: Notifica
 
         isPosted = false
     }
-
-    private fun buildCacheKey(id: String) = "$contextKey:$id"
 }

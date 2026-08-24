@@ -34,6 +34,10 @@ import com.highcapable.betterandroid.ui.component.notification.type.Notification
 import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationChannelGroupWrapper
 import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationChannelWrapper
 import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationWrapper
+import java.util.Collections
+
+private val createdChannelIds = Collections.synchronizedSet(mutableSetOf<String>())
+private val createdChannelGroupIds = Collections.synchronizedSet(mutableSetOf<String>())
 
 /**
  * Get notification manager.
@@ -105,3 +109,23 @@ inline fun NotificationChannel(
  */
 inline fun NotificationChannelGroup(groupId: String, builder: NotificationChannelGroupBuilder.() -> Unit) =
     NotificationChannelGroupBuilder.from(groupId).apply(builder).build()
+
+/**
+ * Ensure the notification channel and group are created before posting the notification.
+ * @param context the current context.
+ */
+internal fun NotificationWrapper.ensureNotificationChannel(context: Context) {
+    fun String.buildCacheKey() = "${context.packageName}:$this"
+
+    val manager = context.notificationManager
+    val channel = builder.channel
+    val channelBuilder = channel.builder
+    val channelGroup = channelBuilder.group
+    val channelGroupId = channelGroup?.builder?.groupId
+
+    if (channelGroupId != null && createdChannelGroupIds.add(channelGroupId.buildCacheKey()))
+        manager.createNotificationChannelGroup(channelGroup.instance)
+
+    if (createdChannelIds.add(channelBuilder.channelId.buildCacheKey()))
+        manager.createNotificationChannel(channel.instance)
+}
