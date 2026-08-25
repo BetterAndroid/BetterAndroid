@@ -40,7 +40,6 @@ import androidx.core.content.LocusIdCompat
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.graphics.drawable.IconCompat
 import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
-import com.highcapable.betterandroid.ui.component.R
 import com.highcapable.betterandroid.ui.component.notification.factory.NotificationAction
 import com.highcapable.betterandroid.ui.component.notification.factory.createNotification
 import com.highcapable.betterandroid.ui.component.notification.proxy.INotificationBuilder
@@ -236,24 +235,24 @@ class NotificationBuilder private constructor(
     internal var smallIconLevel: Int? = null
 
     /**
-     * - You must set a small icon before post the notification,
-     *   if you not set it, it will be set to defaults [R.drawable.ic_better_android_simple_notification].
+     * You must set a small icon before building the notification.
+     * The icon needs to be monochrome, otherwise it will be displayed incorrectly on some ROMs.
      *
      * - Note: Some third-party ROMs may modify this function causing it to
      *   not work as expected.
-     *   You can see [here](https://github.com/BetterAndroid/android-notification-icon-project) for more info.
+     *   You can see [this project](https://github.com/BetterAndroid/android-notification-icon-project) for more info.
      * @see NotificationCompat.Builder.setSmallIcon
      */
     @DrawableRes
     var smallIconResId: Int? = null
 
     /**
-     * - You must set a small icon before post the notification,
-     *   if you not set it, it will be set to defaults [R.drawable.ic_better_android_simple_notification].
+     * You must set a small icon before building the notification.
+     * The icon needs to be monochrome, otherwise it will be displayed incorrectly on some ROMs.
      *
      * - Note: Some third-party ROMs may modify this function causing it to
      *   not work as expected.
-     *   You can see [here](https://github.com/BetterAndroid/android-notification-icon-project) for more info.
+     *   You can see [this project](https://github.com/BetterAndroid/android-notification-icon-project) for more info.
      * @see NotificationCompat.Builder.setSmallIcon
      */
     @RequiresApi(AndroidVersion.M)
@@ -753,12 +752,12 @@ class NotificationBuilder private constructor(
     fun extend(extender: NotificationCompat.Extender) = apply { extenders += extender }
 
     /**
-     * - You must set a small icon before post the notification,
-     *   if you not set it, it will be set to defaults [R.drawable.ic_better_android_simple_notification].
+     * You must set a small icon before building the notification.
+     * The icon needs to be monochrome, otherwise it will be displayed incorrectly on some ROMs.
      *
      * - Note: Some third-party ROMs may modify this function causing it to
      *   not work as expected.
-     *   You can see [here](https://github.com/BetterAndroid/android-notification-icon-project) for more info.
+     *   You can see [this project](https://github.com/BetterAndroid/android-notification-icon-project) for more info.
      * @see NotificationCompat.Builder.setSmallIcon
      * @param smallIcon
      * @param level
@@ -771,12 +770,12 @@ class NotificationBuilder private constructor(
     }
 
     /**
-     * - You must set a small icon before post the notification,
-     *   if you not set it, it will be set to defaults [R.drawable.ic_better_android_simple_notification].
+     * You must set a small icon before building the notification.
+     * The icon needs to be monochrome, otherwise it will be displayed incorrectly on some ROMs.
      *
      * - Note: Some third-party ROMs may modify this function causing it to
      *   not work as expected.
-     *   You can see [here](https://github.com/BetterAndroid/android-notification-icon-project) for more info.
+     *   You can see [this project](https://github.com/BetterAndroid/android-notification-icon-project) for more info.
      * @see NotificationCompat.Builder.setSmallIcon
      * @param smallIcon
      * @return [NotificationBuilder]

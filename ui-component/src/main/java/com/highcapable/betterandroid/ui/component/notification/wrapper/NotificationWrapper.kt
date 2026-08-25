@@ -25,7 +25,6 @@ import android.media.AudioAttributes
 import android.media.AudioManager
 import androidx.core.app.NotificationCompat
 import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
-import com.highcapable.betterandroid.ui.component.R
 import com.highcapable.betterandroid.ui.component.notification.NotificationBuilder
 import com.highcapable.betterandroid.ui.component.notification.NotificationChannelBuilder
 import com.highcapable.betterandroid.ui.component.notification.proxy.INotificationWrapper
@@ -41,6 +40,15 @@ class NotificationWrapper internal constructor(internal var builder: Notificatio
 
         /** The legacy lights led on and off default seconds (fixed value). */
         const val LEGACY_LED_ON_OFF_MS = 1000
+    }
+
+    init {
+        require(
+            builder.smallIconResId?.let { it != 0 } == true ||
+                (AndroidVersion.isAtLeast(AndroidVersion.M) && builder.smallIcon != null)
+        ) {
+            "A small icon must be set using 'smallIconResId' or 'smallIcon(...)' before building the notification."
+        }
     }
 
     /**
@@ -141,8 +149,6 @@ class NotificationWrapper internal constructor(internal var builder: Notificatio
                 builder.smallIconLevel?.let { setSmallIcon(smallIcon, it) } ?: setSmallIcon(smallIcon)
             }
             AndroidVersion.require(AndroidVersion.M) { builder.smallIcon?.also { setSmallIcon(it) } }
-            if (builder.smallIconResId == null && AndroidVersion.requireOrNull(AndroidVersion.M, null) { builder.smallIcon } == null)
-                setSmallIcon(R.drawable.ic_better_android_simple_notification)
             builder.extras?.also { setExtras(it) }
             builder.extenders.forEach { extend(it) }
             if (AndroidVersion.isLessThan(AndroidVersion.O))
