@@ -16,7 +16,18 @@ Time zone of version release date: **UTC+8**
 
 ## Android
 
-### 1.1.5 | 2026.08.24 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+### 1.1.6 | 2026.08.25 &ensp;<Badge type="tip" text="latest" vertical="middle" />
+
+#### ui-component
+
+- **<u>⚠️ Breaking Change</u>**: Removed `R.drawable.ic_better_android_simple_notification` and the automatic small-icon fallback. Notifications must now explicitly set a valid icon through `smallIconResId` or `smallIcon(...)` before being built, otherwise an `IllegalArgumentException` will be thrown
+- Completed `NotificationBuilder` support for `addAction`, `addInvisibleAction`, `clearActions`, `clearInvisibleActions`, `extend`, and the `level` variant of `smallIcon`
+- Added `NotificationAction`, `NotificationRemoteInput`, and the `NotificationCompat.Action.Builder.addRemoteInput` DSL for directly building notification actions and remote inputs
+- Added notification action Lint rules that replace `NotificationCompat.Action.Builder`, `RemoteInput.Builder`, and redundant nested DSLs with BetterAndroid usages
+- Fixed `NotificationUsageDetector` reporting the same fluent call chain multiple times while preserving the full call chain as the reported range
+- Fixed the explicit vibration toggle potentially being overridden when a vibration pattern is also configured in `NotificationChannelWrapper`, and fixed all default notification effects being incorrectly applied below Android 8 when none were enabled
+
+### 1.1.5 | 2026.08.24 &ensp;<Badge type="warning" text="stale" vertical="middle" />
 
 #### ui-component
 

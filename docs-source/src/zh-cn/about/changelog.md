@@ -10,7 +10,18 @@
 
 ## Android
 
-### 1.1.5 | 2026.08.24 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+### 1.1.6 | 2026.08.25 &ensp;<Badge type="tip" text="最新" vertical="middle" />
+
+#### ui-component
+
+- **<u>⚠️ 破坏性更新</u>**，移除 `R.drawable.ic_better_android_simple_notification`，创建通知时必须通过 `smallIconResId` 或 `smallIcon(...)` 显式设置有效图标
+- 补全 `NotificationBuilder` 中 `addAction`、`addInvisibleAction`、`clearActions`、`clearInvisibleActions`、`extend` 与支持 `level` 的 `smallIcon` 等功能
+- 新增 `NotificationAction`
+- 新增 `NotificationActionUsageDetector` Lint
+- 修复 `NotificationUsageDetector` Lint 重复上报问题，并保留完整调用链的提示范围
+- 修复 `NotificationChannelWrapper` 同时设置振动模式与振动开关时显式开关可能被覆盖的问题，以及 Android 8 以下未启用任何通知效果时仍错误应用全部默认效果的问题
+
+### 1.1.5 | 2026.08.24 &ensp;<Badge type="warning" text="过旧" vertical="middle" />
 
 #### ui-component
 
