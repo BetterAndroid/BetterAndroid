@@ -328,6 +328,10 @@ System notification poster.
 
 Extension methods for the notification builds.
 
+[NotificationAction](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.notification.factory)
+
+Extension methods for notification actions.
+
 [ForegroundService](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.notification.factory)
 
 Extension methods for foreground service notifications.
@@ -398,6 +402,39 @@ If the system already has a channel or group with the same ID, BetterAndroid wil
 Please refer to [Notification runtime permission](https://developer.android.com/develop/ui/views/notifications/notification-permission).
 
 :::
+
+Adding actions to notifications is also very simple, you can directly use `addAction` on `NotificationBuilder`.
+
+The `addAction` method takes a `NotificationCompat.Action.Builder` as its receiver, so you can continue using the features provided by the official builder.
+When you need to receive text input from the user, you can call `addRemoteInput` inside it. This creates and adds a `RemoteInput`, with `RemoteInput.Builder` as its receiver.
+
+> The following example
+
+```kotlin
+// Assume this is your current Context.
+val context: Context
+// Assume this is your current PendingIntent.
+val replyPendingIntent: PendingIntent
+
+context.createNotification(
+    channel = NotificationChannel("my_channel_id") {
+        name = "My Channel"
+    }
+) {
+    smallIconResId = R.drawable.ic_my_notification
+    contentTitle = "New message"
+
+    addAction(
+        icon = R.drawable.ic_reply,
+        title = "Reply",
+        intent = replyPendingIntent
+    ) {
+        addRemoteInput("reply") {
+            setLabel("Type a reply")
+        }
+    }
+}.post()
+```
 
 You can set importance for notifications in notification channels using the following methods.
 

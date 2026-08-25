@@ -327,6 +327,10 @@ BetterAndroid 同样为 `Fragment` 提供了相关扩展，你可以参考 [ui-e
 
 适用于通知构建的扩展方法。
 
+[NotificationAction](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.notification.factory)
+
+适用于通知操作按钮相关的扩展方法。
+
 [ForegroundService](kdoc://ui-component/ui-component/com.highcapable.betterandroid.ui.component.notification.factory)
 
 适用于前台服务通知相关的扩展方法。
@@ -392,6 +396,38 @@ val isCanceled = notification.isCanceled
 请参考 [Notification runtime permission](https://developer.android.com/develop/ui/views/notifications/notification-permission)。
 
 :::
+
+为通知添加操作按钮也可以非常简单，你可以直接在 `NotificationBuilder` 中使用 `addAction`。
+
+`addAction` 方法以 `NotificationCompat.Action.Builder` 作为接收者，你可以继续使用官方构建器提供的功能。当你需要接收用户输入的文本时，可以在其中调用 `addRemoteInput`，它会创建并添加 `RemoteInput`，以 `RemoteInput.Builder` 作为接收者。
+
+> 示例如下
+
+```kotlin
+// 假设这就是你当前的 Context
+val context: Context
+// 假设这就是你当前的 PendingIntent
+val replyPendingIntent: PendingIntent
+
+context.createNotification(
+    channel = NotificationChannel("my_channel_id") {
+        name = "My Channel"
+    }
+) {
+    smallIconResId = R.drawable.ic_my_notification
+    contentTitle = "收到一条新消息"
+
+    addAction(
+        icon = R.drawable.ic_reply,
+        title = "回复",
+        intent = replyPendingIntent
+    ) {
+        addRemoteInput("reply") {
+            setLabel("输入回复内容")
+        }
+    }
+}.post()
+```
 
 你可以使用以下方式在通知渠道中为通知设置优先级。
 
