@@ -28,6 +28,7 @@ import com.android.tools.lint.client.api.Vendor
 import com.android.tools.lint.detector.api.CURRENT_API
 import com.highcapable.betterandroid.generated.BetterAndroidProperties
 import com.highcapable.betterandroid.ui.component.lint.detector.MultipleSystemBarsControllerPropertiesDetector
+import com.highcapable.betterandroid.ui.component.lint.detector.NotificationActionUsageDetector
 import com.highcapable.betterandroid.ui.component.lint.detector.NotificationUsageDetector
 import com.highcapable.betterandroid.ui.component.lint.detector.SystemBarsControllerUsageDetector
 
@@ -35,6 +36,7 @@ class UiComponentIssueRegistry : IssueRegistry() {
 
     override val issues get() = listOf(
         NotificationUsageDetector.ISSUE,
+        NotificationActionUsageDetector.ISSUE,
         SystemBarsControllerUsageDetector.ISSUE,
         MultipleSystemBarsControllerPropertiesDetector.ISSUE
     )
