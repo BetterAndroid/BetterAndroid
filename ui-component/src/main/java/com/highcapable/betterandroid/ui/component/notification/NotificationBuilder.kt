@@ -636,8 +636,8 @@ class NotificationBuilder private constructor(
     @JvmOverloads
     fun addAction(
         @DrawableRes icon: Int,
-        title: CharSequence? = null,
-        intent: PendingIntent? = null,
+        title: CharSequence,
+        intent: PendingIntent,
         builder: NotificationCompat.Action.Builder.() -> Unit = {}
     ) = apply { actions += NotificationAction(icon, title, intent, builder) }
 
@@ -653,9 +653,9 @@ class NotificationBuilder private constructor(
      */
     @JvmOverloads
     fun addAction(
-        icon: IconCompat?,
-        title: CharSequence? = null,
-        intent: PendingIntent? = null,
+        icon: IconCompat,
+        title: CharSequence,
+        intent: PendingIntent,
         builder: NotificationCompat.Action.Builder.() -> Unit = {}
     ) = apply { actions += NotificationAction(icon, title, intent, builder) }
 
@@ -700,8 +700,8 @@ class NotificationBuilder private constructor(
     @JvmOverloads
     fun addInvisibleAction(
         @DrawableRes icon: Int,
-        title: CharSequence? = null,
-        intent: PendingIntent? = null,
+        title: CharSequence,
+        intent: PendingIntent,
         builder: NotificationCompat.Action.Builder.() -> Unit = {}
     ) = apply { invisibleActions += NotificationAction(icon, title, intent, builder) }
 
@@ -717,9 +717,9 @@ class NotificationBuilder private constructor(
      */
     @JvmOverloads
     fun addInvisibleAction(
-        icon: IconCompat?,
-        title: CharSequence? = null,
-        intent: PendingIntent? = null,
+        icon: IconCompat,
+        title: CharSequence,
+        intent: PendingIntent,
         builder: NotificationCompat.Action.Builder.() -> Unit = {}
     ) = apply { invisibleActions += NotificationAction(icon, title, intent, builder) }
 

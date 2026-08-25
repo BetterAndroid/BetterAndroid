@@ -40,8 +40,8 @@ import androidx.core.graphics.drawable.IconCompat
  */
 inline fun NotificationAction(
     @DrawableRes icon: Int,
-    title: CharSequence? = null,
-    intent: PendingIntent? = null,
+    title: CharSequence,
+    intent: PendingIntent,
     builder: NotificationCompat.Action.Builder.() -> Unit = {}
 ) = NotificationCompat.Action.Builder(icon, title, intent).apply(builder).build()
 
@@ -54,9 +54,9 @@ inline fun NotificationAction(
  * @return [NotificationCompat.Action]
  */
 inline fun NotificationAction(
-    icon: IconCompat?,
-    title: CharSequence? = null,
-    intent: PendingIntent? = null,
+    icon: IconCompat,
+    title: CharSequence,
+    intent: PendingIntent,
     builder: NotificationCompat.Action.Builder.() -> Unit = {}
 ) = NotificationCompat.Action.Builder(icon, title, intent).apply(builder).build()
 
