@@ -135,11 +135,16 @@ class NotificationWrapper internal constructor(internal var builder: Notificatio
             builder.groupAlertBehavior?.also { setGroupAlertBehavior(it) }
             builder.foregroundServiceBehavior?.also { setForegroundServiceBehavior(it) }
             builder.persons.forEach { addPerson(it) }
-            builder.smallIconResId?.also { setSmallIcon(it) }
+            builder.actions.forEach { addAction(it) }
+            builder.invisibleActions.forEach { addInvisibleAction(it) }
+            builder.smallIconResId?.also { smallIcon ->
+                builder.smallIconLevel?.let { setSmallIcon(smallIcon, it) } ?: setSmallIcon(smallIcon)
+            }
             AndroidVersion.require(AndroidVersion.M) { builder.smallIcon?.also { setSmallIcon(it) } }
             if (builder.smallIconResId == null && AndroidVersion.requireOrNull(AndroidVersion.M, null) { builder.smallIcon } == null)
                 setSmallIcon(R.drawable.ic_better_android_simple_notification)
             builder.extras?.also { setExtras(it) }
+            builder.extenders.forEach { extend(it) }
             if (AndroidVersion.isLessThan(AndroidVersion.O))
                 builder.channel.builder.also { channel ->
                     channel.sound?.also { setSound(it.first, it.second.toStreamType()) }

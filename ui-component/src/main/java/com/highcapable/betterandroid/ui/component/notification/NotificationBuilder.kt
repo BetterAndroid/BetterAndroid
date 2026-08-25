@@ -41,6 +41,7 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.graphics.drawable.IconCompat
 import com.highcapable.betterandroid.system.extension.utils.AndroidVersion
 import com.highcapable.betterandroid.ui.component.R
+import com.highcapable.betterandroid.ui.component.notification.factory.NotificationAction
 import com.highcapable.betterandroid.ui.component.notification.factory.createNotification
 import com.highcapable.betterandroid.ui.component.notification.proxy.INotificationBuilder
 import com.highcapable.betterandroid.ui.component.notification.wrapper.NotificationChannelWrapper
@@ -222,14 +223,25 @@ class NotificationBuilder private constructor(
     /** @see NotificationCompat.Builder.addPerson */
     val persons = mutableListOf<Person>()
 
+    /** @see NotificationCompat.Builder.addAction */
+    internal val actions = mutableListOf<NotificationCompat.Action>()
+
+    /** @see NotificationCompat.Builder.addInvisibleAction */
+    internal val invisibleActions = mutableListOf<NotificationCompat.Action>()
+
+    /** @see NotificationCompat.Builder.extend */
+    internal val extenders = mutableListOf<NotificationCompat.Extender>()
+
+    /** @see NotificationCompat.Builder.setSmallIcon */
+    internal var smallIconLevel: Int? = null
+
     /**
      * - You must set a small icon before post the notification,
      *   if you not set it, it will be set to defaults [R.drawable.ic_better_android_simple_notification].
      *
      * - Note: Some third-party ROMs may modify this function causing it to
-     *   not work as expected, such as MIUI (HyperOS),
-     *   ZUI, NubiaUI, HarmonyOS 4.0.0, etc.
-     *   You can see [here](https://github.com/fankes/AndroidNotifyIconAdapt) for more info.
+     *   not work as expected.
+     *   You can see [here](https://github.com/BetterAndroid/android-notification-icon-project) for more info.
      * @see NotificationCompat.Builder.setSmallIcon
      */
     @DrawableRes
@@ -240,9 +252,8 @@ class NotificationBuilder private constructor(
      *   if you not set it, it will be set to defaults [R.drawable.ic_better_android_simple_notification].
      *
      * - Note: Some third-party ROMs may modify this function causing it to
-     *   not work as expected, such as MIUI (HyperOS),
-     *   ZUI, NubiaUI, HarmonyOS 4.0.0, etc.
-     *   You can see [here](https://github.com/fankes/AndroidNotifyIconAdapt) for more info.
+     *   not work as expected.
+     *   You can see [here](https://github.com/BetterAndroid/android-notification-icon-project) for more info.
      * @see NotificationCompat.Builder.setSmallIcon
      */
     @RequiresApi(AndroidVersion.M)
@@ -607,27 +618,165 @@ class NotificationBuilder private constructor(
     fun clearPeople() = apply { this.persons.clear() }
 
     /**
-     * - You must set a small icon before post the notification,
-     *   if you not set it, it will be set to defaults [R.drawable.ic_better_android_simple_notification].
-     *
-     * - Note: Some third-party ROMs may modify this function causing it to
-     *   not work as expected, such as MIUI (HyperOS),
-     *   ZUI, NubiaUI, HarmonyOS 4.0.0, etc.
-     *   You can see [here](https://github.com/fankes/AndroidNotifyIconAdapt) for more info.
-     * @see NotificationCompat.Builder.setSmallIcon
-     * @param smallIcon
+     * @see NotificationCompat.Builder.addAction
+     * @param action
      * @return [NotificationBuilder]
      */
-    fun smallIcon(@DrawableRes smallIcon: Int) = apply { this.smallIconResId = smallIcon }
+    fun addAction(action: NotificationCompat.Action) = apply { actions += action }
+
+    /**
+     * Create and add a notification action.
+     * @see NotificationCompat.Builder.addAction
+     * @see NotificationAction
+     * @param icon the drawable resource ID that represents the action.
+     * @param title the title of the action.
+     * @param intent the intent to fire when users trigger the action.
+     * @param builder the [NotificationCompat.Action.Builder] builder body.
+     * @return [NotificationBuilder]
+     */
+    @JvmOverloads
+    fun addAction(
+        @DrawableRes icon: Int,
+        title: CharSequence? = null,
+        intent: PendingIntent? = null,
+        builder: NotificationCompat.Action.Builder.() -> Unit = {}
+    ) = apply { actions += NotificationAction(icon, title, intent, builder) }
+
+    /**
+     * Create and add a notification action.
+     * @see NotificationCompat.Builder.addAction
+     * @see NotificationAction
+     * @param icon the icon that represents the action.
+     * @param title the title of the action.
+     * @param intent the intent to fire when users trigger the action.
+     * @param builder the [NotificationCompat.Action.Builder] builder body.
+     * @return [NotificationBuilder]
+     */
+    @JvmOverloads
+    fun addAction(
+        icon: IconCompat?,
+        title: CharSequence? = null,
+        intent: PendingIntent? = null,
+        builder: NotificationCompat.Action.Builder.() -> Unit = {}
+    ) = apply { actions += NotificationAction(icon, title, intent, builder) }
+
+    /**
+     * Create and add a notification action from an existing action.
+     * @see NotificationCompat.Builder.addAction
+     * @see NotificationAction
+     * @param action the existing action.
+     * @param builder the [NotificationCompat.Action.Builder] builder body.
+     * @return [NotificationBuilder]
+     */
+    @JvmName("addActionFromExisting")
+    @JvmOverloads
+    fun addAction(
+        action: NotificationCompat.Action,
+        builder: NotificationCompat.Action.Builder.() -> Unit = {}
+    ) = apply { actions += NotificationAction(action, builder) }
+
+    /**
+     * @see NotificationCompat.Builder.clearActions
+     * @return [NotificationBuilder]
+     */
+    fun clearActions() = apply { actions.clear() }
+
+    /**
+     * @see NotificationCompat.Builder.addInvisibleAction
+     * @param action
+     * @return [NotificationBuilder]
+     */
+    fun addInvisibleAction(action: NotificationCompat.Action) = apply { invisibleActions += action }
+
+    /**
+     * Create and add an invisible notification action.
+     * @see NotificationCompat.Builder.addInvisibleAction
+     * @see NotificationAction
+     * @param icon the drawable resource ID that represents the action.
+     * @param title the title of the action.
+     * @param intent the intent to fire when users trigger the action.
+     * @param builder the [NotificationCompat.Action.Builder] builder body.
+     * @return [NotificationBuilder]
+     */
+    @JvmOverloads
+    fun addInvisibleAction(
+        @DrawableRes icon: Int,
+        title: CharSequence? = null,
+        intent: PendingIntent? = null,
+        builder: NotificationCompat.Action.Builder.() -> Unit = {}
+    ) = apply { invisibleActions += NotificationAction(icon, title, intent, builder) }
+
+    /**
+     * Create and add an invisible notification action.
+     * @see NotificationCompat.Builder.addInvisibleAction
+     * @see NotificationAction
+     * @param icon the icon that represents the action.
+     * @param title the title of the action.
+     * @param intent the intent to fire when users trigger the action.
+     * @param builder the [NotificationCompat.Action.Builder] builder body.
+     * @return [NotificationBuilder]
+     */
+    @JvmOverloads
+    fun addInvisibleAction(
+        icon: IconCompat?,
+        title: CharSequence? = null,
+        intent: PendingIntent? = null,
+        builder: NotificationCompat.Action.Builder.() -> Unit = {}
+    ) = apply { invisibleActions += NotificationAction(icon, title, intent, builder) }
+
+    /**
+     * Create and add an invisible notification action from an existing action.
+     * @see NotificationCompat.Builder.addInvisibleAction
+     * @see NotificationAction
+     * @param action the existing action.
+     * @param builder the [NotificationCompat.Action.Builder] builder body.
+     * @return [NotificationBuilder]
+     */
+    @JvmName("addInvisibleActionFromExisting")
+    @JvmOverloads
+    fun addInvisibleAction(
+        action: NotificationCompat.Action,
+        builder: NotificationCompat.Action.Builder.() -> Unit = {}
+    ) = apply { invisibleActions += NotificationAction(action, builder) }
+
+    /**
+     * @see NotificationCompat.Builder.clearInvisibleActions
+     * @return [NotificationBuilder]
+     */
+    fun clearInvisibleActions() = apply { invisibleActions.clear() }
+
+    /**
+     * @see NotificationCompat.Builder.extend
+     * @param extender
+     * @return [NotificationBuilder]
+     */
+    fun extend(extender: NotificationCompat.Extender) = apply { extenders += extender }
 
     /**
      * - You must set a small icon before post the notification,
      *   if you not set it, it will be set to defaults [R.drawable.ic_better_android_simple_notification].
      *
      * - Note: Some third-party ROMs may modify this function causing it to
-     *   not work as expected, such as MIUI (HyperOS),
-     *   ZUI, NubiaUI, HarmonyOS 4.0.0, etc.
-     *   You can see [here](https://github.com/fankes/AndroidNotifyIconAdapt) for more info.
+     *   not work as expected.
+     *   You can see [here](https://github.com/BetterAndroid/android-notification-icon-project) for more info.
+     * @see NotificationCompat.Builder.setSmallIcon
+     * @param smallIcon
+     * @param level
+     * @return [NotificationBuilder]
+     */
+    @JvmOverloads
+    fun smallIcon(@DrawableRes smallIcon: Int, level: Int? = null) = apply {
+        this.smallIconResId = smallIcon
+        if (level != null) this.smallIconLevel = level
+    }
+
+    /**
+     * - You must set a small icon before post the notification,
+     *   if you not set it, it will be set to defaults [R.drawable.ic_better_android_simple_notification].
+     *
+     * - Note: Some third-party ROMs may modify this function causing it to
+     *   not work as expected.
+     *   You can see [here](https://github.com/BetterAndroid/android-notification-icon-project) for more info.
      * @see NotificationCompat.Builder.setSmallIcon
      * @param smallIcon
      * @return [NotificationBuilder]
