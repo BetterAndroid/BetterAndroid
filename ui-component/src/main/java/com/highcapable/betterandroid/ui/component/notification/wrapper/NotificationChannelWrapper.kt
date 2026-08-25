@@ -54,8 +54,8 @@ class NotificationChannelWrapper internal constructor(internal var builder: Noti
             builder.sound?.also { setSound(it.first, it.second) }
             builder.isLightsEnabled?.also { setLightsEnabled(it) }
             builder.lightColor?.also { setLightColor(it) }
-            builder.isVibrationEnabled?.also { setVibrationEnabled(it) }
             builder.vibrationPattern?.also { setVibrationPattern(it) }
+            builder.isVibrationEnabled?.also { setVibrationEnabled(it) }
             builder.conversationId?.also { setConversationId(it.first, it.second) }
         }.build()
     }

@@ -40,7 +40,7 @@ class NotificationWrapper internal constructor(internal var builder: Notificatio
     private companion object {
 
         /** The legacy lights led on and off default seconds (fixed value). */
-        private const val LEGACY_LED_ON_OFF_MS = 1000
+        const val LEGACY_LED_ON_OFF_MS = 1000
     }
 
     /**
@@ -54,7 +54,6 @@ class NotificationWrapper internal constructor(internal var builder: Notificatio
         if (isLightsEnabled == true) defaults = defaults or NotificationCompat.DEFAULT_LIGHTS
         if (isVibrationEnabled == true) defaults = defaults or NotificationCompat.DEFAULT_VIBRATE
         if (sound != null) defaults = defaults or NotificationCompat.DEFAULT_SOUND
-        if (defaults == 0) defaults = NotificationCompat.DEFAULT_ALL
 
         return defaults
     }
