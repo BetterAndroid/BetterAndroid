@@ -18,4 +18,12 @@
   limitations under the License.
 
   This file is created by fankes on 2025/7/20. -->
-<manifest />
+<manifest xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- This module current support min sdk version is 21,
+     suppress the warning about using newer versions of dependencies that may require higher min sdk version. -->
+    <uses-sdk tools:overrideLibrary="androidx.core,
+        androidx.core.ktx,
+        androidx.appcompat,
+        androidx.appcompat.resources" />
+</manifest>
