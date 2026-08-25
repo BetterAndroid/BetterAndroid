@@ -205,6 +205,9 @@ class NotificationBuilder private constructor(
     /** @see NotificationCompat.Builder.setAllowSystemGeneratedContextualActions */
     var isAllowSystemGeneratedContextualActions: Boolean? = null
 
+    /** @see NotificationCompat.Builder.addAction */
+    var actions: MutableList<NotificationCompat.Action>? = null
+
     /** @see NotificationCompat.Builder.setShortCriticalText */
     var shortCriticalText: String? = null
 
@@ -562,6 +565,15 @@ class NotificationBuilder private constructor(
      */
     fun allowSystemGeneratedContextualActions(allowSystemGeneratedContextualActions: Boolean) =
         apply { this.isAllowSystemGeneratedContextualActions = allowSystemGeneratedContextualActions }
+
+    /**
+     * @see NotificationCompat.Builder.addAction
+     * @param action
+     * @return [NotificationBuilder]
+     */
+    fun action(action: NotificationCompat.Action) = apply {
+        (actions ?: mutableListOf<NotificationCompat.Action>().also { actions = it }).add(action)
+    }
 
     /**
      * @see NotificationCompat.Builder.setShortCriticalText

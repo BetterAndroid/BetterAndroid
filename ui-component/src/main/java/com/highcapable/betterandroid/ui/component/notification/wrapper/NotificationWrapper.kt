@@ -131,6 +131,7 @@ class NotificationWrapper internal constructor(internal var builder: Notificatio
             builder.shortcutId.takeIf(String::isNotBlank)?.also { setShortcutId(it) }
             builder.shortcutInfo?.also { setShortcutInfo(it) }
             builder.isAllowSystemGeneratedContextualActions?.also { setAllowSystemGeneratedContextualActions(it) }
+            builder.actions?.forEach { addAction(it) }
             builder.shortCriticalText?.also { setShortCriticalText(it) }
             builder.isRequestPromotedOngoing?.also { setRequestPromotedOngoing(it) }
             builder.groupAlertBehavior?.also { setGroupAlertBehavior(it) }
