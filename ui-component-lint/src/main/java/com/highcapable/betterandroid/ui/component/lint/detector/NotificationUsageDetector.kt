@@ -33,6 +33,7 @@ import com.highcapable.betterandroid.ui.component.lint.DeclaredSymbol
 import com.highcapable.betterandroid.ui.component.lint.detector.extension.buildReplaceFix
 import com.highcapable.betterandroid.ui.component.lint.detector.extension.createKotlinOnlyUastHandler
 import com.highcapable.betterandroid.ui.component.lint.detector.extension.extendsClass
+import com.highcapable.betterandroid.ui.component.lint.detector.extension.outermostCallChain
 import org.jetbrains.uast.UCallExpression
 
 class NotificationUsageDetector : Detector(), Detector.UastScanner {
@@ -173,6 +174,7 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
 
         private fun reportHandOverNotificationBuilder(node: UCallExpression): Boolean {
             val constructor = node.resolve() ?: return false
+            if (!constructor.isConstructor) return false
 
             // Validation is NotificationCompat.Builder or Notification.Builder class.
             return when {
@@ -198,6 +200,7 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
 
         private fun reportHandOverNotificationChannelBuilder(node: UCallExpression): Boolean {
             val constructor = node.resolve() ?: return false
+            if (!constructor.isConstructor) return false
 
             // Validation is NotificationChannelCompat.Builder or NotificationChannel class.
             return when {
@@ -223,6 +226,7 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
 
         private fun reportHandOverNotificationChannelGroupBuilder(node: UCallExpression): Boolean {
             val constructor = node.resolve() ?: return false
+            if (!constructor.isConstructor) return false
 
             // Validation is NotificationChannelGroupCompat.Builder or NotificationChannelGroup class.
             return when {
@@ -248,7 +252,9 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
 
         private fun reportHandOverNotificationComponent(node: UCallExpression, source: String, target: String) {
             val message = "Consider handing `$source` over to BetterAndroid's `$target`."
-            val location = context.getLocation(node)
+            val callChain = node.outermostCallChain()
+            val location = callChain.sourcePsi?.let { context.getLocation(it) }
+                ?: context.getCallLocation(node, includeReceiver = true, includeArguments = true)
 
             context.report(
                 issue = ISSUE,

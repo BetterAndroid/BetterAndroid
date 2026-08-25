@@ -52,6 +52,18 @@ internal fun UElement?.unwrapParenthesized(): UElement? {
     return current
 }
 
+internal fun UCallExpression.outermostCallChain(): UElement {
+    var current: UElement = this
+
+    while (true) {
+        current = when (val parent = current.uastParent) {
+            is UQualifiedReferenceExpression -> parent
+            is UParenthesizedExpression -> parent
+            else -> return current
+        }
+    }
+}
+
 internal fun UElement?.containingUClasses(): Sequence<UClass> = sequence {
     var current = this@containingUClasses
     while (current != null) {
