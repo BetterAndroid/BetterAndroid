@@ -44,7 +44,7 @@ class DrawableUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithDrawableExtension",
-            briefDescription = "Use ui-extension's `Drawable.setPadding(size)` instead.",
+            briefDescription = "Use ui-extension's `Drawable.setPadding(size)` instead",
             explanation = """
                 Using `Drawable.setPadding(left, top, right, bottom)` with the same value on all \
                 sides can be simplified by using `setPadding(size)` from BetterAndroid ui-extension \
@@ -104,7 +104,7 @@ class DrawableUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$SET_PADDING_METHOD'",
                     replacement = replacement,

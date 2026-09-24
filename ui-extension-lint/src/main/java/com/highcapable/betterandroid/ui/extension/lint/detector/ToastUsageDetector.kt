@@ -48,7 +48,7 @@ class ToastUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithToastExtension",
-            briefDescription = "Use ui-extension's `toast(...)` function instead of `Toast.makeText(...).show()`.",
+            briefDescription = "Use ui-extension's `toast(...)` function instead of `Toast.makeText(...).show()`",
             explanation = """
                 Using `Toast.makeText(...).show()` can be simplified by using `toast(...)` from \
                 BetterAndroid ui-extension library.
@@ -129,7 +129,7 @@ class ToastUsageDetector : Detector(), Detector.UastScanner {
 
             val fix = createLintFix(contextText, messageText, durationText)
             val replaceSuggestion = fix.first
-            val message = "Can be replaced with `$replaceSuggestion`."
+            val message = "Can be replaced with `$replaceSuggestion`"
 
             val location = context.getLocation(node)
             context.report(

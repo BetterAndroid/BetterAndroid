@@ -103,7 +103,7 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithAndroidVersion",
-            briefDescription = "Use system-extension's `AndroidVersion` instead of direct `Build.VERSION` access.",
+            briefDescription = "Use system-extension's `AndroidVersion` instead of direct `Build.VERSION` access",
             explanation = """
                 Using direct `Build.VERSION` access or `Build.VERSION.SDK_INT` comparisons can be \
                 simplified by using `AndroidVersion` from BetterAndroid system-extension library.
@@ -224,7 +224,7 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
         }
 
         private fun reportAndFix(context: JavaContext, node: UExpression, replacement: String, fixName: String) {
-            val message = "Can be replaced with `$replacement`."
+            val message = "Can be replaced with `$replacement`"
 
             context.report(
                 issue = ISSUE,

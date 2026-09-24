@@ -72,7 +72,7 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithLifecycleExtension",
-            briefDescription = "Use ui-extension's lifecycle observer extensions instead.",
+            briefDescription = "Use ui-extension's lifecycle observer extensions instead",
             explanation = """
                 Using raw `Lifecycle.addObserver(...)`, `object : DefaultLifecycleObserver`, or \
                 `object : LifecycleEventObserver` can be simplified by using lifecycle observer \
@@ -148,7 +148,7 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `${replacement.display}`.",
+                message = "Can be replaced with `${replacement.display}`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$ADD_OBSERVER_METHOD'",
                     replacement = replacement.source,
@@ -173,7 +173,7 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '${replacement.substringBefore('(')}'",
                     replacement = replacement,
@@ -191,7 +191,7 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(call),
-                message = "Can be replaced with `${replacement.display}`.",
+                message = "Can be replaced with `${replacement.display}`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$ADD_OBSERVER_METHOD'",
                     replacement = replacement.source,

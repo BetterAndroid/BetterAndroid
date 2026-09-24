@@ -67,7 +67,7 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithBroadcastExtension",
-            briefDescription = "Use system-extension's broadcast extensions instead.",
+            briefDescription = "Use system-extension's broadcast extensions instead",
             explanation = """
                 Using `sendBroadcast(Intent(...))` with a clearly constructed `Intent`, or manually \
                 creating an anonymous `BroadcastReceiver` for `registerReceiver(...)`, can be \
@@ -142,7 +142,7 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$SEND_BROADCAST'",
                     replacement = replacement,
@@ -164,7 +164,7 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Anonymous `BroadcastReceiver` bodies can be simplified with `$REGISTER_RECEIVER(...)`."
+                message = "Anonymous `BroadcastReceiver` bodies can be simplified with `$REGISTER_RECEIVER(...)`"
             )
         }
 

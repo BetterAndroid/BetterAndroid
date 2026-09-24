@@ -43,7 +43,7 @@ class WindowInsetsListenerUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithHandleOnWindowInsetsChanged",
-            briefDescription = "Use ui-extension's `handleOnWindowInsetsChanged(...)` instead.",
+            briefDescription = "Use ui-extension's `handleOnWindowInsetsChanged(...)` instead",
             explanation = """
                 Using `setOnApplyWindowInsetsListener(...)` can be simplified by using \
                 `handleOnWindowInsetsChanged(...)` from BetterAndroid ui-extension library.
@@ -100,7 +100,7 @@ class WindowInsetsListenerUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$HANDLE_ON_WINDOW_INSETS_CHANGED(...)`."
+                message = "Can be replaced with `$HANDLE_ON_WINDOW_INSETS_CHANGED(...)`"
             )
         }
     })

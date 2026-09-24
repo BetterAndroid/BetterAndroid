@@ -71,7 +71,7 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithFragmentExtension",
-            briefDescription = "Use ui-extension's fragment manager extensions instead.",
+            briefDescription = "Use ui-extension's fragment manager extensions instead",
             explanation = """
                 Using `supportFragmentManager`, `parentFragmentManager`, `childFragmentManager`, \
                 `findFragmentById(...) as T` or `findFragmentByTag(...) as T` can be simplified by \
@@ -139,7 +139,7 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$FRAGMENT_MANAGER_FUNCTION'",
                     replacement = replacement,
@@ -164,7 +164,7 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$FRAGMENT_MANAGER_FUNCTION'",
                     replacement = replacement,
@@ -195,7 +195,7 @@ class FragmentUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$FIND_FRAGMENT_FUNCTION'",
                     replacement = replacement,

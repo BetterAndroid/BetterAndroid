@@ -61,7 +61,7 @@ class ViewBindingUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithViewBindingExtension",
-            briefDescription = "Use ui-extension's ViewBinding extensions instead.",
+            briefDescription = "Use ui-extension's ViewBinding extensions instead",
             explanation = """
                 Using reflection to resolve `ViewBinding.inflate(...)` or `ViewBinding.bind(...)` \
                 can be simplified by using ViewBinding extensions from BetterAndroid ui-extension library.
@@ -132,7 +132,7 @@ class ViewBindingUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Consider handing this reflection over to `$suggestion` or `$VIEW_BINDING_BUILDER_NAME`."
+                message = "Consider handing this reflection over to `$suggestion` or `$VIEW_BINDING_BUILDER_NAME`"
             )
         }
 

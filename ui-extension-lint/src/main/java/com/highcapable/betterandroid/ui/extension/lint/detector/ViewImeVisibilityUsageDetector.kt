@@ -75,7 +75,7 @@ class ViewImeVisibilityUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithViewImeExtension",
-            briefDescription = "Use ui-extension's `showIme()` or `hideIme()` instead.",
+            briefDescription = "Use ui-extension's `showIme()` or `hideIme()` instead",
             explanation = """
                 Using official IME show and hide APIs can be simplified by using `showIme()` and \
                 `hideIme()` from BetterAndroid ui-extension library.
@@ -158,8 +158,8 @@ class ViewImeVisibilityUsageDetector : Detector(), Detector.UastScanner {
             }
 
             val message = when (replacement) {
-                null -> "Can be replaced with `$SHOW_IME_FUNCTION(...)` or `$HIDE_IME_FUNCTION(...)`."
-                else -> "Can be replaced with `$replacement`."
+                null -> "Can be replaced with `$SHOW_IME_FUNCTION(...)` or `$HIDE_IME_FUNCTION(...)`"
+                else -> "Can be replaced with `$replacement`"
             }
 
             val quickFix = replacement?.let {

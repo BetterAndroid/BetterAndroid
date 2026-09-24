@@ -84,7 +84,7 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithClipboardExtension",
-            briefDescription = "Use system-extension's clipboard extensions instead.",
+            briefDescription = "Use system-extension's clipboard extensions instead",
             explanation = """
                 Using `setPrimaryClip(ClipData.new...)`, raw clipboard item access, or manual \
                 clipboard manager lookups can be simplified by using clipboard extensions from \
@@ -348,7 +348,7 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
         ) = context.report(
             issue = ISSUE,
             location = context.getLocation(node),
-            message = "Can be replaced with `$replacement`.",
+            message = "Can be replaced with `$replacement`",
             quickfixData = buildReplaceFix(
                 name = "Replace with '$fixName'",
                 replacement = replacement,

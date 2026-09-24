@@ -57,7 +57,7 @@ class ResourcesUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithResourcesExtension",
-            briefDescription = "Use ui-extension's resources compat extensions instead.",
+            briefDescription = "Use ui-extension's resources compat extensions instead",
             explanation = """
                 Using `ContextCompat` or `ResourcesCompat` resource access APIs can be simplified by \
                 using resource compatibility extensions from BetterAndroid ui-extension library.
@@ -134,7 +134,7 @@ class ResourcesUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `${replacement.first}`.",
+                message = "Can be replaced with `${replacement.first}`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$fixName'",
                     replacement = replacement.first,

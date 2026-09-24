@@ -58,7 +58,7 @@ class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithViewWalkExtension",
-            briefDescription = "Use ui-extension's `walkToRoot()` or `walkThroughChildren()` instead.",
+            briefDescription = "Use ui-extension's `walkToRoot()` or `walkThroughChildren()` instead",
             explanation = """
                 Using `ancestors` or `descendants` can be simplified by using `walkToRoot()` or \
                 `walkThroughChildren()` from BetterAndroid ui-extension library.
@@ -120,7 +120,7 @@ class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$fixName'",
                     replacement = replacement,
@@ -150,7 +150,7 @@ class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$fixName'",
                     replacement = replacement,

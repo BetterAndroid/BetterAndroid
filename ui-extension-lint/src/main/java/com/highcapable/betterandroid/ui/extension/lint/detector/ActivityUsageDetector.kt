@@ -62,7 +62,7 @@ class ActivityUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithActivityExtension",
-            briefDescription = "Use ui-extension's `startActivity<T>(...)` instead.",
+            briefDescription = "Use ui-extension's `startActivity<T>(...)` instead",
             explanation = """
                 Using `startActivity(Intent(...))` with an explicit target activity class can be \
                 simplified by using `startActivity<T>(...)` from BetterAndroid ui-extension library.
@@ -119,7 +119,7 @@ class ActivityUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `${replacement.displayReplacement}`.",
+                message = "Can be replaced with `${replacement.displayReplacement}`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$START_ACTIVITY_METHOD'",
                     replacement = replacement.replacement,

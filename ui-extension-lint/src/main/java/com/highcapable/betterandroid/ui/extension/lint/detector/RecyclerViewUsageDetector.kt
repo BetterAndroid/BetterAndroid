@@ -53,7 +53,7 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithRecyclerViewExtension",
-            briefDescription = "Use ui-extension's `RecyclerView.layoutManager()` instead.",
+            briefDescription = "Use ui-extension's `RecyclerView.layoutManager()` instead",
             explanation = """
                 Using `recyclerView.layoutManager as ...` or `as? ...` can be simplified by using \
                 `layoutManager()` from BetterAndroid ui-extension library.
@@ -112,7 +112,7 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$LAYOUT_MANAGER_FUNCTION'",
                     replacement = replacement,

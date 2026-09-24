@@ -60,7 +60,7 @@ class BitmapUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithBitmapExtension",
-            briefDescription = "Use ui-extension's bitmap decode extensions instead.",
+            briefDescription = "Use ui-extension's bitmap decode extensions instead",
             explanation = """
                 Using `BitmapFactory.decode...(...)` can be simplified by using bitmap decode \
                 extensions from BetterAndroid ui-extension library.
@@ -125,7 +125,7 @@ class BitmapUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$display`.",
+                message = "Can be replaced with `$display`",
                 quickfixData = buildAlternativesFix(*fixes.map { it.fix }.toTypedArray())
             )
         }

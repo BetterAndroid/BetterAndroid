@@ -45,7 +45,7 @@ class MultipleSystemBarsControllerPropertiesDetector : Detector(), Detector.Uast
 
         val ISSUE = Issue.create(
             id = "MultipleSystemBarsControllerProperties",
-            briefDescription = "Only one SystemBarsController property is allowed in a class.",
+            briefDescription = "Only one SystemBarsController property is allowed in a class",
             explanation = """
                 Declaring multiple `SystemBarsController` properties in the same class can make the \
                 ownership of system bars ambiguous and is not supported by BetterAndroid ui-component library.
@@ -94,7 +94,7 @@ class MultipleSystemBarsControllerPropertiesDetector : Detector(), Detector.Uast
             // This is the multiple `SystemBarsController` properties pattern.
             members.forEach { member ->
                 val fix = createLintFix(context, member.propertyName, member.deleteTarget)
-                val message = "Only one `$SYSTEM_BARS_CONTROLLER_CLASS_NAME` property can exist in the same class."
+                val message = "Only one `$SYSTEM_BARS_CONTROLLER_CLASS_NAME` property can exist in the same class"
                 val location = context.getLocation(member.target)
 
                 context.report(

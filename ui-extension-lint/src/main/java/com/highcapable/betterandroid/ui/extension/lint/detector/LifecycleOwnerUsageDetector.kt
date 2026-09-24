@@ -76,7 +76,7 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithLifecycleOwnerExtension",
-            briefDescription = "Use ui-extension's lifecycle owner extensions instead.",
+            briefDescription = "Use ui-extension's lifecycle owner extensions instead",
             explanation = """
                 Using `findViewTreeLifecycleOwner()`, `owner as Activity`, `owner as? Activity`, \
                 `owner as Context` or `owner as? Context` can be simplified by using lifecycle \
@@ -141,7 +141,7 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$LIFECYCLE_OWNER_PROPERTY'",
                     replacement = replacement,
@@ -178,7 +178,7 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `${replacement.first}`.",
+                message = "Can be replaced with `${replacement.first}`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$fixName'",
                     replacement = replacement.first,

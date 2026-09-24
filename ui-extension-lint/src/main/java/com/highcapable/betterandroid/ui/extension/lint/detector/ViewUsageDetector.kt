@@ -95,7 +95,7 @@ class ViewUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithViewExtension",
-            briefDescription = "Use ui-extension's `View.kt` instead.",
+            briefDescription = "Use ui-extension's `View.kt` instead",
             explanation = """
                 Using raw parent-child access and self-removal APIs can be simplified by using functions from BetterAndroid ui-extension library.
 
@@ -375,7 +375,7 @@ class ViewUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$fixName'",
                     replacement = replacement,

@@ -68,7 +68,7 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithNotificationComponent",
-            briefDescription = "Use ui-component's notification APIs instead.",
+            briefDescription = "Use ui-component's notification APIs instead",
             explanation = """
                 Using `NotificationManagerCompat.from(...)`, `NotificationCompat.Builder`, \
                 `Notification.Builder`, `NotificationChannelCompat.Builder`, \
@@ -160,7 +160,7 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
             val receiverText = receiver.asSourceString().trim()
             val fix = createNotificationManagerLintFix(receiverText)
             val replaceSuggestion = fix.first
-            val message = "Can be replaced with `$replaceSuggestion`."
+            val message = "Can be replaced with `$replaceSuggestion`"
 
             val location = context.getLocation(node)
             context.report(
@@ -251,7 +251,7 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
         }
 
         private fun reportHandOverNotificationComponent(node: UCallExpression, source: String, target: String) {
-            val message = "Consider handing `$source` over to BetterAndroid's `$target`."
+            val message = "Consider handing `$source` over to BetterAndroid's `$target`"
             val callChain = node.outermostCallChain()
             val location = callChain.sourcePsi?.let { context.getLocation(it) }
                 ?: context.getCallLocation(node, includeReceiver = true, includeArguments = true)

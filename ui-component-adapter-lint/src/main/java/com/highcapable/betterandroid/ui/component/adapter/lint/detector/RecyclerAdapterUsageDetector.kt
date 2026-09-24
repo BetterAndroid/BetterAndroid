@@ -96,7 +96,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithRecyclerAdapterExtension",
-            briefDescription = "Use ui-component-adapter's RecyclerAdapter extensions instead.",
+            briefDescription = "Use ui-component-adapter's RecyclerAdapter extensions instead",
             explanation = """
                 Using `DiffUtil.Callback`, `ListUpdateCallback`, \
                 `DiffUtil.calculateDiff(...).dispatchUpdatesTo(...)`, full-range notify calls, \
@@ -195,7 +195,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = quickFix
             )
             return true
@@ -210,7 +210,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$DIFF_UTIL_CALLBACK_FUNCTION'",
                     replacement = replacement,
@@ -229,7 +229,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$LIST_UPDATE_CALLBACK_FUNCTION'",
                     replacement = replacement,
@@ -260,7 +260,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$NOTIFY_ALL_ITEMS_INSERTED_FUNCTION'",
                     replacement = replacement,
@@ -293,7 +293,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$NOTIFY_ALL_ITEMS_CHANGED_FUNCTION'",
                     replacement = replacement,
@@ -335,7 +335,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
                 issue = ISSUE,
                 scope = notifyExpression,
                 location = context.getRangeLocation(clearExpression, 0, notifyExpression, 0),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildClearAndNotifyFix(context, clearExpression, notifyExpression, replacement)
             )
             return true

@@ -61,7 +61,7 @@ class ServiceUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithServiceExtension",
-            briefDescription = "Use system-extension's service extensions instead.",
+            briefDescription = "Use system-extension's service extensions instead",
             explanation = """
                 Using `startService(Intent(...))` or `startForegroundService(Intent(...))` with an \
                 explicit target service class can be simplified by using service extensions from \
@@ -119,7 +119,7 @@ class ServiceUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `${replacement.displayReplacement}`.",
+                message = "Can be replaced with `${replacement.displayReplacement}`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$methodName'",
                     replacement = replacement.replacement,

@@ -64,7 +64,7 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithTextViewExtension",
-            briefDescription = "Use ui-extension's TextView extensions instead.",
+            briefDescription = "Use ui-extension's TextView extensions instead",
             explanation = """
                 Using `TextView` text and color related APIs can be simplified by using TextView \
                 extensions from BetterAndroid ui-extension library.
@@ -138,7 +138,7 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$TEXT_COLOR_PROPERTY'",
                     replacement = replacement,
@@ -191,7 +191,7 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(reportNode),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$fixName'",
                     replacement = replacement,

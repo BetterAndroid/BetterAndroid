@@ -45,7 +45,7 @@ class LayoutInflaterUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithLayoutInflaterExtension",
-            briefDescription = "Use ui-extension's `layoutInflater` extension instead.",
+            briefDescription = "Use ui-extension's `layoutInflater` extension instead",
             explanation = """
                 Using `LayoutInflater.from(...)` can be simplified by using `layoutInflater` from \
                 BetterAndroid ui-extension library.
@@ -96,7 +96,7 @@ class LayoutInflaterUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$LAYOUT_INFLATER_PROPERTY'",
                     replacement = replacement,

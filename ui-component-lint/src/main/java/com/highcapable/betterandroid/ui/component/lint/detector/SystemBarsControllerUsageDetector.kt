@@ -111,7 +111,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithSystemBarsController",
-            briefDescription = "Use ui-component's SystemBarsController instead.",
+            briefDescription = "Use ui-component's SystemBarsController instead",
             explanation = """
                 Using `enableEdgeToEdge(...)`, direct `WindowInsetsController` / \
                 `WindowInsetsControllerCompat` access, direct `WindowCompat.getInsetsController(...)`, \
@@ -264,7 +264,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
                 systemBarsType = systemBarsType
             )
             val replaceSuggestion = fix.first
-            val message = "Can be replaced with `$replaceSuggestion`."
+            val message = "Can be replaced with `$replaceSuggestion`"
             val location = context.getLocation(node)
 
             context.report(
@@ -333,7 +333,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
                 replacement = replacement
             ) else null
             val message = if (hasSystemBarsController && replacement != null)
-                "Can be replaced with `$replacement`."
+                "Can be replaced with `$replacement`"
             else handOverMessage("$SYSTEM_BARS_CONTROLLER_CLASS_NAME.$BEHAVIOR_PROPERTY")
             val location = context.getLocation(node)
 
@@ -460,7 +460,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
                 replacement = replacement
             ) else null
             val message = if (hasSystemBarsController && replacement != null)
-                "Can be replaced with `$replacement`."
+                "Can be replaced with `$replacement`"
             else handOverMessage("$SYSTEM_BARS_CONTROLLER_CLASS_NAME.$targetProperty")
             val location = context.getLocation(node)
 
@@ -512,7 +512,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
                 replacement = replacement
             ) else null
             val message = if (hasSystemBarsController && replacement != null)
-                "Can be replaced with `$replacement`."
+                "Can be replaced with `$replacement`"
             else handOverMessage("$SYSTEM_BARS_CONTROLLER_CLASS_NAME.$BEHAVIOR_PROPERTY")
             val location = context.getLocation(node)
 
@@ -540,7 +540,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
                 replacement = replacement
             ) else null
             val message = if (hasSystemBarsController && replacement != null)
-                "Can be replaced with `$replacement`."
+                "Can be replaced with `$replacement`"
             else handOverMessage("$SYSTEM_BARS_CONTROLLER_CLASS_NAME.$BEHAVIOR_PROPERTY")
             val location = context.getLocation(node)
 
@@ -626,14 +626,14 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
         }
 
         private fun handOverMessage(target: String = SYSTEM_BARS_CONTROLLER_CLASS_NAME) =
-            "Consider handing this over to `$target`."
+            "Consider handing this over to `$target`"
 
         private fun redundantOrHandOverMessage(
             hasSystemBarsController: Boolean,
             redundantWhat: String,
             handOverTarget: String = SYSTEM_BARS_CONTROLLER_CLASS_NAME
         ) = if (hasSystemBarsController)
-            "`$redundantWhat` is redundant here because `$SYSTEM_BARS_CONTROLLER_CLASS_NAME` already holds this effect."
+            "`$redundantWhat` is redundant here because `$SYSTEM_BARS_CONTROLLER_CLASS_NAME` already holds this effect"
         else handOverMessage(handOverTarget)
 
         private fun UElement?.hasSystemBarsController(context: JavaContext) =

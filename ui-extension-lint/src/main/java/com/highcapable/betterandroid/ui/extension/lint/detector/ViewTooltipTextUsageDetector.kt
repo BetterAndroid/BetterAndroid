@@ -47,7 +47,7 @@ class ViewTooltipTextUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithViewTooltipTextCompatExtension",
-            briefDescription = "Use ui-extension's `tooltipTextCompat` instead of `TooltipCompat.setTooltipText(...)` or `ViewCompat.setTooltipText(...)`.",
+            briefDescription = "Use ui-extension's `tooltipTextCompat` instead of `TooltipCompat.setTooltipText(...)` or `ViewCompat.setTooltipText(...)`",
             explanation = """
                 Using `TooltipCompat.setTooltipText(...)` or `ViewCompat.setTooltipText(...)` can \
                 be simplified by using `tooltipTextCompat` from BetterAndroid ui-extension library.
@@ -105,7 +105,7 @@ class ViewTooltipTextUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$TOOLTIP_TEXT_COMPAT_PROPERTY'",
                     replacement = replacement,

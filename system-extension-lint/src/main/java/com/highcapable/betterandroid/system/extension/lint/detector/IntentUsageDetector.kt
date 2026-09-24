@@ -77,7 +77,7 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithIntentExtension",
-            briefDescription = "Use system-extension's intent extensions instead.",
+            briefDescription = "Use system-extension's intent extensions instead",
             explanation = """
                 Using official `Intent` constructors for component targets, or `Intent` and \
                 `Bundle` parcelable or serializable access APIs, can be simplified by using \
@@ -289,7 +289,7 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
         ) = context.report(
             issue = ISSUE,
             location = context.getLocation(node),
-            message = "Can be replaced with `$displayReplacement`.",
+            message = "Can be replaced with `$displayReplacement`",
             quickfixData = buildReplaceFix(
                 name = "Replace with '$fixName'",
                 replacement = replacement,

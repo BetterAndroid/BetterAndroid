@@ -72,7 +72,7 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithRecyclerViewExtension",
-            briefDescription = "Use ui-component-adapter's RecyclerView extensions instead.",
+            briefDescription = "Use ui-component-adapter's RecyclerView extensions instead",
             explanation = """
                 Using direct first or last position scrolling on `RecyclerView` can be simplified \
                 by using RecyclerView extensions from BetterAndroid ui-component-adapter library.
@@ -135,7 +135,7 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$fixName'",
                     replacement = replacement,

@@ -84,7 +84,7 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithBackPressedExtension",
-            briefDescription = "Use ui-extension's back pressed extensions instead.",
+            briefDescription = "Use ui-extension's back pressed extensions instead",
             explanation = """
                 Using raw `onBackPressedDispatcher` access from `Fragment` or `View`, manual \
                 `object : OnBackPressedCallback(...)` creation, or manual back pressed dispatch \
@@ -170,7 +170,7 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$ON_BACK_PRESSED_DISPATCHER_PROPERTY'",
                     replacement = replacement,
@@ -188,7 +188,7 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$ON_BACK_PRESSED_CALLBACK_FUNCTION'",
                     replacement = replacement,
@@ -235,7 +235,7 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
                 issue = ISSUE,
                 scope = node,
                 location = location,
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildTriggerFix(
                     context = context,
                     previous = previous,
@@ -276,7 +276,7 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
                 issue = ISSUE,
                 scope = statement,
                 location = context.getRangeLocation(previous, 0, next, 0),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildTriggerFix(
                     context = context,
                     previous = previous,

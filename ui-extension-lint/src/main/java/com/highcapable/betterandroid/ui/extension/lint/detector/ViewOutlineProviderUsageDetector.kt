@@ -56,7 +56,7 @@ class ViewOutlineProviderUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithViewOutlineProviderExtension",
-            briefDescription = "Use ui-extension's `outlineProvider(...)` instead.",
+            briefDescription = "Use ui-extension's `outlineProvider(...)` instead",
             explanation = """
                 Using `outlineProvider = object : ViewOutlineProvider()` can be simplified by using \
                 `outlineProvider(...)` from BetterAndroid ui-extension library.
@@ -115,7 +115,7 @@ class ViewOutlineProviderUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `${replacement.display}`.",
+                message = "Can be replaced with `${replacement.display}`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$OUTLINE_PROVIDER_FUNCTION'",
                     replacement = replacement.source,

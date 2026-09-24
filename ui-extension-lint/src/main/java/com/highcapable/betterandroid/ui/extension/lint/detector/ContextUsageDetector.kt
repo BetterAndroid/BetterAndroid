@@ -63,7 +63,7 @@ class ContextUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithContextExtension",
-            briefDescription = "Use ui-extension's context host activity extensions instead.",
+            briefDescription = "Use ui-extension's context host activity extensions instead",
             explanation = """
                 Using `context as Activity`, `context as? Activity`, `context as YourActivity` or \
                 `context as? YourActivity` on `Context`, `ContextWrapper` or `ContextThemeWrapper` \
@@ -124,7 +124,7 @@ class ContextUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `${replacement.first}`.",
+                message = "Can be replaced with `${replacement.first}`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$fixName'",
                     replacement = replacement.first,

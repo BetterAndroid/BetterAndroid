@@ -69,7 +69,7 @@ class NotificationActionUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithNotificationAction",
-            briefDescription = "Use ui-component's notification action APIs instead.",
+            briefDescription = "Use ui-component's notification action APIs instead",
             explanation = """
                 Using `NotificationCompat.Action.Builder(...)`, `RemoteInput.Builder(...)`, or wrapping a notification \
                 action DSL inside another supported DSL can be simplified by using notification action APIs from \
@@ -160,7 +160,7 @@ class NotificationActionUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getCallLocation(node, includeReceiver = false, includeArguments = true),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '${target.targetFunction}'",
                     replacement = replacement,
@@ -203,7 +203,7 @@ class NotificationActionUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getCallLocation(node, includeReceiver = true, includeArguments = true),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '${builderTarget.targetFunction}'",
                     replacement = replacement,
@@ -226,7 +226,7 @@ class NotificationActionUsageDetector : Detector(), Detector.UastScanner {
                 location = builderChain.expression.sourcePsi?.let { context.getLocation(it) }
                     ?: context.getCallLocation(node, includeReceiver = true, includeArguments = true),
                 message = "Consider handing `${builderTarget.sourceFunction}` over to BetterAndroid's " +
-                    "`${builderTarget.targetFunction}(...)`."
+                    "`${builderTarget.targetFunction}(...)`"
             )
         }
 

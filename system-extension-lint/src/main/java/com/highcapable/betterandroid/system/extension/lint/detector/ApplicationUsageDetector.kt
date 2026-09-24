@@ -105,7 +105,7 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithApplicationExtension",
-            briefDescription = "Use system-extension's application extensions instead.",
+            briefDescription = "Use system-extension's application extensions instead",
             explanation = """
                 Using `ComponentName(context, ...)`, `PackageManager` package checks, component \
                 state operations, or package version compat wrappers can be simplified by using \
@@ -518,7 +518,7 @@ class ApplicationUsageDetector : Detector(), Detector.UastScanner {
         ) = context.report(
             issue = ISSUE,
             location = context.getLocation(node),
-            message = "Can be replaced with `$displayReplacement`.",
+            message = "Can be replaced with `$displayReplacement`",
             quickfixData = buildReplaceFix(
                 name = "Replace with '$fixName'",
                 replacement = replacement,

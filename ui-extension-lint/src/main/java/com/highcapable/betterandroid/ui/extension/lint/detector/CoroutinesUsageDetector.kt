@@ -60,7 +60,7 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithCoroutinesExtension",
-            briefDescription = "Use ui-extension's coroutine extensions instead.",
+            briefDescription = "Use ui-extension's coroutine extensions instead",
             explanation = """
                 Using `LifecycleOwner.lifecycleScope.launch`, `LifecycleOwner.lifecycleScope.async` \
                 or `Handler(...).postDelayed(...)` can be simplified by using coroutine helpers from \
@@ -157,7 +157,7 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`.",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$methodName'",
                     replacement = replacement,
@@ -196,7 +196,7 @@ class CoroutinesUsageDetector : Detector(), Detector.UastScanner {
             context.report(
                 issue = ISSUE,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$RUN_DELAYED_EXTENSION(...)`."
+                message = "Can be replaced with `$RUN_DELAYED_EXTENSION(...)`"
             )
         }
 
