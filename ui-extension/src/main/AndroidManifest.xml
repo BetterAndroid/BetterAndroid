@@ -31,5 +31,17 @@
         androidx.appcompat,
         androidx.appcompat.resources,
         androidx.navigationevent,
+        androidx.lifecycle.ktx,
+        androidx.lifecycle.livedata.core.ktx,
+        androidx.lifecycle.lifecycle.viewmodel.anchor,
+        androidx.lifecycle.viewmodel,
+        androidx.lifecycle.viewmodel.ktx,
+        androidx.lifecycle.viewmodel.savedstate,
+        androidx.lifecycle.livedata.core,
+        androidx.lifecycle.livedata,
+        androidx.lifecycle.process,
+        androidx.lifecycle.runtime,
+        androidx.savedstate.ktx,
+        androidx.savedstate,
         androidx.tracing" />
 </manifest>
