@@ -96,9 +96,9 @@ class ViewBindingUsageDetector : Detector(), Detector.UastScanner {
                 ViewBinding(bindingClass).bind(view)
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 ViewBindingUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -106,31 +106,32 @@ class ViewBindingUsageDetector : Detector(), Detector.UastScanner {
         )
     }
 
-    override fun getApplicableUastTypes() = listOf(
-        UCallExpression::class.java as Class<out UElement>,
-        UQualifiedReferenceExpression::class.java as Class<out UElement>
+    override fun getApplicableUastTypes(): List<Class<out UElement>> = listOf(
+        UCallExpression::class.java,
+        UQualifiedReferenceExpression::class.java
     )
 
     override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         override fun visitCallExpression(node: UCallExpression) {
-            if (!node.isViewBindingMethodLookup(context) && !node.isViewBindingMethodsIteration(context)) return
+            if (!node.isViewBindingMethodLookup() && !node.isViewBindingMethodsIteration()) return
 
-            // This is the ViewBinding reflection method lookup or iteration pattern.
-            report(node, context)
+            // This is the `ViewBinding` reflection method lookup or iteration pattern.
+            report(node)
         }
 
         override fun visitQualifiedReferenceExpression(node: UQualifiedReferenceExpression) {
-            if (!node.isViewBindingMethodNameCheck(context)) return
+            if (!node.isViewBindingMethodNameCheck()) return
 
-            report(node, context)
+            report(node)
         }
 
-        private fun report(node: UElement, context: JavaContext) {
+        private fun report(node: UElement) {
             val suggestion = node.resolveViewBindingSuggestion()
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Consider handing this reflection over to `$suggestion` or `$VIEW_BINDING_BUILDER_NAME`"
             )
@@ -143,21 +144,21 @@ class ViewBindingUsageDetector : Detector(), Detector.UastScanner {
                 else -> null
             } ?: return "$VIEW_BINDING_CLASS_NAME<VB>()"
 
-            return classExpression.toViewBindingSuggestion(context)
+            return classExpression.toViewBindingSuggestion()
         }
 
         private fun UCallExpression.resolveViewBindingClassExpression() = when {
-            isViewBindingMethodLookup(context) -> receiver
-            isViewBindingMethodsIteration(context) -> (receiver as? UQualifiedReferenceExpression)?.receiver
+            isViewBindingMethodLookup() -> receiver
+            isViewBindingMethodsIteration() -> (receiver as? UQualifiedReferenceExpression)?.receiver
             else -> null
         }
 
-        private fun UExpression.toViewBindingSuggestion(context: JavaContext): String {
-            resolveConcreteViewBindingName(context)?.let { return "$VIEW_BINDING_CLASS_NAME<$it>()" }
+        private fun UExpression.toViewBindingSuggestion(): String {
+            resolveConcreteViewBindingName()?.let { return "$VIEW_BINDING_CLASS_NAME<$it>()" }
             return "$VIEW_BINDING_CLASS_NAME(${asSourceString().trim()})"
         }
 
-        private fun UExpression.resolveConcreteViewBindingName(context: JavaContext): String? {
+        private fun UExpression.resolveConcreteViewBindingName(): String? {
             resolveConcreteViewBindingNameFromSource()?.let { return it }
 
             val classType = getExpressionType() as? PsiClassType ?: return null
@@ -183,7 +184,7 @@ class ViewBindingUsageDetector : Detector(), Detector.UastScanner {
             return null
         }
 
-        private fun UCallExpression.isViewBindingMethodLookup(context: JavaContext): Boolean {
+        private fun UCallExpression.isViewBindingMethodLookup(): Boolean {
             if (methodName != GET_METHOD && methodName != GET_DECLARED_METHOD) return false
 
             val method = resolve() ?: return false
@@ -192,12 +193,12 @@ class ViewBindingUsageDetector : Detector(), Detector.UastScanner {
             val methodName = valueArguments.firstOrNull()?.evaluate() as? String ?: return false
             if (methodName != INFLATE_METHOD && methodName != BIND_METHOD) return false
 
-            return isViewBindingReflection(context)
+            return isViewBindingReflection()
         }
 
-        private fun UCallExpression.isViewBindingMethodsIteration(context: JavaContext): Boolean {
+        private fun UCallExpression.isViewBindingMethodsIteration(): Boolean {
             val receiver = receiver as? UQualifiedReferenceExpression ?: return false
-            if (!receiver.isViewBindingMethodsAccess(context)) return false
+            if (!receiver.isViewBindingMethodsAccess()) return false
 
             val source = asSourceString()
             if (!source.contains(METHOD_NAME_PROPERTY)) return false
@@ -205,28 +206,28 @@ class ViewBindingUsageDetector : Detector(), Detector.UastScanner {
             return source.containsMethodName(INFLATE_METHOD) || source.containsMethodName(BIND_METHOD)
         }
 
-        private fun UQualifiedReferenceExpression.isViewBindingMethodNameCheck(context: JavaContext): Boolean {
+        private fun UQualifiedReferenceExpression.isViewBindingMethodNameCheck(): Boolean {
             if ((selector as? USimpleNameReferenceExpression)?.identifier != METHOD_NAME_PROPERTY) return false
 
             val rootCall = findEnclosingCall() ?: return false
-            return rootCall.isViewBindingMethodsIteration(context)
+            return rootCall.isViewBindingMethodsIteration()
         }
 
-        private fun UCallExpression.isViewBindingReflection(context: JavaContext): Boolean {
+        private fun UCallExpression.isViewBindingReflection(): Boolean {
             val source = receiver?.asSourceString().orEmpty()
             if (source.contains(VIEW_BINDING_CLASS) || source.contains(VIEW_BINDING_CLASS_NAME)) return true
 
-            return receiverType.isViewBindingClassType(context)
+            return receiverType.isViewBindingClassType()
         }
 
-        private fun UQualifiedReferenceExpression.isViewBindingMethodsAccess(context: JavaContext): Boolean {
+        private fun UQualifiedReferenceExpression.isViewBindingMethodsAccess(): Boolean {
             val selectorName = (selector as? USimpleNameReferenceExpression)?.identifier ?: return false
             if (selectorName != METHODS_PROPERTY && selectorName != DECLARED_METHODS_PROPERTY) return false
 
-            return receiver.getExpressionType().isViewBindingClassType(context)
+            return receiver.getExpressionType().isViewBindingClassType()
         }
 
-        private fun PsiType?.isViewBindingClassType(context: JavaContext): Boolean {
+        private fun PsiType?.isViewBindingClassType(): Boolean {
             if (this.extendsClass(context, VIEW_BINDING_CLASS)) return true
             if (this?.canonicalText?.contains(VIEW_BINDING_CLASS) == true) return true
 

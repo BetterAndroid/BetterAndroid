@@ -171,9 +171,9 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
                 // - isNavigationBarContrastEnforced
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 SystemBarsControllerUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -181,10 +181,10 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
         )
     }
 
-    override fun getApplicableUastTypes() = listOf(
-        UCallExpression::class.java as Class<out UElement>,
-        UBinaryExpression::class.java as Class<out UElement>,
-        UQualifiedReferenceExpression::class.java as Class<out UElement>
+    override fun getApplicableUastTypes(): List<Class<out UElement>> = listOf(
+        UCallExpression::class.java,
+        UBinaryExpression::class.java,
+        UQualifiedReferenceExpression::class.java
     )
 
     override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
@@ -218,16 +218,18 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
         private fun reportEnableEdgeToEdge(node: UCallExpression): Boolean {
             if (node.methodName != ENABLE_EDGE_TO_EDGE_METHOD) return false
 
-            // Validation is androidx.activity edge-to-edge function.
+            // Validate that it is an `androidx.activity` edge-to-edge function.
             val method = node.resolve() ?: return false
             if (method.containingClass?.qualifiedName?.startsWith(ACTIVITY_PACKAGE) != true) return false
 
             // This is the `enableEdgeToEdge(...)` pattern.
-            val hasSystemBarsController = node.hasSystemBarsController(context)
-            val fix = if (hasSystemBarsController) context.createDeleteCallLintFix(
-                name = "Delete '$ENABLE_EDGE_TO_EDGE_METHOD'",
-                node = node
-            ) ?: return false else null
+            val hasSystemBarsController = node.hasSystemBarsController()
+            val fix = if (hasSystemBarsController)
+                context.createDeleteCallLintFix(
+                    name = "Delete '$ENABLE_EDGE_TO_EDGE_METHOD'",
+                    node = node
+                ) ?: return false
+            else null
             val message = redundantOrHandOverMessage(
                 hasSystemBarsController = hasSystemBarsController,
                 redundantWhat = "$ENABLE_EDGE_TO_EDGE_METHOD(...)",
@@ -237,6 +239,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = location,
                 message = message,
                 quickfixData = fix
@@ -246,9 +249,9 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
 
         private fun reportWindowInsetsControllerShowOrHide(node: UCallExpression): Boolean {
             if (node.methodName != SHOW_METHOD && node.methodName != HIDE_METHOD) return false
-            if (!node.hasSystemBarsController(context)) return false
+            if (!node.hasSystemBarsController()) return false
 
-            // Validation is WindowInsetsControllerCompat or WindowInsetsController class.
+            // Validate that it belongs to `WindowInsetsControllerCompat` or `WindowInsetsController`.
             val method = node.resolve() ?: return false
             if (!context.evaluator.isMemberInClass(method, WINDOW_INSETS_CONTROLLER_COMPAT_CLASS) &&
                 !context.evaluator.isMemberInClass(method, WINDOW_INSETS_CONTROLLER_CLASS)
@@ -256,22 +259,22 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
 
             // This is the `controller.show(...)` or `controller.hide(...)` pattern.
             val systemBarsType = resolveSystemBarsType(node.valueArguments.firstOrNull()) ?: return false
-            val systemBarsName = node.resolveSystemBarsControllerName(context) ?: return false
+            val systemBarsName = node.resolveSystemBarsControllerName() ?: return false
             val methodName = node.methodName ?: return false
-            val fix = createWindowInsetsControllerVisibilityLintFix(
+            val (replaceSuggestion, fix) = createWindowInsetsControllerVisibilityLintFix(
                 systemBarsName = systemBarsName,
                 methodName = methodName,
                 systemBarsType = systemBarsType
             )
-            val replaceSuggestion = fix.first
             val message = "Can be replaced with `$replaceSuggestion`"
             val location = context.getLocation(node)
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = location,
                 message = message,
-                quickfixData = fix.second
+                quickfixData = fix
             )
             return true
         }
@@ -283,7 +286,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
                 else -> return false
             }
 
-            // Validation is WindowInsetsControllerCompat or WindowInsetsController class.
+            // Validate that it belongs to `WindowInsetsControllerCompat` or `WindowInsetsController`.
             val method = node.resolve() ?: return false
             if (!context.evaluator.isMemberInClass(method, WINDOW_INSETS_CONTROLLER_COMPAT_CLASS) &&
                 !context.evaluator.isMemberInClass(method, WINDOW_INSETS_CONTROLLER_CLASS)
@@ -291,8 +294,8 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
 
             // This is the direct light system bars appearance control pattern.
             val target = when (propertyName) {
-                APPEARANCE_LIGHT_STATUS_BARS_PROPERTY -> "`$SYSTEM_BARS_CONTROLLER_CLASS_NAME.$STATUS_BAR_STYLE_PROPERTY`"
-                APPEARANCE_LIGHT_NAVIGATION_BARS_PROPERTY -> "`$SYSTEM_BARS_CONTROLLER_CLASS_NAME.$NAVIGATION_BAR_STYLE_PROPERTY`"
+                APPEARANCE_LIGHT_STATUS_BARS_PROPERTY -> "$SYSTEM_BARS_CONTROLLER_CLASS_NAME.$STATUS_BAR_STYLE_PROPERTY"
+                APPEARANCE_LIGHT_NAVIGATION_BARS_PROPERTY -> "$SYSTEM_BARS_CONTROLLER_CLASS_NAME.$NAVIGATION_BAR_STYLE_PROPERTY"
                 else -> return false
             }
             val message = handOverMessage(target)
@@ -300,6 +303,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = location,
                 message = message
             )
@@ -311,15 +315,15 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
                 node.methodName != GET_SYSTEM_BARS_BEHAVIOR_METHOD
             ) return false
 
-            // Validation is WindowInsetsControllerCompat or WindowInsetsController class.
+            // Validate that it belongs to `WindowInsetsControllerCompat` or `WindowInsetsController`.
             val method = node.resolve() ?: return false
             if (!context.evaluator.isMemberInClass(method, WINDOW_INSETS_CONTROLLER_COMPAT_CLASS) &&
                 !context.evaluator.isMemberInClass(method, WINDOW_INSETS_CONTROLLER_CLASS)
             ) return false
 
             // This is the direct system bars behavior access pattern.
-            val hasSystemBarsController = node.hasSystemBarsController(context)
-            val systemBarsName = node.resolveSystemBarsControllerName(context)
+            val hasSystemBarsController = node.hasSystemBarsController()
+            val systemBarsName = node.resolveSystemBarsControllerName()
             val replacement = when (node.methodName) {
                 SET_SYSTEM_BARS_BEHAVIOR_METHOD -> {
                     val behaviorType = resolveSystemBarBehavior(node.valueArguments.firstOrNull()) ?: return false
@@ -328,10 +332,12 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
                 GET_SYSTEM_BARS_BEHAVIOR_METHOD -> systemBarsName?.let { "$it.$BEHAVIOR_PROPERTY" }
                 else -> return false
             }
-            val fix = if (hasSystemBarsController && replacement != null && systemBarsName != null) createWindowInsetsControllerBehaviorLintFix(
-                systemBarsName = systemBarsName,
-                replacement = replacement
-            ) else null
+            val fix = if (hasSystemBarsController && replacement != null && systemBarsName != null)
+                createWindowInsetsControllerBehaviorLintFix(
+                    systemBarsName = systemBarsName,
+                    replacement = replacement
+                )
+            else null
             val message = if (hasSystemBarsController && replacement != null)
                 "Can be replaced with `$replacement`"
             else handOverMessage("$SYSTEM_BARS_CONTROLLER_CLASS_NAME.$BEHAVIOR_PROPERTY")
@@ -339,6 +345,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = location,
                 message = message,
                 quickfixData = fix
@@ -349,7 +356,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
         private fun reportWindowInsetsControllerAccess(node: UCallExpression): Boolean {
             if (node.methodName != GET_INSETS_CONTROLLER_METHOD) return false
 
-            // Validation is WindowCompat class.
+            // Validate that it belongs to `WindowCompat`.
             val method = node.resolve() ?: return false
             if (!context.evaluator.isMemberInClass(method, WINDOW_COMPAT_CLASS)) return false
 
@@ -359,6 +366,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = location,
                 message = message
             )
@@ -374,6 +382,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = location,
                 message = message
             )
@@ -384,11 +393,13 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
             if (!node.isDecorFitsSystemWindowsFalseCall()) return false
 
             // This is the `setDecorFitsSystemWindows(..., false)` pattern.
-            val hasSystemBarsController = node.hasSystemBarsController(context)
-            val fix = if (hasSystemBarsController) context.createDeleteCallLintFix(
-                name = "Delete '$SET_DECOR_FITS_SYSTEM_WINDOWS_METHOD'",
-                node = node
-            ) ?: return false else null
+            val hasSystemBarsController = node.hasSystemBarsController()
+            val fix = if (hasSystemBarsController)
+                context.createDeleteCallLintFix(
+                    name = "Delete '$SET_DECOR_FITS_SYSTEM_WINDOWS_METHOD'",
+                    node = node
+                ) ?: return false
+            else null
             val message = redundantOrHandOverMessage(
                 hasSystemBarsController = hasSystemBarsController,
                 redundantWhat = "$SET_DECOR_FITS_SYSTEM_WINDOWS_METHOD(..., false)",
@@ -398,6 +409,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = location,
                 message = message,
                 quickfixData = fix
@@ -413,7 +425,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
             if (receiver != WINDOW_RECEIVER && receiver != THIS_WINDOW_RECEIVER) return
 
             val propertyName = left.selector.resolveName() ?: return
-            val hasSystemBarsController = node.hasSystemBarsController(context)
+            val hasSystemBarsController = node.hasSystemBarsController()
 
             val message = when (propertyName) {
                 STATUS_BAR_CONTRAST_ENFORCED_PROPERTY ->
@@ -424,11 +436,14 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
                     redundantOrHandOverMessage(hasSystemBarsController, NAVIGATION_BAR_CONTRAST_ENFORCED_PROPERTY)
                 else -> return
             }
-            val fix = if (hasSystemBarsController) context.createDeleteAssignmentLintFix(propertyName, node) ?: return else null
+            val fix = if (hasSystemBarsController)
+                context.createDeleteAssignmentLintFix(propertyName, node) ?: return
+            else null
             val location = context.getLocation(node)
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = location,
                 message = message,
                 quickfixData = fix
@@ -444,7 +459,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
 
             // This is the direct window system bar color assignment pattern.
             val propertyName = left.selector.resolveName() ?: return
-            val hasSystemBarsController = node.hasSystemBarsController(context)
+            val hasSystemBarsController = node.hasSystemBarsController()
             val targetProperty = when (propertyName) {
                 STATUS_BAR_COLOR_PROPERTY -> STATUS_BAR_STYLE_PROPERTY
                 NAVIGATION_BAR_COLOR_PROPERTY -> NAVIGATION_BAR_STYLE_PROPERTY
@@ -452,7 +467,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
             }
 
             val right = node.rightOperand.asSourceString()
-            val systemBarsName = node.resolveSystemBarsControllerName(context)
+            val systemBarsName = node.resolveSystemBarsControllerName()
             val replacement = systemBarsName?.let { "$it.$targetProperty = $SYSTEM_BAR_STYLE_CLASS_NAME($right)" }
             val fix = if (hasSystemBarsController && replacement != null) createWindowBarStyleAssignmentLintFix(
                 systemBarsName = systemBarsName,
@@ -466,6 +481,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = location,
                 message = message,
                 quickfixData = fix
@@ -481,8 +497,8 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
             // This is the direct light system bars appearance assignment pattern.
             val propertyName = left.selector.resolveName() ?: return
             val target = when (propertyName) {
-                APPEARANCE_LIGHT_STATUS_BARS_PROPERTY -> "`$SYSTEM_BARS_CONTROLLER_CLASS_NAME.$STATUS_BAR_STYLE_PROPERTY`"
-                APPEARANCE_LIGHT_NAVIGATION_BARS_PROPERTY -> "`$SYSTEM_BARS_CONTROLLER_CLASS_NAME.$NAVIGATION_BAR_STYLE_PROPERTY`"
+                APPEARANCE_LIGHT_STATUS_BARS_PROPERTY -> "$SYSTEM_BARS_CONTROLLER_CLASS_NAME.$STATUS_BAR_STYLE_PROPERTY"
+                APPEARANCE_LIGHT_NAVIGATION_BARS_PROPERTY -> "$SYSTEM_BARS_CONTROLLER_CLASS_NAME.$NAVIGATION_BAR_STYLE_PROPERTY"
                 else -> return
             }
             val message = handOverMessage(target)
@@ -490,6 +506,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = location,
                 message = message
             )
@@ -503,9 +520,9 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
             if (left.selector.resolveName() != SYSTEM_BARS_BEHAVIOR_PROPERTY) return
 
             // This is the direct system bars behavior assignment pattern.
-            val hasSystemBarsController = node.hasSystemBarsController(context)
+            val hasSystemBarsController = node.hasSystemBarsController()
             val behaviorType = resolveSystemBarBehavior(node.rightOperand) ?: return
-            val systemBarsName = node.resolveSystemBarsControllerName(context)
+            val systemBarsName = node.resolveSystemBarsControllerName()
             val replacement = systemBarsName?.let { "$it.$BEHAVIOR_PROPERTY = $SYSTEM_BAR_BEHAVIOR_CLASS_NAME.$behaviorType" }
             val fix = if (hasSystemBarsController && replacement != null) createWindowInsetsControllerBehaviorLintFix(
                 systemBarsName = systemBarsName,
@@ -518,6 +535,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = location,
                 message = message,
                 quickfixData = fix
@@ -532,8 +550,8 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
             if (resolveWindowInsetsControllerSource(node.receiver) == null) return
 
             // This is the direct system bars behavior property access pattern.
-            val hasSystemBarsController = node.hasSystemBarsController(context)
-            val systemBarsName = node.resolveSystemBarsControllerName(context)
+            val hasSystemBarsController = node.hasSystemBarsController()
+            val systemBarsName = node.resolveSystemBarsControllerName()
             val replacement = systemBarsName?.let { "$it.$BEHAVIOR_PROPERTY" }
             val fix = if (hasSystemBarsController && replacement != null) createWindowInsetsControllerBehaviorPropertyLintFix(
                 systemBarsName = systemBarsName,
@@ -546,6 +564,7 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = location,
                 message = message,
                 quickfixData = fix
@@ -636,16 +655,16 @@ class SystemBarsControllerUsageDetector : Detector(), Detector.UastScanner {
             "`$redundantWhat` is redundant here because `$SYSTEM_BARS_CONTROLLER_CLASS_NAME` already holds this effect"
         else handOverMessage(handOverTarget)
 
-        private fun UElement?.hasSystemBarsController(context: JavaContext) =
-            containingUClasses().any { it.javaPsi.hasSystemBarsController(context) }
+        private fun UElement?.hasSystemBarsController() =
+            containingUClasses().any { it.javaPsi.hasSystemBarsController() }
 
-        private fun UElement?.resolveSystemBarsControllerName(context: JavaContext) =
-            containingUClasses().firstNotNullOfOrNull { it.javaPsi.resolveSystemBarsControllerName(context) }
+        private fun UElement?.resolveSystemBarsControllerName() =
+            containingUClasses().firstNotNullOfOrNull { it.javaPsi.resolveSystemBarsControllerName() }
 
-        private fun PsiClass?.hasSystemBarsController(context: JavaContext) =
-            resolveSystemBarsControllerName(context) != null
+        private fun PsiClass?.hasSystemBarsController() =
+            resolveSystemBarsControllerName() != null
 
-        private fun PsiClass?.resolveSystemBarsControllerName(context: JavaContext): String? {
+        private fun PsiClass?.resolveSystemBarsControllerName(): String? {
             val psiClass = this ?: return null
 
             psiClass.allFields.firstOrNull { it.type.canonicalText == SYSTEM_BARS_CONTROLLER_CLASS }?.name

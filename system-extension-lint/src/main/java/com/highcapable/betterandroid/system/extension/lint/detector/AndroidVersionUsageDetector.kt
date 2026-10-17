@@ -50,18 +50,17 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
         private const val SDK_INT_FIELD = "SDK_INT"
         private const val RELEASE_FIELD = "RELEASE"
 
-        private const val ANDROID_VERSION_PACKAGE = "${DeclaredSymbol.BASE_PACKAGE}.utils"
         private const val ANDROID_VERSION_NAME = "AndroidVersion"
-        private const val ANDROID_VERSION_CLASS = "$ANDROID_VERSION_PACKAGE.$ANDROID_VERSION_NAME"
+        private const val ANDROID_VERSION_CLASS = "${DeclaredSymbol.UTILS_PACKAGE}.$ANDROID_VERSION_NAME"
         private const val ANDROID_VERSION_CODE_FIELD = "code"
         private const val ANDROID_VERSION_NAME_FIELD = "name"
 
-        private const val GREATER_OR_EQUALS_FUNCTION_NAME = "isAtLeast"
-        private const val GREATER_FUNCTION_NAME = "isGreaterThan"
-        private const val LESS_OR_EQUALS_FUNCTION_NAME = "isAtMost"
-        private const val LESS_FUNCTION_NAME = "isLessThan"
+        private const val IS_AT_LEAST_FUNCTION = "isAtLeast"
+        private const val IS_GREATER_THAN_FUNCTION = "isGreaterThan"
+        private const val IS_AT_MOST_FUNCTION = "isAtMost"
+        private const val IS_LESS_THAN_FUNCTION = "isLessThan"
 
-        private val versionCodeMapping = mapOf(
+        private val VERSION_CODE_MAPPING = mapOf(
             "BASE" to "B",
             "BASE_1_1" to "B_1_1",
             "CUPCAKE" to "C",
@@ -103,7 +102,7 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithAndroidVersion",
-            briefDescription = "Use system-extension's `AndroidVersion` instead of direct `Build.VERSION` access",
+            briefDescription = "Use system-extension's AndroidVersion instead",
             explanation = """
                 Using direct `Build.VERSION` access or `Build.VERSION.SDK_INT` comparisons can be \
                 simplified by using `AndroidVersion` from BetterAndroid system-extension library.
@@ -135,9 +134,9 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
                 }
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 AndroidVersionUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -154,7 +153,7 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
         override fun visitBinaryExpression(node: UBinaryExpression) {
             node.sourcePsi?.let { if (!visitedBinaryExpressions.add(it)) return }
 
-            // Detect comparison expression for `Build.VERSION.SDK_INT`.
+            // Detect comparison expressions on `Build.VERSION.SDK_INT`.
             val leftOperand = node.leftOperand
             val rightOperand = node.rightOperand
 
@@ -168,25 +167,25 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
                 val receiverText = rightOperand.asSourceString()
                 val convertedRange = convertVersionCodesInRange(receiverText)
                 val replacement = "$ANDROID_VERSION_NAME.$ANDROID_VERSION_CODE_FIELD in $convertedRange"
-                reportAndFix(context, node, replacement, "$ANDROID_VERSION_NAME.$ANDROID_VERSION_CODE_FIELD in")
+                reportAndFix(node, replacement, "$ANDROID_VERSION_NAME.$ANDROID_VERSION_CODE_FIELD")
                 return
             }
 
             val functionName = when (operator) {
-                UastBinaryOperator.GREATER_OR_EQUALS -> GREATER_OR_EQUALS_FUNCTION_NAME
-                UastBinaryOperator.GREATER -> GREATER_FUNCTION_NAME
-                UastBinaryOperator.LESS_OR_EQUALS -> LESS_OR_EQUALS_FUNCTION_NAME
-                UastBinaryOperator.LESS -> LESS_FUNCTION_NAME
+                UastBinaryOperator.GREATER_OR_EQUALS -> IS_AT_LEAST_FUNCTION
+                UastBinaryOperator.GREATER -> IS_GREATER_THAN_FUNCTION
+                UastBinaryOperator.LESS_OR_EQUALS -> IS_AT_MOST_FUNCTION
+                UastBinaryOperator.LESS -> IS_LESS_THAN_FUNCTION
                 else -> return
             }
 
             val rightValue = convertVersionCode(rightOperand.asSourceString())
             val replacement = "$ANDROID_VERSION_NAME.$functionName($rightValue)"
-            reportAndFix(context, node, replacement, "$ANDROID_VERSION_NAME.$functionName")
+            reportAndFix(node, replacement, "$ANDROID_VERSION_NAME.$functionName")
         }
 
         override fun visitQualifiedReferenceExpression(node: UQualifiedReferenceExpression) {
-            // Exclude cases already in binary expressions (those will be handled in visitBinaryExpression).
+            // Exclude cases already in binary expressions (those will be handled in `visitBinaryExpression`).
             if (node.uastParent is UBinaryExpression) return
 
             val selector = node.selector
@@ -196,7 +195,6 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
             if (containingClass?.qualifiedName == BUILD_VERSION_CLASS) when (selector.resolvedName) {
                 SDK_INT_FIELD -> {
                     reportAndFix(
-                        context = context,
                         node = node,
                         replacement = "$ANDROID_VERSION_NAME.$ANDROID_VERSION_CODE_FIELD",
                         fixName = "$ANDROID_VERSION_NAME.$ANDROID_VERSION_CODE_FIELD"
@@ -205,7 +203,6 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
                 }
                 RELEASE_FIELD -> {
                     reportAndFix(
-                        context = context,
                         node = node,
                         replacement = "$ANDROID_VERSION_NAME.$ANDROID_VERSION_NAME_FIELD",
                         fixName = "$ANDROID_VERSION_NAME.$ANDROID_VERSION_NAME_FIELD"
@@ -216,18 +213,19 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
 
             if (containingClass?.qualifiedName == BUILD_VERSION_CODES_CLASS) {
                 val fieldName = selector.resolvedName ?: return
-                val mappedName = versionCodeMapping[fieldName] ?: return
+                val mappedName = VERSION_CODE_MAPPING[fieldName] ?: return
 
                 val replacement = "$ANDROID_VERSION_NAME.$mappedName"
-                reportAndFix(context, node, replacement, "$ANDROID_VERSION_NAME.$mappedName")
+                reportAndFix(node, replacement, "$ANDROID_VERSION_NAME.$mappedName")
             }
         }
 
-        private fun reportAndFix(context: JavaContext, node: UExpression, replacement: String, fixName: String) {
+        private fun reportAndFix(node: UExpression, replacement: String, fixName: String) {
             val message = "Can be replaced with `$replacement`"
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = message,
                 quickfixData = buildReplaceFix(
@@ -240,7 +238,7 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
 
         private fun isBuildVersionSdkInt(expression: UExpression): Boolean {
             // `Build.VERSION.SDK_INT` is a `UQualifiedReferenceExpression`.
-            // Its structure is: Build.VERSION (receiver) -> SDK_INT (selector)
+            // Its structure is: `Build.VERSION` (receiver) -> `SDK_INT` (selector)
             if (expression !is UQualifiedReferenceExpression) return false
 
             // Check if selector is `SDK_INT`.
@@ -248,7 +246,7 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
             if (selector?.resolvedName != SDK_INT_FIELD) return false
 
             // Check if receiver is `Build.VERSION`.
-            // `Build.VERSION` is also a `UQualifiedReferenceExpression`: Build -> VERSION
+            // `Build.VERSION` is also a `UQualifiedReferenceExpression`: `Build` -> `VERSION`
             val receiver = expression.receiver
             val receiverText = receiver.asSourceString()
 
@@ -259,7 +257,7 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
             // If it is `Build.VERSION_CODES.?`, convert to `AndroidVersion.?`.
             if (code.startsWith("$BUILD_VERSION_CODES_NAME.")) {
                 val fieldName = code.substringAfterLast(".")
-                return versionCodeMapping[fieldName]?.let { "$ANDROID_VERSION_NAME.$it" } ?: code
+                return VERSION_CODE_MAPPING[fieldName]?.let { "$ANDROID_VERSION_NAME.$it" } ?: code
             }
 
             // If already purely numeric or otherwise, leave it unchanged.
@@ -267,20 +265,18 @@ class AndroidVersionUsageDetector : Detector(), Detector.UastScanner {
         }
 
         private fun convertVersionCodesInRange(rangeText: String): String {
-            // Handle range like `33..36` or `Build.VERSION_CODES.TIRAMISU..Build.VERSION_CODES.BAKLAVA`
-            val parts = rangeText.let {
-                when {
-                    it.contains("..") -> it.split("..") to ".."
-                    it.contains("until") -> it.split("until") to " until "
-                    else -> return rangeText
-                }
+            // Handle ranges like `33..36` or `Build.VERSION_CODES.TIRAMISU..Build.VERSION_CODES.BAKLAVA`.
+            val (bounds, separator) = when {
+                rangeText.contains("..") -> rangeText.split("..") to ".."
+                rangeText.contains("until") -> rangeText.split("until") to " until "
+                else -> return rangeText
             }
-            if (parts.first.size != 2) return rangeText
+            if (bounds.size != 2) return rangeText
 
-            val start = convertVersionCode(parts.first[0].trim())
-            val end = convertVersionCode(parts.first[1].trim())
+            val start = convertVersionCode(bounds[0].trim())
+            val end = convertVersionCode(bounds[1].trim())
 
-            return "$start${parts.second}$end"
+            return "$start$separator$end"
         }
     })
 }

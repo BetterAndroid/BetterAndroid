@@ -56,7 +56,7 @@ class ServiceUsageDetector : Detector(), Detector.UastScanner {
         private const val START_FOREGROUND_SERVICE_METHOD = "startForegroundService"
         private const val APPLY_METHOD = "apply"
         private const val ALSO_METHOD = "also"
-        private const val INTENT_HELPER = "Intent"
+        private const val INTENT_FUNCTION = "Intent"
         private const val ALSO_DEFAULT_PARAMETER = "it"
 
         val ISSUE = Issue.create(
@@ -88,9 +88,9 @@ class ServiceUsageDetector : Detector(), Detector.UastScanner {
                 context.startForegroundService<DemoService>()
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 ServiceUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -106,7 +106,7 @@ class ServiceUsageDetector : Detector(), Detector.UastScanner {
             val methodName = node.methodName ?: return
             if (methodName != START_SERVICE_METHOD && methodName != START_FOREGROUND_SERVICE_METHOD) return
 
-            // Validation is Context class.
+            // Validate that it belongs to `Context`.
             val method = node.resolve() ?: return
             val containingClass = method.containingClass ?: return
             if (!context.evaluator.extendsClass(containingClass, CONTEXT_CLASS, false)) return
@@ -118,6 +118,7 @@ class ServiceUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Can be replaced with `${replacement.displayReplacement}`",
                 quickfixData = buildReplaceFix(
@@ -153,13 +154,13 @@ class ServiceUsageDetector : Detector(), Detector.UastScanner {
             val call = node ?: return null
             val method = call.resolve() ?: return null
 
-            // Validation is Intent constructor or BetterAndroid Intent helper.
+            // Validate that it is the `Intent` constructor or the BetterAndroid `Intent` helper.
             return when {
                 method.isConstructor && method.containingClass?.qualifiedName == INTENT_CLASS -> {
                     val targetClass = resolveTargetServiceClass(call) ?: return null
                     IntentSpec(targetClass)
                 }
-                call.methodName == INTENT_HELPER &&
+                call.methodName == INTENT_FUNCTION &&
                     method.containingClass?.qualifiedName == INTENT_UTILS_CLASS &&
                     call.returnType?.canonicalText == INTENT_CLASS -> {
                     val targetClass = call.typeArguments.firstOrNull()?.canonicalText ?: return null

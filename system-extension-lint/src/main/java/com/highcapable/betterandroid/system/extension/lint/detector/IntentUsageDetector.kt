@@ -36,18 +36,13 @@ import com.highcapable.betterandroid.system.extension.lint.detector.extension.cr
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.displayShortName
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.extendsClass
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.receiverPrefix
+import com.highcapable.betterandroid.system.extension.lint.detector.extension.resolveStaticClassLiteralType
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.unwrapParenthesized
-import com.intellij.psi.PsiLocalVariable
 import org.jetbrains.uast.UBinaryExpressionWithType
 import org.jetbrains.uast.UCallExpression
-import org.jetbrains.uast.UClassLiteralExpression
 import org.jetbrains.uast.UElement
-import org.jetbrains.uast.ULocalVariable
 import org.jetbrains.uast.UParenthesizedExpression
-import org.jetbrains.uast.UQualifiedReferenceExpression
-import org.jetbrains.uast.USimpleNameReferenceExpression
 import org.jetbrains.uast.UastBinaryExpressionWithTypeKind
-import org.jetbrains.uast.toUElementOfType
 
 class IntentUsageDetector : Detector(), Detector.UastScanner {
 
@@ -68,12 +63,12 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
         private const val GET_SERIALIZABLE_EXTRA_COMPAT = "getSerializableExtraCompat"
         private const val GET_SERIALIZABLE_COMPAT = "getSerializableCompat"
 
-        private const val INTENT_HELPER = "Intent"
+        private const val INTENT_FUNCTION = "Intent"
 
-        private const val AS_CAST = "as"
-        private const val AS_SAFE_CAST = "as?"
+        private const val AS_OPERATOR = "as"
+        private const val SAFE_AS_OPERATOR = "as?"
         private const val NOT_NULL_ASSERTION = "!!"
-        private const val NULLABLE_MARK = "?"
+        private const val NULLABLE_SUFFIX = "?"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithIntentExtension",
@@ -117,9 +112,9 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
                 bundle.getSerializableCompat<DemoSerializable>("serializable")!!
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 IntentUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -127,9 +122,9 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
         )
     }
 
-    override fun getApplicableUastTypes() = listOf(
-        UCallExpression::class.java as Class<out UElement>,
-        UBinaryExpressionWithType::class.java as Class<out UElement>
+    override fun getApplicableUastTypes(): List<Class<out UElement>> = listOf(
+        UCallExpression::class.java,
+        UBinaryExpressionWithType::class.java
     )
 
     override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
@@ -145,7 +140,7 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
         override fun visitBinaryExpressionWithType(node: UBinaryExpressionWithType) {
             node.sourcePsi?.let { if (!visitedBinaryExpressionsWithType.add(it)) return }
             if (node.operationKind !is UastBinaryExpressionWithTypeKind.TypeCast) return
-            if (node.operationKind.name != AS_CAST && node.operationKind.name != AS_SAFE_CAST) return
+            if (node.operationKind.name != AS_OPERATOR && node.operationKind.name != SAFE_AS_OPERATOR) return
 
             val call = node.operand.unwrapParenthesized().asCall() ?: return
             val compat = resolveCompat(call) ?: return
@@ -155,9 +150,10 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
             val key = call.valueArguments[0].asSourceString()
             if (!node.typeReference?.type.extendsClass(context, compat.requiredClass)) return
             val castType = node.resolveCastType() ?: return
-            val isNullableCast = node.operationKind.name == AS_SAFE_CAST || castType.isNullable
+            val isNullableCast = node.operationKind.name == SAFE_AS_OPERATOR || castType.isNullable
 
-            val replacement = "${call.receiverPrefix()}${compat.functionName}<${castType.name}>($key)${if (isNullableCast) "" else NOT_NULL_ASSERTION}"
+            val notNullAssertion = if (isNullableCast) "" else NOT_NULL_ASSERTION
+            val replacement = "${call.receiverPrefix()}${compat.functionName}<${castType.name}>($key)$notNullAssertion"
             reportAndFix(node, replacement, compat.importTarget, fixName = compat.functionName)
         }
 
@@ -167,7 +163,7 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
 
             // This is the `getParcelableExtra(name, Type::class.java)` pattern.
             val key = node.valueArguments[0].asSourceString()
-            val type = resolveClassLiteralType(node.valueArguments[1]) ?: return
+            val type = node.valueArguments[1].resolveStaticClassLiteralType() ?: return
 
             val receiverPrefix = node.receiverPrefix()
             val replacement = "$receiverPrefix${compat.functionName}<$type>($key)"
@@ -178,27 +174,27 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
         private fun reportIntentConstructor(node: UCallExpression) {
             val method = node.resolve() ?: return
 
-            // Validation is Intent constructor.
+            // Validate that it is the `Intent` constructor.
             if (!method.isConstructor || method.containingClass?.qualifiedName != INTENT_CLASS) return
 
             // This is the `Intent(context, Target::class.java)` or `Intent(action, uri, context, Target::class.java)` pattern.
             val replacement = when (node.valueArguments.size) {
                 2 -> {
-                    val context = node.valueArguments[0].asSourceString()
-                    val type = resolveClassLiteralType(node.valueArguments[1]) ?: return
+                    val contextText = node.valueArguments[0].asSourceString()
+                    val type = node.valueArguments[1].resolveStaticClassLiteralType() ?: return
                     IntentReplacement(
-                        replacement = "$INTENT_HELPER<$type>($context)",
-                        displayReplacement = "$INTENT_HELPER<${type.displayShortName()}>($context)"
+                        replacement = "$INTENT_FUNCTION<$type>($contextText)",
+                        displayReplacement = "$INTENT_FUNCTION<${type.displayShortName()}>($contextText)"
                     )
                 }
                 4 -> {
                     val action = node.valueArguments[0].asSourceString()
                     val uri = node.valueArguments[1].asSourceString()
-                    val context = node.valueArguments[2].asSourceString()
-                    val type = resolveClassLiteralType(node.valueArguments[3]) ?: return
+                    val contextText = node.valueArguments[2].asSourceString()
+                    val type = node.valueArguments[3].resolveStaticClassLiteralType() ?: return
                     IntentReplacement(
-                        replacement = "$INTENT_HELPER<$type>($action, $uri, $context)",
-                        displayReplacement = "$INTENT_HELPER<${type.displayShortName()}>($action, $uri, $context)"
+                        replacement = "$INTENT_FUNCTION<$type>($action, $uri, $contextText)",
+                        displayReplacement = "$INTENT_FUNCTION<${type.displayShortName()}>($action, $uri, $contextText)"
                     )
                 }
                 else -> return
@@ -207,9 +203,9 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
             reportAndFix(
                 node = node,
                 replacement = replacement.replacement,
-                importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.$INTENT_HELPER",
+                importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.$INTENT_FUNCTION",
                 displayReplacement = replacement.displayReplacement,
-                fixName = INTENT_HELPER
+                fixName = INTENT_FUNCTION
             )
         }
 
@@ -232,7 +228,7 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
         private fun resolveCompat(node: UCallExpression): CompatTarget? {
             val method = node.resolve() ?: return null
 
-            // Validation is Intent or Bundle class.
+            // Validate that it belongs to `Intent` or `Bundle`.
             return when {
                 context.evaluator.isMemberInClass(method, INTENT_CLASS) && node.methodName == GET_PARCELABLE_EXTRA_METHOD ->
                     CompatTarget(GET_PARCELABLE_EXTRA_COMPAT, PARCELABLE_CLASS)
@@ -246,23 +242,6 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
             }
         }
 
-        private fun resolveClassLiteralType(expression: UElement?) = when (val target = expression.unwrapParenthesized()) {
-            is UClassLiteralExpression -> target.type?.canonicalText
-            is UQualifiedReferenceExpression -> (target.receiver as? UClassLiteralExpression)?.type?.canonicalText
-            is USimpleNameReferenceExpression -> resolveReferencedClassLiteralType(target)
-            else -> null
-        }
-
-        private fun resolveReferencedClassLiteralType(expression: USimpleNameReferenceExpression): String? {
-            val localVariable = when (val resolved = expression.resolve()) {
-                is ULocalVariable -> resolved
-                is PsiLocalVariable -> resolved.toUElementOfType<ULocalVariable>()
-                else -> null
-            } ?: return null
-
-            return resolveClassLiteralType(localVariable.uastInitializer)
-        }
-
         private fun UCallExpression.isInsideTypeCast(): Boolean {
             var parent = uastParent
             while (parent is UParenthesizedExpression) parent = parent.uastParent
@@ -272,7 +251,7 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
 
         private fun UBinaryExpressionWithType.resolveCastType(): CastType? {
             val type = typeReference?.asSourceString()?.trim() ?: return null
-            val isNullable = type.endsWith(NULLABLE_MARK)
+            val isNullable = type.endsWith(NULLABLE_SUFFIX)
 
             return CastType(
                 name = if (isNullable) type.dropLast(1).trimEnd() else type,
@@ -288,6 +267,7 @@ class IntentUsageDetector : Detector(), Detector.UastScanner {
             fixName: String
         ) = context.report(
             issue = ISSUE,
+            scope = node,
             location = context.getLocation(node),
             message = "Can be replaced with `$displayReplacement`",
             quickfixData = buildReplaceFix(

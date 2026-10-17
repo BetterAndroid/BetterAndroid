@@ -43,7 +43,7 @@ class WindowInsetsListenerUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithHandleOnWindowInsetsChanged",
-            briefDescription = "Use ui-extension's `handleOnWindowInsetsChanged(...)` instead",
+            briefDescription = "Use ui-extension's window insets extensions instead",
             explanation = """
                 Using `setOnApplyWindowInsetsListener(...)` can be simplified by using \
                 `handleOnWindowInsetsChanged(...)` from BetterAndroid ui-extension library.
@@ -73,9 +73,9 @@ class WindowInsetsListenerUsageDetector : Detector(), Detector.UastScanner {
                 }
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 WindowInsetsListenerUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -90,7 +90,7 @@ class WindowInsetsListenerUsageDetector : Detector(), Detector.UastScanner {
         override fun visitCallExpression(node: UCallExpression) {
             if (node.methodName != SET_ON_APPLY_WINDOW_INSETS_LISTENER) return
 
-            // Validation is ViewCompat or View class.
+            // Validate that it belongs to `ViewCompat` or `View`.
             val method = node.resolve() ?: return
             if (!context.evaluator.isMemberInClass(method, VIEW_COMPAT_CLASS) &&
                 !context.evaluator.isMemberInClass(method, VIEW_CLASS)
@@ -99,8 +99,9 @@ class WindowInsetsListenerUsageDetector : Detector(), Detector.UastScanner {
             // This is the `setOnApplyWindowInsetsListener(...)` pattern.
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
-                message = "Can be replaced with `$HANDLE_ON_WINDOW_INSETS_CHANGED(...)`"
+                message = "Consider using `$HANDLE_ON_WINDOW_INSETS_CHANGED(...)` instead"
             )
         }
     })

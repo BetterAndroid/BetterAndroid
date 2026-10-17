@@ -51,18 +51,18 @@ class ActivityUsageDetector : Detector(), Detector.UastScanner {
         private const val CONTEXT_CLASS = "android.content.Context"
         private const val FRAGMENT_CLASS = "androidx.fragment.app.Fragment"
         private const val INTENT_CLASS = "android.content.Intent"
-        private const val INTENT_UTILS_CLASS = "IntentUtils"
+        private const val INTENT_UTILS_CLASS_NAME = "IntentUtils"
 
         private const val START_ACTIVITY_METHOD = "startActivity"
         private const val APPLY_METHOD = "apply"
         private const val ALSO_METHOD = "also"
-        private const val INTENT_HELPER = "Intent"
+        private const val INTENT_FUNCTION = "Intent"
         private const val DEFAULT_ALSO_PARAMETER = "it"
         private const val STATEMENT_SEPARATOR = ";"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithActivityExtension",
-            briefDescription = "Use ui-extension's `startActivity<T>(...)` instead",
+            briefDescription = "Use ui-extension's activity extensions instead",
             explanation = """
                 Using `startActivity(Intent(...))` with an explicit target activity class can be \
                 simplified by using `startActivity<T>(...)` from BetterAndroid ui-extension library.
@@ -87,9 +87,9 @@ class ActivityUsageDetector : Detector(), Detector.UastScanner {
                 fragment.startActivity<DemoActivity>()
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 ActivityUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -104,7 +104,7 @@ class ActivityUsageDetector : Detector(), Detector.UastScanner {
         override fun visitCallExpression(node: UCallExpression) {
             if (node.methodName != START_ACTIVITY_METHOD) return
 
-            // Validation is Context or Fragment `startActivity(...)`.
+            // Validate that it is `startActivity(...)` of `Context` or `Fragment`.
             val method = node.resolve() ?: return
             val containingClass = method.containingClass
             val isContext = containingClass?.let { context.evaluator.extendsClass(it, CONTEXT_CLASS, false) } == true
@@ -118,6 +118,7 @@ class ActivityUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Can be replaced with `${replacement.displayReplacement}`",
                 quickfixData = buildReplaceFix(
@@ -158,8 +159,8 @@ class ActivityUsageDetector : Detector(), Detector.UastScanner {
                     val targetClass = resolveTargetActivityClass(call) ?: return null
                     IntentSpec(targetClass)
                 }
-                call.methodName == INTENT_HELPER &&
-                    method.containingClass?.name == INTENT_UTILS_CLASS &&
+                call.methodName == INTENT_FUNCTION &&
+                    method.containingClass?.name == INTENT_UTILS_CLASS_NAME &&
                     call.returnType?.canonicalText == INTENT_CLASS -> {
                     val targetClass = call.typeArguments.firstOrNull()?.canonicalText ?: return null
                     IntentSpec(targetClass)

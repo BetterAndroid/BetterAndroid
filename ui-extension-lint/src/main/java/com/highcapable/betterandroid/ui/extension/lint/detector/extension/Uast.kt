@@ -53,7 +53,7 @@ internal fun UElement?.resolveName() = when (this) {
     is USimpleNameReferenceExpression -> identifier
     is UCallExpression -> methodName
     is UCallableReferenceExpression -> callableName
-    is UResolvable -> (resolve() as? PsiNamedElement?)?.name
+    is UResolvable -> (resolve() as? PsiNamedElement)?.name
     else -> null
 }
 

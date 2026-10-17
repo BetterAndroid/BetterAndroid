@@ -36,7 +36,6 @@ import com.highcapable.betterandroid.ui.extension.lint.detector.extension.findMe
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.isObjectLiteralOf
 import org.jetbrains.uast.UBinaryExpression
 import org.jetbrains.uast.UBlockExpression
-import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UExpression
 import org.jetbrains.uast.UObjectLiteralExpression
 import org.jetbrains.uast.UQualifiedReferenceExpression
@@ -56,7 +55,7 @@ class ViewOutlineProviderUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithViewOutlineProviderExtension",
-            briefDescription = "Use ui-extension's `outlineProvider(...)` instead",
+            briefDescription = "Use ui-extension's outline provider extensions instead",
             explanation = """
                 Using `outlineProvider = object : ViewOutlineProvider()` can be simplified by using \
                 `outlineProvider(...)` from BetterAndroid ui-extension library.
@@ -85,9 +84,9 @@ class ViewOutlineProviderUsageDetector : Detector(), Detector.UastScanner {
                 }
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 ViewOutlineProviderUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -95,7 +94,7 @@ class ViewOutlineProviderUsageDetector : Detector(), Detector.UastScanner {
         )
     }
 
-    override fun getApplicableUastTypes() = listOf(UBinaryExpression::class.java as Class<out UElement>)
+    override fun getApplicableUastTypes() = listOf(UBinaryExpression::class.java)
 
     override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
@@ -114,11 +113,12 @@ class ViewOutlineProviderUsageDetector : Detector(), Detector.UastScanner {
             val replacement = buildReplacement(receiver, objectLiteral) ?: return
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
-                message = "Can be replaced with `${replacement.display}`",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$OUTLINE_PROVIDER_FUNCTION'",
-                    replacement = replacement.source,
+                    replacement = replacement,
                     imports = arrayOf("${DeclaredSymbol.VIEW_PACKAGE}.$OUTLINE_PROVIDER_FUNCTION")
                 )
             )
@@ -134,7 +134,7 @@ class ViewOutlineProviderUsageDetector : Detector(), Detector.UastScanner {
             else -> null
         }
 
-        private fun buildReplacement(receiver: String, objectLiteral: UObjectLiteralExpression): ReplacementSpec? {
+        private fun buildReplacement(receiver: String, objectLiteral: UObjectLiteralExpression): String? {
             val method = objectLiteral.declaration.findMethod(GET_OUTLINE_METHOD) ?: return null
             val parameterNames = method.uastParameters.map { it.name }
             if (parameterNames.size != 2) return null
@@ -142,25 +142,12 @@ class ViewOutlineProviderUsageDetector : Detector(), Detector.UastScanner {
             val bodyExpressions = (method.uastBody as? UBlockExpression)?.expressions.orEmpty()
             val body = bodyExpressions.joinToString("\n") { it.asSourceString().trimEnd() }
 
-            return ReplacementSpec(
-                source = buildString {
-                    if (receiver.isNotEmpty()) append(receiver).append('.')
-                    append("$OUTLINE_PROVIDER_FUNCTION { $viewParameter, $outlineParameter ->")
-                    if (body.isNotBlank()) append('\n').append(body).append('\n')
-                    append('}')
-                },
-                display = buildString {
-                    if (receiver.isNotEmpty()) append(receiver).append('.')
-                    append("$OUTLINE_PROVIDER_FUNCTION { $viewParameter, $outlineParameter ->")
-                    if (body.isNotBlank()) append('\n').append(body).append('\n')
-                    append('}')
-                }
-            )
+            return buildString {
+                if (receiver.isNotEmpty()) append(receiver).append('.')
+                append("$OUTLINE_PROVIDER_FUNCTION { $viewParameter, $outlineParameter ->")
+                if (body.isNotBlank()) append('\n').append(body).append('\n')
+                append('}')
+            }
         }
     })
-
-    private data class ReplacementSpec(
-        val source: String,
-        val display: String
-    )
 }

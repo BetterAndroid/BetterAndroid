@@ -43,7 +43,6 @@ import org.jetbrains.uast.UBlockExpression
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UExpression
-import org.jetbrains.uast.ULambdaExpression
 import org.jetbrains.uast.UMethod
 import org.jetbrains.uast.UNamedExpression
 import org.jetbrains.uast.UObjectLiteralExpression
@@ -115,9 +114,9 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
                 }
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 LifecycleUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -125,16 +124,16 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
         )
     }
 
-    override fun getApplicableUastTypes() = listOf(
-        UCallExpression::class.java as Class<out UElement>,
-        UObjectLiteralExpression::class.java as Class<out UElement>
+    override fun getApplicableUastTypes(): List<Class<out UElement>> = listOf(
+        UCallExpression::class.java,
+        UObjectLiteralExpression::class.java
     )
 
     override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
         override fun visitCallExpression(node: UCallExpression) {
             if (node.methodName != ADD_OBSERVER_METHOD) return
-            if (!node.isLifecycleAddObserverCall(context)) return
+            if (!node.isLifecycleAddObserverCall()) return
 
             // This is the `lifecycle.addObserver(...)` pattern.
             val observer = node.valueArguments.firstOrNull()?.unwrapParenthesized() ?: return
@@ -143,21 +142,22 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
                 is UCallExpression -> observer.resolveLifecycleObserverFactoryReplacement(node)
                 is UQualifiedReferenceExpression -> observer.asCall()?.resolveLifecycleObserverFactoryReplacement(node)
                 else -> null
-            } ?: observer.resolveLifecycleObserverByTypeReplacement(node, context) ?: return
+            } ?: observer.resolveLifecycleObserverByTypeReplacement(node) ?: return
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
-                message = "Can be replaced with `${replacement.display}`",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$ADD_OBSERVER_METHOD'",
-                    replacement = replacement.source,
+                    replacement = replacement,
                     imports = arrayOf("${DeclaredSymbol.COMPONENT_PACKAGE}.$ADD_OBSERVER_METHOD")
                 )
             )
         }
 
-        private fun UCallExpression.isLifecycleAddObserverCall(context: JavaContext): Boolean {
+        private fun UCallExpression.isLifecycleAddObserverCall(): Boolean {
             val method = resolve() ?: return false
             if (context.evaluator.isMemberInClass(method, LIFECYCLE_CLASS)) return true
             return receiver?.getExpressionType().extendsClass(context, LIFECYCLE_CLASS)
@@ -167,11 +167,12 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
             if (node.sourcePsi?.containingFile?.name == LIFECYCLE_FILE_NAME) return
 
             val replacement = node.resolveLifecycleObserverFactoryReplacement() ?: return
-            node.reportEnclosingAddObserverReplacement(context)
+            node.reportEnclosingAddObserverReplacement()
 
             // This is the `object : DefaultLifecycleObserver/LifecycleEventObserver` pattern.
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
@@ -182,19 +183,20 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
             )
         }
 
-        private fun UObjectLiteralExpression.reportEnclosingAddObserverReplacement(context: JavaContext) {
+        private fun UObjectLiteralExpression.reportEnclosingAddObserverReplacement() {
             if (!isObjectLiteralOf(DEFAULT_LIFECYCLE_OBSERVER_CLASS)) return
             val call = findEnclosingAddObserverCall() ?: return
-            if (!call.isLifecycleAddObserverCall(context)) return
+            if (!call.isLifecycleAddObserverCall()) return
             val replacement = resolveLifecycleObserverObjectReplacement(call) ?: return
 
             context.report(
                 issue = ISSUE,
+                scope = call,
                 location = context.getLocation(call),
-                message = "Can be replaced with `${replacement.display}`",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$ADD_OBSERVER_METHOD'",
-                    replacement = replacement.source,
+                    replacement = replacement,
                     imports = arrayOf("${DeclaredSymbol.COMPONENT_PACKAGE}.$ADD_OBSERVER_METHOD")
                 )
             )
@@ -209,7 +211,7 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
             return null
         }
 
-        private fun UCallExpression.resolveLifecycleObserverFactoryReplacement(addObserverCall: UCallExpression): ReplacementSpec? {
+        private fun UCallExpression.resolveLifecycleObserverFactoryReplacement(addObserverCall: UCallExpression): String? {
             val functionName = methodName ?: return null
             val method = resolve() ?: return null
             val isLibraryFactory = method.containingClass?.qualifiedName == LIFECYCLE_UTILS_CLASS
@@ -228,17 +230,14 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
                     if (!isLibraryFactory && !returnType.extendsClass(context, LIFECYCLE_EVENT_OBSERVER_CLASS)) return null
                     buildEventLifecycleAddObserverReplacement(
                         addObserverCall,
-                        valueArguments.firstOrNull()?.asLambdaSource() ?: return null
+                        valueArguments.firstOrNull()?.asSourceString() ?: return null
                     )
                 }
                 else -> null
             }
         }
 
-        private fun UElement.resolveLifecycleObserverByTypeReplacement(
-            addObserverCall: UCallExpression,
-            context: JavaContext
-        ): ReplacementSpec? {
+        private fun UElement.resolveLifecycleObserverByTypeReplacement(addObserverCall: UCallExpression): String? {
             val type = (this as? UExpression)?.getExpressionType()
             return when {
                 type.extendsClass(context, DEFAULT_LIFECYCLE_OBSERVER_CLASS) ->
@@ -249,7 +248,7 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
             }
         }
 
-        private fun UObjectLiteralExpression.resolveLifecycleObserverObjectReplacement(addObserverCall: UCallExpression): ReplacementSpec? {
+        private fun UObjectLiteralExpression.resolveLifecycleObserverObjectReplacement(addObserverCall: UCallExpression): String? {
             val factory = resolveLifecycleObserverFactoryReplacement() ?: return null
             return when {
                 factory.startsWith(DEFAULT_LIFECYCLE_OBSERVER_FUNCTION) -> {
@@ -303,7 +302,7 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
         private fun buildDefaultLifecycleAddObserverReplacement(
             addObserverCall: UCallExpression,
             arguments: List<String>
-        ): ReplacementSpec? {
+        ): String? {
             val receiver = addObserverCall.receiverPrefix()
             if (arguments.isEmpty()) return null
 
@@ -316,26 +315,21 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
                 }
                 append(')')
             }
-            return ReplacementSpec(source, source)
+            return source
         }
 
         private fun buildEventLifecycleAddObserverReplacement(
             addObserverCall: UCallExpression,
             lambda: String
-        ): ReplacementSpec {
+        ): String {
             val receiver = addObserverCall.receiverPrefix()
             val source = "$receiver$ADD_OBSERVER_METHOD $lambda"
-            return ReplacementSpec(source, source)
+            return source
         }
 
         private fun UElement.asNamedArgumentSource(fallbackName: String?) = when (this) {
             is UNamedExpression -> "${name ?: fallbackName} = ${expression.asSourceString()}"
             else -> fallbackName?.let { "$it = ${asSourceString()}" } ?: asSourceString()
-        }
-
-        private fun UElement.asLambdaSource() = when (this) {
-            is ULambdaExpression -> asSourceString()
-            else -> asSourceString()
         }
 
         private fun PsiMethod.resolveLifecycleMethodBody(methodName: String): String {
@@ -369,6 +363,4 @@ class LifecycleUsageDetector : Detector(), Detector.UastScanner {
             return result.filter { it.isNotBlank() }
         }
     })
-
-    private data class ReplacementSpec(val source: String, val display: String)
 }

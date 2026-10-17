@@ -66,7 +66,7 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
         private const val HANDLE_ON_BACK_PRESSED_METHOD = "handleOnBackPressed"
         private const val ADD_CALLBACK_METHOD = "addCallback"
         private const val BACK_PRESSED_FILE_NAME = "BackPressed.kt"
-        private const val TRIGGER_METHOD = "trigger"
+        private const val TRIGGER_FUNCTION = "trigger"
         private const val REMOVE_METHOD = "remove"
         private const val IS_ENABLED_PROPERTY = "isEnabled"
         private const val OBJECT_LITERAL_PREFIX = "object : $ON_BACK_PRESSED_CALLBACK_FUNCTION"
@@ -135,9 +135,9 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
                 }
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 BackPressedUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -145,10 +145,10 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
         )
     }
 
-    override fun getApplicableUastTypes() = listOf(
-        UCallExpression::class.java as Class<out UElement>,
-        UQualifiedReferenceExpression::class.java as Class<out UElement>,
-        UObjectLiteralExpression::class.java as Class<out UElement>
+    override fun getApplicableUastTypes(): List<Class<out UElement>> = listOf(
+        UCallExpression::class.java,
+        UQualifiedReferenceExpression::class.java,
+        UObjectLiteralExpression::class.java
     )
 
     override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
@@ -162,13 +162,14 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
             if (node.selector.resolveName() != ON_BACK_PRESSED_DISPATCHER_PROPERTY) return
 
             val replacement = when {
-                node.isFragmentDispatcherAccess(context) -> ON_BACK_PRESSED_DISPATCHER_PROPERTY
-                node.isViewDispatcherAccess(context) -> ON_BACK_PRESSED_DISPATCHER_PROPERTY
+                node.isFragmentDispatcherAccess() -> ON_BACK_PRESSED_DISPATCHER_PROPERTY
+                node.isViewDispatcherAccess() -> ON_BACK_PRESSED_DISPATCHER_PROPERTY
                 else -> null
             } ?: return
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
@@ -187,6 +188,7 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
@@ -225,8 +227,8 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
             if (!context.evaluator.isMemberInClass(method, ON_BACK_PRESSED_DISPATCHER_CLASS)) return
 
             val replacement = when {
-                next.isEnableCurrentBackPressedCallback() -> onBackPressedCall.resolveTriggerReplacement(context)
-                next.isRemoveCurrentBackPressedCallback() -> onBackPressedCall.resolveTriggerReplacement(context, removed = true)
+                next.isEnableCurrentBackPressedCallback() -> onBackPressedCall.resolveTriggerReplacement()
+                next.isRemoveCurrentBackPressedCallback() -> onBackPressedCall.resolveTriggerReplacement(removed = true)
                 else -> null
             } ?: return
             val location = context.getRangeLocation(previous, 0, next, 0)
@@ -237,12 +239,11 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
                 location = location,
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildTriggerFix(
-                    context = context,
                     previous = previous,
                     statement = statement,
                     next = next,
                     replacement = replacement,
-                    imports = onBackPressedCall.resolveTriggerImports(context)
+                    imports = onBackPressedCall.resolveTriggerImports()
                 )
             )
         }
@@ -251,7 +252,7 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
             if (node.methodName != ON_BACK_PRESSED_METHOD) return
             if (node.isInsideOnBackPressedCallbackFactory()) return
 
-            // Validation is OnBackPressedDispatcher class.
+            // Validate that it belongs to `OnBackPressedDispatcher`.
             val method = node.resolve() ?: return
             if (!context.evaluator.isMemberInClass(method, ON_BACK_PRESSED_DISPATCHER_CLASS)) return
 
@@ -267,8 +268,8 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
             if (!previous.isDisableCurrentBackPressedCallback()) return
 
             val replacement = when {
-                next.isEnableCurrentBackPressedCallback() -> node.resolveTriggerReplacement(context)
-                next.isRemoveCurrentBackPressedCallback() -> node.resolveTriggerReplacement(context, removed = true)
+                next.isEnableCurrentBackPressedCallback() -> node.resolveTriggerReplacement()
+                next.isRemoveCurrentBackPressedCallback() -> node.resolveTriggerReplacement(removed = true)
                 else -> null
             } ?: return
 
@@ -278,12 +279,11 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
                 location = context.getRangeLocation(previous, 0, next, 0),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildTriggerFix(
-                    context = context,
                     previous = previous,
                     statement = statement,
                     next = next,
                     replacement = replacement,
-                    imports = node.resolveTriggerImports(context)
+                    imports = node.resolveTriggerImports()
                 )
             )
         }
@@ -317,13 +317,13 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
             }
         }
 
-        private fun UQualifiedReferenceExpression.isFragmentDispatcherAccess(context: JavaContext): Boolean {
-            if (!isInsideClass(context, FRAGMENT_CLASS)) return false
+        private fun UQualifiedReferenceExpression.isFragmentDispatcherAccess(): Boolean {
+            if (!isInsideClass(FRAGMENT_CLASS)) return false
             return fragmentDispatcherReceiverSource() != null
         }
 
-        private fun UQualifiedReferenceExpression.isViewDispatcherAccess(context: JavaContext): Boolean {
-            if (!isInsideClass(context, VIEW_CLASS)) return false
+        private fun UQualifiedReferenceExpression.isViewDispatcherAccess(): Boolean {
+            if (!isInsideClass(VIEW_CLASS)) return false
 
             val castExpression = receiver.unwrapParenthesized() as? UBinaryExpressionWithType ?: return false
             if (castExpression.operand.asSourceString() != CONTEXT_PROPERTY) return false
@@ -340,34 +340,34 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
         private fun UExpression.isRemoveCurrentBackPressedCallback() =
             isCurrentBackPressedExpression("$REMOVE_METHOD()")
 
-        private fun UElement.isInsideClass(context: JavaContext, qualifiedName: String) =
+        private fun UElement.isInsideClass(qualifiedName: String) =
             getContainingPsiClass()?.let { context.evaluator.extendsClass(it, qualifiedName, false) } == true
 
-        private fun UElement.isInsideFragment(context: JavaContext) = isInsideClass(context, FRAGMENT_CLASS)
+        private fun UElement.isInsideFragment() = isInsideClass(FRAGMENT_CLASS)
 
-        private fun UCallExpression.resolveTriggerReplacement(context: JavaContext, removed: Boolean = false): String? {
-            val dispatcher = normalizeDispatcherSource(context) ?: return null
-            return if (removed) "$TRIGGER_METHOD($dispatcher, $REMOVED_PARAMETER = $TRUE_VALUE)" else "$TRIGGER_METHOD($dispatcher)"
+        private fun UCallExpression.resolveTriggerReplacement(removed: Boolean = false): String? {
+            val dispatcher = normalizeDispatcherSource() ?: return null
+            return if (removed) "$TRIGGER_FUNCTION($dispatcher, $REMOVED_PARAMETER = $TRUE_VALUE)" else "$TRIGGER_FUNCTION($dispatcher)"
         }
 
-        private fun UCallExpression.resolveTriggerImports(context: JavaContext): Set<String> = buildSet {
-            add("${DeclaredSymbol.COMPONENT_PACKAGE}.$TRIGGER_METHOD")
-            if (normalizeDispatcherSource(context) == ON_BACK_PRESSED_DISPATCHER_PROPERTY &&
-                isInsideFragment(context)
+        private fun UCallExpression.resolveTriggerImports(): Set<String> = buildSet {
+            add("${DeclaredSymbol.COMPONENT_PACKAGE}.$TRIGGER_FUNCTION")
+            if (normalizeDispatcherSource() == ON_BACK_PRESSED_DISPATCHER_PROPERTY &&
+                isInsideFragment()
             ) add("${DeclaredSymbol.COMPONENT_PACKAGE}.$ON_BACK_PRESSED_DISPATCHER_PROPERTY")
         }
 
-        private fun UCallExpression.normalizeDispatcherSource(context: JavaContext): String? {
+        private fun UCallExpression.normalizeDispatcherSource(): String? {
             val receiver = receiver?.asSourceString()?.trim().orEmpty()
-            return normalizeDispatcherSource(context, receiver)
+            return normalizeDispatcherSource(receiver)
         }
 
-        private fun UElement.normalizeDispatcherSource(context: JavaContext, dispatcherSource: String): String? {
+        private fun UElement.normalizeDispatcherSource(dispatcherSource: String): String? {
             val receiver = dispatcherSource.trim()
             if (receiver.isBlank() || receiver.contains(SAFE_CALL_OPERATOR)) return null
             if (receiver == ON_BACK_PRESSED_DISPATCHER_PROPERTY) return ON_BACK_PRESSED_DISPATCHER_PROPERTY
 
-            if (isInsideFragment(context) && receiver in setOf(REQUIRE_ACTIVITY_CALL, ACTIVITY_NOT_NULL_RECEIVER))
+            if (isInsideFragment() && receiver in setOf(REQUIRE_ACTIVITY_CALL, ACTIVITY_NOT_NULL_RECEIVER))
                 return ON_BACK_PRESSED_DISPATCHER_PROPERTY
 
             return receiver
@@ -402,7 +402,6 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
         }
 
         private fun buildTriggerFix(
-            context: JavaContext,
             previous: UExpression,
             statement: UExpression,
             next: UExpression,
@@ -413,16 +412,11 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
             val statementPsi = statement.sourcePsi
             val nextPsi = next.sourcePsi
 
-            if (previousPsi == null || statementPsi == null || nextPsi == null)
-                return LintFix.create()
-                    .name("Replace with '$TRIGGER_METHOD'")
-                    .replace()
-                    .all()
-                    .with(replacement)
-                    .reformat(true)
-                    .shortenNames()
-                    .imports(*imports.toTypedArray())
-                    .build()
+            if (previousPsi == null || statementPsi == null || nextPsi == null) return buildReplaceFix(
+                name = "Replace with '$TRIGGER_FUNCTION'",
+                replacement = replacement,
+                imports = imports.toTypedArray()
+            )
 
             val deletePreviousFix = LintFix.create()
                 .replace()
@@ -448,7 +442,7 @@ class BackPressedUsageDetector : Detector(), Detector.UastScanner {
                 .build()
 
             return LintFix.create()
-                .name("Replace with '$TRIGGER_METHOD'")
+                .name("Replace with '$TRIGGER_FUNCTION'")
                 .composite(deletePreviousFix, replaceStatementFix, deleteNextFix)
         }
     })

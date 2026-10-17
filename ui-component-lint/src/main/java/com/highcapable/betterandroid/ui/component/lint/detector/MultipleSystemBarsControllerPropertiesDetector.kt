@@ -33,7 +33,6 @@ import com.highcapable.betterandroid.ui.component.lint.detector.extension.buildD
 import com.highcapable.betterandroid.ui.component.lint.detector.extension.createKotlinOnlyUastHandler
 import com.intellij.psi.PsiElement
 import org.jetbrains.uast.UClass
-import org.jetbrains.uast.UElement
 
 class MultipleSystemBarsControllerPropertiesDetector : Detector(), Detector.UastScanner {
 
@@ -74,7 +73,7 @@ class MultipleSystemBarsControllerPropertiesDetector : Detector(), Detector.Uast
                 ```
             """.trimIndent(),
             category = Category.CORRECTNESS,
-            priority = 8,
+            priority = 10,
             severity = Severity.ERROR,
             implementation = Implementation(
                 MultipleSystemBarsControllerPropertiesDetector::class.java,
@@ -83,7 +82,7 @@ class MultipleSystemBarsControllerPropertiesDetector : Detector(), Detector.Uast
         )
     }
 
-    override fun getApplicableUastTypes() = listOf(UClass::class.java as Class<out UElement>)
+    override fun getApplicableUastTypes() = listOf(UClass::class.java)
 
     override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
@@ -99,6 +98,7 @@ class MultipleSystemBarsControllerPropertiesDetector : Detector(), Detector.Uast
 
                 context.report(
                     issue = ISSUE,
+                    scope = member.target,
                     location = location,
                     message = message,
                     quickfixData = fix
@@ -107,7 +107,7 @@ class MultipleSystemBarsControllerPropertiesDetector : Detector(), Detector.Uast
         }
 
         private fun UClass.findSystemBarsControllerProperties() = buildList {
-            // Find property fields whose type is SystemBarsController.
+            // Find property fields whose type is `SystemBarsController`.
             javaPsi.fields.filter { it.type.canonicalText == SYSTEM_BARS_CONTROLLER_CLASS }.forEach {
                 add(SystemBarsControllerProperty(
                     propertyName = it.name,
@@ -116,7 +116,7 @@ class MultipleSystemBarsControllerPropertiesDetector : Detector(), Detector.Uast
                 ))
             }
 
-            // Find property getters whose return type is SystemBarsController.
+            // Find property getters whose return type is `SystemBarsController`.
             javaPsi.methods.filter {
                 it.parameterList.parametersCount == 0 &&
                     it.name.startsWith(GETTER_PREFIX) &&

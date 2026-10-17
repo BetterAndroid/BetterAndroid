@@ -44,12 +44,12 @@ import org.jetbrains.kotlin.psi.KtNullableType
 import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
 import org.jetbrains.uast.UBinaryExpressionWithType
 import org.jetbrains.uast.UCallExpression
-import org.jetbrains.uast.UClass
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UExpression
 import org.jetbrains.uast.UResolvable
 import org.jetbrains.uast.UThisExpression
 import org.jetbrains.uast.UastBinaryExpressionWithTypeKind
+import org.jetbrains.uast.getContainingUClass
 
 class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
 
@@ -59,7 +59,7 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
         private const val CONTEXT_CLASS = "android.content.Context"
         private const val LIFECYCLE_PACKAGE = "androidx.lifecycle"
         private const val LIFECYCLE_OWNER_CLASS = "androidx.lifecycle.LifecycleOwner"
-        private const val LIFECYCLE_VIEWTREE_OWNER_CLASS = "androidx.lifecycle.ViewTreeLifecycleOwner"
+        private const val LIFECYCLE_VIEW_TREE_OWNER_CLASS = "androidx.lifecycle.ViewTreeLifecycleOwner"
         private const val VIEW_CLASS = "android.view.View"
         private const val FIND_VIEW_TREE_LIFECYCLE_OWNER_METHOD = "findViewTreeLifecycleOwner"
         private const val FIND_VIEW_TREE_LIFECYCLE_OWNER_IMPORT = "$LIFECYCLE_PACKAGE.$FIND_VIEW_TREE_LIFECYCLE_OWNER_METHOD"
@@ -109,9 +109,9 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
                 owner.context
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 LifecycleOwnerUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -119,9 +119,9 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
         )
     }
 
-    override fun getApplicableUastTypes() = listOf(
-        UCallExpression::class.java as Class<out UElement>,
-        UBinaryExpressionWithType::class.java as Class<out UElement>
+    override fun getApplicableUastTypes(): List<Class<out UElement>> = listOf(
+        UCallExpression::class.java,
+        UBinaryExpressionWithType::class.java
     )
 
     override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
@@ -129,8 +129,8 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
         private val visitedBinaryExpressionsWithType = hashSetOf<Any>()
 
         override fun visitCallExpression(node: UCallExpression) {
-            if (!node.isFindViewTreeLifecycleOwner(context) &&
-                !node.isImportedFindViewTreeLifecycleOwnerFallback(context)
+            if (!node.isFindViewTreeLifecycleOwner() &&
+                !node.isImportedFindViewTreeLifecycleOwnerFallback()
             ) return
 
             // This is the `view.findViewTreeLifecycleOwner()` pattern.
@@ -140,6 +140,7 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
@@ -163,26 +164,27 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
             if (!isNullableCast && node.operationKind.name != AS_OPERATOR) return
 
             // This is the `LifecycleOwner as/as? Activity/Context` pattern.
-            val replacement = when {
+            val (replacement, imports) = when {
                 castType.extendsClass(context, ACTIVITY_CLASS) -> createActivityReplacement(node, operand, isNullableCast)
                 castType.extendsClass(context, CONTEXT_CLASS) -> createContextReplacement(operand, isNullableCast)
                 else -> null
             } ?: return
             val fixName = when {
-                replacement.first.contains(".$ACTIVITY_PROPERTY") -> ACTIVITY_PROPERTY
-                replacement.first.contains(".$CONTEXT_PROPERTY") -> CONTEXT_PROPERTY
-                replacement.first.contains(".$REQUIRE_ACTIVITY_FUNCTION") -> REQUIRE_ACTIVITY_FUNCTION
+                replacement.contains(".$ACTIVITY_PROPERTY") -> ACTIVITY_PROPERTY
+                replacement.contains(".$CONTEXT_PROPERTY") -> CONTEXT_PROPERTY
+                replacement.contains(".$REQUIRE_ACTIVITY_FUNCTION") -> REQUIRE_ACTIVITY_FUNCTION
                 else -> REQUIRE_CONTEXT_FUNCTION
             }
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
-                message = "Can be replaced with `${replacement.first}`",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$fixName'",
-                    replacement = replacement.first,
-                    imports = replacement.second.toTypedArray()
+                    replacement = replacement,
+                    imports = imports.toTypedArray()
                 )
             )
         }
@@ -193,22 +195,21 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
             isNullableCast: Boolean
         ): Pair<String, List<String>>? {
             val targetType = node.typeReference?.type?.canonicalText
+            val functionName = if (isNullableCast) ACTIVITY_PROPERTY else REQUIRE_ACTIVITY_FUNCTION
+            val importName = "${DeclaredSymbol.COMPONENT_PACKAGE}.$functionName"
+
             return when {
-                targetType == null || targetType == ACTIVITY_CLASS -> {
-                    val functionName = if (isNullableCast) ACTIVITY_PROPERTY else REQUIRE_ACTIVITY_FUNCTION
-                    "$operand.$functionName${if (functionName == ACTIVITY_PROPERTY) "" else "()"}" to
-                        listOf("${DeclaredSymbol.COMPONENT_PACKAGE}.$functionName")
-                }
+                targetType == null || targetType == ACTIVITY_CLASS ->
+                    "$operand.$functionName${if (functionName == ACTIVITY_PROPERTY) "" else "()"}" to listOf(importName)
                 else -> {
-                    val functionName = if (isNullableCast) ACTIVITY_PROPERTY else REQUIRE_ACTIVITY_FUNCTION
-                    "$operand.$functionName<${node.typeReference?.asSourceString().orEmpty().trim().removeSuffix(NULLABLE_SUFFIX)}>()" to
-                        listOf("${DeclaredSymbol.COMPONENT_PACKAGE}.$functionName")
+                    val typeText = node.typeReference?.asSourceString().orEmpty().trim().removeSuffix(NULLABLE_SUFFIX)
+                    "$operand.$functionName<$typeText>()" to listOf(importName)
                 }
             }
         }
 
         private fun resolveImplicitViewLifecycleOwnerReplacement(node: UCallExpression): String? {
-            val psiClass = node.findContainingUClass()?.javaPsi
+            val psiClass = node.getContainingUClass()?.javaPsi
             if (psiClass != null && context.evaluator.extendsClass(psiClass, VIEW_CLASS, false))
                 return node.implicitLifecycleOwnerReplacement()
             if (node.findContainingViewExtensionFunction() == null) return null
@@ -266,28 +267,28 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
             listOf("${DeclaredSymbol.COMPONENT_PACKAGE}.${if (isNullableCast) CONTEXT_PROPERTY else REQUIRE_CONTEXT_FUNCTION}")
 
         private fun UElement.isLifecycleOwnerTarget(): Boolean {
-            val resolvedVariableType = ((this as? UResolvable?)?.resolve() as? PsiVariable?)?.type
+            val resolvedVariableType = ((this as? UResolvable)?.resolve() as? PsiVariable)?.type
                 ?.canonicalText
                 ?.removeSuffix(NULLABLE_SUFFIX)
                 ?.removeSuffix(PLATFORM_SUFFIX)
             if (resolvedVariableType == LIFECYCLE_OWNER_CLASS) return true
 
-            val expressionType = (this as? UExpression?)?.getExpressionType() as? PsiClassType ?: return false
+            val expressionType = (this as? UExpression)?.getExpressionType() as? PsiClassType ?: return false
             val canonicalText = expressionType.canonicalText.removeSuffix(NULLABLE_SUFFIX).removeSuffix(PLATFORM_SUFFIX)
             return expressionType.resolve()?.qualifiedName == LIFECYCLE_OWNER_CLASS || canonicalText == LIFECYCLE_OWNER_CLASS
         }
 
-        private fun UCallExpression.isFindViewTreeLifecycleOwner(context: JavaContext): Boolean {
+        private fun UCallExpression.isFindViewTreeLifecycleOwner(): Boolean {
             val writtenCallName = writtenCallName() ?: return false
             if (receiver == null && hasContainingClassMethod(writtenCallName)) return false
 
             val resolved = resolve() ?: return false
             return resolved.name == FIND_VIEW_TREE_LIFECYCLE_OWNER_METHOD &&
-                (context.evaluator.isMemberInClass(resolved, LIFECYCLE_VIEWTREE_OWNER_CLASS) ||
+                (context.evaluator.isMemberInClass(resolved, LIFECYCLE_VIEW_TREE_OWNER_CLASS) ||
                     resolved.containingClass?.qualifiedName == LIFECYCLE_PACKAGE)
         }
 
-        private fun UCallExpression.isImportedFindViewTreeLifecycleOwnerFallback(context: JavaContext): Boolean {
+        private fun UCallExpression.isImportedFindViewTreeLifecycleOwnerFallback(): Boolean {
             val importedNames = importedFindViewTreeLifecycleOwnerNames()
             if (importedNames.isEmpty()) return false
 
@@ -299,7 +300,7 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
             if (receiverType != null) return receiverType.extendsClass(context, VIEW_CLASS)
             if (findContainingViewExtensionFunction() != null) return true
 
-            val uClass = findContainingUClass() ?: return false
+            val uClass = getContainingUClass() ?: return false
             if (!context.evaluator.extendsClass(uClass.javaPsi, VIEW_CLASS, false)) return false
             if (hasContainingClassMethod(callName)) return false
 
@@ -317,17 +318,8 @@ class LifecycleOwnerUsageDetector : Detector(), Detector.UastScanner {
             }.toSet()
         }
 
-        private fun UCallExpression.findContainingUClass(): UClass? {
-            var parent = uastParent
-            while (parent != null) {
-                if (parent is UClass) return parent
-                parent = parent.uastParent
-            }
-            return null
-        }
-
         private fun UCallExpression.hasContainingClassMethod(name: String) =
-            findContainingUClass()?.methods?.any { it.name == name } == true
+            getContainingUClass()?.methods?.any { it.name == name } == true
 
         private fun UCallExpression.isImplicitOrThisReceiver() =
             receiver == null || receiver is UThisExpression || receiver?.asSourceString() == THIS_RECEIVER

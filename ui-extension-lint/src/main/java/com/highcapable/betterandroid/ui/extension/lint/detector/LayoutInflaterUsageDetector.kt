@@ -45,7 +45,7 @@ class LayoutInflaterUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithLayoutInflaterExtension",
-            briefDescription = "Use ui-extension's `layoutInflater` extension instead",
+            briefDescription = "Use ui-extension's layout inflater extensions instead",
             explanation = """
                 Using `LayoutInflater.from(...)` can be simplified by using `layoutInflater` from \
                 BetterAndroid ui-extension library.
@@ -68,9 +68,9 @@ class LayoutInflaterUsageDetector : Detector(), Detector.UastScanner {
                 context.layoutInflater
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 LayoutInflaterUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -85,7 +85,7 @@ class LayoutInflaterUsageDetector : Detector(), Detector.UastScanner {
         override fun visitCallExpression(node: UCallExpression) {
             if (node.methodName != FROM_METHOD) return
 
-            // Validation is LayoutInflater class.
+            // Validate that it belongs to `LayoutInflater`.
             val method = node.resolve() ?: return
             if (!context.evaluator.isMemberInClass(method, LAYOUT_INFLATER_CLASS)) return
 
@@ -95,6 +95,7 @@ class LayoutInflaterUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(

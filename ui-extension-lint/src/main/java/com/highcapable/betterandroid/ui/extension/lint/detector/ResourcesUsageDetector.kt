@@ -49,11 +49,11 @@ class ResourcesUsageDetector : Detector(), Detector.UastScanner {
         private const val GET_FLOAT_METHOD = "getFloat"
         private const val GET_FONT_METHOD = "getFont"
 
-        private const val GET_DRAWABLE_COMPAT = "getDrawableCompat"
-        private const val GET_COLOR_COMPAT = "getColorCompat"
-        private const val GET_COLOR_STATE_LIST_COMPAT = "getColorStateListCompat"
-        private const val GET_FLOAT_COMPAT = "getFloatCompat"
-        private const val GET_FONT_COMPAT = "getFontCompat"
+        private const val GET_DRAWABLE_COMPAT_FUNCTION = "getDrawableCompat"
+        private const val GET_COLOR_COMPAT_FUNCTION = "getColorCompat"
+        private const val GET_COLOR_STATE_LIST_COMPAT_FUNCTION = "getColorStateListCompat"
+        private const val GET_FLOAT_COMPAT_FUNCTION = "getFloatCompat"
+        private const val GET_FONT_COMPAT_FUNCTION = "getFontCompat"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithResourcesExtension",
@@ -94,9 +94,9 @@ class ResourcesUsageDetector : Detector(), Detector.UastScanner {
                 context.getFontCompat(fontId)
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 ResourcesUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -111,11 +111,11 @@ class ResourcesUsageDetector : Detector(), Detector.UastScanner {
         override fun visitCallExpression(node: UCallExpression) {
             val methodName = node.methodName ?: return
 
-            // Validation is ContextCompat or ResourcesCompat class.
             val method = node.resolve() ?: return
 
+            // Validate that it belongs to `ContextCompat` or `ResourcesCompat`.
             // This is the `ContextCompat/ResourcesCompat.get...(receiver, ...)` pattern.
-            val replacement = when {
+            val (replacement, imports) = when {
                 context.evaluator.isMemberInClass(method, CONTEXT_COMPAT_CLASS) ->
                     createContextCompatReplacement(node, methodName)
                 context.evaluator.isMemberInClass(method, RESOURCES_COMPAT_CLASS) ->
@@ -123,22 +123,23 @@ class ResourcesUsageDetector : Detector(), Detector.UastScanner {
                 else -> null
             } ?: return
             val fixName = when (methodName) {
-                GET_DRAWABLE_METHOD -> GET_DRAWABLE_COMPAT
-                GET_COLOR_METHOD -> GET_COLOR_COMPAT
-                GET_COLOR_STATE_LIST_METHOD -> GET_COLOR_STATE_LIST_COMPAT
-                GET_FLOAT_METHOD -> GET_FLOAT_COMPAT
-                GET_FONT_METHOD -> GET_FONT_COMPAT
+                GET_DRAWABLE_METHOD -> GET_DRAWABLE_COMPAT_FUNCTION
+                GET_COLOR_METHOD -> GET_COLOR_COMPAT_FUNCTION
+                GET_COLOR_STATE_LIST_METHOD -> GET_COLOR_STATE_LIST_COMPAT_FUNCTION
+                GET_FLOAT_METHOD -> GET_FLOAT_COMPAT_FUNCTION
+                GET_FONT_METHOD -> GET_FONT_COMPAT_FUNCTION
                 else -> return
             }
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
-                message = "Can be replaced with `${replacement.first}`",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$fixName'",
-                    replacement = replacement.first,
-                    imports = replacement.second.toTypedArray()
+                    replacement = replacement,
+                    imports = imports.toTypedArray()
                 )
             )
         }
@@ -148,18 +149,18 @@ class ResourcesUsageDetector : Detector(), Detector.UastScanner {
             return when (methodName) {
                 GET_DRAWABLE_METHOD -> {
                     if (arguments.size < 2) null else
-                        arguments[0].buildExtensionCall(GET_DRAWABLE_COMPAT, arguments[1]) to
-                            listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_DRAWABLE_COMPAT")
+                        arguments[0].buildExtensionCall(GET_DRAWABLE_COMPAT_FUNCTION, arguments[1]) to
+                            listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_DRAWABLE_COMPAT_FUNCTION")
                 }
                 GET_COLOR_METHOD -> {
                     if (arguments.size < 2) null else
-                        arguments[0].buildExtensionCall(GET_COLOR_COMPAT, arguments[1]) to
-                            listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_COLOR_COMPAT")
+                        arguments[0].buildExtensionCall(GET_COLOR_COMPAT_FUNCTION, arguments[1]) to
+                            listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_COLOR_COMPAT_FUNCTION")
                 }
                 GET_COLOR_STATE_LIST_METHOD -> {
                     if (arguments.size < 2) null else
-                        arguments[0].buildExtensionCall(GET_COLOR_STATE_LIST_COMPAT, arguments[1]) to
-                            listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_COLOR_STATE_LIST_COMPAT")
+                        arguments[0].buildExtensionCall(GET_COLOR_STATE_LIST_COMPAT_FUNCTION, arguments[1]) to
+                            listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_COLOR_STATE_LIST_COMPAT_FUNCTION")
                 }
                 else -> null
             }
@@ -170,28 +171,28 @@ class ResourcesUsageDetector : Detector(), Detector.UastScanner {
             return when (methodName) {
                 GET_DRAWABLE_METHOD -> {
                     if (arguments.size < 3) null else
-                        arguments[0].buildExtensionCall(GET_DRAWABLE_COMPAT, arguments[1], arguments[2]) to
-                            listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_DRAWABLE_COMPAT")
+                        arguments[0].buildExtensionCall(GET_DRAWABLE_COMPAT_FUNCTION, arguments[1], arguments[2]) to
+                            listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_DRAWABLE_COMPAT_FUNCTION")
                 }
                 GET_COLOR_METHOD -> {
                     if (arguments.size < 3) null else
-                        arguments[0].buildExtensionCall(GET_COLOR_COMPAT, arguments[1], arguments[2]) to
-                            listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_COLOR_COMPAT")
+                        arguments[0].buildExtensionCall(GET_COLOR_COMPAT_FUNCTION, arguments[1], arguments[2]) to
+                            listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_COLOR_COMPAT_FUNCTION")
                 }
                 GET_COLOR_STATE_LIST_METHOD -> {
                     if (arguments.size < 3) null else
-                        arguments[0].buildExtensionCall(GET_COLOR_STATE_LIST_COMPAT, arguments[1], arguments[2]) to
-                            listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_COLOR_STATE_LIST_COMPAT")
+                        arguments[0].buildExtensionCall(GET_COLOR_STATE_LIST_COMPAT_FUNCTION, arguments[1], arguments[2]) to
+                            listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_COLOR_STATE_LIST_COMPAT_FUNCTION")
                 }
                 GET_FLOAT_METHOD -> {
                     if (arguments.size < 2) null else
-                        arguments[0].buildExtensionCall(GET_FLOAT_COMPAT, arguments[1]) to
-                            listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_FLOAT_COMPAT")
+                        arguments[0].buildExtensionCall(GET_FLOAT_COMPAT_FUNCTION, arguments[1]) to
+                            listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_FLOAT_COMPAT_FUNCTION")
                 }
                 GET_FONT_METHOD -> {
                     if (arguments.size < 2) null else
-                        arguments[0].buildExtensionCall(GET_FONT_COMPAT, arguments[1]) to
-                            listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_FONT_COMPAT")
+                        arguments[0].buildExtensionCall(GET_FONT_COMPAT_FUNCTION, arguments[1]) to
+                            listOf("${DeclaredSymbol.COMPONENT_BASE_PACKAGE}.$GET_FONT_COMPAT_FUNCTION")
                 }
                 else -> null
             }

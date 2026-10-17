@@ -97,9 +97,9 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
                 recyclerView.smoothScrollToLastPosition()
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 RecyclerViewUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -107,7 +107,7 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
         )
     }
 
-    override fun getApplicableUastTypes() = listOf(UCallExpression::class.java as Class<out UElement>)
+    override fun getApplicableUastTypes() = listOf(UCallExpression::class.java)
 
     override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
@@ -134,6 +134,7 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
@@ -154,7 +155,7 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
         val method = node.resolve() ?: return null
         val containingClass = method.containingClass ?: return null
 
-        // Validation is `RecyclerView.scrollToPosition(...)` or `RecyclerView.smoothScrollToPosition(...)`.
+        // Validate that it is `RecyclerView.scrollToPosition(...)` or `RecyclerView.smoothScrollToPosition(...)`.
         if (containingClass.qualifiedName != RECYCLER_VIEW_CLASS &&
             !context.evaluator.extendsClass(containingClass, RECYCLER_VIEW_CLASS, false)
         ) return null
@@ -246,8 +247,8 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
             is UQualifiedReferenceExpression -> {
                 val receiverText = target.receiver.asSourceString()
                 val selectorText = target.selector.asSourceString()
-                receiverText == receiver && selectorText == ADAPTER_PROPERTY ||
-                    receiverText == "$receiver.$ADAPTER_PROPERTY" && selectorText == ITEM_COUNT_PROPERTY
+                (receiverText == receiver && selectorText == ADAPTER_PROPERTY) ||
+                    (receiverText == "$receiver.$ADAPTER_PROPERTY" && selectorText == ITEM_COUNT_PROPERTY)
             }
             is UUnaryExpression -> target.operand.isRecyclerViewAdapter(receiver)
             else -> false

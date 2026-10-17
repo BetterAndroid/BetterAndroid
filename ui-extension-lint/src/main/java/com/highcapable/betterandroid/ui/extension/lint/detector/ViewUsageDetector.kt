@@ -86,22 +86,19 @@ class ViewUsageDetector : Detector(), Detector.UastScanner {
         private const val THIS_RECEIVER = "this"
         private const val NEGATIVE_ONE = "-1"
         private const val DOT = "."
-        private const val NULLABLE_CAST_OPERATOR = "as?"
-        private const val CAST_OPERATOR = "as"
+        private const val SAFE_AS_OPERATOR = "as?"
+        private const val AS_OPERATOR = "as"
         private const val SAFE_CALL_OPERATOR = "?."
-        private const val NORMAL_CALL_OPERATOR = "."
-
-        private const val VIEW_EXTENSION_PACKAGE = "${DeclaredSymbol.BASE_PACKAGE}.view"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithViewExtension",
-            briefDescription = "Use ui-extension's `View.kt` instead",
+            briefDescription = "Use ui-extension's view extensions instead",
             explanation = """
                 Using raw parent-child access and self-removal APIs can be simplified by using functions from BetterAndroid ui-extension library.
 
                 See the documentation for more details:
                 - English: https://betterandroid.github.io/BetterAndroid/en/library/ui-extension#view-extension
-                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-extension#view-扩展
+                - 简体中文: https://betterandroid.github.io/BetterAndroid/zh-cn/library/ui-extension#view-extension
 
                 The `View.kt` provides:
                 - Safer parent and child access helpers
@@ -123,9 +120,9 @@ class ViewUsageDetector : Detector(), Detector.UastScanner {
                 view.indexOfInParent()
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 ViewUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -133,9 +130,9 @@ class ViewUsageDetector : Detector(), Detector.UastScanner {
         )
     }
 
-    override fun getApplicableUastTypes() = listOf(
-        UBinaryExpressionWithType::class.java as Class<out UElement>,
-        UCallExpression::class.java as Class<out UElement>
+    override fun getApplicableUastTypes(): List<Class<out UElement>> = listOf(
+        UBinaryExpressionWithType::class.java,
+        UCallExpression::class.java
     )
 
     override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
@@ -146,102 +143,102 @@ class ViewUsageDetector : Detector(), Detector.UastScanner {
             node.sourcePsi?.let { if (!visitedBinaryExpressionsWithType.add(it)) return }
             if (node.operationKind !is UastBinaryExpressionWithTypeKind.TypeCast) return
 
-            reportParentCast(context, node)
-            reportChildCast(context, node)
+            reportParentCast(node)
+            reportChildCast(node)
         }
 
         override fun visitCallExpression(node: UCallExpression) {
-            reportChildAccess(context, node)
-            reportRemoveSelf(context, node, REMOVE_VIEW_METHOD, REMOVE_SELF_FUNCTION)
-            reportRemoveSelf(context, node, REMOVE_VIEW_IN_LAYOUT_METHOD, REMOVE_SELF_IN_LAYOUT_FUNCTION)
-            reportIndexOfInParent(context, node)
+            reportChildAccess(node)
+            reportRemoveSelf(node, REMOVE_VIEW_METHOD, REMOVE_SELF_FUNCTION)
+            reportRemoveSelf(node, REMOVE_VIEW_IN_LAYOUT_METHOD, REMOVE_SELF_IN_LAYOUT_FUNCTION)
+            reportIndexOfInParent(node)
         }
 
-        private fun reportParentCast(context: JavaContext, node: UBinaryExpressionWithType) {
+        private fun reportParentCast(node: UBinaryExpressionWithType) {
             val castOperator = node.operationKind.name
-            val isNullableCast = castOperator == NULLABLE_CAST_OPERATOR
-            if (!isNullableCast && castOperator != CAST_OPERATOR) return
+            val isNullableCast = castOperator == SAFE_AS_OPERATOR
+            if (!isNullableCast && castOperator != AS_OPERATOR) return
 
             val leftSource = node.operand.unwrapParenthesized()?.asSourceString() ?: return
             val receiverPrefix = leftSource.parentReceiverPrefix() ?: return
-            if (!node.operand.isViewParentAccess(context)) return
+            if (!node.operand.isViewParentAccess()) return
 
             val targetPsiType = node.typeReference?.type as? PsiClassType ?: return
             if (!targetPsiType.extendsClass(context, VIEW_PARENT_CLASS)) return
             val targetType = node.typeReference?.asSourceString()?.removeSuffix("?") ?: return
             if (targetType == VIEW_PARENT_SIMPLE_NAME) return
 
-            val replacement = createParentLintFix(receiverPrefix, targetType, isNullableCast)
-            reportAndFix(context, node, replacement)
+            val replacement = createParentReplacement(receiverPrefix, targetType, isNullableCast)
+            reportAndFix(node, replacement)
         }
 
-        private fun reportChildCast(context: JavaContext, node: UBinaryExpressionWithType) {
+        private fun reportChildCast(node: UBinaryExpressionWithType) {
             val castOperator = node.operationKind.name
-            val isNullableCast = castOperator == NULLABLE_CAST_OPERATOR
-            if (!isNullableCast && castOperator != CAST_OPERATOR) return
+            val isNullableCast = castOperator == SAFE_AS_OPERATOR
+            if (!isNullableCast && castOperator != AS_OPERATOR) return
 
             val call = node.operand.unwrapParenthesized().asCall() ?: return
-            if (!call.isViewGroupChildAtCall(context)) return
+            if (!call.isViewGroupChildAtCall()) return
 
             val targetType = node.typeReference?.asSourceString()?.removeSuffix("?") ?: return
             val receiver = call.receiverPrefix()
             val indexArg = call.valueArguments.firstOrNull() ?: return
 
-            val replacement = createChildLintFix(receiver, indexArg, targetType, isNullableCast)
-            reportAndFix(context, node, replacement)
+            val replacement = createChildReplacement(receiver, indexArg, targetType, isNullableCast)
+            reportAndFix(node, replacement)
         }
 
-        private fun reportChildAccess(context: JavaContext, node: UCallExpression) {
-            if (!node.isViewGroupChildAtCall(context)) return
+        private fun reportChildAccess(node: UCallExpression) {
+            if (!node.isViewGroupChildAtCall()) return
 
             // Typed child access is handled by the surrounding cast detector.
             val parent = node.uastParent
-            if (parent is UBinaryExpressionWithType && (parent.operationKind.name == CAST_OPERATOR ||
-                    parent.operationKind.name == NULLABLE_CAST_OPERATOR)) return
+            if (parent is UBinaryExpressionWithType && (parent.operationKind.name == AS_OPERATOR ||
+                    parent.operationKind.name == SAFE_AS_OPERATOR)) return
             val qualifiedParent = parent as? UQualifiedReferenceExpression
             val outerParent = qualifiedParent?.uastParent
-            if (outerParent is UBinaryExpressionWithType && (outerParent.operationKind.name == CAST_OPERATOR ||
-                    outerParent.operationKind.name == NULLABLE_CAST_OPERATOR)) return
+            if (outerParent is UBinaryExpressionWithType && (outerParent.operationKind.name == AS_OPERATOR ||
+                    outerParent.operationKind.name == SAFE_AS_OPERATOR)) return
 
             val receiver = node.receiverPrefix()
             val indexArg = node.valueArguments.firstOrNull() ?: return
 
-            val replacement = createPlainChildLintFix(receiver, indexArg)
-            reportAndFix(context, node, replacement)
+            val replacement = createPlainChildReplacement(receiver, indexArg)
+            reportAndFix(node, replacement)
         }
 
-        private fun reportRemoveSelf(context: JavaContext, node: UCallExpression, methodName: String, targetFunction: String) {
+        private fun reportRemoveSelf(node: UCallExpression, methodName: String, targetFunction: String) {
             val resolved = node.resolve() ?: return
             if (resolved.name != methodName || !context.evaluator.isMemberInClass(resolved, VIEW_GROUP_CLASS)) return
 
             // Match both raw parent access and BetterAndroid's parent accessors as the intermediate step.
             val safeReceiver = node.uastParent as? UQualifiedReferenceExpression ?: return
             val viewReceiver = node.valueArguments.singleOrNull()?.asSourceString() ?: return
-            if (!safeReceiver.receiver.isParentAccessOf(context, viewReceiver)) return
+            if (!safeReceiver.receiver.isParentAccessOf(viewReceiver)) return
             if (!safeReceiver.isSafeOrNormalCall(methodName)) return
 
             val replacement = createReceiverReplacement(viewReceiver, targetFunction)
-            reportAndFix(context, safeReceiver, replacement)
+            reportAndFix(safeReceiver, replacement)
         }
 
-        private fun reportIndexOfInParent(context: JavaContext, node: UCallExpression) {
+        private fun reportIndexOfInParent(node: UCallExpression) {
             val resolved = node.resolve() ?: return
             if (resolved.name != INDEX_OF_CHILD_METHOD || !context.evaluator.isMemberInClass(resolved, VIEW_GROUP_CLASS)) return
 
             val statementNode = node.findContainingStatement() ?: return
-            // Keep the match narrow to the direct parent -> indexOfChild handoff we can replace safely.
+            // Keep the match narrow to the direct parent -> `indexOfChild` handoff we can replace safely.
             val statement = statementNode.asSourceString()
             val viewReceiver = node.valueArguments.singleOrNull()?.asSourceString() ?: return
             val isFallbackPattern = statement.contains("$SAFE_CALL_OPERATOR$INDEX_OF_CHILD_METHOD(") && statement.endsWith("?: $NEGATIVE_ONE")
-            val isDirectPattern = statement.endsWith("$NORMAL_CALL_OPERATOR$INDEX_OF_CHILD_METHOD($viewReceiver)")
+            val isDirectPattern = statement.endsWith("$DOT$INDEX_OF_CHILD_METHOD($viewReceiver)")
             if (!isFallbackPattern && !isDirectPattern) return
-            if (!node.receiver.isParentAccessOf(context, expectedReceiver = viewReceiver)) return
+            if (!node.receiver.isParentAccessOf(expectedReceiver = viewReceiver)) return
 
             val replacement = createReceiverReplacement(viewReceiver, INDEX_OF_IN_PARENT_FUNCTION)
-            reportAndFix(context, statementNode, replacement)
+            reportAndFix(statementNode, replacement)
         }
 
-        private fun UElement?.isViewParentAccess(context: JavaContext): Boolean = when (val target = unwrapParenthesized()) {
+        private fun UElement?.isViewParentAccess(): Boolean = when (val target = unwrapParenthesized()) {
             is USimpleNameReferenceExpression -> {
                 val resolved = target.resolve() as? PsiMethod ?: return false
                 resolved.name == GET_PARENT_METHOD && context.evaluator.isMemberInClass(resolved, VIEW_CLASS)
@@ -253,15 +250,15 @@ class ViewUsageDetector : Detector(), Detector.UastScanner {
             else -> false
         }
 
-        private fun UCallExpression.isViewGroupChildAtCall(context: JavaContext): Boolean {
+        private fun UCallExpression.isViewGroupChildAtCall(): Boolean {
             val resolved = resolve() ?: return false
             if (resolved.name != GET_CHILD_AT_METHOD || !context.evaluator.isMemberInClass(resolved, VIEW_GROUP_CLASS))
                 return false
-            return receiver?.getExpressionType().extendsClass(context, VIEW_GROUP_CLASS) || 
+            return receiver?.getExpressionType().extendsClass(context, VIEW_GROUP_CLASS) ||
                 getContainingPsiClass()?.let { context.evaluator.extendsClass(it, VIEW_GROUP_CLASS, false) } == true
         }
 
-        private fun createParentLintFix(receiverPrefix: String, targetType: String, isNullableCast: Boolean): Pair<String, String> {
+        private fun createParentReplacement(receiverPrefix: String, targetType: String, isNullableCast: Boolean): Pair<String, String> {
             val functionName = if (isNullableCast) PARENT_OR_NULL_FUNCTION else PARENT_FUNCTION
             val useNonGeneric = targetType == VIEW_GROUP_SIMPLE_NAME
             val replacement = when {
@@ -271,46 +268,51 @@ class ViewUsageDetector : Detector(), Detector.UastScanner {
             return replacement to functionName
         }
 
-        private fun createChildLintFix(receiver: String, indexArg: UExpression, targetType: String, isNullableCast: Boolean): Pair<String, String> {
+        private fun createChildReplacement(
+            receiver: String,
+            indexArg: UExpression,
+            targetType: String,
+            isNullableCast: Boolean
+        ): Pair<String, String> {
             // Prefer non-generic overloads when the target is plain `View`, and keep generics for concrete subclasses.
             val useNonGeneric = targetType == VIEW_SIMPLE_NAME
             val indexSource = indexArg.asSourceString()
             return when {
-                indexArg.isZeroLiteral() && isNullableCast && useNonGeneric -> createPropertyLintFix(receiver, FIRST_CHILD_OR_NULL_PROPERTY)
-                indexArg.isZeroLiteral() && !isNullableCast && useNonGeneric -> createPropertyLintFix(receiver, FIRST_CHILD_PROPERTY)
-                indexArg.isZeroLiteral() && isNullableCast -> createGenericPropertyLintFix(receiver, FIRST_CHILD_OR_NULL_PROPERTY, targetType)
-                indexArg.isZeroLiteral() -> createGenericPropertyLintFix(receiver, FIRST_CHILD_PROPERTY, targetType)
-                indexArg.isLastChildIndex() && isNullableCast && useNonGeneric -> createPropertyLintFix(receiver, LAST_CHILD_OR_NULL_PROPERTY)
-                indexArg.isLastChildIndex() && !isNullableCast && useNonGeneric -> createPropertyLintFix(receiver, LAST_CHILD_PROPERTY)
-                indexArg.isLastChildIndex() && isNullableCast -> createGenericPropertyLintFix(receiver, LAST_CHILD_OR_NULL_PROPERTY, targetType)
-                indexArg.isLastChildIndex() -> createGenericPropertyLintFix(receiver, LAST_CHILD_PROPERTY, targetType)
-                isNullableCast && useNonGeneric -> createFunctionLintFix(receiver, CHILD_OR_NULL_FUNCTION, "($indexSource)")
-                !isNullableCast && useNonGeneric -> createFunctionLintFix(receiver, CHILD_FUNCTION, "($indexSource)")
-                isNullableCast -> createFunctionLintFix(receiver, CHILD_OR_NULL_FUNCTION, "<$targetType>($indexSource)")
-                else -> createFunctionLintFix(receiver, CHILD_FUNCTION, "<$targetType>($indexSource)")
+                indexArg.isZeroLiteral() && isNullableCast && useNonGeneric -> createPropertyReplacement(receiver, FIRST_CHILD_OR_NULL_PROPERTY)
+                indexArg.isZeroLiteral() && !isNullableCast && useNonGeneric -> createPropertyReplacement(receiver, FIRST_CHILD_PROPERTY)
+                indexArg.isZeroLiteral() && isNullableCast -> createGenericPropertyReplacement(receiver, FIRST_CHILD_OR_NULL_PROPERTY, targetType)
+                indexArg.isZeroLiteral() -> createGenericPropertyReplacement(receiver, FIRST_CHILD_PROPERTY, targetType)
+                indexArg.isLastChildIndex() && isNullableCast && useNonGeneric -> createPropertyReplacement(receiver, LAST_CHILD_OR_NULL_PROPERTY)
+                indexArg.isLastChildIndex() && !isNullableCast && useNonGeneric -> createPropertyReplacement(receiver, LAST_CHILD_PROPERTY)
+                indexArg.isLastChildIndex() && isNullableCast -> createGenericPropertyReplacement(receiver, LAST_CHILD_OR_NULL_PROPERTY, targetType)
+                indexArg.isLastChildIndex() -> createGenericPropertyReplacement(receiver, LAST_CHILD_PROPERTY, targetType)
+                isNullableCast && useNonGeneric -> createFunctionReplacement(receiver, CHILD_OR_NULL_FUNCTION, "($indexSource)")
+                !isNullableCast && useNonGeneric -> createFunctionReplacement(receiver, CHILD_FUNCTION, "($indexSource)")
+                isNullableCast -> createFunctionReplacement(receiver, CHILD_OR_NULL_FUNCTION, "<$targetType>($indexSource)")
+                else -> createFunctionReplacement(receiver, CHILD_FUNCTION, "<$targetType>($indexSource)")
             }
         }
 
-        private fun createPlainChildLintFix(receiver: String, indexArg: UExpression): Pair<String, String> {
+        private fun createPlainChildReplacement(receiver: String, indexArg: UExpression): Pair<String, String> {
             val indexSource = indexArg.asSourceString()
             return when {
-                indexArg.isZeroLiteral() -> createPropertyLintFix(receiver, FIRST_CHILD_PROPERTY)
-                indexArg.isLastChildIndex() -> createPropertyLintFix(receiver, LAST_CHILD_PROPERTY)
-                else -> createFunctionLintFix(receiver, CHILD_FUNCTION, "($indexSource)")
+                indexArg.isZeroLiteral() -> createPropertyReplacement(receiver, FIRST_CHILD_PROPERTY)
+                indexArg.isLastChildIndex() -> createPropertyReplacement(receiver, LAST_CHILD_PROPERTY)
+                else -> createFunctionReplacement(receiver, CHILD_FUNCTION, "($indexSource)")
             }
         }
 
-        private fun createPropertyLintFix(receiver: String, propertyName: String) =
+        private fun createPropertyReplacement(receiver: String, propertyName: String) =
             "$receiver$propertyName" to propertyName
 
-        private fun createGenericPropertyLintFix(receiver: String, propertyName: String, targetType: String) =
+        private fun createGenericPropertyReplacement(receiver: String, propertyName: String, targetType: String) =
             "$receiver$propertyName<$targetType>()" to propertyName
 
-        private fun createFunctionLintFix(receiver: String, functionName: String, arguments: String = "()") =
+        private fun createFunctionReplacement(receiver: String, functionName: String, arguments: String = "()") =
             "$receiver$functionName$arguments" to functionName
 
         private fun createReceiverReplacement(receiver: String, functionName: String) =
-            createFunctionLintFix(receiver.functionReceiverPrefix(), functionName)
+            createFunctionReplacement(receiver.functionReceiverPrefix(), functionName)
 
         private fun String.parentReceiverPrefix() = when {
             this == PARENT_PROPERTY -> ""
@@ -321,17 +323,17 @@ class ViewUsageDetector : Detector(), Detector.UastScanner {
 
         private fun UElement?.matchesParentAccessOf(receiver: String): Boolean {
             val source = unwrapParenthesizedOrNotNull()?.asSourceString() ?: return false
-            return source == PARENT_PROPERTY && receiver == THIS_RECEIVER ||
+            return (source == PARENT_PROPERTY && receiver == THIS_RECEIVER) ||
                 source == "$receiver$DOT$PARENT_PROPERTY"
         }
 
-        private fun UElement?.isParentAccessOf(context: JavaContext, expectedReceiver: String): Boolean {
+        private fun UElement?.isParentAccessOf(expectedReceiver: String): Boolean {
             val target = unwrapParenthesizedOrNotNull() ?: return false
             val parentCast = target as? UBinaryExpressionWithType
             if (parentCast != null) {
-                return (parentCast.operationKind.name == NULLABLE_CAST_OPERATOR || parentCast.operationKind.name == CAST_OPERATOR) &&
+                return (parentCast.operationKind.name == SAFE_AS_OPERATOR || parentCast.operationKind.name == AS_OPERATOR) &&
                     parentCast.operand.matchesParentAccessOf(expectedReceiver) &&
-                    parentCast.operand.isViewParentAccess(context)
+                    parentCast.operand.isViewParentAccess()
             }
 
             val parentCall = (target as? UExpression)?.asCall() ?: return false
@@ -346,7 +348,7 @@ class ViewUsageDetector : Detector(), Detector.UastScanner {
         private fun UQualifiedReferenceExpression.isSafeOrNormalCall(methodName: String): Boolean {
             val source = asSourceString()
             return source.contains("$SAFE_CALL_OPERATOR$methodName(") ||
-                source.contains("$NORMAL_CALL_OPERATOR$methodName(")
+                source.contains("$DOT$methodName(")
         }
 
         private fun String.functionReceiverPrefix() = if (this == THIS_RECEIVER) "" else "$this$DOT"
@@ -368,18 +370,19 @@ class ViewUsageDetector : Detector(), Detector.UastScanner {
             }
         }
 
-        private fun reportAndFix(context: JavaContext, node: UElement, replacement: Pair<String, String>) =
-            reportAndFix(context, node, replacement.first, replacement.second)
+        private fun reportAndFix(node: UElement, replacement: Pair<String, String>) =
+            replacement.let { (text, fixName) -> reportAndFix(node, text, fixName) }
 
-        private fun reportAndFix(context: JavaContext, node: UElement, replacement: String, fixName: String) =
+        private fun reportAndFix(node: UElement, replacement: String, fixName: String) =
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$fixName'",
                     replacement = replacement,
-                    imports = arrayOf("$VIEW_EXTENSION_PACKAGE.$fixName")
+                    imports = arrayOf("${DeclaredSymbol.VIEW_PACKAGE}.$fixName")
                 )
             )
     })

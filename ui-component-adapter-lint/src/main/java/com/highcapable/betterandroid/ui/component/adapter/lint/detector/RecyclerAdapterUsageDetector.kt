@@ -55,7 +55,6 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
 
         private const val DIFF_CALLBACK_CLASS = "androidx.recyclerview.widget.DiffUtil.Callback"
         private const val LIST_UPDATE_CALLBACK_CLASS = "androidx.recyclerview.widget.ListUpdateCallback"
-        private const val ADAPTER_CLASS_NAME = "androidx.recyclerview.widget.RecyclerView.Adapter"
         private const val COLLECTION_CLASS = "java.util.Collection"
         private const val DIFF_UTIL_CALLBACK_FUNCTION = "DiffUtilCallback"
         private const val LIST_UPDATE_CALLBACK_FUNCTION = "ListUpdateCallback"
@@ -134,9 +133,9 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
                 adapter.clearAndNotify(dataSet)
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 RecyclerAdapterUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -144,9 +143,9 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
         )
     }
 
-    override fun getApplicableUastTypes() = listOf(
-        UCallExpression::class.java as Class<out UElement>,
-        UObjectLiteralExpression::class.java as Class<out UElement>
+    override fun getApplicableUastTypes(): List<Class<out UElement>> = listOf(
+        UCallExpression::class.java,
+        UObjectLiteralExpression::class.java
     )
 
     override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
@@ -168,7 +167,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
         private fun reportDiffDispatch(node: UCallExpression): Boolean {
             if (node.methodName != DISPATCH_UPDATES_TO_METHOD) return false
 
-            // Validation is `DiffUtil.DiffResult.dispatchUpdatesTo(...)`.
+            // Validate that it is `DiffUtil.DiffResult.dispatchUpdatesTo(...)`.
             val method = node.resolve() ?: return false
             if (method.containingClass?.qualifiedName != DIFF_RESULT_CLASS &&
                 !context.evaluator.extendsClass(method.containingClass, DIFF_RESULT_CLASS, false)
@@ -194,6 +193,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = quickFix
@@ -209,6 +209,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
@@ -228,6 +229,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
@@ -242,7 +244,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
         private fun reportNotifyAllItemsInserted(node: UCallExpression): Boolean {
             if (node.methodName != NOTIFY_ITEM_RANGE_INSERTED_METHOD) return false
 
-            // Validation is `RecyclerView.Adapter.notifyItemRangeInserted(...)`.
+            // Validate that it is `RecyclerView.Adapter.notifyItemRangeInserted(...)`.
             if (!isRecyclerViewAdapterMethod(node)) return false
             if (!isZeroArgument(node.valueArguments.getOrNull(0))) return false
 
@@ -259,6 +261,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
@@ -273,7 +276,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
         private fun reportNotifyAllItemsChanged(node: UCallExpression): Boolean {
             if (node.methodName != NOTIFY_ITEM_RANGE_CHANGED_METHOD) return false
 
-            // Validation is `RecyclerView.Adapter.notifyItemRangeChanged(...)`.
+            // Validate that it is `RecyclerView.Adapter.notifyItemRangeChanged(...)`.
             if (!isRecyclerViewAdapterMethod(node)) return false
             if (!isZeroArgument(node.valueArguments.getOrNull(0))) return false
 
@@ -292,6 +295,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
@@ -306,7 +310,7 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
         private fun reportClearAndNotify(node: UCallExpression): Boolean {
             if (node.methodName != NOTIFY_ITEM_RANGE_REMOVED_METHOD) return false
 
-            // Validation is `RecyclerView.Adapter.notifyItemRangeRemoved(...)`.
+            // Validate that it is `RecyclerView.Adapter.notifyItemRangeRemoved(...)`.
             if (!isRecyclerViewAdapterMethod(node)) return false
             if (!isZeroArgument(node.valueArguments.getOrNull(0))) return false
 
@@ -464,8 +468,8 @@ class RecyclerAdapterUsageDetector : Detector(), Detector.UastScanner {
 
     private fun PsiClass?.isRecyclerViewAdapterClass(): Boolean {
         val psiClass = this ?: return false
-        return psiClass.qualifiedName == ADAPTER_CLASS_NAME ||
-            psiClass.supers.any { it.qualifiedName == ADAPTER_CLASS_NAME }
+        return psiClass.qualifiedName == ADAPTER_CLASS ||
+            psiClass.supers.any { it.qualifiedName == ADAPTER_CLASS }
     }
 
     private fun resolveListUpdateCallbackReplacement(node: UObjectLiteralExpression): String? {

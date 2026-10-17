@@ -62,9 +62,9 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
         private const val NOTIFICATION_COMPAT_BUILDER_FUNCTION = "NotificationCompat.Builder(...)"
         private const val NOTIFICATION_BUILDER_FUNCTION = "Notification.Builder(...)"
         private const val NOTIFICATION_CHANNEL_COMPAT_BUILDER_FUNCTION = "NotificationChannelCompat.Builder(...)"
-        private const val NOTIFICATION_CHANNEL_COMPAT_FUNCTION = "NotificationChannel(...)"
+        private const val PLATFORM_NOTIFICATION_CHANNEL_FUNCTION = "android.app.NotificationChannel(...)"
         private const val NOTIFICATION_CHANNEL_GROUP_COMPAT_BUILDER_FUNCTION = "NotificationChannelGroupCompat.Builder(...)"
-        private const val NOTIFICATION_CHANNEL_GROUP_COMPAT_FUNCTION = "NotificationChannelGroup(...)"
+        private const val PLATFORM_NOTIFICATION_CHANNEL_GROUP_FUNCTION = "android.app.NotificationChannelGroup(...)"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithNotificationComponent",
@@ -123,9 +123,9 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
                 }
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 NotificationUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -149,7 +149,7 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
         private fun reportNotificationManager(node: UCallExpression): Boolean {
             if (node.methodName != FROM_METHOD) return false
 
-            // Validation is NotificationManagerCompat class.
+            // Validate that it belongs to `NotificationManagerCompat`.
             val method = node.resolve() ?: return false
             if (!context.evaluator.isMemberInClass(method, NOTIFICATION_MANAGER_COMPAT_CLASS)) return false
 
@@ -158,16 +158,16 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
             if (!receiver.getExpressionType().extendsClass(context, CONTEXT_CLASS)) return false
 
             val receiverText = receiver.asSourceString().trim()
-            val fix = createNotificationManagerLintFix(receiverText)
-            val replaceSuggestion = fix.first
+            val (replaceSuggestion, fix) = createNotificationManagerLintFix(receiverText)
             val message = "Can be replaced with `$replaceSuggestion`"
 
             val location = context.getLocation(node)
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = location,
                 message = message,
-                quickfixData = fix.second
+                quickfixData = fix
             )
             return true
         }
@@ -176,7 +176,7 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
             val constructor = node.resolve() ?: return false
             if (!constructor.isConstructor) return false
 
-            // Validation is NotificationCompat.Builder or Notification.Builder class.
+            // Validate that it belongs to `NotificationCompat.Builder` or `Notification.Builder`.
             return when {
                 context.evaluator.isMemberInClass(constructor, NOTIFICATION_COMPAT_BUILDER_CLASS) -> {
                     reportHandOverNotificationComponent(
@@ -202,7 +202,7 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
             val constructor = node.resolve() ?: return false
             if (!constructor.isConstructor) return false
 
-            // Validation is NotificationChannelCompat.Builder or NotificationChannel class.
+            // Validate that it belongs to `NotificationChannelCompat.Builder` or `NotificationChannel`.
             return when {
                 context.evaluator.isMemberInClass(constructor, NOTIFICATION_CHANNEL_COMPAT_BUILDER_CLASS) -> {
                     reportHandOverNotificationComponent(
@@ -215,7 +215,7 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
                 context.evaluator.isMemberInClass(constructor, NOTIFICATION_CHANNEL_CLASS) -> {
                     reportHandOverNotificationComponent(
                         node = node,
-                        source = NOTIFICATION_CHANNEL_COMPAT_FUNCTION,
+                        source = PLATFORM_NOTIFICATION_CHANNEL_FUNCTION,
                         target = NOTIFICATION_CHANNEL_FUNCTION
                     )
                     true
@@ -228,7 +228,7 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
             val constructor = node.resolve() ?: return false
             if (!constructor.isConstructor) return false
 
-            // Validation is NotificationChannelGroupCompat.Builder or NotificationChannelGroup class.
+            // Validate that it belongs to `NotificationChannelGroupCompat.Builder` or `NotificationChannelGroup`.
             return when {
                 context.evaluator.isMemberInClass(constructor, NOTIFICATION_CHANNEL_GROUP_COMPAT_BUILDER_CLASS) -> {
                     reportHandOverNotificationComponent(
@@ -241,7 +241,7 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
                 context.evaluator.isMemberInClass(constructor, NOTIFICATION_CHANNEL_GROUP_CLASS) -> {
                     reportHandOverNotificationComponent(
                         node = node,
-                        source = NOTIFICATION_CHANNEL_GROUP_COMPAT_FUNCTION,
+                        source = PLATFORM_NOTIFICATION_CHANNEL_GROUP_FUNCTION,
                         target = NOTIFICATION_CHANNEL_GROUP_FUNCTION
                     )
                     true
@@ -258,6 +258,7 @@ class NotificationUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = location,
                 message = message
             )

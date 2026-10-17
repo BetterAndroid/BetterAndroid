@@ -52,8 +52,8 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
         private const val TO_STRING_METHOD = "toString"
         private const val INT_TYPE = "int"
 
-        private const val GET_TEXT_PROPERTY = "text"
-        private const val GET_HINT_PROPERTY = "hint"
+        private const val TEXT_PROPERTY = "text"
+        private const val HINT_PROPERTY = "hint"
         private const val GET_TEXT_METHOD = "getText"
         private const val GET_HINT_METHOD = "getHint"
         private const val GET_PREFIX = "get"
@@ -94,9 +94,9 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
                 textView.hintToString()
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 TextViewUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -104,9 +104,9 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
         )
     }
 
-    override fun getApplicableUastTypes() = listOf(
-        UCallExpression::class.java as Class<out UElement>,
-        UQualifiedReferenceExpression::class.java as Class<out UElement>
+    override fun getApplicableUastTypes(): List<Class<out UElement>> = listOf(
+        UCallExpression::class.java,
+        UQualifiedReferenceExpression::class.java
     )
 
     override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
@@ -126,7 +126,7 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
         }
 
         private fun reportSetTextColor(node: UCallExpression) {
-            // Validation is TextView class.
+            // Validate that it belongs to `TextView`.
             val method = node.resolve() ?: return
             if (!context.evaluator.isMemberInClass(method, TEXT_VIEW_CLASS)) return
 
@@ -137,6 +137,7 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
@@ -155,7 +156,7 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
             reportQualifiedToString(node, node)
         }
 
-        private fun reportQualifiedToString(qualified: UQualifiedReferenceExpression, reportNode: Any) {
+        private fun reportQualifiedToString(qualified: UQualifiedReferenceExpression, reportNode: UElement) {
             val toStringCall = qualified.selector as? UCallExpression ?: return
             if (toStringCall.methodName != TO_STRING_METHOD) return
             val target = qualified.receiver
@@ -167,8 +168,8 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
                 is UCallExpression -> {
                     val resolvedName = target.resolveName() ?: return
                     val memberName = when (resolvedName) {
-                        GET_TEXT_METHOD -> GET_TEXT_PROPERTY
-                        GET_HINT_METHOD -> GET_HINT_PROPERTY
+                        GET_TEXT_METHOD -> TEXT_PROPERTY
+                        GET_HINT_METHOD -> HINT_PROPERTY
                         else -> return
                     }
                     memberName to target.receiverPrefix()
@@ -176,20 +177,21 @@ class TextViewUsageDetector : Detector(), Detector.UastScanner {
                 is USimpleNameReferenceExpression -> target.identifier to ""
                 else -> return
             }
-            if (memberName != GET_TEXT_PROPERTY && memberName != GET_HINT_PROPERTY) return
+            if (memberName != TEXT_PROPERTY && memberName != HINT_PROPERTY) return
             if (!target.isResolvedTextViewMember(memberName)) return
 
             // This is the `textView.text/hint.toString()` pattern.
-            val replacement = if (memberName == GET_TEXT_PROPERTY)
+            val replacement = if (memberName == TEXT_PROPERTY)
                 "$receiverPrefix$TEXT_TO_STRING_FUNCTION()"
             else "$receiverPrefix$HINT_TO_STRING_FUNCTION()"
-            val importTarget = if (memberName == GET_TEXT_PROPERTY) {
+            val importTarget = if (memberName == TEXT_PROPERTY) {
                 "${DeclaredSymbol.VIEW_PACKAGE}.$TEXT_TO_STRING_FUNCTION"
             } else "${DeclaredSymbol.VIEW_PACKAGE}.$HINT_TO_STRING_FUNCTION"
-            val fixName = if (memberName == GET_TEXT_PROPERTY) TEXT_TO_STRING_FUNCTION else HINT_TO_STRING_FUNCTION
+            val fixName = if (memberName == TEXT_PROPERTY) TEXT_TO_STRING_FUNCTION else HINT_TO_STRING_FUNCTION
 
             context.report(
                 issue = ISSUE,
+                scope = reportNode,
                 location = context.getLocation(reportNode),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(

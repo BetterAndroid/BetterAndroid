@@ -50,10 +50,10 @@ class BitmapUsageDetector : Detector(), Detector.UastScanner {
         private const val DECODE_BYTE_ARRAY_METHOD = "decodeByteArray"
         private const val DECODE_RESOURCE_METHOD = "decodeResource"
 
-        private const val DECODE_TO_BITMAP = "decodeToBitmap"
-        private const val DECODE_TO_BITMAP_OR_NULL = "decodeToBitmapOrNull"
-        private const val CREATE_BITMAP = "createBitmap"
-        private const val CREATE_BITMAP_OR_NULL = "createBitmapOrNull"
+        private const val DECODE_TO_BITMAP_FUNCTION = "decodeToBitmap"
+        private const val DECODE_TO_BITMAP_OR_NULL_FUNCTION = "decodeToBitmapOrNull"
+        private const val CREATE_BITMAP_FUNCTION = "createBitmap"
+        private const val CREATE_BITMAP_OR_NULL_FUNCTION = "createBitmapOrNull"
 
         private const val ABSOLUTE_PATH_PROPERTY = "absolutePath"
         private const val THIS_RECEIVER = "this"
@@ -90,9 +90,9 @@ class BitmapUsageDetector : Detector(), Detector.UastScanner {
                 resources.createBitmapOrNull(drawableId, options)
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 BitmapUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -107,7 +107,7 @@ class BitmapUsageDetector : Detector(), Detector.UastScanner {
         override fun visitCallExpression(node: UCallExpression) {
             val methodName = node.methodName ?: return
 
-            // Validation is BitmapFactory class.
+            // Validate that it belongs to `BitmapFactory`.
             val method = node.resolve() ?: return
             if (!context.evaluator.isMemberInClass(method, BITMAP_FACTORY_CLASS)) return
 
@@ -124,6 +124,7 @@ class BitmapUsageDetector : Detector(), Detector.UastScanner {
             val display = fixes.first().displayReplacement
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Can be replaced with `$display`",
                 quickfixData = buildAlternativesFix(*fixes.map { it.fix }.toTypedArray())
@@ -142,26 +143,26 @@ class BitmapUsageDetector : Detector(), Detector.UastScanner {
             val receiverPrefix = file.extensionReceiverPrefix()
             val opts = arguments.getOrNull(1)?.asSourceString()
             val decodeOrNullReplacement = if (opts != null)
-                "$receiverPrefix$DECODE_TO_BITMAP_OR_NULL($opts)"
-            else "$receiverPrefix$DECODE_TO_BITMAP_OR_NULL()"
+                "$receiverPrefix$DECODE_TO_BITMAP_OR_NULL_FUNCTION($opts)"
+            else "$receiverPrefix$DECODE_TO_BITMAP_OR_NULL_FUNCTION()"
             val decodeReplacement = if (opts != null)
-                "$receiverPrefix$DECODE_TO_BITMAP($opts)"
-            else "$receiverPrefix$DECODE_TO_BITMAP()"
+                "$receiverPrefix$DECODE_TO_BITMAP_FUNCTION($opts)"
+            else "$receiverPrefix$DECODE_TO_BITMAP_FUNCTION()"
 
             return listOf(
                 BitmapDecodeFix(
                     fix = buildReplaceFix(
-                        name = "Replace with '$decodeOrNullReplacement'",
+                        name = "Replace with '$DECODE_TO_BITMAP_OR_NULL_FUNCTION'",
                         replacement = decodeOrNullReplacement,
-                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP_OR_NULL")
+                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP_OR_NULL_FUNCTION")
                     ),
                     displayReplacement = decodeOrNullReplacement
                 ),
                 BitmapDecodeFix(
                     fix = buildReplaceFix(
-                        name = "Replace with '$decodeReplacement'",
+                        name = "Replace with '$DECODE_TO_BITMAP_FUNCTION'",
                         replacement = decodeReplacement,
-                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP")
+                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP_FUNCTION")
                     ),
                     displayReplacement = decodeReplacement
                 )
@@ -175,23 +176,23 @@ class BitmapUsageDetector : Detector(), Detector.UastScanner {
             val receiver = arguments[0].asSourceString().trim()
             val receiverPrefix = receiver.extensionReceiverPrefix()
             val args = arguments.joinSourceArguments(startIndex = 1)
-            val decodeOrNullReplacement = buildExtensionCall(receiverPrefix, DECODE_TO_BITMAP_OR_NULL, args)
-            val decodeReplacement = buildExtensionCall(receiverPrefix, DECODE_TO_BITMAP, args)
+            val decodeOrNullReplacement = buildExtensionCall(receiverPrefix, DECODE_TO_BITMAP_OR_NULL_FUNCTION, args)
+            val decodeReplacement = buildExtensionCall(receiverPrefix, DECODE_TO_BITMAP_FUNCTION, args)
 
             return listOf(
                 BitmapDecodeFix(
                     fix = buildReplaceFix(
-                        name = "Replace with '$decodeOrNullReplacement'",
+                        name = "Replace with '$DECODE_TO_BITMAP_OR_NULL_FUNCTION'",
                         replacement = decodeOrNullReplacement,
-                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP_OR_NULL")
+                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP_OR_NULL_FUNCTION")
                     ),
                     displayReplacement = decodeOrNullReplacement
                 ),
                 BitmapDecodeFix(
                     fix = buildReplaceFix(
-                        name = "Replace with '$decodeReplacement'",
+                        name = "Replace with '$DECODE_TO_BITMAP_FUNCTION'",
                         replacement = decodeReplacement,
-                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP")
+                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP_FUNCTION")
                     ),
                     displayReplacement = decodeReplacement
                 )
@@ -205,23 +206,23 @@ class BitmapUsageDetector : Detector(), Detector.UastScanner {
             val receiver = arguments[0].asSourceString().trim()
             val receiverPrefix = receiver.extensionReceiverPrefix()
             val args = arguments.joinSourceArguments(startIndex = 1)
-            val decodeOrNullReplacement = buildExtensionCall(receiverPrefix, DECODE_TO_BITMAP_OR_NULL, args)
-            val decodeReplacement = buildExtensionCall(receiverPrefix, DECODE_TO_BITMAP, args)
+            val decodeOrNullReplacement = buildExtensionCall(receiverPrefix, DECODE_TO_BITMAP_OR_NULL_FUNCTION, args)
+            val decodeReplacement = buildExtensionCall(receiverPrefix, DECODE_TO_BITMAP_FUNCTION, args)
 
             return listOf(
                 BitmapDecodeFix(
                     fix = buildReplaceFix(
-                        name = "Replace with '$decodeOrNullReplacement'",
+                        name = "Replace with '$DECODE_TO_BITMAP_OR_NULL_FUNCTION'",
                         replacement = decodeOrNullReplacement,
-                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP_OR_NULL")
+                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP_OR_NULL_FUNCTION")
                     ),
                     displayReplacement = decodeOrNullReplacement
                 ),
                 BitmapDecodeFix(
                     fix = buildReplaceFix(
-                        name = "Replace with '$decodeReplacement'",
+                        name = "Replace with '$DECODE_TO_BITMAP_FUNCTION'",
                         replacement = decodeReplacement,
-                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP")
+                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$DECODE_TO_BITMAP_FUNCTION")
                     ),
                     displayReplacement = decodeReplacement
                 )
@@ -235,23 +236,23 @@ class BitmapUsageDetector : Detector(), Detector.UastScanner {
             val receiver = arguments[0].asSourceString().trim()
             val receiverPrefix = receiver.extensionReceiverPrefix()
             val args = arguments.joinSourceArguments(startIndex = 1)
-            val createOrNullReplacement = buildExtensionCall(receiverPrefix, CREATE_BITMAP_OR_NULL, args)
-            val createReplacement = buildExtensionCall(receiverPrefix, CREATE_BITMAP, args)
+            val createOrNullReplacement = buildExtensionCall(receiverPrefix, CREATE_BITMAP_OR_NULL_FUNCTION, args)
+            val createReplacement = buildExtensionCall(receiverPrefix, CREATE_BITMAP_FUNCTION, args)
 
             return listOf(
                 BitmapDecodeFix(
                     fix = buildReplaceFix(
-                        name = "Replace with '$createOrNullReplacement'",
+                        name = "Replace with '$CREATE_BITMAP_OR_NULL_FUNCTION'",
                         replacement = createOrNullReplacement,
-                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$CREATE_BITMAP_OR_NULL")
+                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$CREATE_BITMAP_OR_NULL_FUNCTION")
                     ),
                     displayReplacement = createOrNullReplacement
                 ),
                 BitmapDecodeFix(
                     fix = buildReplaceFix(
-                        name = "Replace with '$createReplacement'",
+                        name = "Replace with '$CREATE_BITMAP_FUNCTION'",
                         replacement = createReplacement,
-                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$CREATE_BITMAP")
+                        imports = arrayOf("${DeclaredSymbol.GRAPHICS_PACKAGE}.$CREATE_BITMAP_FUNCTION")
                     ),
                     displayReplacement = createReplacement
                 )

@@ -75,7 +75,7 @@ class ViewImeVisibilityUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithViewImeExtension",
-            briefDescription = "Use ui-extension's `showIme()` or `hideIme()` instead",
+            briefDescription = "Use ui-extension's IME extensions instead",
             explanation = """
                 Using official IME show and hide APIs can be simplified by using `showIme()` and \
                 `hideIme()` from BetterAndroid ui-extension library.
@@ -105,9 +105,9 @@ class ViewImeVisibilityUsageDetector : Detector(), Detector.UastScanner {
                 view.hideIme()
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 ViewImeVisibilityUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -129,7 +129,7 @@ class ViewImeVisibilityUsageDetector : Detector(), Detector.UastScanner {
                 methodName != HIDE_METHOD
             ) return
 
-            // Validation is InputMethodManager or WindowInsetsController class.
+            // Validate that it belongs to `InputMethodManager` or `WindowInsetsController`.
             val method = node.resolve() ?: return
             val isInputMethodManager = context.evaluator.isMemberInClass(method, INPUT_METHOD_MANAGER_CLASS)
             val isWindowInsetsController = context.evaluator.isMemberInClass(method, WINDOW_INSETS_CONTROLLER_CLASS)
@@ -158,7 +158,7 @@ class ViewImeVisibilityUsageDetector : Detector(), Detector.UastScanner {
             }
 
             val message = when (replacement) {
-                null -> "Can be replaced with `$SHOW_IME_FUNCTION(...)` or `$HIDE_IME_FUNCTION(...)`"
+                null -> "Consider using `$SHOW_IME_FUNCTION(...)` or `$HIDE_IME_FUNCTION(...)` instead"
                 else -> "Can be replaced with `$replacement`"
             }
 
@@ -175,6 +175,7 @@ class ViewImeVisibilityUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = message,
                 quickfixData = quickFix

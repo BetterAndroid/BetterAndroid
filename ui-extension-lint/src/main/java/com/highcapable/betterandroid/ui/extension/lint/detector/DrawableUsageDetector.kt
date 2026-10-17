@@ -44,7 +44,7 @@ class DrawableUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithDrawableExtension",
-            briefDescription = "Use ui-extension's `Drawable.setPadding(size)` instead",
+            briefDescription = "Use ui-extension's drawable extensions instead",
             explanation = """
                 Using `Drawable.setPadding(left, top, right, bottom)` with the same value on all \
                 sides can be simplified by using `setPadding(size)` from BetterAndroid ui-extension \
@@ -68,9 +68,9 @@ class DrawableUsageDetector : Detector(), Detector.UastScanner {
                 drawable.setPadding(20)
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 DrawableUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -85,7 +85,7 @@ class DrawableUsageDetector : Detector(), Detector.UastScanner {
         override fun visitCallExpression(node: UCallExpression) {
             if (node.methodName != SET_PADDING_METHOD) return
 
-            // Validation is Drawable class.
+            // Validate that it belongs to `Drawable`.
             val method = node.resolve() ?: return
             val containingClass = method.containingClass ?: return
             if (containingClass.qualifiedName != DRAWABLE_CLASS &&
@@ -103,6 +103,7 @@ class DrawableUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(

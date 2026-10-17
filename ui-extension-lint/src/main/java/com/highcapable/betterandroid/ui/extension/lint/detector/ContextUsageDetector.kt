@@ -38,7 +38,6 @@ import com.highcapable.betterandroid.ui.extension.lint.detector.extension.unwrap
 import com.intellij.psi.PsiClassType
 import com.intellij.psi.PsiVariable
 import org.jetbrains.uast.UBinaryExpressionWithType
-import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UExpression
 import org.jetbrains.uast.UResolvable
 import org.jetbrains.uast.UThisExpression
@@ -95,9 +94,9 @@ class ContextUsageDetector : Detector(), Detector.UastScanner {
                 context.hostActivity<YourActivity>()
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 ContextUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -105,7 +104,7 @@ class ContextUsageDetector : Detector(), Detector.UastScanner {
         )
     }
 
-    override fun getApplicableUastTypes() = listOf(UBinaryExpressionWithType::class.java as Class<out UElement>)
+    override fun getApplicableUastTypes() = listOf(UBinaryExpressionWithType::class.java)
 
     override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
@@ -118,17 +117,18 @@ class ContextUsageDetector : Detector(), Detector.UastScanner {
             val isNullableCast = node.operationKind.name == SAFE_AS_OPERATOR
             if (!isNullableCast && node.operationKind.name != AS_OPERATOR) return
 
-            val replacement = createActivityReplacement(node, operandNode.asSourceString(), isNullableCast) ?: return
+            val (replacement, imports) = createActivityReplacement(node, operandNode.asSourceString(), isNullableCast) ?: return
             val fixName = if (isNullableCast) HOST_ACTIVITY_PROPERTY else REQUIRE_HOST_ACTIVITY_FUNCTION
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
-                message = "Can be replaced with `${replacement.first}`",
+                message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
                     name = "Replace with '$fixName'",
-                    replacement = replacement.first,
-                    imports = replacement.second.toTypedArray()
+                    replacement = replacement,
+                    imports = imports.toTypedArray()
                 )
             )
         }
@@ -144,17 +144,17 @@ class ContextUsageDetector : Detector(), Detector.UastScanner {
             val targetType = node.typeReference?.type?.canonicalText
                 ?.removeSuffix(NULLABLE_SUFFIX)
                 ?.removeSuffix(PLATFORM_SUFFIX)
-            val importName = "${DeclaredSymbol.COMPONENT_PACKAGE}.${if (isNullableCast) HOST_ACTIVITY_PROPERTY else REQUIRE_HOST_ACTIVITY_FUNCTION}"
+            val functionName = if (isNullableCast) HOST_ACTIVITY_PROPERTY else REQUIRE_HOST_ACTIVITY_FUNCTION
+            val importName = "${DeclaredSymbol.COMPONENT_PACKAGE}.$functionName"
 
             return when {
                 targetType == null || targetType == ACTIVITY_CLASS -> {
-                    val replacement = if (isNullableCast) "$operand.$HOST_ACTIVITY_PROPERTY" else "$operand.$REQUIRE_HOST_ACTIVITY_FUNCTION()"
+                    val replacement = if (isNullableCast) "$operand.$functionName" else "$operand.$functionName()"
                     replacement to listOf(importName)
                 }
                 else -> {
-                    val functionName = if (isNullableCast) HOST_ACTIVITY_PROPERTY else REQUIRE_HOST_ACTIVITY_FUNCTION
-                    "$operand.$functionName<${node.typeReference?.asSourceString().orEmpty().trim().removeSuffix(NULLABLE_SUFFIX)}>()" to
-                        listOf(importName)
+                    val typeText = node.typeReference?.asSourceString().orEmpty().trim().removeSuffix(NULLABLE_SUFFIX)
+                    "$operand.$functionName<$typeText>()" to listOf(importName)
                 }
             }
         }

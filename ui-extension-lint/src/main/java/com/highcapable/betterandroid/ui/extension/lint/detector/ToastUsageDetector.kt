@@ -30,10 +30,10 @@ import com.android.tools.lint.detector.api.JavaContext
 import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.highcapable.betterandroid.ui.extension.lint.DeclaredSymbol
+import com.highcapable.betterandroid.ui.extension.lint.detector.extension.asCall
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.buildReplaceFix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.createKotlinOnlyUastHandler
 import org.jetbrains.uast.UCallExpression
-import org.jetbrains.uast.UQualifiedReferenceExpression
 
 class ToastUsageDetector : Detector(), Detector.UastScanner {
 
@@ -43,12 +43,11 @@ class ToastUsageDetector : Detector(), Detector.UastScanner {
         private const val TOAST_MAKE_TEXT_METHOD = "makeText"
         private const val TOAST_SHOW_METHOD = "show"
 
-        private const val TOAST_EXTENSION_PACKAGE = "${DeclaredSymbol.BASE_PACKAGE}.view"
-        private const val TOAST_EXTENSION_FULL_FUNCTION_NAME = "$TOAST_EXTENSION_PACKAGE.toast"
+        private const val TOAST_EXTENSION_FULL_FUNCTION_NAME = "${DeclaredSymbol.VIEW_PACKAGE}.toast"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithToastExtension",
-            briefDescription = "Use ui-extension's `toast(...)` function instead of `Toast.makeText(...).show()`",
+            briefDescription = "Use ui-extension's toast extensions instead",
             explanation = """
                 Using `Toast.makeText(...).show()` can be simplified by using `toast(...)` from \
                 BetterAndroid ui-extension library.
@@ -81,9 +80,9 @@ class ToastUsageDetector : Detector(), Detector.UastScanner {
                 }
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 ToastUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -98,15 +97,11 @@ class ToastUsageDetector : Detector(), Detector.UastScanner {
         override fun visitCallExpression(node: UCallExpression) {
             if (node.methodName != TOAST_SHOW_METHOD) return
 
-            val makeTextCall = when (val receiver = node.receiver) {
-                is UCallExpression -> receiver
-                is UQualifiedReferenceExpression -> receiver.selector as? UCallExpression
-                else -> null
-            } ?: return
+            val makeTextCall = node.receiver.asCall() ?: return
 
             if (makeTextCall.methodName != TOAST_MAKE_TEXT_METHOD) return
 
-            // Validation is Toast class.
+            // Validate that it belongs to `Toast`.
             val method = node.resolve() ?: return
             val containingClass = method.containingClass ?: return
             if (containingClass.qualifiedName != TOAST_CLASS) return
@@ -127,16 +122,16 @@ class ToastUsageDetector : Detector(), Detector.UastScanner {
             val messageText = messageArg.asSourceString()
             val durationText = durationArg?.asSourceString()
 
-            val fix = createLintFix(contextText, messageText, durationText)
-            val replaceSuggestion = fix.first
+            val (replaceSuggestion, fix) = createLintFix(contextText, messageText, durationText)
             val message = "Can be replaced with `$replaceSuggestion`"
 
             val location = context.getLocation(node)
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = location,
                 message = message,
-                quickfixData = fix.second
+                quickfixData = fix
             )
         }
     })
@@ -146,7 +141,7 @@ class ToastUsageDetector : Detector(), Detector.UastScanner {
         val replacement = when {
             contextText == "this" -> {
                 // If context is `this`, can use `toast(...)` directly.
-                if (durationText == null || durationText == "Toast.LENGTH_SHORT") 
+                if (durationText == null || durationText == "Toast.LENGTH_SHORT")
                     "toast($messageText)"
                 else "toast($messageText, $durationText)"
             }

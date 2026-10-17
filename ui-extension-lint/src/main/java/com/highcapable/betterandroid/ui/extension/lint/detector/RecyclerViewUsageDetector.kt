@@ -48,12 +48,12 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
     companion object {
 
         private const val RECYCLER_VIEW_CLASS = "androidx.recyclerview.widget.RecyclerView"
-        private const val LAYOUT_MANAGER_GET_FUNCTION = "getLayoutManager"
+        private const val GET_LAYOUT_MANAGER_METHOD = "getLayoutManager"
         private const val LAYOUT_MANAGER_FUNCTION = "layoutManager"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithRecyclerViewExtension",
-            briefDescription = "Use ui-extension's `RecyclerView.layoutManager()` instead",
+            briefDescription = "Use ui-extension's RecyclerView extensions instead",
             explanation = """
                 Using `recyclerView.layoutManager as ...` or `as? ...` can be simplified by using \
                 `layoutManager()` from BetterAndroid ui-extension library.
@@ -77,9 +77,9 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
                 recyclerView.layoutManager<LinearLayoutManager>()
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 RecyclerViewUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -87,7 +87,7 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
         )
     }
 
-    override fun getApplicableUastTypes() = listOf(UBinaryExpressionWithType::class.java as Class<out UElement>)
+    override fun getApplicableUastTypes() = listOf(UBinaryExpressionWithType::class.java)
 
     override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
@@ -98,7 +98,7 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
             if (node.operationKind !is UastBinaryExpressionWithTypeKind.TypeCast) return
 
             val operandNode = node.operand.unwrapParenthesized() ?: return
-            if (!operandNode.isRecyclerViewLayoutManagerAccess(context)) return
+            if (!operandNode.isRecyclerViewLayoutManagerAccess()) return
 
             // This is the `recyclerView.layoutManager as/as? LayoutManager` pattern.
             val targetType = node.typeReference?.asSourceString() ?: return
@@ -111,6 +111,7 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
@@ -121,16 +122,16 @@ class RecyclerViewUsageDetector : Detector(), Detector.UastScanner {
             )
         }
 
-        private fun UElement.isRecyclerViewLayoutManagerAccess(context: JavaContext) = when (this) {
+        private fun UElement.isRecyclerViewLayoutManagerAccess() = when (this) {
             is UQualifiedReferenceExpression -> when (val resolved = (selector as? UResolvable)?.resolve()) {
-                is PsiMethod -> resolved.name == LAYOUT_MANAGER_GET_FUNCTION &&
+                is PsiMethod -> resolved.name == GET_LAYOUT_MANAGER_METHOD &&
                     context.evaluator.isMemberInClass(resolved, RECYCLER_VIEW_CLASS)
                 is PsiField -> resolved.name == LAYOUT_MANAGER_FUNCTION &&
                     context.evaluator.isMemberInClass(resolved, RECYCLER_VIEW_CLASS)
                 else -> false
             }
             is USimpleNameReferenceExpression -> when (val resolved = resolve()) {
-                is PsiMethod -> resolved.name == LAYOUT_MANAGER_GET_FUNCTION &&
+                is PsiMethod -> resolved.name == GET_LAYOUT_MANAGER_METHOD &&
                     context.evaluator.isMemberInClass(resolved, RECYCLER_VIEW_CLASS)
                 is PsiField -> resolved.name == LAYOUT_MANAGER_FUNCTION &&
                     context.evaluator.isMemberInClass(resolved, RECYCLER_VIEW_CLASS)

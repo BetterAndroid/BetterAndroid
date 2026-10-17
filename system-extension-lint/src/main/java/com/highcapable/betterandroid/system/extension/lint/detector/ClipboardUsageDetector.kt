@@ -70,14 +70,14 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
         private const val GET_ITEM_AT_METHOD = "getItemAt"
         private const val PRIMARY_CLIP_PROPERTY = "primaryClip"
 
-        private const val COPY = "copy"
-        private const val CLIPBOARD_MANAGER = "clipboardManager"
-        private const val PRIMARY_CLIP_ITEMS = "primaryClipItems"
-        private const val PRIMARY_CLIP_ITEMS_OR_NULL = "primaryClipItemsOrNull"
-        private const val FIRST_PRIMARY_CLIP_ITEM = "firstPrimaryClipItem"
-        private const val FIRST_PRIMARY_CLIP_ITEM_OR_NULL = "firstPrimaryClipItemOrNull"
+        private const val COPY_FUNCTION = "copy"
+        private const val CLIPBOARD_MANAGER_PROPERTY = "clipboardManager"
+        private const val PRIMARY_CLIP_ITEMS_FUNCTION = "primaryClipItems"
+        private const val PRIMARY_CLIP_ITEMS_OR_NULL_FUNCTION = "primaryClipItemsOrNull"
+        private const val FIRST_PRIMARY_CLIP_ITEM_PROPERTY = "firstPrimaryClipItem"
+        private const val FIRST_PRIMARY_CLIP_ITEM_OR_NULL_PROPERTY = "firstPrimaryClipItemOrNull"
 
-        private const val THIS_EXPRESSION = "this"
+        private const val THIS_RECEIVER = "this"
         private const val NULL_LITERAL = "null"
         private const val FIRST_INDEX = "0"
         private const val NOT_NULL_ASSERTION = "!!"
@@ -119,9 +119,9 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
                 context.clipboardManager
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 ClipboardUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -129,9 +129,9 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
         )
     }
 
-    override fun getApplicableUastTypes() = listOf(
-        UCallExpression::class.java as Class<out UElement>,
-        UQualifiedReferenceExpression::class.java as Class<out UElement>
+    override fun getApplicableUastTypes(): List<Class<out UElement>> = listOf(
+        UCallExpression::class.java,
+        UQualifiedReferenceExpression::class.java
     )
 
     override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
@@ -148,7 +148,7 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
         private fun reportCopy(node: UCallExpression) {
             if (node.methodName != SET_PRIMARY_CLIP_METHOD) return
 
-            // Validation is ClipboardManager class.
+            // Validate that it belongs to `ClipboardManager`.
             val method = node.resolve() ?: return
             if (!context.evaluator.isMemberInClass(method, CLIPBOARD_MANAGER_CLASS)) return
 
@@ -166,15 +166,15 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
             val replacement = when (clipMethod) {
                 NEW_PLAIN_TEXT_METHOD -> {
                     if (arguments.size < 2) return
-                    "${node.receiverPrefix()}$COPY($text, $label)"
+                    "${node.receiverPrefix()}$COPY_FUNCTION($text, $label)"
                 }
                 NEW_HTML_TEXT_METHOD -> {
                     if (arguments.size < 3) return
-                    "${node.receiverPrefix()}$COPY($text, $html, $label)"
+                    "${node.receiverPrefix()}$COPY_FUNCTION($text, $html, $label)"
                 }
                 NEW_INTENT_METHOD -> {
                     if (arguments.size < 2) return
-                    "${node.receiverPrefix()}$COPY(${arguments[1].asSourceString()}, $label)"
+                    "${node.receiverPrefix()}$COPY_FUNCTION(${arguments[1].asSourceString()}, $label)"
                 }
                 else -> return
             }
@@ -182,8 +182,8 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
             reportAndFix(
                 node = node,
                 replacement = replacement,
-                fixName = COPY,
-                importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.$COPY"
+                fixName = COPY_FUNCTION,
+                importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.$COPY_FUNCTION"
             )
         }
 
@@ -192,12 +192,12 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
 
             // This is the `Context.getSystemService(ClipboardManager::class.java)` pattern.
             val replacement = when {
-                isClipboardManagerLookup(node) -> node.extensionPropertyReplacement(CLIPBOARD_MANAGER)
+                isClipboardManagerLookup(node) -> node.extensionPropertyReplacement(CLIPBOARD_MANAGER_PROPERTY)
                 isContextCompatClipboardManagerLookup(node) -> {
                     val receiver = node.valueArguments.firstOrNull()?.asSourceString()?.trim() ?: return
-                    if (receiver == THIS_EXPRESSION) CLIPBOARD_MANAGER else "$receiver.$CLIPBOARD_MANAGER"
+                    if (receiver == THIS_RECEIVER) CLIPBOARD_MANAGER_PROPERTY else "$receiver.$CLIPBOARD_MANAGER_PROPERTY"
                 }
-                isClipboardManagerTypeArgument(node) -> node.extensionPropertyReplacement(CLIPBOARD_MANAGER)
+                isClipboardManagerTypeArgument(node) -> node.extensionPropertyReplacement(CLIPBOARD_MANAGER_PROPERTY)
                 else -> return
             }
 
@@ -205,8 +205,8 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
             reportAndFix(
                 node = targetNode,
                 replacement = replacement,
-                fixName = CLIPBOARD_MANAGER,
-                importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.$CLIPBOARD_MANAGER"
+                fixName = CLIPBOARD_MANAGER_PROPERTY,
+                importTarget = "${DeclaredSymbol.COMPONENT_PACKAGE}.$CLIPBOARD_MANAGER_PROPERTY"
             )
         }
 
@@ -214,7 +214,7 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
             val itemCall = node.selector.asCall() ?: return
             if (itemCall.methodName != GET_ITEM_AT_METHOD) return
 
-            // Validation is ClipData class.
+            // Validate that it belongs to `ClipData`.
             val itemMethod = itemCall.resolve() ?: return
             if (!context.evaluator.isMemberInClass(itemMethod, CLIP_DATA_CLASS)) return
 
@@ -262,7 +262,7 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
             val method = node.resolve() ?: return false
             val containingClass = method.containingClass ?: return false
 
-            // Validation is Context class.
+            // Validate that it belongs to `Context`.
             if (!context.evaluator.extendsClass(containingClass, CONTEXT_CLASS, false)) return false
 
             return resolveClassLiteralType(node.valueArguments.firstOrNull()) == CLIPBOARD_MANAGER_CLASS
@@ -271,7 +271,7 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
         private fun isContextCompatClipboardManagerLookup(node: UCallExpression): Boolean {
             val method = node.resolve() ?: return false
 
-            // Validation is ContextCompat class.
+            // Validate that it belongs to `ContextCompat`.
             if (!context.evaluator.isMemberInClass(method, CONTEXT_COMPAT_CLASS)) return false
 
             return resolveClassLiteralType(node.valueArguments.getOrNull(1)) == CLIPBOARD_MANAGER_CLASS
@@ -280,7 +280,7 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
         private fun isClipboardManagerTypeArgument(node: UCallExpression): Boolean {
             if (node.typeArguments.firstOrNull()?.canonicalText != CLIPBOARD_MANAGER_CLASS) return false
 
-            // Validation is Context receiver.
+            // Validate that it has a `Context` receiver.
             val receiverType = node.receiver?.getExpressionType()
             if (receiverType != null) return receiverType.extendsClass(context, CONTEXT_CLASS)
 
@@ -347,6 +347,7 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
             fixName: String
         ) = context.report(
             issue = ISSUE,
+            scope = node,
             location = context.getLocation(node),
             message = "Can be replaced with `$replacement`",
             quickfixData = buildReplaceFix(
@@ -362,10 +363,10 @@ class ClipboardUsageDetector : Detector(), Detector.UastScanner {
         companion object {
 
             fun of(index: String, nullable: Boolean) = when {
-                nullable && index == FIRST_INDEX -> PrimaryClipItemTarget(FIRST_PRIMARY_CLIP_ITEM_OR_NULL, usesIndexArgument = false)
-                nullable -> PrimaryClipItemTarget(PRIMARY_CLIP_ITEMS_OR_NULL, usesIndexArgument = true)
-                index == FIRST_INDEX -> PrimaryClipItemTarget(FIRST_PRIMARY_CLIP_ITEM, usesIndexArgument = false)
-                else -> PrimaryClipItemTarget(PRIMARY_CLIP_ITEMS, usesIndexArgument = true)
+                nullable && index == FIRST_INDEX -> PrimaryClipItemTarget(FIRST_PRIMARY_CLIP_ITEM_OR_NULL_PROPERTY, usesIndexArgument = false)
+                nullable -> PrimaryClipItemTarget(PRIMARY_CLIP_ITEMS_OR_NULL_FUNCTION, usesIndexArgument = true)
+                index == FIRST_INDEX -> PrimaryClipItemTarget(FIRST_PRIMARY_CLIP_ITEM_PROPERTY, usesIndexArgument = false)
+                else -> PrimaryClipItemTarget(PRIMARY_CLIP_ITEMS_FUNCTION, usesIndexArgument = true)
             }
         }
 

@@ -36,6 +36,7 @@ import com.highcapable.betterandroid.ui.extension.lint.detector.extension.isQual
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.ui.extension.lint.detector.extension.resolveName
 import com.intellij.psi.PsiMethod
+import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UQualifiedReferenceExpression
 import org.jetbrains.uast.UResolvable
 import org.jetbrains.uast.USimpleNameReferenceExpression
@@ -47,8 +48,8 @@ class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
         private const val ANDROIDX_CORE_VIEW_PACKAGE = "androidx.core.view"
         private const val ANCESTORS_PROPERTY = "ancestors"
         private const val DESCENDANTS_PROPERTY = "descendants"
-        private const val ANCESTORS_METHOD = "getAncestors"
-        private const val DESCENDANTS_METHOD = "getDescendants"
+        private const val GET_ANCESTORS_METHOD = "getAncestors"
+        private const val GET_DESCENDANTS_METHOD = "getDescendants"
 
         private const val WALK_TO_ROOT_FUNCTION = "walkToRoot"
         private const val WALK_THROUGH_CHILDREN_FUNCTION = "walkThroughChildren"
@@ -58,7 +59,7 @@ class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithViewWalkExtension",
-            briefDescription = "Use ui-extension's `walkToRoot()` or `walkThroughChildren()` instead",
+            briefDescription = "Use ui-extension's view walk extensions instead",
             explanation = """
                 Using `ancestors` or `descendants` can be simplified by using `walkToRoot()` or \
                 `walkThroughChildren()` from BetterAndroid ui-extension library.
@@ -83,9 +84,9 @@ class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
                 view.walkThroughChildren()
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 ViewWalkUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -93,7 +94,7 @@ class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
         )
     }
 
-    override fun getApplicableUastTypes() = listOf(
+    override fun getApplicableUastTypes(): List<Class<out UElement>> = listOf(
         UQualifiedReferenceExpression::class.java,
         USimpleNameReferenceExpression::class.java
     )
@@ -102,83 +103,51 @@ class ViewWalkUsageDetector : Detector(), Detector.UastScanner {
 
         override fun visitQualifiedReferenceExpression(node: UQualifiedReferenceExpression) {
             val selectorName = node.selector.resolveName() ?: return
-            if (!node.isViewWalkProperty(selectorName)) return
+            val resolved = (node.selector as? UResolvable)?.resolve() as? PsiMethod ?: return
+            if (!resolved.isViewWalkProperty(selectorName)) return
 
             // This is the `view.ancestors/descendants` property access pattern.
-            val replacement = when (selectorName) {
-                ANCESTORS_PROPERTY -> "${node.receiverPrefix()}$WALK_TO_ROOT_FUNCTION()"
-                DESCENDANTS_PROPERTY -> "${node.receiverPrefix()}$WALK_THROUGH_CHILDREN_FUNCTION()"
-                else -> return
-            }
-            val importTarget = when (selectorName) {
-                ANCESTORS_PROPERTY -> WALK_TO_ROOT_FULL_NAME
-                DESCENDANTS_PROPERTY -> WALK_THROUGH_CHILDREN_FULL_NAME
-                else -> return
-            }
-            val fixName = if (selectorName == ANCESTORS_PROPERTY) WALK_TO_ROOT_FUNCTION else WALK_THROUGH_CHILDREN_FUNCTION
-
-            context.report(
-                issue = ISSUE,
-                location = context.getLocation(node),
-                message = "Can be replaced with `$replacement`",
-                quickfixData = buildReplaceFix(
-                    name = "Replace with '$fixName'",
-                    replacement = replacement,
-                    imports = arrayOf(importTarget)
-                )
-            )
+            reportViewWalk(node, node.receiverPrefix(), selectorName)
         }
 
         override fun visitSimpleNameReferenceExpression(node: USimpleNameReferenceExpression) {
             if (node.isQualifiedSelector()) return
             val selectorName = node.resolveName() ?: return
-            if (!node.isViewWalkProperty(selectorName)) return
+            val resolved = node.resolve() as? PsiMethod ?: return
+            if (!resolved.isViewWalkProperty(selectorName)) return
 
             // This is the implicit `ancestors/descendants` property access pattern.
-            val replacement = when (selectorName) {
-                ANCESTORS_PROPERTY -> "$WALK_TO_ROOT_FUNCTION()"
-                DESCENDANTS_PROPERTY -> "$WALK_THROUGH_CHILDREN_FUNCTION()"
+            reportViewWalk(node, receiverPrefix = "", selectorName)
+        }
+
+        private fun reportViewWalk(node: UElement, receiverPrefix: String, selectorName: String) {
+            val (functionName, importTarget) = when (selectorName) {
+                ANCESTORS_PROPERTY -> WALK_TO_ROOT_FUNCTION to WALK_TO_ROOT_FULL_NAME
+                DESCENDANTS_PROPERTY -> WALK_THROUGH_CHILDREN_FUNCTION to WALK_THROUGH_CHILDREN_FULL_NAME
                 else -> return
             }
-            val importTarget = when (selectorName) {
-                ANCESTORS_PROPERTY -> WALK_TO_ROOT_FULL_NAME
-                DESCENDANTS_PROPERTY -> WALK_THROUGH_CHILDREN_FULL_NAME
-                else -> return
-            }
-            val fixName = if (selectorName == ANCESTORS_PROPERTY) WALK_TO_ROOT_FUNCTION else WALK_THROUGH_CHILDREN_FUNCTION
+            val replacement = "$receiverPrefix$functionName()"
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
-                    name = "Replace with '$fixName'",
+                    name = "Replace with '$functionName'",
                     replacement = replacement,
                     imports = arrayOf(importTarget)
                 )
             )
         }
 
-        private fun UQualifiedReferenceExpression.isViewWalkProperty(name: String): Boolean {
-            val resolved = (selector as? UResolvable)?.resolve() as? PsiMethod ?: return false
-            val resolvedClass = resolved.containingClass?.qualifiedName ?: return false
+        private fun PsiMethod.isViewWalkProperty(name: String): Boolean {
+            val resolvedClass = containingClass?.qualifiedName ?: return false
             if (!resolvedClass.startsWith(ANDROIDX_CORE_VIEW_PACKAGE)) return false
 
             return when (name) {
-                ANCESTORS_PROPERTY -> resolved.name == ANCESTORS_METHOD || resolved.name == ANCESTORS_PROPERTY
-                DESCENDANTS_PROPERTY -> resolved.name == DESCENDANTS_METHOD || resolved.name == DESCENDANTS_PROPERTY
-                else -> false
-            }
-        }
-
-        private fun USimpleNameReferenceExpression.isViewWalkProperty(name: String): Boolean {
-            val resolved = resolve() as? PsiMethod ?: return false
-            val resolvedClass = resolved.containingClass?.qualifiedName ?: return false
-            if (!resolvedClass.startsWith(ANDROIDX_CORE_VIEW_PACKAGE)) return false
-
-            return when (name) {
-                ANCESTORS_PROPERTY -> resolved.name == ANCESTORS_METHOD || resolved.name == ANCESTORS_PROPERTY
-                DESCENDANTS_PROPERTY -> resolved.name == DESCENDANTS_METHOD || resolved.name == DESCENDANTS_PROPERTY
+                ANCESTORS_PROPERTY -> this.name == GET_ANCESTORS_METHOD || this.name == ANCESTORS_PROPERTY
+                DESCENDANTS_PROPERTY -> this.name == GET_DESCENDANTS_METHOD || this.name == DESCENDANTS_PROPERTY
                 else -> false
             }
         }

@@ -47,10 +47,8 @@ class NotificationActionUsageDetector : Detector(), Detector.UastScanner {
 
     companion object {
 
-        private const val NOTIFICATION_BUILDER_CLASS =
-            "${DeclaredSymbol.NOTIFICATION_PACKAGE}.NotificationBuilder"
-        private const val NOTIFICATION_ACTION_UTILS_CLASS =
-            "${DeclaredSymbol.NOTIFICATION_FACTORY_PACKAGE}.NotificationActionUtils"
+        private const val NOTIFICATION_BUILDER_CLASS = "${DeclaredSymbol.NOTIFICATION_PACKAGE}.NotificationBuilder"
+        private const val NOTIFICATION_ACTION_UTILS_CLASS = "${DeclaredSymbol.NOTIFICATION_FACTORY_PACKAGE}.NotificationActionUtils"
         private const val NOTIFICATION_ACTION_BUILDER_CLASS = "androidx.core.app.NotificationCompat.Action.Builder"
         private const val REMOTE_INPUT_BUILDER_CLASS = "androidx.core.app.RemoteInput.Builder"
 
@@ -64,8 +62,7 @@ class NotificationActionUsageDetector : Detector(), Detector.UastScanner {
         private const val NOTIFICATION_REMOTE_INPUT_FUNCTION = "NotificationRemoteInput"
         private const val NOTIFICATION_ACTION_BUILDER_FUNCTION = "NotificationCompat.Action.Builder(...)"
         private const val REMOTE_INPUT_BUILDER_FUNCTION = "RemoteInput.Builder(...)"
-        private const val ADD_REMOTE_INPUT_IMPORT =
-            "${DeclaredSymbol.NOTIFICATION_FACTORY_PACKAGE}.$ADD_REMOTE_INPUT_METHOD"
+        private const val ADD_REMOTE_INPUT_IMPORT = "${DeclaredSymbol.NOTIFICATION_FACTORY_PACKAGE}.$ADD_REMOTE_INPUT_METHOD"
 
         val ISSUE = Issue.create(
             id = "ReplaceWithNotificationAction",
@@ -121,9 +118,9 @@ class NotificationActionUsageDetector : Detector(), Detector.UastScanner {
                 }
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 NotificationActionUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -149,7 +146,7 @@ class NotificationActionUsageDetector : Detector(), Detector.UastScanner {
             val factoryCall = node.valueArguments.singleOrNull()?.unwrapParenthesized()?.asCall() ?: return false
             val factory = factoryCall.resolve() ?: return false
 
-            // Validation is a BetterAndroid factory directly wrapped by its corresponding receiver DSL.
+            // Validate that it is a BetterAndroid factory directly wrapped by its corresponding receiver DSL.
             if (factoryCall.methodName != target.factoryFunction ||
                 factory.containingClass?.qualifiedName != NOTIFICATION_ACTION_UTILS_CLASS
             ) return false
@@ -159,6 +156,7 @@ class NotificationActionUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getCallLocation(node, includeReceiver = false, includeArguments = true),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
@@ -193,7 +191,7 @@ class NotificationActionUsageDetector : Detector(), Detector.UastScanner {
             val method = node.resolve() ?: return
             val builderClass = method.containingClass?.qualifiedName ?: return
 
-            // Validation is NotificationCompat.Action.Builder or RemoteInput.Builder class.
+            // Validate that it belongs to `NotificationCompat.Action.Builder` or `RemoteInput.Builder`.
             val builderTarget = resolveBuilderTarget(builderClass) ?: return
 
             // This is the `Builder(...).build()` pattern, including chained setters and `apply` blocks.
@@ -202,6 +200,7 @@ class NotificationActionUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getCallLocation(node, includeReceiver = true, includeArguments = true),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
@@ -216,13 +215,14 @@ class NotificationActionUsageDetector : Detector(), Detector.UastScanner {
             val constructor = node.resolve() ?: return
             val builderClass = constructor.containingClass?.qualifiedName ?: return
 
-            // Validation is NotificationCompat.Action.Builder or RemoteInput.Builder constructor.
+            // Validate that it is the `NotificationCompat.Action.Builder` or `RemoteInput.Builder` constructor.
             val builderTarget = resolveBuilderTarget(builderClass) ?: return
             val builderChain = resolveBuilderChain(node, builderClass)
             if (builderChain.hasBuildCall) return
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = builderChain.expression.sourcePsi?.let { context.getLocation(it) }
                     ?: context.getCallLocation(node, includeReceiver = true, includeArguments = true),
                 message = "Consider handing `${builderTarget.sourceFunction}` over to BetterAndroid's " +

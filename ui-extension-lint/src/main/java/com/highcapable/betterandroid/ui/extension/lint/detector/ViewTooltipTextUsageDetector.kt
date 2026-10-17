@@ -47,7 +47,7 @@ class ViewTooltipTextUsageDetector : Detector(), Detector.UastScanner {
 
         val ISSUE = Issue.create(
             id = "ReplaceWithViewTooltipTextCompatExtension",
-            briefDescription = "Use ui-extension's `tooltipTextCompat` instead of `TooltipCompat.setTooltipText(...)` or `ViewCompat.setTooltipText(...)`",
+            briefDescription = "Use ui-extension's tooltip text extensions instead",
             explanation = """
                 Using `TooltipCompat.setTooltipText(...)` or `ViewCompat.setTooltipText(...)` can \
                 be simplified by using `tooltipTextCompat` from BetterAndroid ui-extension library.
@@ -71,9 +71,9 @@ class ViewTooltipTextUsageDetector : Detector(), Detector.UastScanner {
                 view.tooltipTextCompat = "Tooltip"
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 ViewTooltipTextUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -88,7 +88,7 @@ class ViewTooltipTextUsageDetector : Detector(), Detector.UastScanner {
         override fun visitCallExpression(node: UCallExpression) {
             if (node.methodName != SET_TOOLTIP_TEXT_METHOD) return
 
-            // Validation is TooltipCompat or ViewCompat class.
+            // Validate that it belongs to `TooltipCompat` or `ViewCompat`.
             val method = node.resolve() ?: return
             if (!context.evaluator.isMemberInClass(method, TOOLTIP_COMPAT_CLASS) &&
                 !context.evaluator.isMemberInClass(method, VIEW_COMPAT_CLASS)
@@ -104,6 +104,7 @@ class ViewTooltipTextUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(

@@ -36,6 +36,7 @@ import com.highcapable.betterandroid.system.extension.lint.detector.extension.cr
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.extendsClass
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.receiverPrefix
 import com.highcapable.betterandroid.system.extension.lint.detector.extension.unwrapParenthesized
+import com.highcapable.betterandroid.system.extension.lint.detector.extension.unwrapReturnedExpression
 import com.intellij.psi.PsiLocalVariable
 import org.jetbrains.uast.UBlockExpression
 import org.jetbrains.uast.UCallExpression
@@ -45,7 +46,6 @@ import org.jetbrains.uast.ULambdaExpression
 import org.jetbrains.uast.ULocalVariable
 import org.jetbrains.uast.UObjectLiteralExpression
 import org.jetbrains.uast.UQualifiedReferenceExpression
-import org.jetbrains.uast.UReturnExpression
 import org.jetbrains.uast.USimpleNameReferenceExpression
 import org.jetbrains.uast.toUElementOfType
 
@@ -53,8 +53,8 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
 
     companion object {
 
-        private const val SEND_BROADCAST = "sendBroadcast"
-        private const val REGISTER_RECEIVER = "registerReceiver"
+        private const val SEND_BROADCAST_METHOD = "sendBroadcast"
+        private const val REGISTER_RECEIVER_METHOD = "registerReceiver"
         private const val APPLY_METHOD = "apply"
         private const val SET_PACKAGE_METHOD = "setPackage"
         private const val INTENT_CLASS = "android.content.Intent"
@@ -109,9 +109,9 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
                 }
                 ```
             """.trimIndent(),
-            category = Category.USABILITY,
+            category = Category.PRODUCTIVITY,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.INFORMATIONAL,
             implementation = Implementation(
                 BroadcastUsageDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -119,7 +119,7 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
         )
     }
 
-    override fun getApplicableUastTypes() = listOf(UCallExpression::class.java as Class<out UElement>)
+    override fun getApplicableUastTypes() = listOf(UCallExpression::class.java)
 
     override fun createUastHandler(context: JavaContext) = context.createKotlinOnlyUastHandler(object : UElementHandler() {
 
@@ -129,7 +129,7 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
         }
 
         private fun reportSendBroadcast(node: UCallExpression) {
-            if (node.methodName != SEND_BROADCAST) return
+            if (node.methodName != SEND_BROADCAST_METHOD) return
 
             // This is the `context.sendBroadcast(Intent(...))` pattern.
             val intentSpec = resolveIntentSpec(node.valueArguments.firstOrNull()) ?: return
@@ -141,30 +141,32 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
 
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
                 message = "Can be replaced with `$replacement`",
                 quickfixData = buildReplaceFix(
-                    name = "Replace with '$SEND_BROADCAST'",
+                    name = "Replace with '$SEND_BROADCAST_METHOD'",
                     replacement = replacement,
-                    imports = arrayOf("${DeclaredSymbol.COMPONENT_PACKAGE}.$SEND_BROADCAST")
+                    imports = arrayOf("${DeclaredSymbol.COMPONENT_PACKAGE}.$SEND_BROADCAST_METHOD")
                 )
             )
         }
 
         private fun reportRegisterReceiver(node: UCallExpression) {
-            if (node.methodName != REGISTER_RECEIVER) return
+            if (node.methodName != REGISTER_RECEIVER_METHOD) return
 
             val receiverExpression = node.valueArguments.firstOrNull()?.unwrapParenthesized() as? UObjectLiteralExpression ?: return
             val receiverType = receiverExpression.getExpressionType()
 
-            // Validation is BroadcastReceiver class.
+            // Validate that it is a `BroadcastReceiver`.
             if (!receiverType.extendsClass(context, BROADCAST_RECEIVER_CLASS)) return
 
             // This is the `registerReceiver(object : BroadcastReceiver() { ... }, ...)` pattern.
             context.report(
                 issue = ISSUE,
+                scope = node,
                 location = context.getLocation(node),
-                message = "Anonymous `BroadcastReceiver` bodies can be simplified with `$REGISTER_RECEIVER(...)`"
+                message = "Consider handing the anonymous `BroadcastReceiver` over to `$REGISTER_RECEIVER_METHOD(...)`"
             )
         }
 
@@ -265,7 +267,7 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
         private fun buildReplacement(receiverPrefix: String, arguments: String, bodyStatements: List<String>): String {
             val header = buildString {
                 append(receiverPrefix)
-                append(SEND_BROADCAST)
+                append(SEND_BROADCAST_METHOD)
 
                 if (arguments.isNotEmpty() || bodyStatements.isEmpty()) {
                     append('(')
@@ -286,7 +288,7 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
         private fun isIntentConstructorCall(node: UCallExpression): Boolean {
             val method = node.resolve() ?: return false
 
-            // Validation is Intent constructor.
+            // Validate that it is the `Intent` constructor.
             return method.isConstructor && method.containingClass?.qualifiedName == INTENT_CLASS
         }
 
@@ -312,11 +314,6 @@ class BroadcastUsageDetector : Detector(), Detector.UastScanner {
             } ?: return null
 
             return localVariable.uastInitializer.unwrapParenthesized()
-        }
-
-        private fun UExpression.unwrapReturnedExpression(): UExpression = when (this) {
-            is UReturnExpression -> returnExpression?.unwrapParenthesized() as? UExpression ?: this
-            else -> this
         }
 
         private fun UExpression?.takeUnlessNullLiteral() =
