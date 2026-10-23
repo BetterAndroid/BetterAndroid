@@ -89,8 +89,8 @@ export const configs = {
     },
     website: {
         base: '/BetterAndroid/',
-        icon: '/BetterAndroid/images/logo.png',
-        logo: '/images/logo.png',
+        icon: '/BetterAndroid/images/logo.svg',
+        logo: '/images/logo.svg',
         title: 'Better Android',
         locales: {
             en: {

@@ -4,7 +4,7 @@
 [![Telegram](https://img.shields.io/badge/discussion%20dev-Telegram-blue.svg?logo=telegram&style=flat-square)](https://t.me/BetterAndroid_Dev)
 [![QQ](https://img.shields.io/badge/discussion%20dev-QQ-blue.svg?logo=tencent-qq&logoColor=red&style=flat-square)](https://qm.qq.com/cgi-bin/qm/qr?k=Pnsc5RY6N2mBKFjOLPiYldbAbprAU3V7&jump_from=webapi&authKey=X5EsOVzLXt1dRunge8ryTxDRrh9/IiW1Pua75eDLh9RE3KXE+bwXIYF5cWri/9lf)
 
-<img src="https://github.com/BetterAndroid/.github/blob/main/img-src/logo.png?raw=true" width = "100" height = "100" alt="LOGO"/>
+<img src="img-src/icon.svg" width = "100" height = "100" alt="LOGO"/>
 
 为 Android 创造更多有用的工具扩展。
 
@@ -99,8 +99,8 @@ notification.post()
 
 ## 开始使用
 
-| <img src="https://github.com/BetterAndroid/.github/blob/main/img-src/logo.png?raw=true" width = "30" height = "30" alt="LOGO"/> | [BetterAndroid 文档](https://betterandroid.github.io/BetterAndroid/zh-cn) |
-|---------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| <img src="img-src/icon.svg" width = "30" height = "30" alt="LOGO"/> | [BetterAndroid 文档](https://betterandroid.github.io/BetterAndroid/zh-cn) |
+|---------------------------------------------------------------------|-------------------------------------------------------------------------|
 
 你可以前往文档页面查看更多详细教程和内容。
 

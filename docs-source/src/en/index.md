@@ -5,7 +5,7 @@ hero:
   name: Better Android
   tagline: Create more useful tool extensions for Android
   image:
-    src: /images/logo.png
+    src: /images/logo.svg
     alt: Better Android
   actions:
     - text: Get Started

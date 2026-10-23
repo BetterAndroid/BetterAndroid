@@ -5,7 +5,7 @@ hero:
   name: Better Android
   tagline: 为 Android 创造更多有用的工具扩展
   image:
-    src: /images/logo.png
+    src: /images/logo.svg
     alt: Better Android
   actions:
     - text: 立即开始
